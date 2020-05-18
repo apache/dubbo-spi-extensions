@@ -34,7 +34,6 @@
         <module>dubbo-remoting-grizzly</module>
         <module>dubbo-remoting-p2p</module>
         <module>dubbo-remoting-http</module>
-        <module>dubbo-remoting-zookeeper</module>
         <module>dubbo-remoting-etcd3</module>
     </modules>
 </project>
