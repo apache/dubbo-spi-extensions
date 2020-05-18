@@ -28,6 +28,7 @@
     </properties>
    
     <modules>
+        <module>dubbo-all</module>
         <module>dubbo-spi-container</module>
         <module>dubbo-spi-remoting</module>
         <module>dubbo-spi-rpc</module>
