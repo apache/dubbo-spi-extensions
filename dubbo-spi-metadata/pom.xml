@@ -34,7 +34,6 @@
     <modules>
         <module>dubbo-metadata-report-consul</module>
         <module>dubbo-metadata-report-etcd</module>
-        <module>dubbo-metadata-report-nacos</module>
     </modules>
 
 </project>
