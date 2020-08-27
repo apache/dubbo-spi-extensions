@@ -23,6 +23,7 @@ import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.NamedThreadFactory;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.event.EventListener;
+import org.apache.dubbo.registry.client.AbstractServiceDiscovery;
 import org.apache.dubbo.registry.client.DefaultServiceInstance;
 import org.apache.dubbo.registry.client.ServiceDiscovery;
 import org.apache.dubbo.registry.client.ServiceInstance;
@@ -65,7 +66,7 @@ import static org.apache.dubbo.registry.consul.AbstractConsulRegistry.WATCH_TIME
 /**
  * 2019-07-31
  */
-public class ConsulServiceDiscovery implements ServiceDiscovery, EventListener<ServiceInstancesChangedEvent> {
+public class ConsulServiceDiscovery extends AbstractServiceDiscovery implements EventListener<ServiceInstancesChangedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(ConsulServiceDiscovery.class);
 
@@ -120,6 +121,7 @@ public class ConsulServiceDiscovery implements ServiceDiscovery, EventListener<S
 
     @Override
     public void register(ServiceInstance serviceInstance) throws RuntimeException {
+        super.register(serviceInstance);
         NewService consulService = buildService(serviceInstance);
         ttlScheduler.add(consulService.getId());
         client.agentServiceRegister(consulService);
@@ -127,17 +129,18 @@ public class ConsulServiceDiscovery implements ServiceDiscovery, EventListener<S
 
     @Override
     public void addServiceInstancesChangedListener(ServiceInstancesChangedListener listener) throws NullPointerException, IllegalArgumentException {
-        if (notifier == null) {
-            String serviceName = listener.getServiceName();
-            Response<List<HealthService>> response = getHealthServices(serviceName, -1, buildWatchTimeout());
-            Long consulIndex = response.getConsulIndex();
-            notifier = new ConsulNotifier(serviceName, consulIndex);
-        }
-        notifierExecutor.execute(notifier);
+//        if (notifier == null) {
+//            String serviceName = listener.getServiceNames();
+//            Response<List<HealthService>> response = getHealthServices(serviceName, -1, buildWatchTimeout());
+//            Long consulIndex = response.getConsulIndex();
+//            notifier = new ConsulNotifier(serviceName, consulIndex);
+//        }
+//        notifierExecutor.execute(notifier);
     }
 
     @Override
     public void update(ServiceInstance serviceInstance) throws RuntimeException {
+        super.register(serviceInstance);
         // TODO
         // client.catalogRegister(buildCatalogService(serviceInstance));
     }

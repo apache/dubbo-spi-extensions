@@ -18,6 +18,7 @@ package org.apache.dubbo.registry.eureka;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.event.EventDispatcher;
+import org.apache.dubbo.registry.client.AbstractServiceDiscovery;
 import org.apache.dubbo.registry.client.DefaultServiceInstance;
 import org.apache.dubbo.registry.client.ServiceDiscovery;
 import org.apache.dubbo.registry.client.ServiceInstance;
@@ -53,7 +54,7 @@ import static org.apache.dubbo.registry.client.ServiceDiscoveryRegistry.parseSer
 /**
  * Eureka {@link ServiceDiscovery} implementation based on Eureka API
  */
-public class EurekaServiceDiscovery implements ServiceDiscovery {
+public class EurekaServiceDiscovery extends AbstractServiceDiscovery {
 
     private final EventDispatcher eventDispatcher = getDefaultExtension();
 
@@ -205,6 +206,7 @@ public class EurekaServiceDiscovery implements ServiceDiscovery {
 
     @Override
     public void register(ServiceInstance serviceInstance) throws RuntimeException {
+        super.register(serviceInstance);
         initEurekaClient(serviceInstance);
         setInstanceStatus(InstanceInfo.InstanceStatus.UP);
     }
@@ -217,6 +219,7 @@ public class EurekaServiceDiscovery implements ServiceDiscovery {
 
     @Override
     public void update(ServiceInstance serviceInstance) throws RuntimeException {
+        super.update(serviceInstance);
         setInstanceStatus(serviceInstance.isHealthy() ? InstanceInfo.InstanceStatus.UP :
                 InstanceInfo.InstanceStatus.UNKNOWN);
     }
