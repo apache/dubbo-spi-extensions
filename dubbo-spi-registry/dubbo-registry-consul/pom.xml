@@ -20,7 +20,7 @@
     <parent>
         <artifactId>dubbo-registry</artifactId>
         <groupId>org.apache.dubbo</groupId>
-        <version>${revision}</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
