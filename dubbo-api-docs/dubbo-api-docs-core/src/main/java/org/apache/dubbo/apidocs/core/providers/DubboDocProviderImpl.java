@@ -21,6 +21,9 @@ import org.apache.dubbo.config.annotation.DubboService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * The api implementation of Dubbo doc.
  * @author klw(213539@qq.com)
@@ -32,6 +35,11 @@ public class DubboDocProviderImpl implements IDubboDocProvider {
 
     @Override
     public String apiModuleList() {
+        return DubboApiDocsCache.getBasicApiModuleInfo();
+    }
+
+    @Override
+    public List<Map<String, Object>> apiModuleListAndApiInfo() {
         return DubboApiDocsCache.getAllApiModuleInfo();
     }
 

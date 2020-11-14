@@ -27,7 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * dubbo doc cache.
- * @author klw(213539@qq.com)
+ *
+ * @author klw(213539 @ qq.com)
  * 2020/10/29 17:40
  */
 public class DubboApiDocsCache {
@@ -50,25 +51,27 @@ public class DubboApiDocsCache {
      */
     private static Map<String, String> apiParamsAndRespStrCache = new ConcurrentHashMap<>(16);
 
-    private static String allApiModuleInfo = null;
+    private static List<Map<String, Object>> allApiModuleInfo = null;
 
-    public static void addApiModule(String key, Map<String, Object> moduleCacheItem){
+    private static String basicApiModuleInfo = null;
+
+    public static void addApiModule(String key, Map<String, Object> moduleCacheItem) {
         apiModulesCache.put(key, moduleCacheItem);
     }
 
-    public static void addApiParamsAndResp(String key, Map<String, Object> apiParamsAndResp){
+    public static void addApiParamsAndResp(String key, Map<String, Object> apiParamsAndResp) {
         apiParamsAndRespCache.put(key, apiParamsAndResp);
     }
 
-    public static Map<String, Object> getApiModule(String key){
+    public static Map<String, Object> getApiModule(String key) {
         return apiModulesCache.get(key);
     }
 
-    public static String getApiModuleStr(String key){
+    public static String getApiModuleStr(String key) {
         String result = apiModulesStrCache.get(key);
-        if(result == null){
+        if (result == null) {
             Map<String, Object> temp = apiModulesCache.get(key);
-            if(temp != null) {
+            if (temp != null) {
                 result = JSON.toJSONString(temp, ClassTypeUtil.FAST_JSON_FEATURES);
                 apiModulesStrCache.put(key, result);
             }
@@ -76,15 +79,15 @@ public class DubboApiDocsCache {
         return result;
     }
 
-    public static Map<String, Object> getApiParamsAndResp(String key){
+    public static Map<String, Object> getApiParamsAndResp(String key) {
         return apiParamsAndRespCache.get(key);
     }
 
-    public static String getApiParamsAndRespStr(String key){
+    public static String getApiParamsAndRespStr(String key) {
         String result = apiParamsAndRespStrCache.get(key);
-        if(result == null){
+        if (result == null) {
             Map<String, Object> temp = apiParamsAndRespCache.get(key);
-            if(temp != null) {
+            if (temp != null) {
                 result = JSON.toJSONString(temp, ClassTypeUtil.FAST_JSON_FEATURES);
                 apiParamsAndRespStrCache.put(key, result);
             }
@@ -92,13 +95,30 @@ public class DubboApiDocsCache {
         return result;
     }
 
-    public static String getAllApiModuleInfo(){
-        if(allApiModuleInfo == null){
+    public static String getBasicApiModuleInfo() {
+        if (basicApiModuleInfo == null) {
             List<Map<String, Object>> tempList = new ArrayList<>(apiModulesCache.size());
             apiModulesCache.forEach((k, v) -> {
                 tempList.add(v);
             });
-            allApiModuleInfo = JSON.toJSONString(tempList, ClassTypeUtil.FAST_JSON_FEATURES);
+            basicApiModuleInfo = JSON.toJSONString(tempList, ClassTypeUtil.FAST_JSON_FEATURES);
+        }
+        return basicApiModuleInfo;
+    }
+
+    public static List<Map<String, Object>> getAllApiModuleInfo() {
+        if (allApiModuleInfo == null) {
+            allApiModuleInfo = new ArrayList<>(apiModulesCache.size());
+            apiModulesCache.forEach((k, v) -> {
+                List<Map<String, Object>> apiList = (List<Map<String, Object>>) v.get("moduleApiList");
+                if ( null != apiList && !apiList.isEmpty()) {
+                    for (Map<String, Object> apiInfo : apiList) {
+                        Map<String, Object> apiParams = getApiParamsAndResp(v.get("moduleClassName") + "." + apiInfo.get("apiName"));
+                        apiInfo.putAll(apiParams);
+                    }
+                }
+                allApiModuleInfo.add(v);
+            });
         }
         return allApiModuleInfo;
     }

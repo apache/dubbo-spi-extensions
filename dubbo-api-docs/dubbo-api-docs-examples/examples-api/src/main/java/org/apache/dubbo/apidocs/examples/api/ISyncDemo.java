@@ -18,6 +18,8 @@ package org.apache.dubbo.apidocs.examples.api;
 
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean1;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean2;
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean3;
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
 import org.apache.dubbo.apidocs.examples.responses.BaseResponse;
 import org.apache.dubbo.apidocs.examples.responses.DemoRespBean1;
 
@@ -32,10 +34,11 @@ import java.util.Map;
 public interface ISyncDemo {
 
     /**
-     * request and response parameters are beans
-     * @Date 2020/2/4 0:01
-     * @param: param
-     * @return top.klw8.alita.examples.dubbodoc.responses.DemoRespBean1
+     * request and response parameters are beans.
+     * 2020/11/14 22:21
+     * @param param1
+     * @param param2
+     * @return org.apache.dubbo.apidocs.examples.responses.DemoRespBean1
      */
     DemoRespBean1 demoApi1(DemoParamBean1 param1, DemoParamBean2 param2);
 
@@ -93,5 +96,14 @@ public interface ISyncDemo {
      * Object
      */
     Object demoApi8();
+
+    /**
+     * Simple test.
+     * 2020/11/13 10:11
+     * @param param1
+     * @param param2
+     * @return org.apache.dubbo.apidocs.examples.params.DemoParamBean3
+     */
+    DemoParamBean3 demoApi13(DemoParamBean3 param1, DemoParamBean4 param2);
 
 }

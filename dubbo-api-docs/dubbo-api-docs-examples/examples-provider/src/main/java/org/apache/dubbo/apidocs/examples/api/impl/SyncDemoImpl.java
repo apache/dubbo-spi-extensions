@@ -24,6 +24,8 @@ import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.examples.api.ISyncDemo;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean1;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean2;
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean3;
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
 import org.apache.dubbo.apidocs.examples.responses.BaseResponse;
 import org.apache.dubbo.apidocs.examples.responses.DemoRespBean1;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -112,5 +114,13 @@ public class SyncDemoImpl implements ISyncDemo {
     @ApiDoc(value = "Object", responseClassDescription="Object")
     public Object demoApi8() {
         return null;
+    }
+
+    @Override
+    @ApiDoc(value = "Simple test", responseClassDescription = "Simple test")
+    public DemoParamBean3 demoApi13(DemoParamBean3 param1, DemoParamBean4 param2) {
+        DemoParamBean3 result = new DemoParamBean3();
+        result.setString("demoApi13 result");
+        return result;
     }
 }

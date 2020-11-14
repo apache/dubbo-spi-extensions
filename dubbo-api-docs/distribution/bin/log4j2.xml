@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="600" shutdownHook="disable">
+    <Properties>
+        <Property name="logDir" value="/home/weihu/deploy/logs/dubbo-api-docs/" />
+        <Property name="genericPattern" value="[dubboDoc]-%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+        <Property name="genericFilePattern" value="%d{yyyy-MM-dd HH:mm}-%i" />
+    </Properties>
+    <Appenders>
+        <Console name="consoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${genericPattern}" />
+        </Console>
+
+    </Appenders>
+    <Loggers>
+        <asyncRoot level="INFO">
+            <AppenderRef ref="consoleAppender" />
+        </asyncRoot>
+
+        <logger name="org.springframework" level="ERROR" />
+        <logger name="com.alibaba" level="ERROR" />
+        <logger name="org.apache" level="ERROR" />
+    </Loggers>
+</Configuration>

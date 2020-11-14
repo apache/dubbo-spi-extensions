@@ -1,6 +1,6 @@
 spring:
   application:
-    name: dubbo-doc-example-provider
+    name: dubbo-api-docs-example-provider
   profiles:
     active: dev
 dubbo:
@@ -12,4 +12,6 @@ dubbo:
     port: 20881
     name: dubbo
   application:
-    name: dubbo-doc-example-provider
+    name: dubbo-api-docs-example-provider
+  metadata-report:
+    address: nacos://127.0.0.1:8848

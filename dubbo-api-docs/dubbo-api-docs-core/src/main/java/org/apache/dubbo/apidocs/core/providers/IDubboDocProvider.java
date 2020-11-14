@@ -16,6 +16,9 @@
  */
 package org.apache.dubbo.apidocs.core.providers;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * The api used by Dubbo doc, get the parsed API information.
  * @author klw(213539@qq.com)
@@ -30,6 +33,14 @@ public interface IDubboDocProvider {
      * @return java.lang.String
      */
     String apiModuleList();
+
+    /**
+     * Get all information of all modules , including API parameter information.
+     * 2020/11/9 9:53
+     * @param
+     * @return java.lang.String
+     */
+    List<Map<String, Object>> apiModuleListAndApiInfo();
 
     /**
      * Get module information according to the complete class name of Dubbo provider interface.

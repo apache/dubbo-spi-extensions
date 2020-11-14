@@ -18,6 +18,8 @@ package org.apache.dubbo.apidocs.examples.api;
 
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean1;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean2;
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean3;
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
 import org.apache.dubbo.apidocs.examples.responses.DemoRespBean1;
 
 import java.util.List;
@@ -32,58 +34,59 @@ import java.util.concurrent.CompletableFuture;
 public interface IAsyncDemo {
 
     /**
-     * @author klw(213539@qq.com)
-     * request and response parameters are beans
-     * @Date 2020/2/4 0:01
-     * @param: param
-     * @return top.klw8.alita.examples.dubbodoc.responses.DemoRespBean1
+     * request and response parameters are beans.
+     * 2020/11/14 22:21
+     * @param param1
+     * @param param2
+     * @return java.util.concurrent.CompletableFuture<org.apache.dubbo.apidocs.examples.responses.DemoRespBean1>
      */
     CompletableFuture<DemoRespBean1> demoApi1(DemoParamBean1 param1, DemoParamBean2 param2);
 
     /**
-     * @author klw(213539@qq.com)
      * Map without generics
      */
     CompletableFuture<Map> demoApi6();
 
     /**
-     * @author klw(213539@qq.com)
      * Map generic with Object
      */
     CompletableFuture<Map<Object, Object>> demoApi7();
 
     /**
-     * @author klw(213539@qq.com)
      * List without generics
      */
     CompletableFuture<List> demoApi10();
 
     /**
-     * @author klw(213539@qq.com)
      * List generic with Object
      */
     CompletableFuture<List<Object>> demoApi9();
 
     /**
-     * @author klw(213539@qq.com)
      * Object
      */
     CompletableFuture<Object> demoApi8();
 
     /**
-     * @author klw(213539@qq.com)
      * Integer
      */
     CompletableFuture<Integer> demoApi11();
 
 
     /**
-     * @author klw(213539@qq.com)
      * many generics
-     * @Date 2020/7/30 17:02
      * @param:
      * @return java.util.concurrent.CompletableFuture<java.util.List<java.util.List<java.lang.String>>>
      */
     CompletableFuture<List<List<String>>> demoApi12();
+
+    /**
+     * Simple test.
+     * 2020/11/13 10:11
+     * @param param1
+     * @param param2
+     * @return java.util.concurrent.CompletableFuture<org.apache.dubbo.apidocs.examples.params.DemoParamBean3>
+     */
+    CompletableFuture<DemoParamBean3> demoApi13(DemoParamBean3 param1, DemoParamBean4 param2);
 
 }

@@ -1,0 +1,11 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: dubbo-doc-ui-server
+dubbo:
+  reference:
+    heartbeat: 1000
+  consumer:
+    timeout: 10000
+    retries: 0

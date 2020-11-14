@@ -1,0 +1,51 @@
+{
+  "name": "@icedesign/stark-layout-scaffold",
+  "version": "3.0.6",
+  "description": "dubbo api docs console",
+  "dependencies": {
+    "@alifd/next": "^1.x",
+    "@alifd/theme-design-pro": "^0.x",
+    "@icedesign/container": "^1.x",
+    "@types/react": "^16.9.20",
+    "@types/react-dom": "^16.9.5",
+    "classnames": "^2.2.5",
+    "jquery": "^3.3.1",
+    "moment": "^2.24.0",
+    "prop-types": "^15.5.8",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-intl-universal": "^2.2.5",
+    "react-json-view": "^1.19.1"
+  },
+  "devDependencies": {
+    "@ice/spec": "^1.0.1",
+    "build-plugin-fusion": "^0.1.0",
+    "build-plugin-icestark": "^1.0.2",
+    "build-plugin-moment-locales": "^0.1.0",
+    "eslint": "^6.0.1",
+    "ice.js": "^1.0.0",
+    "stylelint": "^13.1.0"
+  },
+  "scripts": {
+    "start": "icejs start",
+    "build": "icejs build",
+    "lint": "npm run eslint && npm run stylelint",
+    "eslint": "eslint --cache --ext .js,.jsx ./",
+    "stylelint": "stylelint ./**/*.scss"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ice-lab/react-materials/tree/master/scaffolds/ice-stark-layout"
+  },
+  "iceworks": {
+    "type": "react",
+    "adapter": "adapter-react-v3"
+  },
+  "ideMode": {
+    "name": "ice-react"
+  },
+  "title": "dubbo-api-docs-console"
+}

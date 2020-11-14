@@ -1,0 +1,21 @@
+{
+  "publicPath": "./",
+  "plugins": [
+    "build-plugin-icestark",
+    ["build-plugin-fusion", {
+      "themePackage": "@alifd/theme-design-pro",
+      "themeConfig": {
+        "nextPrefix": "next-icestark-"
+      }
+    }],
+    ["build-plugin-moment-locales", {
+      "locales": ["zh-cn"]
+    }]
+  ],
+  "proxy": {
+	  "/api/**": {
+      "enable": true,
+      "target": "http://localhost:8888"
+    }
+  }
+}
