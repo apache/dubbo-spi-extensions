@@ -18,12 +18,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache.dubbo</groupId>
-        <artifactId>dubbo-parent</artifactId>
-        <version>2.7.9-SNAPSHOT</version>
-        <relativePath />
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>19</version>
     </parent>
+    <groupId>org.apache.dubbo</groupId>
     <artifactId>dubbo-api-docs</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Dubbo interface documentation, testing tools</description>
@@ -53,6 +54,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-parent</artifactId>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

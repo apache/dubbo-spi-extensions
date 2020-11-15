@@ -17,29 +17,28 @@
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.dubbo</groupId>
+
+    <parent>
+        <groupId>org.apache.dubbo</groupId>
+        <artifactId>dubbo-api-docs</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <artifactId>dubbo-api-docs-ui-server</artifactId>
-    <version>2.7.9-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>dubbo-api-docs-ui-server</name>
     <description>Web ui, responsible for displaying doc and providing testing function</description>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.4.RELEASE</version>
-        <relativePath />
-    </parent>
-
     <properties>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-api-docs</artifactId>
-                <version>2.7.9-SNAPSHOT</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -219,11 +218,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -242,9 +236,9 @@
 
     <profiles>
         <profile>
-            <id>release-dubboDoc</id>
+            <id>release-dubboApiDocs</id>
             <build>
-                <finalName>dubbo-doc-ui-server</finalName>
+                <finalName>dubbo-api-docs-ui-server</finalName>
                 <plugins>
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>

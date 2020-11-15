@@ -28,4 +28,4 @@ set "JAVA_OPT=%JAVA_OPT% -Xms512m -Xmx512m -Xmn256m"
 
 set "JAVA_OPT=%JAVA_OPT% -jar %BASE_DIR%\lib\%SERVER%.jar"
 
-call "%JAVA%" %JAVA_OPT% dubbo.doc %*
+call "%JAVA%" %JAVA_OPT% dubbo.api.docs %*

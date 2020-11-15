@@ -47,11 +47,11 @@ if [ -z "$JAVA_HOME" ]; then
         error_exit "Please set the JAVA_HOME variable in your environment, We need java(x64)! jdk8 or later is better!"
   fi
 fi
-export SERVER="dubbo-doc-ui-server"
+export SERVER="dubbo-api-docs-ui-server"
 export JAVA_HOME
 export JAVA="$JAVA_HOME/bin/java"
 export BASE_DIR=`cd $(dirname $0)/..; pwd`
 JAVA_OPT="${JAVA_OPT} -Xms512m -Xmx512m -Xmn256m"
 JAVA_OPT="${JAVA_OPT} -jar ${BASE_DIR}/lib/${SERVER}.jar"
-nohup $JAVA ${JAVA_OPT} dubbo.doc >> ${BASE_DIR}/logs/catlog.out 2>&1 &
+nohup $JAVA ${JAVA_OPT} dubbo.api.docs >> ${BASE_DIR}/logs/catlog.out 2>&1 &
 echo "${SERVER} is starting，you can check the ${BASE_DIR}/logs/catlog.out"

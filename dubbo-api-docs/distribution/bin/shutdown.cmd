@@ -21,6 +21,6 @@ set "PATH=%JAVA_HOME%\bin;%PATH%"
 
 echo killing dubbo Doc server
 
-for /f "tokens=1" %%i in ('jps -m ^| find "dubbo.doc"') do ( taskkill /F /PID %%i )
+for /f "tokens=1" %%i in ('jps -m ^| find "dubbo.api.docs"') do ( taskkill /F /PID %%i )
 
 echo Done!

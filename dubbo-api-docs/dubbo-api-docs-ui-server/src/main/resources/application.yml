@@ -2,7 +2,7 @@ server:
   port: 8888
 spring:
   application:
-    name: dubbo-doc-ui-server
+    name: dubbo-api-docs-ui-server
 dubbo:
   reference:
     heartbeat: 1000
