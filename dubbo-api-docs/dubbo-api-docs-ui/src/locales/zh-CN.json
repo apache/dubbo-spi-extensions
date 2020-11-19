@@ -18,6 +18,8 @@
     "apiFunctionNameFormLabel": "接口方法名(此参数不可修改)",
     "registryCenterUrlFormLabel": "注册中心地址, 如果为空将使用Dubbo 提供者Ip和端口进行直连",
     "prarmNameLabel": "参数名",
+    "prarmPathLabel": "参数位置",
+    "prarmDescriptionLabel": "说明",
     "prarmRequiredLabel": "该参数为必填",
     "doTestBtn": "测试",
     "responseLabel": "响应",

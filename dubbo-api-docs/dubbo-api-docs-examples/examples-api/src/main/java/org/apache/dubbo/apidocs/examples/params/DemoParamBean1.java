@@ -33,10 +33,16 @@ import java.util.Map;
 @Setter
 public class DemoParamBean1 {
 
-    @RequestParam("Name")
+    @RequestParam(value = "Name", description = "说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试" +
+            "说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测" +
+            "说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测" +
+            "说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测" +
+            "说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测" +
+            "试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试")
     private String name;
 
-    @RequestParam("Age")
+    @RequestParam(value = "Age", description = "test description test description test description test description" +
+            " test description test description")
     private Integer age;
 
     private Boolean man;

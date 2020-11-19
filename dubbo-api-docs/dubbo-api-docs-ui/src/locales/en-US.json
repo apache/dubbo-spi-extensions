@@ -18,6 +18,8 @@
     "apiFunctionNameFormLabel": "Api function name(this parameter cannot be modified)",
     "registryCenterUrlFormLabel": "Registry address. If it is empty, Dubbo provider IP and port will be used for direct connection",
     "prarmNameLabel": "Parameter name",
+    "prarmPathLabel": "Parameter path",
+    "prarmDescriptionLabel": "Description",
     "prarmRequiredLabel": "This parameter is required",
     "doTestBtn": "Do Test",
     "responseLabel": "Response",

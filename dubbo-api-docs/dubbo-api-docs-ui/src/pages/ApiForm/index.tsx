@@ -24,6 +24,7 @@ import {
   Input,
   Loading,
   Select,
+  Timeline,
 } from '@alifd/next';
 import $ from 'jquery';
 import ReactJson from 'react-json-view';
@@ -216,12 +217,14 @@ class ApiForm extends React.Component {
               formsArray.map((item, index) => {
                 return (
                   <div key={'formDiv' + index} style={{ marginTop: 20 }}>
-                    {this.state.locale.prarmNameLabel + ': ' + item.get('name')}
                     <div style={{ width: '1000px', height:'220px' }}>
-                      <div style={{ float: 'left', border: '2px solid #cccccc', 
-                            width: '300px', height: '100%', padding: '5px' }}>
-                        Description:<br />
-                        {item.get('description')}
+                      <div style={{ float: 'left', border: '2px solid rgb(228 224 224)', 
+                            width: '400px', height: '100%', overflowY: 'auto', overflowX: 'hidden'}}>
+                        <Timeline>
+                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.prarmNameLabel} content={item.get('name')} state="process"/>
+                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.prarmPathLabel} content={item.get('paramType') + "#" + item.get('name')} state="process"/>
+                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.prarmDescriptionLabel} content={item.get('description')} state="process"/>
+                        </Timeline>
                       </div>
                       <div style={{float: "left"}}>
                         <Form.Item 
@@ -244,7 +247,7 @@ class ApiForm extends React.Component {
             <Form.Submit
               type={'primary'}
               validate
-              style={{ marginLeft: 20, marginTop: 20, width: '600px' }}
+              style={{ marginLeft: 20, marginTop: 20, width: '580px' }}
               onClick={ this.doTestApi.bind(this) }
             >
               {this.state.locale.doTestBtn}
@@ -291,7 +294,7 @@ class ApiForm extends React.Component {
       return (
         <Input.TextArea
           readOnly
-          style={{ marginLeft: 5, minWidth: '600px' }}
+          style={{ marginLeft: 5, minWidth: '580px' }}
           rows={10}
         />
       );
@@ -307,7 +310,7 @@ class ApiForm extends React.Component {
       }
       return (
         <ReactJson 
-        style={{ marginLeft: 5, minWidth: '600px' }}
+        style={{ marginLeft: 5, minWidth: '580px' }}
           name={false} 
           theme='apathy'
           iconStyle='square'
@@ -319,7 +322,7 @@ class ApiForm extends React.Component {
       return (
         <Input.TextArea
           readOnly
-          style={{ marginLeft: 5, minWidth: '600px' }}
+          style={{ marginLeft: 5, minWidth: '580px' }}
           rows={10}
           defaultValue={this.state.responseInfo}
         />
@@ -332,7 +335,7 @@ class ApiForm extends React.Component {
       return (
         <Input.TextArea
           readOnly
-          style={{ marginLeft: 5, minWidth: '600px' }}
+          style={{ marginLeft: 5, minWidth: '580px' }}
           rows={10}
         />
       );
@@ -343,7 +346,7 @@ class ApiForm extends React.Component {
       }
       return (
         <ReactJson 
-          style={{ marginLeft: 5, minWidth: '600px' }}
+          style={{ marginLeft: 5, minWidth: '580px' }}
           name={false} 
           theme='apathy'
           iconStyle='square'
@@ -354,7 +357,7 @@ class ApiForm extends React.Component {
     } catch (e) {
       return (
         <Input.TextArea
-          style={{ marginLeft: 5, minWidth: '600px' }}
+          style={{ marginLeft: 5, minWidth: '580px' }}
           rows={10}
           readOnly
           value={this.state.responseData}
@@ -526,7 +529,7 @@ class ApiForm extends React.Component {
       <Input.TextArea
         name={item.get('paramType') + '@@' + item.get('paramIndex') + '@@' + item.get('javaType') + "@@" + item.get('name')}
         className={'dubbo-doc-form-item-class'}
-        style={{ marginLeft: 5, width: '600px' }}
+        style={{ marginLeft: 5, width: '580px' }}
         rows={10}
         placeholder={item.get('example')}
         defaultValue={JSON.stringify(JSON.parse(item.get('subParamsJson')), null, 4)}

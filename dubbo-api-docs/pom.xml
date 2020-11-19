@@ -29,7 +29,7 @@
     <name>${project.artifactId}</name>
     <description>Dubbo interface documentation, testing tools</description>
     <properties>
-        <revision>2.7.9-SNAPSHOT</revision>
+        <revision>2.7.8-SNAPSHOT</revision>
         <project.build.jdkVersion>1.8</project.build.jdkVersion>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,7 +40,7 @@
         <maven-flatten-version>1.1.0</maven-flatten-version>
 
         <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
-        <dubbo-spring-boot.version>2.7.8</dubbo-spring-boot.version>
+        <dubbo.version>2.7.8</dubbo.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-collections.version>4.2</commons-collections.version>
         <disruptor.version>3.4.2</disruptor.version>
@@ -60,7 +60,7 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-parent</artifactId>
-                <version>${revision}</version>
+                <version>${dubbo.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -85,61 +85,61 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-nacos</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-consul</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-default</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-etcd3</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-multicast</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-multiple</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-redis</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-sofa</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-registry-zookeeper</artifactId>
-                <version>${project.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
@@ -152,7 +152,7 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
-                <version>${dubbo-spring-boot.version}</version>
+                <version>${dubbo.version}</version>
             </dependency>
 
             <dependency>
