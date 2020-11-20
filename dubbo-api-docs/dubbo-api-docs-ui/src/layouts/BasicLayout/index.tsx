@@ -52,7 +52,7 @@ export default function BasicLayout(props: {
     if(response && response != ''){
       const menuData = JSON.parse(response);
       menuData.sort((a,b) => {
-        return a.moduleChName > b.moduleChName;
+        return a.moduleDocName > b.moduleDocName;
       });
       for(let i = 0; i < menuData.length; i++){
         const menu = menuData[i];
@@ -60,7 +60,7 @@ export default function BasicLayout(props: {
           return a.apiName > b.apiName;
         });
         const menu2 = {
-          name: menu.moduleChName,
+          name: menu.moduleDocName,
           path: '',
           icon: 'cascades',
           children: new Array(),
@@ -69,7 +69,7 @@ export default function BasicLayout(props: {
         for(let j = 0; j < menuItems.length; j++){
           const menuItem = menuItems[j];
           const menuItem2 = {
-            name: menuItem.apiChName,
+            name: menuItem.apiDocName,
             path: `/apiForm?apiName=${menu.moduleClassName}.${menuItem.apiName}&dubboIp=${dubboIp}&dubboPort=${dubboPort}`,
           };
           menu2.children.push(menuItem2);

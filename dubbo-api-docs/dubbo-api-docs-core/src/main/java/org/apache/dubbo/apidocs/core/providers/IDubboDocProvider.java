@@ -16,8 +16,9 @@
  */
 package org.apache.dubbo.apidocs.core.providers;
 
+import org.apache.dubbo.apidocs.core.beans.ModuleCacheItem;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * The api used by Dubbo doc, get the parsed API information.
@@ -40,7 +41,7 @@ public interface IDubboDocProvider {
      * @param
      * @return java.lang.String
      */
-    List<Map<String, Object>> apiModuleListAndApiInfo();
+    List<ModuleCacheItem> apiModuleListAndApiInfo();
 
     /**
      * Get module information according to the complete class name of Dubbo provider interface.

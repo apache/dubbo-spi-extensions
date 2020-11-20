@@ -127,22 +127,22 @@ public class DubboGenericUtil {
      * @param: methodName
      * @param: async  Whether the provider is asynchronous is to directly return the {@link CompletableFuture}
      * returned by the provider, not to wrap it as {@link CompletableFuture}
-     * @param: prarmTypes
-     * @param: prarmValues
+     * @param: paramTypes
+     * @param: paramValues
      * @return java.util.concurrent.CompletableFuture<java.lang.Object>
      */
     public static CompletableFuture<Object> invoke(String address, String interfaceName,
-                                                  String methodName, boolean async, String[] prarmTypes,
-                                                  Object[] prarmValues) {
+                                                  String methodName, boolean async, String[] paramTypes,
+                                                  Object[] paramValues) {
         CompletableFuture future = null;
         ReferenceConfig<GenericService> reference = getReferenceConfig(address, interfaceName);
         if (null != reference) {
             GenericService genericService = reference.get();
             if (null != genericService) {
                 if(async){
-                    future = genericService.$invokeAsync(methodName, prarmTypes, prarmValues);
+                    future = genericService.$invokeAsync(methodName, paramTypes, paramValues);
                 } else {
-                    future = CompletableFuture.supplyAsync(() -> genericService.$invoke(methodName, prarmTypes, prarmValues), executor);
+                    future = CompletableFuture.supplyAsync(() -> genericService.$invoke(methodName, paramTypes, paramValues), executor);
                 }
             }
         }
@@ -155,18 +155,18 @@ public class DubboGenericUtil {
      * @param: address
      * @param: interfaceName
      * @param: methodName
-     * @param: prarmTypes
-     * @param: prarmValues
+     * @param: paramTypes
+     * @param: paramValues
      * @return java.lang.Object
      */
     public static Object invokeSync(String address, String interfaceName,
-                                                   String methodName, String[] prarmTypes,
-                                                   Object[] prarmValues) {
+                                                   String methodName, String[] paramTypes,
+                                                   Object[] paramValues) {
         ReferenceConfig<GenericService> reference = getReferenceConfig(address, interfaceName);
         if (null != reference) {
             GenericService genericService = reference.get();
             if (null != genericService) {
-                return genericService.$invoke(methodName, prarmTypes, prarmValues);
+                return genericService.$invoke(methodName, paramTypes, paramValues);
             }
         }
         return null;

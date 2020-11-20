@@ -128,10 +128,10 @@ class ApiForm extends React.Component {
           var formItem = new Map();
           formItem.set('name', paramItem.name);
           formItem.set('htmlType', paramItem.htmlType);
-          formItem.set('paramType', paramItem.prarmType);
-          formItem.set('javaType', paramItem.prarmType);
-          formItem.set('paramIndex', paramItem.prarmIndex);
-          formItem.set('nameCh', paramItem.nameCh);
+          formItem.set('paramType', paramItem.paramType);
+          formItem.set('javaType', paramItem.paramType);
+          formItem.set('paramIndex', paramItem.paramIndex);
+          formItem.set('docName', paramItem.docName);
           formItem.set('description', paramItem.description);
           formItem.set('example', paramItem.example);
           formItem.set('defaultValue', paramItem.defaultValue);
@@ -140,22 +140,22 @@ class ApiForm extends React.Component {
           formsArray.push(formItem);
         } else {
           // No htmltype, that's an object
-          var prarmInfoArray = paramItem.prarmInfo;
-          for(var j = 0; j < prarmInfoArray.length; j++){
-            var prarmInfoItem = prarmInfoArray[j];
+          var paramInfoArray = paramItem.paramInfo;
+          for(var j = 0; j < paramInfoArray.length; j++){
+            var paramInfoItem = paramInfoArray[j];
             var formItem = new Map();
-            formItem.set('name', prarmInfoItem.name);
-            formItem.set('htmlType', prarmInfoItem.htmlType);
-            formItem.set('paramType', paramItem.prarmType);
-            formItem.set('javaType', prarmInfoItem.javaType);
-            formItem.set('paramIndex', paramItem.prarmIndex);
-            formItem.set('nameCh', prarmInfoItem.nameCh);
-            formItem.set('description', prarmInfoItem.description);
-            formItem.set('example', prarmInfoItem.example);
-            formItem.set('defaultValue', prarmInfoItem.defaultValue);
-            formItem.set('allowableValues', prarmInfoItem.allowableValues);
-            formItem.set('subParamsJson', prarmInfoItem.subParamsJson);
-            formItem.set('required', prarmInfoItem.required);
+            formItem.set('name', paramInfoItem.name);
+            formItem.set('htmlType', paramInfoItem.htmlType);
+            formItem.set('paramType', paramItem.paramType);
+            formItem.set('javaType', paramInfoItem.javaType);
+            formItem.set('paramIndex', paramItem.paramIndex);
+            formItem.set('docName', paramInfoItem.docName);
+            formItem.set('description', paramInfoItem.description);
+            formItem.set('example', paramInfoItem.example);
+            formItem.set('defaultValue', paramInfoItem.defaultValue);
+            formItem.set('allowableValues', paramInfoItem.allowableValues);
+            formItem.set('subParamsJson', paramInfoItem.subParamsJson);
+            formItem.set('required', paramInfoItem.required);
             formsArray.push(formItem);
           }
         }
@@ -166,7 +166,7 @@ class ApiForm extends React.Component {
             <Form.Item
               key='formItemAsync'
               label={this.state.locale.isAsyncFormLabel}>
-              <Select 
+              <Select
                 id='formItemAsync'
                 name='formItemAsync'
                 style={{ marginLeft: 5, width: '100px' }}
@@ -218,21 +218,21 @@ class ApiForm extends React.Component {
                 return (
                   <div key={'formDiv' + index} style={{ marginTop: 20 }}>
                     <div style={{ width: '1000px', height:'220px' }}>
-                      <div style={{ float: 'left', border: '2px solid rgb(228 224 224)', 
+                      <div style={{ float: 'left', border: '2px solid rgb(228 224 224)',
                             width: '400px', height: '100%', overflowY: 'auto', overflowX: 'hidden'}}>
                         <Timeline>
-                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.prarmNameLabel} content={item.get('name')} state="process"/>
-                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.prarmPathLabel} content={item.get('paramType') + "#" + item.get('name')} state="process"/>
-                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.prarmDescriptionLabel} content={item.get('description')} state="process"/>
+                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.paramNameLabel} content={item.get('name')} state="process"/>
+                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.paramPathLabel} content={item.get('paramType') + "#" + item.get('name')} state="process"/>
+                          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.paramDescriptionLabel} content={item.get('description')} state="process"/>
                         </Timeline>
                       </div>
                       <div style={{float: "left"}}>
-                        <Form.Item 
-                          help={item.get('required') ? this.state.locale.prarmRequiredLabel : ''}
+                        <Form.Item
+                          help={item.get('required') ? this.state.locale.paramRequiredLabel : ''}
                           key={'formItem' + index}
                           required={item.get('required')}
                           style={{padding: '5px'}}
-                          label={item.get('nameCh')}
+                          label={item.get('docName')}
                         >
                         {
                           this.buildFormItem(item)
@@ -279,14 +279,14 @@ class ApiForm extends React.Component {
             </div>
           </div>
         </div>
-        
+
       );
     } else {
       return (
         <h1>{this.state.locale.LoadingLabel}</h1>
       );
     }
-    
+
   }
 
   buildResponseInfoView(){
@@ -309,13 +309,13 @@ class ApiForm extends React.Component {
         throw 'dataNotJson';
       }
       return (
-        <ReactJson 
+        <ReactJson
         style={{ marginLeft: 5, minWidth: '580px' }}
-          name={false} 
+          name={false}
           theme='apathy'
           iconStyle='square'
           displayDataTypes={true}
-          src={responseInfoJsonObj} 
+          src={responseInfoJsonObj}
         />
       );
     } catch (e) {
@@ -345,13 +345,13 @@ class ApiForm extends React.Component {
         throw 'dataNotJson';
       }
       return (
-        <ReactJson 
+        <ReactJson
           style={{ marginLeft: 5, minWidth: '580px' }}
-          name={false} 
+          name={false}
           theme='apathy'
           iconStyle='square'
           displayDataTypes={true}
-          src={this.state.responseData} 
+          src={this.state.responseData}
         />
       );
     } catch (e) {
@@ -388,9 +388,9 @@ class ApiForm extends React.Component {
     tempMap.forEach((value, key) => {
       var postDataItem = {};
       postData[key.split('@@')[1]] = postDataItem;
-      postDataItem['prarmType'] = key.split('@@')[0];
+      postDataItem['paramType'] = key.split('@@')[0];
       var postDataItemValue = {};
-      postDataItem['prarmValue'] = postDataItemValue;
+      postDataItem['paramValue'] = postDataItemValue;
       value.forEach(element => {
         var elementName = element.name.split('@@')[3];
         if(element.tagName == 'TEXTAREA'){
@@ -420,7 +420,7 @@ class ApiForm extends React.Component {
         registryCenterUrl: registryCenterUrl
       },
       headers: {
-        'Content-Type': 'application/json; charset=UTF-8' 
+        'Content-Type': 'application/json; charset=UTF-8'
       },
       data: JSON.stringify(postData),
     }).catch(error => {
@@ -437,10 +437,13 @@ class ApiForm extends React.Component {
   showApiInfo(){
     return (
       <div>
-        <h1>{this.state.locale.apiNameShowLabel}: <span>{this.state.apiInfoData.apiChName + '(' + this.state.apiName + ')'}</span></h1>
-        <h1>{this.state.locale.apiRespDecShowLabel}: <span>{this.state.apiInfoData.apiRespDec}</span></h1>
-        <h1>{this.state.locale.apiVersionShowLabel}: <span>{this.state.apiInfoData.apiVersion}</span></h1>
-        <h1>{this.state.locale.apiDescriptionShowLabel}: <span>{this.state.apiInfoData.apiDescription}</span></h1>
+        <Timeline>
+          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.apiNameShowLabel} content={this.state.apiInfoData.apiDocName + '(' + this.state.apiName + ')'} state="success" />
+          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.apiMethodParamInfoLabel} content={this.state.apiInfoData.methodParamInfo} state="success" />
+          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.apiRespDecShowLabel} content={this.state.apiInfoData.apiRespDec} state="success" />
+          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.apiVersionShowLabel} content={this.state.apiInfoData.apiVersion} state="success" />
+          <Timeline.Item style={{wordBreak: 'break-word'}} title={this.state.locale.apiDescriptionShowLabel} content={this.state.apiInfoData.apiDescription} state="success" />
+        </Timeline>
       </div>
     );
   }
@@ -508,7 +511,7 @@ class ApiForm extends React.Component {
 
   buildReactJson(item){
     return (
-      <ReactJson 
+      <ReactJson
         onEdit={o => {
           console.log(o);
         }}
@@ -517,9 +520,9 @@ class ApiForm extends React.Component {
         }}
         onDelete={o => {
           console.log(o);
-        }} 
-        name={false} 
-        src={[{'abc': 123, 'cde': 'wdsfasdf'},{'abc': 123, 'cde': 'wdsfasdf'}]} 
+        }}
+        name={false}
+        src={[{'abc': 123, 'cde': 'wdsfasdf'},{'abc': 123, 'cde': 'wdsfasdf'}]}
       />
     )
   }
@@ -550,7 +553,7 @@ class ApiForm extends React.Component {
       dataSource.push(dsItem);
     }
     return (
-      <Select 
+      <Select
         name={item.get('paramType') + '@@' + item.get('paramIndex') + '@@' + item.get('javaType') + "@@" + item.get('name')}
         className={'dubbo-doc-form-item-class'}
         style={{ marginLeft: 5, width: '400px' }}
@@ -572,7 +575,7 @@ class ApiForm extends React.Component {
         break;
       case 'NUMBER_INTEGER':
         return this.buildNumberInteger(item);
-        break;  
+        break;
       case 'NUMBER_DECIMAL':
         return this.buildNumberDecimal(item);
         break;
@@ -608,7 +611,7 @@ class ApiForm extends React.Component {
           </div>
         </Loading>
       </div>
-     
+
     );
   }
 };

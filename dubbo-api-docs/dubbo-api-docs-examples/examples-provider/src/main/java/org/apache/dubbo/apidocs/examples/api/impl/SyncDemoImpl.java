@@ -56,13 +56,13 @@ public class SyncDemoImpl implements ISyncDemo {
 
     @ApiDoc(value = "request and response parameters are Strings", responseClassDescription="A string")
     @Override
-    public String demoApi2(@RequestParam(value = "Parameter 1", required = true) String prarm1, String prarm2) {
+    public String demoApi2(@RequestParam(value = "Parameter 1", required = true) String param1, String param2) {
         log.info(" called demoApi2");
         return "demoApi2";
     }
 
     @Override
-    public String demoApi3(String prarm1) {
+    public String demoApi3(String param1) {
         return null;
     }
 

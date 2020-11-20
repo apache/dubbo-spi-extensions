@@ -39,7 +39,7 @@ public class ParamBean {
     /**
      * parameter name, for display.
      */
-    private String nameCh;
+    private String docName;
 
     /**
      * required.

@@ -16,6 +16,9 @@
  */
 package org.apache.dubbo.apidocs.core;
 
+import org.apache.dubbo.apidocs.core.beans.ApiCacheItem;
+import org.apache.dubbo.apidocs.core.beans.ApiParamsCacheItem;
+import org.apache.dubbo.apidocs.core.beans.ModuleCacheItem;
 import org.apache.dubbo.apidocs.core.beans.HtmlTypeEnum;
 import org.apache.dubbo.apidocs.core.beans.ParamBean;
 import org.apache.dubbo.apidocs.core.providers.DubboDocProviderImpl;
@@ -44,7 +47,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,19 +103,19 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 DubboService dubboService = apiModuleClass.getAnnotation(DubboService.class);
                 async = dubboService.async();
             }
-            Map<String, Object> moduleCacheItem = new HashMap<>(4);
+            ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
             //module name
-            moduleCacheItem.put("moduleChName", moduleAnn.value());
+            moduleCacheItem.setModuleDocName(moduleAnn.value());
             //interface name containing package path
-            moduleCacheItem.put("moduleClassName", moduleAnn.apiInterface().getCanonicalName());
+            moduleCacheItem.setModuleClassName(moduleAnn.apiInterface().getCanonicalName());
             //module version
-            moduleCacheItem.put("moduleVersion", moduleAnn.version());
+            moduleCacheItem.setModuleVersion(moduleAnn.version());
 
             Method[] apiModuleMethods = apiModuleClass.getMethods();
             // API basic information list in module cache
-            List<Map<String, Object>> moduleApiList = new ArrayList<>(apiModuleMethods.length);
-            moduleCacheItem.put("moduleApiList", moduleApiList);
+            List<ApiCacheItem> moduleApiList = new ArrayList<>(apiModuleMethods.length);
+            moduleCacheItem.setModuleApiList(moduleApiList);
             for (Method method : apiModuleMethods) {
                 if (method.isAnnotationPresent(ApiDoc.class)) {
                     processApiDocAnnotation(method, moduleApiList, moduleAnn, async, moduleCacheItem);
@@ -123,48 +125,53 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         log.info("================= Dubbo API Docs-- doc annotations scanning and processing completed ================");
     }
 
-    private void processApiDocAnnotation(Method method, List<Map<String, Object>> moduleApiList, ApiModule moduleAnn,
-                                         boolean async, Map<String, Object> moduleCacheItem) {
+    private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
+                                         boolean async, ModuleCacheItem moduleCacheItem) {
         ApiDoc dubboApi = method.getAnnotation(ApiDoc.class);
 
         // API basic information in API list in module
-        Map<String, Object> apiListItem = new HashMap<>(4);
+        ApiCacheItem apiListItem = new ApiCacheItem();
         moduleApiList.add(apiListItem);
         //API method name
-        apiListItem.put("apiName", method.getName());
+        apiListItem.setApiName(method.getName());
         //API name
-        apiListItem.put("apiChName", dubboApi.value());
+        apiListItem.setApiDocName(dubboApi.value());
         // API description
-        apiListItem.put("description", dubboApi.description());
+        apiListItem.setDescription(dubboApi.description());
         //API version
-        apiListItem.put("apiVersion", dubboApi.version());
+        apiListItem.setApiVersion(dubboApi.version());
         //Description of API return data
-        apiListItem.put("apiRespDec", dubboApi.responseClassDescription());
+        apiListItem.setApiRespDec(dubboApi.responseClassDescription());
 
         // Interface parameters and response information
-        Map<String, Object> apiParamsAndResp = new HashMap<>(2);
+        ApiCacheItem apiParamsAndResp = new ApiCacheItem();
         DubboApiDocsCache.addApiParamsAndResp(
                 moduleAnn.apiInterface().getCanonicalName() + "." + method.getName(), apiParamsAndResp);
 
         Class<?>[] argsClass = method.getParameterTypes();
         Annotation[][] argsAnns = method.getParameterAnnotations();
         Parameter[] parameters = method.getParameters();
-        List<Map<String, Object>> paramList = new ArrayList<>(argsClass.length);
-        apiParamsAndResp.put("async", async);
-        apiParamsAndResp.put("apiName", method.getName());
-        apiParamsAndResp.put("apiChName", dubboApi.value());
-        apiParamsAndResp.put("apiVersion", dubboApi.version());
-        apiParamsAndResp.put("apiRespDec", dubboApi.responseClassDescription());
-        apiParamsAndResp.put("apiModelClass", moduleCacheItem.get("moduleClassName"));
-        apiParamsAndResp.put("params", paramList);
-        apiParamsAndResp.put("response", ClassTypeUtil.calss2Json(method.getGenericReturnType(), method.getReturnType()));
+        List<ApiParamsCacheItem> paramList = new ArrayList<>(argsClass.length);
+        apiParamsAndResp.setAsync(async);
+        apiParamsAndResp.setApiName(method.getName());
+        apiParamsAndResp.setApiDocName(dubboApi.value());
+        apiParamsAndResp.setApiVersion(dubboApi.version());
+        apiParamsAndResp.setApiRespDec(dubboApi.responseClassDescription());
+        apiParamsAndResp.setApiModelClass(moduleCacheItem.getModuleClassName());
+        apiParamsAndResp.setParams(paramList);
+        apiParamsAndResp.setResponse(ClassTypeUtil.calss2Json(method.getGenericReturnType(), method.getReturnType()));
+        StringBuilder methodParamInfoSb = new StringBuilder();
         for (int i = 0; i < argsClass.length; i++) {
             Class<?> argClass = argsClass[i];
+            methodParamInfoSb.append("[").append(i).append("]").append(argClass.getCanonicalName());
+            if (i + 1 < argsClass.length) {
+                methodParamInfoSb.append(" | ");
+            }
             Annotation[] argAnns = argsAnns[i];
-            Map<String, Object> prarmListItem = new HashMap<>(2);
-            paramList.add(prarmListItem);
-            prarmListItem.put("prarmType", argClass.getCanonicalName());
-            prarmListItem.put("prarmIndex", i);
+            ApiParamsCacheItem paramListItem = new ApiParamsCacheItem();
+            paramList.add(paramListItem);
+            paramListItem.setParamType(argClass.getCanonicalName());
+            paramListItem.setParamIndex(i);
             RequestParam requestParam = null;
             // Handling @RequestParam annotations on parameters
             for (Annotation ann : argAnns) {
@@ -177,27 +184,27 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 // Not a basic type, handling properties in method parameters
                 List<ParamBean> apiParamsList = processField(argClass);
                 if (apiParamsList != null && !apiParamsList.isEmpty()) {
-                    prarmListItem.put("prarmInfo", apiParamsList);
+                    paramListItem.setParamInfo(apiParamsList);
                 }
             } else {
                 // Is the basic type
                 Parameter methodParameter = parameters[i];
-                prarmListItem.put("name", methodParameter.getName());
-                prarmListItem.put("htmlType", paramBean.getHtmlType().name());
-                prarmListItem.put("allowableValues", paramBean.getAllowableValues());
+                paramListItem.setName(methodParameter.getName());
+                paramListItem.setHtmlType(paramBean.getHtmlType().name());
+                paramListItem.setAllowableValues(paramBean.getAllowableValues());
                 if (requestParam != null) {
-
                     // Handling requestparam annotations on parameters
-                    prarmListItem.put("nameCh", requestParam.value());
-                    prarmListItem.put("description", requestParam.description());
-                    prarmListItem.put("example", requestParam.example());
-                    prarmListItem.put("defaultValue", requestParam.defaultValue());
-                    prarmListItem.put("required", requestParam.required());
+                    paramListItem.setDocName(requestParam.value());
+                    paramListItem.setDescription(requestParam.description());
+                    paramListItem.setExample(requestParam.example());
+                    paramListItem.setDefaultValue(requestParam.defaultValue());
+                    paramListItem.setRequired(requestParam.required());
                 } else {
-                    prarmListItem.put("required", false);
+                    paramListItem.setRequired(false);
                 }
             }
         }
+        apiParamsAndResp.setMethodParamInfo(methodParamInfoSb.toString());
     }
 
     /**
@@ -217,7 +224,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             if (field.isAnnotationPresent(RequestParam.class)) {
                 // Handling @RequestParam annotations on properties
                 requestParam = field.getAnnotation(RequestParam.class);
-                paramBean.setNameCh(requestParam.value());
+                paramBean.setDocName(requestParam.value());
                 paramBean.setRequired(requestParam.required());
                 paramBean.setDescription(requestParam.description());
                 paramBean.setExample(requestParam.example());
@@ -246,63 +253,63 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
      *
      * @param classType  classType
      * @param annotation annotation
-     * @param prarm      prarm
+     * @param param      param
      * @return org.apache.dubbo.apidocs.core.beans.ParamBean
      */
-    private ParamBean processHtmlType(Class<?> classType, RequestParam annotation, ParamBean prarm) {
-        if (prarm == null) {
-            prarm = new ParamBean();
+    private ParamBean processHtmlType(Class<?> classType, RequestParam annotation, ParamBean param) {
+        if (param == null) {
+            param = new ParamBean();
         }
         if (annotation != null) {
-            prarm.setAllowableValues(annotation.allowableValues());
+            param.setAllowableValues(annotation.allowableValues());
         }
         // Is there any allowed values
-        boolean hasAllowableValues = (prarm.getAllowableValues() != null && prarm.getAllowableValues().length > 0);
+        boolean hasAllowableValues = (param.getAllowableValues() != null && param.getAllowableValues().length > 0);
         // Processed or not
         boolean processed = false;
         if (Integer.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
+            param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
         } else if (Byte.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.TEXT_BYTE);
+            param.setHtmlType(HtmlTypeEnum.TEXT_BYTE);
             processed = true;
         } else if (Long.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
+            param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
         } else if (Double.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.NUMBER_DECIMAL);
+            param.setHtmlType(HtmlTypeEnum.NUMBER_DECIMAL);
             processed = true;
         } else if (Float.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.NUMBER_DECIMAL);
+            param.setHtmlType(HtmlTypeEnum.NUMBER_DECIMAL);
             processed = true;
         } else if (String.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.TEXT);
+            param.setHtmlType(HtmlTypeEnum.TEXT);
             processed = true;
         } else if (Character.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.TEXT_CHAR);
+            param.setHtmlType(HtmlTypeEnum.TEXT_CHAR);
             processed = true;
         } else if (Short.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
+            param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
         }
         if (processed) {
             // Processed, time to return
             if (hasAllowableValues) {
                 // Allowed values has value, change to select
-                prarm.setHtmlType(HtmlTypeEnum.SELECT);
+                param.setHtmlType(HtmlTypeEnum.SELECT);
             }
-            return prarm;
+            return param;
         }
 
         // haven't dealt with it. Go on
         if (Boolean.class.isAssignableFrom(classType)) {
-            prarm.setHtmlType(HtmlTypeEnum.SELECT);
+            param.setHtmlType(HtmlTypeEnum.SELECT);
             // Boolean can only be true / false. No matter what the previous allowed value is, it is forced to replace
-            prarm.setAllowableValues(new String[]{"true", "false"});
+            param.setAllowableValues(new String[]{"true", "false"});
             processed = true;
         } else if (Enum.class.isAssignableFrom(classType)) {
             // process enum
-            prarm.setHtmlType(HtmlTypeEnum.SELECT);
+            param.setHtmlType(HtmlTypeEnum.SELECT);
             if (!hasAllowableValues) {
                 // If there is no optional value, it is taken from the enumeration.
                 //TODO If there is an optional value, it is necessary
@@ -318,12 +325,12 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     log.error("", e);
                 }
-                prarm.setAllowableValues(enumAllowableValues);
+                param.setAllowableValues(enumAllowableValues);
             }
             processed = true;
         }
         if (processed) {
-            return prarm;
+            return param;
         }
         return null;
     }

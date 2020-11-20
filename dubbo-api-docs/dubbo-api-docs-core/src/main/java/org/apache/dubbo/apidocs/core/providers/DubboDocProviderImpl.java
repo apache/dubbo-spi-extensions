@@ -17,12 +17,12 @@
 package org.apache.dubbo.apidocs.core.providers;
 
 import org.apache.dubbo.apidocs.core.DubboApiDocsCache;
+import org.apache.dubbo.apidocs.core.beans.ModuleCacheItem;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The api implementation of Dubbo doc.
@@ -39,7 +39,7 @@ public class DubboDocProviderImpl implements IDubboDocProvider {
     }
 
     @Override
-    public List<Map<String, Object>> apiModuleListAndApiInfo() {
+    public List<ModuleCacheItem> apiModuleListAndApiInfo() {
         return DubboApiDocsCache.getAllApiModuleInfo();
     }
 

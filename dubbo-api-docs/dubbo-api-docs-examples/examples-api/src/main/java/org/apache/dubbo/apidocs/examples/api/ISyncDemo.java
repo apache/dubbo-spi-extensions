@@ -45,19 +45,19 @@ public interface ISyncDemo {
     /**
      * request and response parameters are Strings
      * @Date 2020/2/4 0:02
-     * @param: prarm1
-     * @param: prarm2
+     * @param: param1
+     * @param: param2
      * @return java.lang.String
      */
-    String demoApi2(String prarm1, String prarm2);
+    String demoApi2(String param1, String param2);
 
     /**
      * Without Dubbo doc annotation, no document will be generated
      * @Date 2020/2/4 0:22
-     * @param: prarm1
+     * @param: param1
      * @return java.lang.String
      */
-    String demoApi3(String prarm1);
+    String demoApi3(String param1);
 
     /**
      * Nonparametric method with Dubbo doc annotation
