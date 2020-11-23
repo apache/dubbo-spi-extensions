@@ -21,6 +21,8 @@ import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.rpc.service.GenericService;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -93,6 +95,16 @@ public class DubboGenericUtil {
     }
 
     /**
+     * remove cached registry information.
+     * 2020/11/20 17:36
+     * @param address Address of Registration Center
+     * @return void
+     */
+    private static void removeRegistryConfig(String address) {
+        registryConfigCache.remove(address);
+    }
+
+    /**
      * Get proxy object for dubbo service.
      * 2019/9/19 17:43
      * @param: address  address Address of Registration Center
@@ -120,6 +132,18 @@ public class DubboGenericUtil {
     }
 
     /**
+     * remove cached proxy object.
+     * 2020/11/20 17:38
+     * @param address
+     * @param interfaceName
+     * @return void
+     */
+    private static void removeReferenceConfig(String address, String interfaceName) {
+        removeRegistryConfig(address);
+        referenceCache.remove(address + "/" + interfaceName);
+    }
+
+    /**
      * Call duboo provider and return {@link CompletableFuture}.
      * 2020/3/1 14:55
      * @param: address
@@ -139,12 +163,18 @@ public class DubboGenericUtil {
         if (null != reference) {
             GenericService genericService = reference.get();
             if (null != genericService) {
-                if(async){
+                if (async) {
                     future = genericService.$invokeAsync(methodName, paramTypes, paramValues);
                 } else {
                     future = CompletableFuture.supplyAsync(() -> genericService.$invoke(methodName, paramTypes, paramValues), executor);
                 }
             }
+            future.exceptionally(ex -> {
+                if (StringUtils.contains(ex.toString(), "Failed to invoke remote method")) {
+                    removeReferenceConfig(address, interfaceName);
+                }
+                return ex;
+            });
         }
         return future;
     }
@@ -165,8 +195,16 @@ public class DubboGenericUtil {
         ReferenceConfig<GenericService> reference = getReferenceConfig(address, interfaceName);
         if (null != reference) {
             GenericService genericService = reference.get();
-            if (null != genericService) {
-                return genericService.$invoke(methodName, paramTypes, paramValues);
+            try {
+                if (null != genericService) {
+                    return genericService.$invoke(methodName, paramTypes, paramValues);
+                }
+            } catch (Exception ex) {
+                if (StringUtils.contains(ex.toString(), "Failed to invoke remote method")) {
+                    removeReferenceConfig(address, interfaceName);
+                } else {
+                    throw ex;
+                }
             }
         }
         return null;
