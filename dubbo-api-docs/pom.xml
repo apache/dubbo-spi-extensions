@@ -21,6 +21,7 @@
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
         <version>19</version>
+        <relativePath/>
     </parent>
     <groupId>org.apache.dubbo</groupId>
     <artifactId>dubbo-api-docs</artifactId>
@@ -46,6 +47,9 @@
         <disruptor.version>3.4.2</disruptor.version>
         <springfox.version>3.0.0</springfox.version>
         <nacos.version>1.4.0</nacos.version>
+
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <spring-cloud-alibaba-dependencies.version>2.2.3.RELEASE</spring-cloud-alibaba-dependencies.version>
     </properties>
 
     <dependencyManagement>
