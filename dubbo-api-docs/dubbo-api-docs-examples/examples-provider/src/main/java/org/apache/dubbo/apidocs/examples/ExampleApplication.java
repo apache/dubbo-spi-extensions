@@ -24,8 +24,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 /**
  * example dubbo provider service application.
- * @author klw(213539@qq.com)
- * 2020/10/30 14:54
  */
 @SpringBootApplication
 @EnableDubbo(scanBasePackages = {"org.apache.dubbo.apidocs.examples.api"})

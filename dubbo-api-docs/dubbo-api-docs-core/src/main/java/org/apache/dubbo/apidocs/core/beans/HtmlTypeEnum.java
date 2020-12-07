@@ -18,8 +18,6 @@ package org.apache.dubbo.apidocs.core.beans;
 
 /**
  * html type enum.
- * @author klw(213539@qq.com)
- * 2020/10/29 16:56
  */
 public enum HtmlTypeEnum {
 

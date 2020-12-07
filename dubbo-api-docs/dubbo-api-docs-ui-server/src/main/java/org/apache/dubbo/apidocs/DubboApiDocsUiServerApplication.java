@@ -23,8 +23,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Start Dubbo doc ui server.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:41
  */
 @SpringBootApplication
 public class DubboApiDocsUiServerApplication {

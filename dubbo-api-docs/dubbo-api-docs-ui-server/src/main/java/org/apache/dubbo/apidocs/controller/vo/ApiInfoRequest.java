@@ -22,8 +22,6 @@ import lombok.Setter;
 
 /**
  * Obtain the API module list and the request parameters of the API parameter information interface.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:45
  */
 @Getter
 @Setter

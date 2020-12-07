@@ -22,8 +22,6 @@ import java.util.List;
 
 /**
  * The api used by Dubbo doc, get the parsed API information.
- * @author klw(213539@qq.com)
- * 2020/10/29 16:57
  */
 public interface IDubboDocProvider {
 

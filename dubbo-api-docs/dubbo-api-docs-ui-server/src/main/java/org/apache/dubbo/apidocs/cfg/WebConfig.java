@@ -24,8 +24,6 @@ import reactor.core.publisher.Mono;
 
 /**
  * web config.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:44
  */
 @Component
 public class WebConfig implements WebFilter {

@@ -52,9 +52,6 @@ import java.util.Map;
 
 /**
  * Scan and process dubbo doc annotations.
- *
- * @author klw(213539 @ qq.com)
- * 2020/10/29 17:55
  */
 @Slf4j
 @Import({DubboDocProviderImpl.class})

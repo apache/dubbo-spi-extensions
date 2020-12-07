@@ -8,9 +8,6 @@ import java.util.Map;
 
 /**
  * api cache item.
- *
- * @author klw(213539 @ qq.com)
- * @date 2020/11/20 16:22
  */
 @Getter
 @Setter

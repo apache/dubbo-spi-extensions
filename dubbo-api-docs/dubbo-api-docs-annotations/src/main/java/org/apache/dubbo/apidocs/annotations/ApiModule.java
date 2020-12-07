@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 
 /**
  * api module, used to mark the purpose of an interface class module.
- * @author klw(213539@qq.com)
- * 2020/10/29 14:51
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})

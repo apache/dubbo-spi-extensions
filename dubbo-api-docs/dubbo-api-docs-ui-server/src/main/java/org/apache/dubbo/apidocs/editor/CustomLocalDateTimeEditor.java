@@ -25,8 +25,6 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * LocalDateTime editor for controller.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:59
  */
 public class CustomLocalDateTimeEditor extends PropertyEditorSupport {
 

@@ -24,8 +24,6 @@ import java.util.List;
 
 /**
  * Parameter bean corresponding to {@link org.apache.dubbo.apidocs.annotations.RequestParam}, for caching.
- * @author klw(213539@qq.com)
- * 2020/10/29 17:32
  */
 @Getter
 @Setter

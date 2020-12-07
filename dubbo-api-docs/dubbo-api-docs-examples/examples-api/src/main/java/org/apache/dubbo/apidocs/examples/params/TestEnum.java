@@ -18,8 +18,6 @@ package org.apache.dubbo.apidocs.examples.params;
 
 /**
  * Enumeration for test.
- * @author klw(213539@qq.com)
- * 2020/10/30 9:48
  */
 public enum TestEnum {
 

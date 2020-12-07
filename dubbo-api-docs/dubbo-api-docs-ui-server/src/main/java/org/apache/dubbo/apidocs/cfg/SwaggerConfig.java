@@ -31,8 +31,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 
 /**
  * swagger config.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:42
  */
 @Configuration
 @EnableSwagger2

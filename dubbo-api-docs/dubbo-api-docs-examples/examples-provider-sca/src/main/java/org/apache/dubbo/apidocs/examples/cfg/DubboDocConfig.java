@@ -23,8 +23,6 @@ import org.springframework.context.annotation.Profile;
 
 /**
  * dubbo doc config.
- * @author klw(213539@qq.com)
- * 2020/12/4 17:52
  */
 @Configuration
 // Enable dubbo api doc

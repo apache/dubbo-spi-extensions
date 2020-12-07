@@ -31,8 +31,6 @@ import java.util.concurrent.Executors;
 
 /**
  * Dubbo operation related tool class.
- * @author klw(213539@qq.com)
- * 2020/11/14 21:00
  */
 public class DubboGenericUtil {
 
@@ -67,7 +65,7 @@ public class DubboGenericUtil {
         // T (number of threads) = N (number of server cores) * u (expected CPU utilization) * (1 + E (waiting time) / C (calculation time))
         executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 40 * (1 + 5 / 2));
         application = new ApplicationConfig();
-        application.setName("alita-dubbo-debug-tool");
+        application.setName("dubbo-api-docs");
         registryConfigCache = new ConcurrentHashMap<>();
         referenceCache = new ConcurrentHashMap<>();
     }

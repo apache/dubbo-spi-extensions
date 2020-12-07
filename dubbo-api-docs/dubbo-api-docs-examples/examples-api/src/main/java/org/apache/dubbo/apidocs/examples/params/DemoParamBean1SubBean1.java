@@ -23,8 +23,6 @@ import lombok.Setter;
 
 /**
  * Attribute bean in DemoParamBean1.
- * @author klw(213539@qq.com)
- * 2020/10/30 9:49
  */
 @Getter
 @Setter

@@ -26,8 +26,6 @@ import java.util.Map;
 
 /**
  * demo response bean 1.
- * @author klw(213539@qq.com)
- * 2020/10/30 9:56
  */
 @Getter
 @Setter

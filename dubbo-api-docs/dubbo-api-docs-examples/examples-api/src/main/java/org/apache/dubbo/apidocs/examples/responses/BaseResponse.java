@@ -22,8 +22,6 @@ import lombok.ToString;
 
 /**
  * BaseResponse.
- * @author klw(213539@qq.com)
- * 2020/10/30 9:46
  */
 @Getter
 @Setter

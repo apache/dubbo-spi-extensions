@@ -32,9 +32,6 @@ import org.apache.dubbo.apidocs.annotations.*;
 
 /**
  * Java class tool class, special for Dubbo doc.
- *
- * @author klw(213539 @ qq.com)
- * 2020/10/29 18:08
  */
 @Slf4j
 public class ClassTypeUtil {

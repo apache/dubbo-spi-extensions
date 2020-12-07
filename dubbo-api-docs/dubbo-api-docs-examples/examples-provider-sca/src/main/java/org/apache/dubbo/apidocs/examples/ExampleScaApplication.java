@@ -25,8 +25,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * example dubbo provider service using spring-cloud-starter-dubbo.
- * @author klw(213539@qq.com)
- * `2020/12/4` 17:48
  */
 @SpringBootApplication
 @EnableDiscoveryClient

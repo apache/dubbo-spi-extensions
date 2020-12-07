@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 
 /**
  * Dimension response property.
- * @author klw(213539@qq.com)
- * 2020/10/29 14:50
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})

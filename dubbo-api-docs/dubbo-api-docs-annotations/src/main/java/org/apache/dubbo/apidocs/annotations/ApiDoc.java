@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 
 /**
  * dubbo api docs annotation,use to label of api.
- * @author klw(213539@qq.com)
- * 2020/10/29 14:46
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})

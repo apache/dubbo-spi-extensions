@@ -7,9 +7,6 @@ import java.util.List;
 
 /**
  * api params cache item.
- *
- * @author klw(213539 @ qq.com)
- * @date 2020/11/20 16:46
  */
 @Getter
 @Setter

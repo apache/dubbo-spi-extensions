@@ -24,9 +24,6 @@ import lombok.Setter;
 
 /**
  * DemoParamBean4.
- *
- * @author klw(213539 @ qq.com)
- * @date 2020/11/13 9:56
  */
 @Getter
 @Setter

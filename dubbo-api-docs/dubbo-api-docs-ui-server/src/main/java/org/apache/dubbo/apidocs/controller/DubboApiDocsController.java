@@ -45,10 +45,8 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * dubbo doc ui server api.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:23
  */
-@Api(tags = {"alita-restful-API--demoAPI"})
+@Api(tags = {"dubbo doc ui server api"})
 @RestController
 @Slf4j
 @RequestMapping("/api")

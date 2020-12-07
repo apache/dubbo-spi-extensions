@@ -26,8 +26,6 @@ import java.util.List;
 
 /**
  * The api implementation of Dubbo doc.
- * @author klw(213539@qq.com)
- * 2020/10/29 17:38
  */
 @Slf4j
 @DubboService

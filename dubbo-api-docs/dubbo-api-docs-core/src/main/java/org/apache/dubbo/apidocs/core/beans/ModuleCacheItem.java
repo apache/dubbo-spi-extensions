@@ -7,9 +7,6 @@ import java.util.List;
 
 /**
  * api module cache item.
- *
- * @author klw(213539 @ qq.com)
- * @date 2020/11/20 15:21
  */
 @Getter
 @Setter

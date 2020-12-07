@@ -33,8 +33,6 @@ import java.util.concurrent.Executors;
 
 /**
  * Asynchronous demo implementation.
- * @author klw(213539@qq.com)
- * 2020/12/4 17:53
  */
 @DubboService(async = true)
 @ApiModule(value = "Asynchronous demo", apiInterface = IAsyncDemo.class)

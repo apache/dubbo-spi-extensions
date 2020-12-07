@@ -28,8 +28,6 @@ import java.util.Map;
 
 /**
  * synchronization demo.
- * @author klw(213539@qq.com)
- * 2020/10/30 10:13
  */
 public interface ISyncDemo {
 

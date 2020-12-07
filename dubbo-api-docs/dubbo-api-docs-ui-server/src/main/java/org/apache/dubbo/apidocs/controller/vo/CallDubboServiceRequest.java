@@ -23,8 +23,6 @@ import lombok.Setter;
 
 /**
  * Call Dubbo api to request parameters.
- * @author klw(213539@qq.com)
- * 2020/11/14 20:46
  */
 @Getter
 @Setter
