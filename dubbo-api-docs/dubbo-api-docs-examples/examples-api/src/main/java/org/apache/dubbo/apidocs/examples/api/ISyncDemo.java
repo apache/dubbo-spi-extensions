@@ -42,7 +42,6 @@ public interface ISyncDemo {
 
     /**
      * request and response parameters are Strings
-     * @Date 2020/2/4 0:02
      * @param: param1
      * @param: param2
      * @return java.lang.String
@@ -51,7 +50,6 @@ public interface ISyncDemo {
 
     /**
      * Without Dubbo doc annotation, no document will be generated
-     * @Date 2020/2/4 0:22
      * @param: param1
      * @return java.lang.String
      */
@@ -59,7 +57,6 @@ public interface ISyncDemo {
 
     /**
      * Nonparametric method with Dubbo doc annotation
-     * @Date 2020/2/4 0:02
      * @param:
      * @return java.lang.String
      */

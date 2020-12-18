@@ -16,16 +16,19 @@
  */
 package org.apache.dubbo.apidocs.examples.params;
 
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * test.
  */
-@Getter
-@Setter
 public class TestBean {
 
     private DemoParamBean1 demoParamBean1;
 
+    public DemoParamBean1 getDemoParamBean1() {
+        return demoParamBean1;
+    }
+
+    public void setDemoParamBean1(DemoParamBean1 demoParamBean1) {
+        this.demoParamBean1 = demoParamBean1;
+    }
 }

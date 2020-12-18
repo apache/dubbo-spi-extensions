@@ -28,7 +28,8 @@ import org.apache.dubbo.apidocs.examples.responses.BaseResponse;
 import org.apache.dubbo.apidocs.examples.responses.DemoRespBean1;
 import org.apache.dubbo.config.annotation.DubboService;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,11 @@ import java.util.Map;
 /**
  * Synchronous demo implementation.
  */
-@Slf4j
 @DubboService
 @ApiModule(value = "Synchronous demo", apiInterface = ISyncDemo.class)
 public class SyncDemoImpl implements ISyncDemo {
+
+    private static final Logger log = LoggerFactory.getLogger(SyncDemoImpl.class);
 
     @ApiDoc("request and response parameters are beans")
     @Override

@@ -19,18 +19,20 @@ package org.apache.dubbo.apidocs.examples.params;
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * DemoParamBean4.
  */
-@Getter
-@Setter
 public class DemoParamBean4 {
 
     @RequestParam("a string")
     @ResponseProperty("result a string")
     private String bean4Str;
 
+    public String getBean4Str() {
+        return bean4Str;
+    }
+
+    public void setBean4Str(String bean4Str) {
+        this.bean4Str = bean4Str;
+    }
 }

@@ -19,14 +19,9 @@ package org.apache.dubbo.apidocs.examples.params;
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * DemoParamBean3.
  */
-@Getter
-@Setter
 public class DemoParamBean3 {
 
     @RequestParam("a string")
@@ -37,4 +32,19 @@ public class DemoParamBean3 {
     @ResponseProperty("result a bean4")
     private DemoParamBean4 bean4;
 
+    public String getString() {
+        return string;
+    }
+
+    public void setString(String string) {
+        this.string = string;
+    }
+
+    public DemoParamBean4 getBean4() {
+        return bean4;
+    }
+
+    public void setBean4(DemoParamBean4 bean4) {
+        this.bean4 = bean4;
+    }
 }

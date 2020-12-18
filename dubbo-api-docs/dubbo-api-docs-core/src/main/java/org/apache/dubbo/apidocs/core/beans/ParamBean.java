@@ -17,16 +17,12 @@
 package org.apache.dubbo.apidocs.core.beans;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
 /**
  * Parameter bean corresponding to {@link org.apache.dubbo.apidocs.annotations.RequestParam}, for caching.
  */
-@Getter
-@Setter
 public class ParamBean {
 
     /**
@@ -88,4 +84,91 @@ public class ParamBean {
      */
     private String subParamsJson;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDocName() {
+        return docName;
+    }
+
+    public void setDocName(String docName) {
+        this.docName = docName;
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getJavaType() {
+        return javaType;
+    }
+
+    public void setJavaType(String javaType) {
+        this.javaType = javaType;
+    }
+
+    public HtmlTypeEnum getHtmlType() {
+        return htmlType;
+    }
+
+    public void setHtmlType(HtmlTypeEnum htmlType) {
+        this.htmlType = htmlType;
+    }
+
+    public String[] getAllowableValues() {
+        return allowableValues;
+    }
+
+    public void setAllowableValues(String[] allowableValues) {
+        this.allowableValues = allowableValues;
+    }
+
+    public List<ParamBean> getSubParams() {
+        return subParams;
+    }
+
+    public void setSubParams(List<ParamBean> subParams) {
+        this.subParams = subParams;
+    }
+
+    public String getSubParamsJson() {
+        return subParamsJson;
+    }
+
+    public void setSubParamsJson(String subParamsJson) {
+        this.subParamsJson = subParamsJson;
+    }
 }

@@ -18,17 +18,12 @@ package org.apache.dubbo.apidocs.examples.params;
 
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * demo request bean.
  */
-@Getter
-@Setter
 public class DemoParamBean1 {
 
     @RequestParam(value = "Name", description = "说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试说明测试" +
@@ -76,5 +71,117 @@ public class DemoParamBean1 {
 
     @RequestParam("Object")
     private Object obj1;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Boolean getMan() {
+        return man;
+    }
+
+    public void setMan(Boolean man) {
+        this.man = man;
+    }
+
+    public List<DemoParamBean1SubBean1> getSubBean() {
+        return subBean;
+    }
+
+    public void setSubBean(List<DemoParamBean1SubBean1> subBean) {
+        this.subBean = subBean;
+    }
+
+    public Map<String, DemoParamBean1SubBean1> getSubBean2() {
+        return subBean2;
+    }
+
+    public void setSubBean2(Map<String, DemoParamBean1SubBean1> subBean2) {
+        this.subBean2 = subBean2;
+    }
+
+    public String[] getStrArray() {
+        return strArray;
+    }
+
+    public void setStrArray(String[] strArray) {
+        this.strArray = strArray;
+    }
+
+    public DemoParamBean1SubBean1[] getStrArray2() {
+        return strArray2;
+    }
+
+    public void setStrArray2(DemoParamBean1SubBean1[] strArray2) {
+        this.strArray2 = strArray2;
+    }
+
+    public TestEnum getTestEnum() {
+        return testEnum;
+    }
+
+    public void setTestEnum(TestEnum testEnum) {
+        this.testEnum = testEnum;
+    }
+
+    public DemoParamBean1SubBean1 getSubBean3() {
+        return subBean3;
+    }
+
+    public void setSubBean3(DemoParamBean1SubBean1 subBean3) {
+        this.subBean3 = subBean3;
+    }
+
+    public Map getMap1() {
+        return map1;
+    }
+
+    public void setMap1(Map map1) {
+        this.map1 = map1;
+    }
+
+    public Map<Object, Object> getMap2() {
+        return map2;
+    }
+
+    public void setMap2(Map<Object, Object> map2) {
+        this.map2 = map2;
+    }
+
+    public List getList1() {
+        return list1;
+    }
+
+    public void setList1(List list1) {
+        this.list1 = list1;
+    }
+
+    public List<Object> getList2() {
+        return list2;
+    }
+
+    public void setList2(List<Object> list2) {
+        this.list2 = list2;
+    }
+
+    public Object getObj1() {
+        return obj1;
+    }
+
+    public void setObj1(Object obj1) {
+        this.obj1 = obj1;
+    }
 
 }

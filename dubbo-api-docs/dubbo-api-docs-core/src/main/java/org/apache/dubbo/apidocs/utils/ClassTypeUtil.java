@@ -18,7 +18,6 @@ package org.apache.dubbo.apidocs.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
@@ -29,12 +28,15 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.dubbo.apidocs.annotations.*;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 
 /**
  * Java class tool class, special for Dubbo doc.
  */
-@Slf4j
 public class ClassTypeUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ClassTypeUtil.class);
 
     /**
      * fastjson features
@@ -77,7 +79,7 @@ public class ClassTypeUtil {
      */
     public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount) {
         if (processCount >= PROCESS_COUNT_MAX) {
-            log.warn("The depth of bean has exceeded 10 layers, the deeper layer will be ignored! " +
+            LOG.warn("The depth of bean has exceeded 10 layers, the deeper layer will be ignored! " +
                     "Please modify the parameter structure or check whether there is circular reference in bean!");
             return null;
         }
@@ -123,8 +125,8 @@ public class ClassTypeUtil {
                                     makeParameterizedType(actualTypeArguments[0].getTypeName()),
                                     makeClass(pt.getActualTypeArguments()[0].getTypeName()), processCount));
                         } else {
-                            log.warn("{}#{} generics are not supported temporarily. " +
-                                    "This property will be ignored", classType.getName(), field2.getName());
+                            LOG.warn(classType.getName() + "#" + field2.getName() + " generics are not supported temporarily. " +
+                                    "This property will be ignored");
                         }
                     } else {
                         result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
@@ -172,7 +174,7 @@ public class ClassTypeUtil {
                     sb.append(getName.invoke(obj)).append("|");
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                log.error("", e);
+                LOG.error("", e);
             }
             return sb.toString();
         } else if (classType.isArray()) {
@@ -272,7 +274,7 @@ public class ClassTypeUtil {
             Type[] subTypes = makeSubClass(subTypeNamesArray);
             return ParameterizedTypeImpl.make(typeClass, subTypes, null);
         } catch (ClassNotFoundException e) {
-            log.warn("Exception getting generics in completabilefuture", e);
+            LOG.warn("Exception getting generics in completabilefuture", e);
             return null;
         }
     }
@@ -287,7 +289,7 @@ public class ClassTypeUtil {
                 return Class.forName(className.substring(0, className.indexOf("<")));
             }
         } catch (ClassNotFoundException e) {
-            log.warn("Exception getting generics in completabilefuture", e);
+            LOG.warn("Exception getting generics in completabilefuture", e);
             return null;
         }
     }

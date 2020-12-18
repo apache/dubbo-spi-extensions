@@ -23,6 +23,8 @@ import org.apache.dubbo.apidocs.core.beans.HtmlTypeEnum;
 import org.apache.dubbo.apidocs.core.beans.ParamBean;
 import org.apache.dubbo.apidocs.core.providers.DubboDocProviderImpl;
 import org.apache.dubbo.apidocs.core.providers.IDubboDocProvider;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.RegistryConfig;
@@ -33,7 +35,6 @@ import org.apache.dubbo.apidocs.annotations.*;
 import org.apache.dubbo.apidocs.utils.ClassTypeUtil;
 
 import com.alibaba.fastjson.JSON;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -53,9 +54,10 @@ import java.util.Map;
 /**
  * Scan and process dubbo doc annotations.
  */
-@Slf4j
 @Import({DubboDocProviderImpl.class})
 public class DubboApiDocsAnnotationScanner implements ApplicationListener<ApplicationReadyEvent> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DubboApiDocsAnnotationScanner.class);
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -75,7 +77,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         IDubboDocProvider dubboDocProvider = applicationContext.getBean(IDubboDocProvider.class);
         exportDubboService(IDubboDocProvider.class, dubboDocProvider, false);
 
-        log.info("================= Dubbo API Docs--Start scanning and processing doc annotations ================");
+        LOG.info("================= Dubbo API Docs--Start scanning and processing doc annotations ================");
 
         Map<String, Object> apiModules = applicationContext.getBeansWithAnnotation(ApiModule.class);
         apiModules.forEach((key, apiModuleTemp) -> {
@@ -87,9 +89,9 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
             ApiModule moduleAnn = apiModuleClass.getAnnotation(ApiModule.class);
             if (!apiModuleClass.isAnnotationPresent(Service.class) && !apiModuleClass.isAnnotationPresent(DubboService.class)) {
-                log.warn(
-                        "【Warning】{} @ApiModule annotation is used, but it is not a dubbo provider (without {} annotation)",
-                        apiModuleClass.getName(), Service.class.getName() + " or " + DubboService.class.getName());
+                LOG.warn( "【Warning】" + apiModuleClass.getName() + " @ApiModule annotation is used, " +
+                                "but it is not a dubbo provider (without " + Service.class.getName() + " or " +
+                                DubboService.class.getName() + " annotation)");
                 return;
             }
             boolean async;
@@ -119,7 +121,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 }
             }
         });
-        log.info("================= Dubbo API Docs-- doc annotations scanning and processing completed ================");
+        LOG.info("================= Dubbo API Docs-- doc annotations scanning and processing completed ================");
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
@@ -320,7 +322,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                         enumAllowableValues[i] = (String) getNameMethod.invoke(obj);
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    log.error("", e);
+                    LOG.error("", e);
                 }
                 param.setAllowableValues(enumAllowableValues);
             }

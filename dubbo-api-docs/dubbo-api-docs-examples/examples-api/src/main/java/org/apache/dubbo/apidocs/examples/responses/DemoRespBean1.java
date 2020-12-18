@@ -18,17 +18,12 @@ package org.apache.dubbo.apidocs.examples.responses;
 
 import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 import java.util.Map;
 
 /**
  * demo response bean 1.
  */
-@Getter
-@Setter
 public class DemoRespBean1 {
 
     @ResponseProperty("Response code")
@@ -55,4 +50,67 @@ public class DemoRespBean1 {
     @ResponseProperty("Object")
     private Object obj1;
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage2() {
+        return message2;
+    }
+
+    public void setMessage2(String message2) {
+        this.message2 = message2;
+    }
+
+    public Map getMap1() {
+        return map1;
+    }
+
+    public void setMap1(Map map1) {
+        this.map1 = map1;
+    }
+
+    public Map<Object, Object> getMap2() {
+        return map2;
+    }
+
+    public void setMap2(Map<Object, Object> map2) {
+        this.map2 = map2;
+    }
+
+    public List getList1() {
+        return list1;
+    }
+
+    public void setList1(List list1) {
+        this.list1 = list1;
+    }
+
+    public List<Object> getList2() {
+        return list2;
+    }
+
+    public void setList2(List<Object> list2) {
+        this.list2 = list2;
+    }
+
+    public Object getObj1() {
+        return obj1;
+    }
+
+    public void setObj1(Object obj1) {
+        this.obj1 = obj1;
+    }
 }

@@ -1,27 +1,10 @@
-# dubboDoc
+# dubbo api docs
 
 [中文](./README_ch.md)
 
 Dubbo api documents, test tools, generate documents according to annotations, and provide test functions
 
 Adding some annotations can generate a swagger like document without turning a non web Dubbo project into a web project
-
-## Version planning
-### First edition
-* Parsing annotations and generating UI
-* Unfriendly user interface (without handling some exceptions)
-### Second edition
-* Replace the JSON text area with a proper JSON editor, and verify the JSON format
-* Add tabs
-* It can save the test and facilitate the next direct loading test
-* Some exceptions are handled as friendly text prompts
-* Add apiRemark.md and show it in the front end
-* Add apiChangelog.md and show it in the front end
-### Follow up edition
-* According to user requirements and issue planning
-* Planning according to Dubbo upgrading
-## Registry center suppor
-* In theory, all registries supported by Dubbo support
 
 ## How to use?
 1. Dubbo api docs annotation added to method parameters of Dubbo project
@@ -42,13 +25,14 @@ Adding some annotations can generate a swagger like document without turning a n
     <version>${dubbo-version}</version>
 </dependency>
 ```
-2.Download dubbo-doc-ui-server [Download](https://github.com/apache/dubbo-spi-extensions/releases)
+2. Download [dubbo-admin](https://github.com/apache/dubbo-admin) [Download](https://github.com/apache/dubbo-admin/releases)
 
-3. Start dubbo-api-docs-ui-server
+3. Start dubbo-admin
 
-4. Visit: http:// localhost:8888
-   * Port can be modified in application.yml
-   * swagger-ui http:// localhost:8888/swagger-ui/
+4. Visit: http:// localhost:8080
+
+5. Enter the "API Doc" module
+
 ### Annotation use
 * @ApiModule class annotation: dubbo API module information, used to mark the purpose of an interface class module
     * value: module name
@@ -72,15 +56,14 @@ Adding some annotations can generate a swagger like document without turning a n
 * @ResponseProperty Class attribute annotation: mark response parameters
     * value: parameter name
     * example: example
-### dubbo-api-docs-ui
-* Get API list direct connection: 
-> Because Dubbo services with different functions may be registered in the same registration center, 
-> but the name of the interface used by Dubbo doc is the same, so the interface of Dubbo doc uses direct 
-connection to obtain the list of different interfaces of different functions.
-
-* The test can be connected directly or through the registration center
 
 ### Use note
+* Get API list direct connection:
+> Because Dubbo services with different functions may be registered in the same registration center,
+> but the name of the interface used by Dubbo doc is the same, so the interface of Dubbo doc uses direct
+connection to obtain the list of different interfaces of different functions.
+> The test can be connected directly or through the registration center
+
 * The response bean (the return type of the interface) supports custom generics, but only one generic placeholder.
 * About the use of Map: the key of map can only use the basic data type. If the key of map is not the basic data type, the generated key is not in the standard JSON format, and an exception will occur
 * The API's synchronous / asynchronous is from org.apache.dubbo.config.annotation.Service.async
@@ -88,8 +71,6 @@ connection to obtain the list of different interfaces of different functions.
 ## Project structure
 * dubbo-api-docs-annotations: Document generation annotation project
 * dubbo-api-docs-core: Responsible for annotation analysis and document information acquisition interface (Dubbo API)
-* dubbo-api-docs-ui-server: Web service, responsible for displaying doc and providing testing function
-* dubbo-api-docs-ui: The front-end project will be packaged into Dubbo doc UI server project when it is published
 * dubbo-api-docs-examples: Use example
 * readmeImgs: Pictures used by README.md
 
@@ -97,3 +78,6 @@ connection to obtain the list of different interfaces of different functions.
 * spring-boot: 2.3.4.RELEASE
 * dubbo: apache dubbo 2.7.8
 * icework in front(iceworks 4.0)
+
+## Screenshot
+![Screenshot](./readmeImgs/dubbo_docs_en.png)

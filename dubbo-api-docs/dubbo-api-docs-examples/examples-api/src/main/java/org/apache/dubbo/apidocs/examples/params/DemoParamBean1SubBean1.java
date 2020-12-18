@@ -18,14 +18,9 @@ package org.apache.dubbo.apidocs.examples.params;
 
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Attribute bean in DemoParamBean1.
  */
-@Getter
-@Setter
 public class DemoParamBean1SubBean1 {
 
     @RequestParam("Sub Name")
@@ -40,4 +35,28 @@ public class DemoParamBean1SubBean1 {
 //    @RequestParam("====bean")
 //    private DemoParamBean1 bean;
 
+
+    public String getSubName() {
+        return subName;
+    }
+
+    public void setSubName(String subName) {
+        this.subName = subName;
+    }
+
+    public Integer getSubAge() {
+        return subAge;
+    }
+
+    public void setSubAge(Integer subAge) {
+        this.subAge = subAge;
+    }
+
+    public TestEnum getTestEnum() {
+        return testEnum;
+    }
+
+    public void setTestEnum(TestEnum testEnum) {
+        this.testEnum = testEnum;
+    }
 }

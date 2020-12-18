@@ -18,14 +18,9 @@ package org.apache.dubbo.apidocs.examples.params;
 
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * demo request bean 2.
  */
-@Getter
-@Setter
 public class DemoParamBean2 {
 
     @RequestParam(value = "Name 2", allowableValues = {"San Zhang", "Si Li"})
@@ -34,4 +29,19 @@ public class DemoParamBean2 {
     @RequestParam("Age 2")
     private Double age2;
 
+    public String getName2() {
+        return name2;
+    }
+
+    public void setName2(String name2) {
+        this.name2 = name2;
+    }
+
+    public Double getAge2() {
+        return age2;
+    }
+
+    public void setAge2(Double age2) {
+        this.age2 = age2;
+    }
 }
