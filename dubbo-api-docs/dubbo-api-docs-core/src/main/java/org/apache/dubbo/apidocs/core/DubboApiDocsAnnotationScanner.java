@@ -248,7 +248,6 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
 
     /**
      * Determine what HTML form elements to use.
-     * 2020/10/29 18:24
      *
      * @param classType  classType
      * @param annotation annotation

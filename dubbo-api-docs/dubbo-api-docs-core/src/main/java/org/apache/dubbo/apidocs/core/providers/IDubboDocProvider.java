@@ -27,23 +27,18 @@ public interface IDubboDocProvider {
 
     /**
      * Get basic information of all modules, excluding API parameter information.
-     * 2020/10/30 16:38
-     * @param
      * @return java.lang.String
      */
     String apiModuleList();
 
     /**
      * Get all information of all modules , including API parameter information.
-     * 2020/11/9 9:53
-     * @param
      * @return java.lang.String
      */
     List<ModuleCacheItem> apiModuleListAndApiInfo();
 
     /**
      * Get module information according to the complete class name of Dubbo provider interface.
-     * 2020/10/30 16:38
      * @param apiInterfaceClassName
      * @return java.lang.String
      */
@@ -51,7 +46,6 @@ public interface IDubboDocProvider {
 
     /**
      * Get method parameters and return information according to the complete class name and method name of Dubbo provider interface.
-     * 2020/10/30 16:38
      * @param apiInterfaceClassNameMethodName
      * @return java.lang.String
      */

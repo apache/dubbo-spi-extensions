@@ -70,7 +70,6 @@ public class ClassTypeUtil {
 
     /**
      * Instantiate class and its fields.
-     * 2020/10/29 18:08
      *
      * @param genericType  genericType
      * @param classType    classType
@@ -222,7 +221,6 @@ public class ClassTypeUtil {
 
     /**
      * Check if it is a basic data type.
-     * 2020/10/29 18:09
      *
      * @param o
      * @return boolean
@@ -244,7 +242,6 @@ public class ClassTypeUtil {
 
     /**
      * Get all fields in the class.
-     * 2020/10/29 18:10
      *
      * @param fieldList fieldList
      * @param classz    classz

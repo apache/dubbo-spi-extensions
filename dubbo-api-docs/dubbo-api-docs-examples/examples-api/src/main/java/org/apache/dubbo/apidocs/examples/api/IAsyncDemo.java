@@ -33,7 +33,6 @@ public interface IAsyncDemo {
 
     /**
      * request and response parameters are beans.
-     * 2020/11/14 22:21
      * @param param1
      * @param param2
      * @return java.util.concurrent.CompletableFuture<org.apache.dubbo.apidocs.examples.responses.DemoRespBean1>
@@ -80,7 +79,6 @@ public interface IAsyncDemo {
 
     /**
      * Simple test.
-     * 2020/11/13 10:11
      * @param param1
      * @param param2
      * @return java.util.concurrent.CompletableFuture<org.apache.dubbo.apidocs.examples.params.DemoParamBean3>
