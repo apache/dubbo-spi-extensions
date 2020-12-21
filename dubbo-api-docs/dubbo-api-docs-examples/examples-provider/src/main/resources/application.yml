@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: dubbo-api-docs-example-provider
+  profiles:
+    active: dev
+dubbo:
+  registry:
+    address: nacos://127.0.0.1:8848
+  provider:
+    timeout: 2000
+  protocol:
+    port: 20881
+    name: dubbo
+  application:
+    name: dubbo-api-docs-example-provider
+  metadata-report:
+    address: nacos://127.0.0.1:8848
