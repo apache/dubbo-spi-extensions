@@ -27,9 +27,5 @@
 
     <artifactId>dubbo-api-docs-annotations</artifactId>
 
-    <dependencies>
-        
-    </dependencies>
-
 
 </project>
