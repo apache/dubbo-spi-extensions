@@ -14,24 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.apidocs.utils;
+package org.apache.dubbo.apidocs.examples.api;
 
-import java.lang.reflect.Type;
+import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean;
+import org.apache.dubbo.apidocs.examples.params.QuickStartRespBean;
 
 /**
- * Simple implementation of {@link Type}.
+ * quick start demo.
  */
-public class SimpleTypeImpl implements Type {
+public interface IQuickStartDemo {
 
-    private String typeName;
-
-    public SimpleTypeImpl(String typeName){
-        this.typeName = typeName;
-    }
-
-    @Override
-    public String getTypeName(){
-        return typeName;
-    }
+    /**
+     * quick start demo.
+     *
+     * @param strParam
+     * @param beanParam
+     * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
+     */
+    QuickStartRespBean quickStart(String strParam, QuickStartRequestBean beanParam);
 
 }

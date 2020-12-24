@@ -140,23 +140,23 @@ public class ClassTypeUtil {
     }
 
     private static Object initClassTypeWithDefaultValueNoProceeField(Type genericType, Class<?> classType, int processCount) {
-        if (Integer.class.isAssignableFrom(classType)) {
+        if (Integer.class.isAssignableFrom(classType) || int.class.isAssignableFrom(classType)) {
             return 0;
-        } else if (Byte.class.isAssignableFrom(classType)) {
+        } else if (Byte.class.isAssignableFrom(classType) || byte.class.isAssignableFrom(classType)) {
             return (byte) 0;
-        } else if (Long.class.isAssignableFrom(classType)) {
+        } else if (Long.class.isAssignableFrom(classType) || long.class.isAssignableFrom(classType)) {
             return 0L;
-        } else if (Double.class.isAssignableFrom(classType)) {
+        } else if (Double.class.isAssignableFrom(classType) || double.class.isAssignableFrom(classType)) {
             return 0.0D;
-        } else if (Float.class.isAssignableFrom(classType)) {
+        } else if (Float.class.isAssignableFrom(classType) || float.class.isAssignableFrom(classType)) {
             return 0.0F;
         } else if (String.class.isAssignableFrom(classType)) {
             return "";
-        } else if (Character.class.isAssignableFrom(classType)) {
+        } else if (Character.class.isAssignableFrom(classType) || char.class.isAssignableFrom(classType)) {
             return 'c';
-        } else if (Short.class.isAssignableFrom(classType)) {
+        } else if (Short.class.isAssignableFrom(classType) || short.class.isAssignableFrom(classType)) {
             return (short) 0;
-        } else if (Boolean.class.isAssignableFrom(classType)) {
+        } else if (Boolean.class.isAssignableFrom(classType) || boolean.class.isAssignableFrom(classType)) {
             return false;
         } else if (Date.class.isAssignableFrom(classType)) {
             return "【" + Date.class.getName() + "】yyyy-MM-dd HH:mm:ss";

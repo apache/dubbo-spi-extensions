@@ -14,24 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.apidocs.utils;
+package org.apache.dubbo.apidocs.examples.params;
 
-import java.lang.reflect.Type;
+import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 
 /**
- * Simple implementation of {@link Type}.
+ * quick star demo response bean.
  */
-public class SimpleTypeImpl implements Type {
+public class QuickStartRespBean {
 
-    private String typeName;
+    @ResponseProperty(value = "Response code", example = "500")
+    private int code;
 
-    public SimpleTypeImpl(String typeName){
-        this.typeName = typeName;
+    @ResponseProperty("Response message")
+    private String msg;
+
+    public QuickStartRespBean(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
     }
 
-    @Override
-    public String getTypeName(){
-        return typeName;
+    public int getCode() {
+        return code;
     }
 
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 }
