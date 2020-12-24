@@ -142,7 +142,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         //Description of API return data
         apiListItem.setApiRespDec(dubboApi.responseClassDescription());
 
-        // Interface parameters and response information
+        // API details in cache, contain interface parameters and response information
         ApiCacheItem apiParamsAndResp = new ApiCacheItem();
         DubboApiDocsCache.addApiParamsAndResp(
                 moduleAnn.apiInterface().getCanonicalName() + "." + method.getName(), apiParamsAndResp);
@@ -156,6 +156,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         apiParamsAndResp.setApiDocName(dubboApi.value());
         apiParamsAndResp.setApiVersion(dubboApi.version());
         apiParamsAndResp.setApiRespDec(dubboApi.responseClassDescription());
+        apiParamsAndResp.setDescription(dubboApi.description());
         apiParamsAndResp.setApiModelClass(moduleCacheItem.getModuleClassName());
         apiParamsAndResp.setParams(paramList);
         apiParamsAndResp.setResponse(ClassTypeUtil.calss2Json(method.getGenericReturnType(), method.getReturnType()));
@@ -265,28 +266,28 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         boolean hasAllowableValues = (param.getAllowableValues() != null && param.getAllowableValues().length > 0);
         // Processed or not
         boolean processed = false;
-        if (Integer.class.isAssignableFrom(classType)) {
+        if (Integer.class.isAssignableFrom(classType) || int.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
-        } else if (Byte.class.isAssignableFrom(classType)) {
+        } else if (Byte.class.isAssignableFrom(classType) || byte.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.TEXT_BYTE);
             processed = true;
-        } else if (Long.class.isAssignableFrom(classType)) {
+        } else if (Long.class.isAssignableFrom(classType) || long.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
-        } else if (Double.class.isAssignableFrom(classType)) {
+        } else if (Double.class.isAssignableFrom(classType) || double.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_DECIMAL);
             processed = true;
-        } else if (Float.class.isAssignableFrom(classType)) {
+        } else if (Float.class.isAssignableFrom(classType) || float.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_DECIMAL);
             processed = true;
         } else if (String.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.TEXT);
             processed = true;
-        } else if (Character.class.isAssignableFrom(classType)) {
+        } else if (Character.class.isAssignableFrom(classType) || char.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.TEXT_CHAR);
             processed = true;
-        } else if (Short.class.isAssignableFrom(classType)) {
+        } else if (Short.class.isAssignableFrom(classType) || short.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
         }
@@ -300,7 +301,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         }
 
         // haven't dealt with it. Go on
-        if (Boolean.class.isAssignableFrom(classType)) {
+        if (Boolean.class.isAssignableFrom(classType) || boolean.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.SELECT);
             // Boolean can only be true / false. No matter what the previous allowed value is, it is forced to replace
             param.setAllowableValues(new String[]{"true", "false"});
