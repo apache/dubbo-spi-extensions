@@ -27,14 +27,15 @@
 
     <artifactId>examples-api</artifactId>
 
-    <dependencies>
+    <properties>
+        <skip_maven_deploy>true</skip_maven_deploy>
+    </properties>
 
+    <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-api-docs-annotations</artifactId>
         </dependency>
-        
     </dependencies>
-
 
 </project>

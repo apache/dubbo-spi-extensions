@@ -27,6 +27,10 @@
 
     <artifactId>examples-provider</artifactId>
 
+    <properties>
+        <skip_maven_deploy>true</skip_maven_deploy>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>

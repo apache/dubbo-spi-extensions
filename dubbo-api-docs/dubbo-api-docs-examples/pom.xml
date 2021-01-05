@@ -31,6 +31,10 @@
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Dubbo interface documentation examples</description>
+
+    <properties>
+        <skip_maven_deploy>true</skip_maven_deploy>
+    </properties>
     
     <modules>
         <module>examples-api</module>

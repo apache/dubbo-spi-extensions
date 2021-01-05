@@ -29,14 +29,68 @@
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Dubbo interface documentation, testing tools</description>
+    <url>https://github.com/apache/dubbo</url>
+    <inceptionYear>2020</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/apache/dubbo</url>
+        <connection>scm:git:https://github.com/apache/dubbo-spi-extensions.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/dubbo-spi-extensions.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>Development List</name>
+            <subscribe>dev-subscribe@dubbo.apache.org</subscribe>
+            <unsubscribe>dev-unsubscribe@dubbo.apache.org</unsubscribe>
+            <post>dev@dubbo.apache.org</post>
+        </mailingList>
+        <mailingList>
+            <name>Commits List</name>
+            <subscribe>commits-subscribe@dubbo.apache.org</subscribe>
+            <unsubscribe>commits-unsubscribe@dubbo.apache.org</unsubscribe>
+            <post>commits@dubbo.apache.org</post>
+        </mailingList>
+        <mailingList>
+            <name>Issues List</name>
+            <subscribe>issues-subscribe@dubbo.apache.org</subscribe>
+            <unsubscribe>issues-unsubscribe@dubbo.apache.org</unsubscribe>
+            <post>issues@dubbo.apache.org</post>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <id>dubbo.io</id>
+            <name>The Dubbo Project Contributors</name>
+            <email>dev-subscribe@dubbo.apache.org</email>
+            <url>http://dubbo.apache.org/</url>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>The Apache Software Foundation</name>
+        <url>http://www.apache.org/</url>
+    </organization>
+
+    <issueManagement>
+        <system>Github Issues</system>
+        <url>https://github.com/apache/dubbo-spi-extensions/issues</url>
+    </issueManagement>
+
     <properties>
-        <revision>2.7.8-SNAPSHOT</revision>
+        <revision>2.7.8</revision>
         <project.build.jdkVersion>1.8</project.build.jdkVersion>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipJunitTest>true</skipJunitTest>
 
-        <skip_maven_deploy>true</skip_maven_deploy>
         <maven-flatten-version>1.1.0</maven-flatten-version>
 
         <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
@@ -161,34 +215,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>${maven-flatten-version}</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                    <pomElements>
-                        <dependencies>expand</dependencies>
-                    </pomElements>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>${project.build.jdkVersion}</source>
@@ -204,6 +230,15 @@
                 <configuration>
                     <!-- We are not suppose to setup the customer resources here -->
                     <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>${skip_maven_deploy}</skip>
                 </configuration>
             </plugin>
 
@@ -247,4 +282,26 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
