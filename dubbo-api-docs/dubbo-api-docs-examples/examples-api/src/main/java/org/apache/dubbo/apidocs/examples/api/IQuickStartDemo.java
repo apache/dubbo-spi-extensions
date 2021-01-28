@@ -16,8 +16,12 @@
  */
 package org.apache.dubbo.apidocs.examples.api;
 
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
+import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRespBean;
+
+import java.util.List;
 
 /**
  * quick start demo.
@@ -31,6 +35,14 @@ public interface IQuickStartDemo {
      * @param beanParam
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
      */
-    QuickStartRespBean quickStart(String strParam, QuickStartRequestBean beanParam);
+//    QuickStartRespBean quickStart(String strParam, QuickStartRequestBean beanParam);
+
+    /**
+     * quick start demo, request use generic.
+     * @param beanList
+     * @param beanParam
+     * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
+     */
+    QuickStartRespBean quickStart2(List<String> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam);
 
 }

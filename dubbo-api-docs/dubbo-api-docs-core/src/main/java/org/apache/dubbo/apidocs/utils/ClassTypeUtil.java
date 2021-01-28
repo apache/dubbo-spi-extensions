@@ -77,6 +77,20 @@ public class ClassTypeUtil {
      * @return java.lang.Object
      */
     public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount) {
+        return initClassTypeWithDefaultValue(genericType, classType, processCount, false);
+    }
+
+    /**
+     * Instantiate class and its fields.
+     *
+     * @param genericType  genericType
+     * @param classType    classType
+     * @param processCount processCount
+     * @param isBuildClassAttribute isBuildClassAttribute
+     * @return java.lang.Object
+     */
+    public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount,
+                                                       boolean isBuildClassAttribute) {
         if (processCount >= PROCESS_COUNT_MAX) {
             LOG.warn("The depth of bean has exceeded 10 layers, the deeper layer will be ignored! " +
                     "Please modify the parameter structure or check whether there is circular reference in bean!");
@@ -90,6 +104,9 @@ public class ClassTypeUtil {
         }
 
         Map<String, Object> result = new HashMap<>(16);
+        if (isBuildClassAttribute) {
+            result.put("class", classType.getCanonicalName());
+        }
         // get all fields
         List<Field> allFields = getAllFields(null, classType);
         for (Field field2 : allFields) {
@@ -280,7 +297,7 @@ public class ClassTypeUtil {
         className = className.trim();
         try {
             if (className.indexOf(GENERIC_START_SYMBOL) == -1) {
-                // CompletableFuture 中的类没有泛型
+                // classes in CompletableFuture have no generics
                 return Class.forName(className);
             } else {
                 return Class.forName(className.substring(0, className.indexOf("<")));

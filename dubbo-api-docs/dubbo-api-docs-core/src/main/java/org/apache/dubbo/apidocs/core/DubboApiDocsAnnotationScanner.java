@@ -35,19 +35,24 @@ import org.apache.dubbo.apidocs.annotations.*;
 import org.apache.dubbo.apidocs.utils.ClassTypeUtil;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Import;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +131,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
                                          boolean async, ModuleCacheItem moduleCacheItem) {
+
         ApiDoc dubboApi = method.getAnnotation(ApiDoc.class);
 
         // API basic information in API list in module
@@ -150,6 +156,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         Class<?>[] argsClass = method.getParameterTypes();
         Annotation[][] argsAnns = method.getParameterAnnotations();
         Parameter[] parameters = method.getParameters();
+        Type[] parametersTypes = method.getGenericParameterTypes();
         List<ApiParamsCacheItem> paramList = new ArrayList<>(argsClass.length);
         apiParamsAndResp.setAsync(async);
         apiParamsAndResp.setApiName(method.getName());
@@ -163,6 +170,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         StringBuilder methodParamInfoSb = new StringBuilder();
         for (int i = 0; i < argsClass.length; i++) {
             Class<?> argClass = argsClass[i];
+            Type parameterType = parametersTypes[i];
             methodParamInfoSb.append("[").append(i).append("]").append(argClass.getCanonicalName());
             if (i + 1 < argsClass.length) {
                 methodParamInfoSb.append(" | ");
@@ -182,7 +190,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             ParamBean paramBean = this.processHtmlType(argClass, requestParam, null);
             if (paramBean == null) {
                 // Not a basic type, handling properties in method parameters
-                List<ParamBean> apiParamsList = processField(argClass);
+                List<ParamBean> apiParamsList = processField(argClass, parameterType);
                 if (apiParamsList != null && !apiParamsList.isEmpty()) {
                     paramListItem.setParamInfo(apiParamsList);
                 }
@@ -211,7 +219,20 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
      * For the attributes in the method parameters, only one layer is processed.
      * The deeper layer is directly converted to JSON, and the deeper layer is up to 5 layers
      */
-    private List<ParamBean> processField(Class<?> argClass) {
+    private List<ParamBean> processField(Class<?> argClass, Type parameterType) {
+        Map<String, String> genericTypeAndNamesMap;
+        if (parameterType instanceof ParameterizedTypeImpl) {
+            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) parameterType;
+            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
+            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+            genericTypeAndNamesMap =  new HashMap<>(typeVariables.length);
+            for (int i = 0; i < typeVariables.length; i++) {
+                TypeVariable<? extends Class<?>> typeVariable = typeVariables[i];
+                genericTypeAndNamesMap.put(typeVariable.getTypeName(), actualTypeArguments[i].getTypeName());
+            }
+        } else {
+            genericTypeAndNamesMap =  new HashMap<>(0);
+        }
 
         List<ParamBean> apiParamsList = new ArrayList(16);
         // get all fields
@@ -219,7 +240,18 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         for (Field field : allFields) {
             ParamBean paramBean = new ParamBean();
             paramBean.setName(field.getName());
-            paramBean.setJavaType(field.getType().getCanonicalName());
+            String genericTypeName = genericTypeAndNamesMap.get(field.getGenericType().getTypeName());
+            Class<?> genericType = null;
+            if (StringUtils.isBlank(genericTypeName)) {
+                paramBean.setJavaType(field.getType().getCanonicalName());
+            } else {
+                paramBean.setJavaType(genericTypeName);
+                try {
+                    genericType = Class.forName(genericTypeName);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
             RequestParam requestParam = null;
             if (field.isAnnotationPresent(RequestParam.class)) {
                 // Handling @RequestParam annotations on properties
@@ -233,10 +265,16 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 paramBean.setRequired(false);
             }
 
-            if (this.processHtmlType(field.getType(), requestParam, paramBean) == null) {
+            if (this.processHtmlType(null == genericType ? field.getType() : genericType, requestParam, paramBean) == null) {
                 // Not a basic type, handle as JSON
-                Object objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                        field.getGenericType(), field.getType(), 0);
+                Object objResult;
+                if (null == genericType) {
+                    objResult =ClassTypeUtil.initClassTypeWithDefaultValue(
+                            field.getGenericType(), field.getType(), 0);
+                } else {
+                    objResult =ClassTypeUtil.initClassTypeWithDefaultValue(
+                            null, genericType, 0, true);
+                }
                 if (!ClassTypeUtil.isBaseType(objResult)) {
                     paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
                     paramBean.setSubParamsJson(JSON.toJSONString(objResult, ClassTypeUtil.FAST_JSON_FEATURES));

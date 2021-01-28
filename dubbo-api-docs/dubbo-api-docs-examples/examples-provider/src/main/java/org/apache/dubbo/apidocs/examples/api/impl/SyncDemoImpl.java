@@ -37,8 +37,8 @@ import java.util.Map;
 /**
  * Synchronous demo implementation.
  */
-@DubboService
-@ApiModule(value = "Synchronous demo", apiInterface = ISyncDemo.class)
+//@DubboService
+//@ApiModule(value = "Synchronous demo", apiInterface = ISyncDemo.class)
 public class SyncDemoImpl implements ISyncDemo {
 
     private static final Logger log = LoggerFactory.getLogger(SyncDemoImpl.class);

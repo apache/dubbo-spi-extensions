@@ -37,8 +37,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 /**
  * Asynchronous demo implementation.
  */
-@DubboService(async = true)
-@ApiModule(value = "Asynchronous demo", apiInterface = IAsyncDemo.class)
+//@DubboService(async = true)
+//@ApiModule(value = "Asynchronous demo", apiInterface = IAsyncDemo.class)
 public class AsyncDemoImpl implements IAsyncDemo {
 
     public static final ScheduledExecutorService EXECUTOR = new ScheduledThreadPoolExecutor(
