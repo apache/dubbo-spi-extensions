@@ -40,23 +40,23 @@ import java.util.Map;
 @ApiModule(value = "quick start demo", apiInterface = IQuickStartDemo.class)
 public class QuickStartDemoImpl implements IQuickStartDemo {
 
-//    @ApiDoc(value = "quick start demo", version = "v0.1", description = "this api is a quick start demo", responseClassDescription="A quick star response bean")
-//    @Override
-//    public QuickStartRespBean quickStart(@RequestParam(value = "strParamxxx", required = true) List<DemoParamBean4> strParam, QuickStartRequestBean beanParam) {
-//        return new QuickStartRespBean(200, "hello " + beanParam.getName() + ", " + beanParam.toString());
-//    }
-//
-//    @ApiDoc(value = "quick start demo, request use generic.", version = "v0.1", description = "quick start demo, request use generic.", responseClassDescription="A quick star response bean")
-//    @Override
-//    public QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam) {
-//        return new QuickStartRespBean(200, "【" + beanParam.getMethod() + "】hello " + beanParam.getBody3() + ", " + beanParam.toString());
-//    }
-//
-//    @ApiDoc(value = "multiple generic demo", version = "v0.1", description = "multiple generic demo.", responseClassDescription="A quick star response bean")
-//    @Override
-//    public QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam) {
-//        return new QuickStartRespBean(200,"quickStart3, multiple generic demo");
-//    }
+    @ApiDoc(value = "quick start demo", version = "v0.1", description = "this api is a quick start demo", responseClassDescription="A quick star response bean")
+    @Override
+    public QuickStartRespBean quickStart(@RequestParam(value = "strParamxxx", required = true) List<DemoParamBean4> strParam, QuickStartRequestBean beanParam) {
+        return new QuickStartRespBean(200, "hello " + beanParam.getName() + ", " + beanParam.toString());
+    }
+
+    @ApiDoc(value = "quick start demo, request use generic.", version = "v0.1", description = "quick start demo, request use generic.", responseClassDescription="A quick star response bean")
+    @Override
+    public QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam) {
+        return new QuickStartRespBean(200, "【" + beanParam.getMethod() + "】hello " + beanParam.getBody3() + ", " + beanParam.toString());
+    }
+
+    @ApiDoc(value = "multiple generic demo", version = "v0.1", description = "multiple generic demo.", responseClassDescription="A quick star response bean")
+    @Override
+    public QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam) {
+        return new QuickStartRespBean(200,"quickStart3, multiple generic demo");
+    }
 
     @ApiDoc(value = "response use multiple generic bean", description = "response use multiple generic bean, but not set generic.", responseClassDescription="A quick star response bean")
     @Override

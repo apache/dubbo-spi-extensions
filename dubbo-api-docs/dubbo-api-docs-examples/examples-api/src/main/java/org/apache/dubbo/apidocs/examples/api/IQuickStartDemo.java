@@ -46,13 +46,13 @@ public interface IQuickStartDemo {
      * @param beanParam
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
      */
-//    QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam);
+    QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam);
 
     /**
      * quick start demo3, request use multiple generic.
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
      */
-//    QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam);
+    QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam);
 
     /**
      * quick start demo4, response use multiple generic bean, but not set generic.
