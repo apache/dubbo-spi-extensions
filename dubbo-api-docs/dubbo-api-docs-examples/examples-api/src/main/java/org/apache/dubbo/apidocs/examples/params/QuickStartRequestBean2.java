@@ -18,21 +18,23 @@ package org.apache.dubbo.apidocs.examples.params;
 
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 
+import java.math.BigDecimal;
+
 /**
  * quick start demo request parameter bean.
  */
-public class QuickStartRequestBean implements java.io.Serializable {
+public class QuickStartRequestBean2 implements java.io.Serializable {
 
     private static final long serialVersionUID = -7214413446084107294L;
 
     @RequestParam(value = "You name", required = true, description = "please enter your full name", example = "Zhang San")
     private String name;
 
-    @RequestParam(value = "You age", defaultValue = "18")
-    private int age;
+    @RequestParam(value = "multiple generic")
+    private QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> requestBase;
 
-    @RequestParam("Are you a main?")
-    private boolean man;
+    @RequestParam(value = "BigDecimal number")
+    private BigDecimal bigDecimalNumber;
 
     public String getName() {
         return name;
@@ -42,28 +44,19 @@ public class QuickStartRequestBean implements java.io.Serializable {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
+    public QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> getRequestBase() {
+        return requestBase;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setRequestBase(QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> requestBase) {
+        this.requestBase = requestBase;
     }
 
-    public boolean getMan() {
-        return man;
+    public BigDecimal getBigDecimalNumber() {
+        return bigDecimalNumber;
     }
 
-    public void setMan(boolean man) {
-        this.man = man;
-    }
-
-    @Override
-    public String toString() {
-        return "QuickStartRequestBean{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", man=" + man +
-                '}';
+    public void setBigDecimalNumber(BigDecimal bigDecimalNumber) {
+        this.bigDecimalNumber = bigDecimalNumber;
     }
 }

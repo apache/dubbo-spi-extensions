@@ -21,7 +21,9 @@ import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 /**
  * quick star demo response bean.
  */
-public class QuickStartRespBean {
+public class QuickStartRespBean implements java.io.Serializable {
+
+    private static final long serialVersionUID = 7598240511561924368L;
 
     @ResponseProperty(value = "Response code", example = "500")
     private int code;

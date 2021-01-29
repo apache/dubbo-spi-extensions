@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -103,6 +105,19 @@ public class ClassTypeUtil {
             return initResult;
         }
 
+        Map<String, String> genericTypeAndNamesMap;
+        if (genericType instanceof ParameterizedTypeImpl) {
+            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) genericType;
+            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
+            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+            genericTypeAndNamesMap =  new HashMap<>(typeVariables.length);
+            for (int i = 0; i < typeVariables.length; i++) {
+                genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+            }
+        } else {
+            genericTypeAndNamesMap =  new HashMap<>(0);
+        }
+
         Map<String, Object> result = new HashMap<>(16);
         if (isBuildClassAttribute) {
             result.put("class", classType.getCanonicalName());
@@ -130,23 +145,11 @@ public class ClassTypeUtil {
                 }
             } else {
                 // Check if the type of the property is generic
-                if ("T".equals(field2.getGenericType().getTypeName())) {
+                String genericTypeName = genericTypeAndNamesMap.get(field2.getGenericType().getTypeName());
+                if (StringUtils.isNotBlank(genericTypeName)) {
                     // The type of the attribute is generic. Find the generic from the definition of
                     // the class in which the attribute is located
-                    ParameterizedType pt = (ParameterizedType) genericType;
-                    Type[] actualTypeArguments = pt.getActualTypeArguments();
-                    if (actualTypeArguments.length > 0) {
-                        if (actualTypeArguments.length == 1) {
-                            result.put(field2.getName(), initClassTypeWithDefaultValue(
-                                    makeParameterizedType(actualTypeArguments[0].getTypeName()),
-                                    makeClass(pt.getActualTypeArguments()[0].getTypeName()), processCount));
-                        } else {
-                            LOG.warn(classType.getName() + "#" + field2.getName() + " generics are not supported temporarily. " +
-                                    "This property will be ignored");
-                        }
-                    } else {
-                        result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
-                    }
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(null, makeClass(genericTypeName), processCount, true));
                 } else {
                     // Not generic
                     result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
@@ -232,6 +235,10 @@ public class ClassTypeUtil {
             ParameterizedType pt = (ParameterizedType) genericType;
             String typeName = pt.getActualTypeArguments()[0].getTypeName();
             return initClassTypeWithDefaultValue(makeParameterizedType(typeName), makeClass(typeName), processCount);
+        } else if (BigDecimal.class.isAssignableFrom(classType)) {
+            return 0;
+        } else if (BigInteger.class.isAssignableFrom(classType)) {
+            return 0;
         }
         return null;
     }
@@ -251,7 +258,9 @@ public class ClassTypeUtil {
                 o instanceof Character ||
                 o instanceof Short ||
                 o instanceof Boolean ||
-                o instanceof String) {
+                o instanceof String ||
+                o instanceof BigDecimal ||
+                o instanceof BigInteger) {
             return true;
         }
         return false;

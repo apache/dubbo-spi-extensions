@@ -43,6 +43,7 @@ public @interface ApiModule {
     /**
      * module version
      */
+    @Deprecated
     String version() default "";
 
 }

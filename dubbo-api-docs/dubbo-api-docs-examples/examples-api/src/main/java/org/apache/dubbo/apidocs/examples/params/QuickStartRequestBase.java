@@ -7,7 +7,9 @@ import org.apache.dubbo.apidocs.annotations.RequestParam;
  *
  * @date 2021/1/26 15:24
  */
-public class QuickStartRequestBase<E, T> {
+public class QuickStartRequestBase<E, T> implements java.io.Serializable {
+
+    private static final long serialVersionUID = 373497393757790262L;
 
     @RequestParam(value = "Request method", required = true)
     private String method;

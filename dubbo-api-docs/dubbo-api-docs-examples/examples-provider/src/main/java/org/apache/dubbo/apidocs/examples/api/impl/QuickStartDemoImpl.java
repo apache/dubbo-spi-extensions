@@ -18,33 +18,53 @@ package org.apache.dubbo.apidocs.examples.api.impl;
 
 import org.apache.dubbo.apidocs.annotations.ApiDoc;
 import org.apache.dubbo.apidocs.annotations.ApiModule;
+import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.examples.api.IQuickStartDemo;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean;
+import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean2;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRespBean;
 import org.apache.dubbo.config.annotation.DubboService;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * quick start demo implement.
  *
  * @date 2020/12/23 17:21
  */
-@DubboService(version = "v0.1")
-@ApiModule(value = "quick start demo", apiInterface = IQuickStartDemo.class, version = "v0.1")
+@DubboService(version = "${demo.apiversion.quickstart}")
+@ApiModule(value = "quick start demo", apiInterface = IQuickStartDemo.class)
 public class QuickStartDemoImpl implements IQuickStartDemo {
 
 //    @ApiDoc(value = "quick start demo", version = "v0.1", description = "this api is a quick start demo", responseClassDescription="A quick star response bean")
 //    @Override
-//    public QuickStartRespBean quickStart(@RequestParam(value = "strParam", required = true) String strParam, QuickStartRequestBean beanParam) {
+//    public QuickStartRespBean quickStart(@RequestParam(value = "strParamxxx", required = true) List<DemoParamBean4> strParam, QuickStartRequestBean beanParam) {
 //        return new QuickStartRespBean(200, "hello " + beanParam.getName() + ", " + beanParam.toString());
 //    }
+//
+//    @ApiDoc(value = "quick start demo, request use generic.", version = "v0.1", description = "quick start demo, request use generic.", responseClassDescription="A quick star response bean")
+//    @Override
+//    public QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam) {
+//        return new QuickStartRespBean(200, "【" + beanParam.getMethod() + "】hello " + beanParam.getBody3() + ", " + beanParam.toString());
+//    }
+//
+//    @ApiDoc(value = "multiple generic demo", version = "v0.1", description = "multiple generic demo.", responseClassDescription="A quick star response bean")
+//    @Override
+//    public QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam) {
+//        return new QuickStartRespBean(200,"quickStart3, multiple generic demo");
+//    }
 
-    @ApiDoc(value = "quick start demo, request use generic.", version = "v0.1", description = "quick start demo, request use generic.", responseClassDescription="A quick star response bean")
+    @ApiDoc(value = "response use multiple generic bean", description = "response use multiple generic bean, but not set generic.", responseClassDescription="A quick star response bean")
     @Override
-    public QuickStartRespBean quickStart2(List<String> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam) {
-        return new QuickStartRespBean(200, "【" + beanParam.getMethod() + "】hello " + beanParam.getBody3().getName() + ", " + beanParam.toString());
+    public QuickStartRequestBase quickStart4(BigDecimal number, QuickStartRequestBean2 beanParam) {
+        QuickStartRequestBase response = new QuickStartRequestBase();
+        response.setBody("body");
+        response.setBody3("body3");
+        response.setMethod("test");
+        return response;
     }
 }
