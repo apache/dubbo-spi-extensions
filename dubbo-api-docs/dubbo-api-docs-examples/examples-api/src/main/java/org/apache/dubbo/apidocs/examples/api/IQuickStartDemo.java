@@ -38,7 +38,7 @@ public interface IQuickStartDemo {
      * @param beanParam
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
      */
-//    QuickStartRespBean quickStart(List<DemoParamBean4> strParam, QuickStartRequestBean beanParam);
+    QuickStartRespBean quickStart(List<DemoParamBean4> strParam, QuickStartRequestBean beanParam);
 
     /**
      * quick start demo2, request use generic.
