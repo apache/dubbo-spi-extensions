@@ -55,8 +55,12 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -219,6 +223,12 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 } else {
                     paramListItem.setRequired(false);
                 }
+
+                if (HtmlTypeEnum.TEXT_AREA.name().equals(paramListItem.getHtmlType())) {
+                    List<ParamBean> apiParamsList = processField(argClass, parameterType, methodParameter);
+                    paramListItem.setAllowableValues(apiParamsList.get(0).getAllowableValues());
+                    paramListItem.setSubParamsJson(apiParamsList.get(0).getSubParamsJson());
+                }
             }
         }
         apiParamsAndResp.setMethodParamInfo(methodParamInfoSb.toString());
@@ -273,8 +283,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                     paramBean.setRequired(false);
                 }
 
-                if (this.processHtmlType(null == genericType ? field.getType() : genericType, requestParam, paramBean) == null) {
-                    // Not a basic type, handle as JSON
+                ParamBean tempParamBean = this.processHtmlType(null == genericType ? field.getType() : genericType, requestParam, paramBean);
+                if (tempParamBean == null || HtmlTypeEnum.TEXT_AREA.equals(tempParamBean.getHtmlType())) {
                     Object objResult;
                     if (null == genericType) {
                         objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
@@ -362,7 +372,18 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         } else if (Short.class.isAssignableFrom(classType) || short.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
+        } else if (Date.class.isAssignableFrom(classType) || LocalDateTime.class.isAssignableFrom(classType)) {
+            param.setHtmlType(HtmlTypeEnum.DATETIME_SELECTOR);
+            processed = true;
+        } else if (LocalDate.class.isAssignableFrom(classType)) {
+            param.setHtmlType(HtmlTypeEnum.DATE_SELECTOR);
+            processed = true;
+        } else if (classType.isArray() || Collection.class.isAssignableFrom(classType) ||
+                Map.class.isAssignableFrom(classType)) {
+            param.setHtmlType(HtmlTypeEnum.TEXT_AREA);
+            processed = true;
         }
+
         if (processed) {
             // Processed, time to return
             if (hasAllowableValues) {

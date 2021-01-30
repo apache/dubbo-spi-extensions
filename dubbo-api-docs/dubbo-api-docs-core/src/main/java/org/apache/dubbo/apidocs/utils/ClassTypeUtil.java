@@ -172,7 +172,7 @@ public class ClassTypeUtil {
         return result;
     }
 
-    private static Object initClassTypeWithDefaultValueNoProceeField(Type genericType, Class<?> classType, int processCount) {
+    public static Object initClassTypeWithDefaultValueNoProceeField(Type genericType, Class<?> classType, int processCount) {
         if (Integer.class.isAssignableFrom(classType) || int.class.isAssignableFrom(classType)) {
             return 0;
         } else if (Byte.class.isAssignableFrom(classType) || byte.class.isAssignableFrom(classType)) {
