@@ -14,41 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.apidocs.examples.params;
+package org.apache.dubbo.apidocs.examples.spi;
 
-import org.apache.dubbo.apidocs.annotations.ResponseProperty;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.config.ConfigInitializer;
+import org.apache.dubbo.config.ServiceConfig;
 
 /**
- * quick star demo response bean.
+ * .
+ *
+ * @date 2021/1/12 17:09
  */
-public class QuickStartRespBean implements java.io.Serializable {
+@Activate
+public class TestConfigInitializer implements ConfigInitializer {
 
-    private static final long serialVersionUID = 7598240511561924368L;
-
-    @ResponseProperty(value = "Response code", example = "500")
-    private int code;
-
-    @ResponseProperty("Response message")
-    private String msg;
-
-    public QuickStartRespBean(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    @Override
+    public void initServiceConfig(ServiceConfig serviceConfig) {
+        System.out.println("====initServiceConfig");
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
 }

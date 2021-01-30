@@ -85,13 +85,14 @@
     </issueManagement>
 
     <properties>
-        <revision>2.7.8.1</revision>
+        <revision>2.7.8.2-SNAPSHOT</revision>
         <project.build.jdkVersion>1.8</project.build.jdkVersion>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <skipJunitTest>true</skipJunitTest>
+        <skip_maven_deploy>false</skip_maven_deploy>
 
         <maven-flatten-version>1.1.0</maven-flatten-version>
+        <maven-checkstyle-plugin-version>3.0.0</maven-checkstyle-plugin-version>
 
         <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
         <dubbo.version>2.7.8</dubbo.version>
@@ -215,6 +216,84 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin-version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.18</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>checkstyle-validation</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <configLocation>codestyle/checkstyle.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failOnViolation>true</failOnViolation>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.12</version>
+                <executions>
+                    <execution>
+                        <id>verify.rat</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/.idea/</exclude>
+                                <exclude>**/*.iml</exclude>
+                                <exclude>**/*.txt</exclude>
+                                <exclude>**/*.sh</exclude>
+                                <exclude>**/*.bat</exclude>
+                                <exclude>**/*.md</exclude>
+                                <exclude>.git/</exclude>
+                                <exclude>**/*.git*</exclude>
+                                <exclude>.gitignore</exclude>
+                                <exclude>**/.settings/*</exclude>
+                                <exclude>**/.classpath</exclude>
+                                <exclude>**/*.properties</exclude>
+                                <exclude>**/.project</exclude>
+                                <exclude>**/target/**</exclude>
+                                <exclude>**/*.log</exclude>
+                                <exclude>.codecov.yml</exclude>
+                                <exclude>.travis.yml</exclude>
+                                <exclude>**/codestyle/*</exclude>
+                                <exclude>**/node_modules/**</exclude>
+                                <exclude>**/.babelrc</exclude>
+                                <exclude>**/.editorconfig</exclude>
+                                <exclude>**/package-lock.json</exclude>
+                                <exclude>**/package.json</exclude>
+                                <exclude>**/OpenSans.css</exclude>
+                                <exclude>**/.eslintignore</exclude>
+                                <exclude>**/.browserslistrc</exclude>
+                                <exclude>**/resources/META-INF/**</exclude>
+                                <exclude>**/src/main/resources/public/**</exclude>
+                                <exclude>**/src/licenses/**</exclude>
+                                <exclude>.github/**</exclude>
+                                <exclude>**/assets/**</exclude>
+                                <exclude>**/yarn.lock</exclude>
+                                <exclude>**/node/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>${maven-flatten-version}</version>
@@ -273,7 +352,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>${skipJunitTest}</skip>
                 </configuration>
             </plugin>
             <plugin>

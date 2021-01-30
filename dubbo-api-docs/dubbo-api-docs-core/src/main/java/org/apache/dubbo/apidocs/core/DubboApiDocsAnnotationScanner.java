@@ -31,23 +31,37 @@ import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.dubbo.apidocs.annotations.*;
+import org.apache.dubbo.apidocs.annotations.ApiModule;
+import org.apache.dubbo.apidocs.annotations.ApiDoc;
+import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.utils.ClassTypeUtil;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Import;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,13 +109,17 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 return;
             }
             boolean async;
+            String apiVersion;
             if (apiModuleClass.isAnnotationPresent(Service.class)) {
                 Service dubboService = apiModuleClass.getAnnotation(Service.class);
                 async = dubboService.async();
+                apiVersion = dubboService.version();
             } else {
                 DubboService dubboService = apiModuleClass.getAnnotation(DubboService.class);
                 async = dubboService.async();
+                apiVersion = dubboService.version();
             }
+            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
             //module name
@@ -109,7 +127,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             //interface name containing package path
             moduleCacheItem.setModuleClassName(moduleAnn.apiInterface().getCanonicalName());
             //module version
-            moduleCacheItem.setModuleVersion(moduleAnn.version());
+            moduleCacheItem.setModuleVersion(apiVersion);
 
             Method[] apiModuleMethods = apiModuleClass.getMethods();
             // API basic information list in module cache
@@ -117,7 +135,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             moduleCacheItem.setModuleApiList(moduleApiList);
             for (Method method : apiModuleMethods) {
                 if (method.isAnnotationPresent(ApiDoc.class)) {
-                    processApiDocAnnotation(method, moduleApiList, moduleAnn, async, moduleCacheItem);
+                    processApiDocAnnotation(method, moduleApiList, moduleAnn, async, moduleCacheItem, apiVersion);
                 }
             }
         });
@@ -125,7 +143,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
-                                         boolean async, ModuleCacheItem moduleCacheItem) {
+                                         boolean async, ModuleCacheItem moduleCacheItem, String apiVersion) {
+
         ApiDoc dubboApi = method.getAnnotation(ApiDoc.class);
 
         // API basic information in API list in module
@@ -138,7 +157,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         // API description
         apiListItem.setDescription(dubboApi.description());
         //API version
-        apiListItem.setApiVersion(dubboApi.version());
+        apiListItem.setApiVersion(apiVersion);
         //Description of API return data
         apiListItem.setApiRespDec(dubboApi.responseClassDescription());
 
@@ -150,11 +169,12 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         Class<?>[] argsClass = method.getParameterTypes();
         Annotation[][] argsAnns = method.getParameterAnnotations();
         Parameter[] parameters = method.getParameters();
+        Type[] parametersTypes = method.getGenericParameterTypes();
         List<ApiParamsCacheItem> paramList = new ArrayList<>(argsClass.length);
         apiParamsAndResp.setAsync(async);
         apiParamsAndResp.setApiName(method.getName());
         apiParamsAndResp.setApiDocName(dubboApi.value());
-        apiParamsAndResp.setApiVersion(dubboApi.version());
+        apiParamsAndResp.setApiVersion(apiVersion);
         apiParamsAndResp.setApiRespDec(dubboApi.responseClassDescription());
         apiParamsAndResp.setDescription(dubboApi.description());
         apiParamsAndResp.setApiModelClass(moduleCacheItem.getModuleClassName());
@@ -163,6 +183,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         StringBuilder methodParamInfoSb = new StringBuilder();
         for (int i = 0; i < argsClass.length; i++) {
             Class<?> argClass = argsClass[i];
+            Type parameterType = parametersTypes[i];
             methodParamInfoSb.append("[").append(i).append("]").append(argClass.getCanonicalName());
             if (i + 1 < argsClass.length) {
                 methodParamInfoSb.append(" | ");
@@ -180,15 +201,15 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 }
             }
             ParamBean paramBean = this.processHtmlType(argClass, requestParam, null);
+            Parameter methodParameter = parameters[i];
             if (paramBean == null) {
                 // Not a basic type, handling properties in method parameters
-                List<ParamBean> apiParamsList = processField(argClass);
+                List<ParamBean> apiParamsList = processField(argClass, parameterType, methodParameter);
                 if (apiParamsList != null && !apiParamsList.isEmpty()) {
                     paramListItem.setParamInfo(apiParamsList);
                 }
             } else {
                 // Is the basic type
-                Parameter methodParameter = parameters[i];
                 paramListItem.setName(methodParameter.getName());
                 paramListItem.setHtmlType(paramBean.getHtmlType().name());
                 paramListItem.setAllowableValues(paramBean.getAllowableValues());
@@ -202,6 +223,12 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 } else {
                     paramListItem.setRequired(false);
                 }
+
+                if (HtmlTypeEnum.TEXT_AREA.name().equals(paramListItem.getHtmlType())) {
+                    List<ParamBean> apiParamsList = processField(argClass, parameterType, methodParameter);
+                    paramListItem.setAllowableValues(apiParamsList.get(0).getAllowableValues());
+                    paramListItem.setSubParamsJson(apiParamsList.get(0).getSubParamsJson());
+                }
             }
         }
         apiParamsAndResp.setMethodParamInfo(methodParamInfoSb.toString());
@@ -211,19 +238,76 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
      * For the attributes in the method parameters, only one layer is processed.
      * The deeper layer is directly converted to JSON, and the deeper layer is up to 5 layers
      */
-    private List<ParamBean> processField(Class<?> argClass) {
+    private List<ParamBean> processField(Class<?> argClass, Type parameterType, Parameter parameter) {
+        Map<String, String> genericTypeAndNamesMap;
+        if (parameterType instanceof ParameterizedTypeImpl) {
+            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) parameterType;
+            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
+            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+            genericTypeAndNamesMap =  new HashMap<>(typeVariables.length);
+            for (int i = 0; i < typeVariables.length; i++) {
+                genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+            }
+        } else {
+            genericTypeAndNamesMap = Collections.EMPTY_MAP;
+        }
 
         List<ParamBean> apiParamsList = new ArrayList(16);
         // get all fields
         List<Field> allFields = ClassTypeUtil.getAllFields(null, argClass);
-        for (Field field : allFields) {
+        if (allFields.size() > 0) {
+            for (Field field : allFields) {
+                if ("serialVersionUID".equals(field.getName())) {
+                    continue;
+                }
+                ParamBean paramBean = new ParamBean();
+                paramBean.setName(field.getName());
+                String genericTypeName = genericTypeAndNamesMap.get(field.getGenericType().getTypeName());
+                Class<?> genericType = null;
+                if (StringUtils.isBlank(genericTypeName)) {
+                    paramBean.setJavaType(field.getType().getCanonicalName());
+                } else {
+                    paramBean.setJavaType(genericTypeName);
+                    genericType =ClassTypeUtil.makeClass(genericTypeName);
+                }
+                RequestParam requestParam = null;
+                if (field.isAnnotationPresent(RequestParam.class)) {
+                    // Handling @RequestParam annotations on properties
+                    requestParam = field.getAnnotation(RequestParam.class);
+                    paramBean.setDocName(requestParam.value());
+                    paramBean.setRequired(requestParam.required());
+                    paramBean.setDescription(requestParam.description());
+                    paramBean.setExample(requestParam.example());
+                    paramBean.setDefaultValue(requestParam.defaultValue());
+                } else {
+                    paramBean.setRequired(false);
+                }
+
+                ParamBean tempParamBean = this.processHtmlType(null == genericType ? field.getType() : genericType, requestParam, paramBean);
+                if (tempParamBean == null || HtmlTypeEnum.TEXT_AREA.equals(tempParamBean.getHtmlType())) {
+                    Object objResult;
+                    if (null == genericType) {
+                        objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
+                                field.getGenericType(), field.getType(), 0);
+                    } else {
+                        objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
+                                null, genericType, 0, true);
+                    }
+                    if (!ClassTypeUtil.isBaseType(objResult)) {
+                        paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
+                        paramBean.setSubParamsJson(JSON.toJSONString(objResult, ClassTypeUtil.FAST_JSON_FEATURES));
+                    }
+                }
+                apiParamsList.add(paramBean);
+            }
+        } else {
             ParamBean paramBean = new ParamBean();
-            paramBean.setName(field.getName());
-            paramBean.setJavaType(field.getType().getCanonicalName());
+            paramBean.setName(parameter.getName());
+            paramBean.setJavaType(argClass.getCanonicalName());
             RequestParam requestParam = null;
-            if (field.isAnnotationPresent(RequestParam.class)) {
+            if (parameter.isAnnotationPresent(RequestParam.class)) {
                 // Handling @RequestParam annotations on properties
-                requestParam = field.getAnnotation(RequestParam.class);
+                requestParam = parameter.getAnnotation(RequestParam.class);
                 paramBean.setDocName(requestParam.value());
                 paramBean.setRequired(requestParam.required());
                 paramBean.setDescription(requestParam.description());
@@ -233,14 +317,11 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 paramBean.setRequired(false);
             }
 
-            if (this.processHtmlType(field.getType(), requestParam, paramBean) == null) {
-                // Not a basic type, handle as JSON
-                Object objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                        field.getGenericType(), field.getType(), 0);
-                if (!ClassTypeUtil.isBaseType(objResult)) {
-                    paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
-                    paramBean.setSubParamsJson(JSON.toJSONString(objResult, ClassTypeUtil.FAST_JSON_FEATURES));
-                }
+            Object objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
+                    parameterType, argClass, 0);
+            if (!ClassTypeUtil.isBaseType(objResult)) {
+                paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
+                paramBean.setSubParamsJson(JSON.toJSONString(objResult, ClassTypeUtil.FAST_JSON_FEATURES));
             }
             apiParamsList.add(paramBean);
         }
@@ -272,7 +353,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         } else if (Byte.class.isAssignableFrom(classType) || byte.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.TEXT_BYTE);
             processed = true;
-        } else if (Long.class.isAssignableFrom(classType) || long.class.isAssignableFrom(classType)) {
+        } else if (Long.class.isAssignableFrom(classType) || long.class.isAssignableFrom(classType) ||
+                BigDecimal.class.isAssignableFrom(classType) || BigInteger.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
         } else if (Double.class.isAssignableFrom(classType) || double.class.isAssignableFrom(classType)) {
@@ -290,7 +372,18 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         } else if (Short.class.isAssignableFrom(classType) || short.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.NUMBER_INTEGER);
             processed = true;
+        } else if (Date.class.isAssignableFrom(classType) || LocalDateTime.class.isAssignableFrom(classType)) {
+            param.setHtmlType(HtmlTypeEnum.DATETIME_SELECTOR);
+            processed = true;
+        } else if (LocalDate.class.isAssignableFrom(classType)) {
+            param.setHtmlType(HtmlTypeEnum.DATE_SELECTOR);
+            processed = true;
+        } else if (classType.isArray() || Collection.class.isAssignableFrom(classType) ||
+                Map.class.isAssignableFrom(classType)) {
+            param.setHtmlType(HtmlTypeEnum.TEXT_AREA);
+            processed = true;
         }
+
         if (processed) {
             // Processed, time to return
             if (hasAllowableValues) {

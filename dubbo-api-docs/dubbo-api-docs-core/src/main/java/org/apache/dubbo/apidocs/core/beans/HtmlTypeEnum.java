@@ -55,6 +55,16 @@ public enum HtmlTypeEnum {
      * Text area, which is generally used to show the JSON string of the Java Bean contained in the parameter.
      */
     TEXT_AREA,
+
+    /**
+     * date selector.
+     */
+    DATE_SELECTOR,
+
+    /**
+     * datetime selector.
+     */
+    DATETIME_SELECTOR,
     ;
 
 }

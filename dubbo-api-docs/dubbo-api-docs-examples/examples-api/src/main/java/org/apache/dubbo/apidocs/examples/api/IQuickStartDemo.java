@@ -16,8 +16,15 @@
  */
 package org.apache.dubbo.apidocs.examples.api;
 
+import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
+import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean;
+import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean2;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRespBean;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 /**
  * quick start demo.
@@ -31,6 +38,26 @@ public interface IQuickStartDemo {
      * @param beanParam
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
      */
-    QuickStartRespBean quickStart(String strParam, QuickStartRequestBean beanParam);
+    QuickStartRespBean quickStart(List<DemoParamBean4> strParam, QuickStartRequestBean beanParam);
 
+    /**
+     * quick start demo2, request use generic.
+     * @param beanList
+     * @param beanParam
+     * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
+     */
+    QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam);
+
+    /**
+     * quick start demo3, request use multiple generic.
+     * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
+     */
+    QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam);
+
+    /**
+     * quick start demo4, response use multiple generic bean, but not set generic.
+     * @param beanParam
+     * @return org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase
+     */
+    QuickStartRequestBase quickStart4(BigDecimal number, QuickStartRequestBean2 beanParam);
 }

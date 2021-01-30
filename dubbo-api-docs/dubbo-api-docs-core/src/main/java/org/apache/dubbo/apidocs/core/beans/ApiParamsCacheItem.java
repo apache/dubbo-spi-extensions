@@ -45,6 +45,11 @@ public class ApiParamsCacheItem {
 
     private Boolean required;
 
+    /**
+     * JSON string corresponding.
+     */
+    private String subParamsJson;
+
     public String getName() {
         return name;
     }
@@ -131,5 +136,13 @@ public class ApiParamsCacheItem {
 
     public void setRequired(Boolean required) {
         this.required = required;
+    }
+
+    public String getSubParamsJson() {
+        return subParamsJson;
+    }
+
+    public void setSubParamsJson(String subParamsJson) {
+        this.subParamsJson = subParamsJson;
     }
 }

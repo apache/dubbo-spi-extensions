@@ -43,6 +43,7 @@ public @interface ApiDoc {
     /**
      * api version.
      */
+    @Deprecated
     String version() default "";
 
     /**

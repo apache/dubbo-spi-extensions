@@ -21,13 +21,28 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.lang3.StringUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.dubbo.apidocs.annotations.*;
+import org.apache.dubbo.apidocs.annotations.RequestParam;
+import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
@@ -77,6 +92,20 @@ public class ClassTypeUtil {
      * @return java.lang.Object
      */
     public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount) {
+        return initClassTypeWithDefaultValue(genericType, classType, processCount, false);
+    }
+
+    /**
+     * Instantiate class and its fields.
+     *
+     * @param genericType           genericType
+     * @param classType             classType
+     * @param processCount          processCount
+     * @param isBuildClassAttribute isBuildClassAttribute
+     * @return java.lang.Object
+     */
+    public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount,
+                                                       boolean isBuildClassAttribute) {
         if (processCount >= PROCESS_COUNT_MAX) {
             LOG.warn("The depth of bean has exceeded 10 layers, the deeper layer will be ignored! " +
                     "Please modify the parameter structure or check whether there is circular reference in bean!");
@@ -89,7 +118,23 @@ public class ClassTypeUtil {
             return initResult;
         }
 
+        Map<String, String> genericTypeAndNamesMap;
+        if (genericType instanceof ParameterizedTypeImpl) {
+            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) genericType;
+            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
+            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+            genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
+            for (int i = 0; i < typeVariables.length; i++) {
+                genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+            }
+        } else {
+            genericTypeAndNamesMap = Collections.EMPTY_MAP;
+        }
+
         Map<String, Object> result = new HashMap<>(16);
+        if (isBuildClassAttribute) {
+            result.put("class", classType.getCanonicalName());
+        }
         // get all fields
         List<Field> allFields = getAllFields(null, classType);
         for (Field field2 : allFields) {
@@ -113,23 +158,11 @@ public class ClassTypeUtil {
                 }
             } else {
                 // Check if the type of the property is generic
-                if ("T".equals(field2.getGenericType().getTypeName())) {
+                String genericTypeName = genericTypeAndNamesMap.get(field2.getGenericType().getTypeName());
+                if (StringUtils.isNotBlank(genericTypeName)) {
                     // The type of the attribute is generic. Find the generic from the definition of
                     // the class in which the attribute is located
-                    ParameterizedType pt = (ParameterizedType) genericType;
-                    Type[] actualTypeArguments = pt.getActualTypeArguments();
-                    if (actualTypeArguments.length > 0) {
-                        if (actualTypeArguments.length == 1) {
-                            result.put(field2.getName(), initClassTypeWithDefaultValue(
-                                    makeParameterizedType(actualTypeArguments[0].getTypeName()),
-                                    makeClass(pt.getActualTypeArguments()[0].getTypeName()), processCount));
-                        } else {
-                            LOG.warn(classType.getName() + "#" + field2.getName() + " generics are not supported temporarily. " +
-                                    "This property will be ignored");
-                        }
-                    } else {
-                        result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
-                    }
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(null, makeClass(genericTypeName), processCount, true));
                 } else {
                     // Not generic
                     result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
@@ -139,7 +172,7 @@ public class ClassTypeUtil {
         return result;
     }
 
-    private static Object initClassTypeWithDefaultValueNoProceeField(Type genericType, Class<?> classType, int processCount) {
+    public static Object initClassTypeWithDefaultValueNoProceeField(Type genericType, Class<?> classType, int processCount) {
         if (Integer.class.isAssignableFrom(classType) || int.class.isAssignableFrom(classType)) {
             return 0;
         } else if (Byte.class.isAssignableFrom(classType) || byte.class.isAssignableFrom(classType)) {
@@ -215,6 +248,10 @@ public class ClassTypeUtil {
             ParameterizedType pt = (ParameterizedType) genericType;
             String typeName = pt.getActualTypeArguments()[0].getTypeName();
             return initClassTypeWithDefaultValue(makeParameterizedType(typeName), makeClass(typeName), processCount);
+        } else if (BigDecimal.class.isAssignableFrom(classType)) {
+            return 0;
+        } else if (BigInteger.class.isAssignableFrom(classType)) {
+            return 0;
         }
         return null;
     }
@@ -234,7 +271,9 @@ public class ClassTypeUtil {
                 o instanceof Character ||
                 o instanceof Short ||
                 o instanceof Boolean ||
-                o instanceof String) {
+                o instanceof String ||
+                o instanceof BigDecimal ||
+                o instanceof BigInteger) {
             return true;
         }
         return false;
@@ -280,7 +319,7 @@ public class ClassTypeUtil {
         className = className.trim();
         try {
             if (className.indexOf(GENERIC_START_SYMBOL) == -1) {
-                // CompletableFuture 中的类没有泛型
+                // classes in CompletableFuture have no generics
                 return Class.forName(className);
             } else {
                 return Class.forName(className.substring(0, className.indexOf("<")));

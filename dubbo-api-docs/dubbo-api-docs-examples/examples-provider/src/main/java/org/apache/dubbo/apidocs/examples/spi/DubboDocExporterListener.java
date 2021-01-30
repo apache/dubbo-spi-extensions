@@ -14,41 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.apidocs.examples.params;
+package org.apache.dubbo.apidocs.examples.spi;
 
-import org.apache.dubbo.apidocs.annotations.ResponseProperty;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Exporter;
+import org.apache.dubbo.rpc.ExporterListener;
+import org.apache.dubbo.rpc.RpcException;
 
 /**
- * quick star demo response bean.
+ * .
+ *
+ * @date 2020/10/29 10:50
  */
-public class QuickStartRespBean implements java.io.Serializable {
-
-    private static final long serialVersionUID = 7598240511561924368L;
-
-    @ResponseProperty(value = "Response code", example = "500")
-    private int code;
-
-    @ResponseProperty("Response message")
-    private String msg;
-
-    public QuickStartRespBean(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+@Activate
+public class DubboDocExporterListener implements ExporterListener {
+    @Override
+    public void exported(Exporter<?> exporter) throws RpcException {
+        System.out.println("=============exported=============");
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
+    @Override
+    public void unexported(Exporter<?> exporter) {
+        System.out.println("=============unexported=============");
     }
 }
