@@ -21,15 +21,28 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.lang3.StringUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.dubbo.apidocs.annotations.*;
+import org.apache.dubbo.apidocs.annotations.RequestParam;
+import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
@@ -85,9 +98,9 @@ public class ClassTypeUtil {
     /**
      * Instantiate class and its fields.
      *
-     * @param genericType  genericType
-     * @param classType    classType
-     * @param processCount processCount
+     * @param genericType           genericType
+     * @param classType             classType
+     * @param processCount          processCount
      * @param isBuildClassAttribute isBuildClassAttribute
      * @return java.lang.Object
      */
@@ -110,12 +123,12 @@ public class ClassTypeUtil {
             ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) genericType;
             TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
             Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
-            genericTypeAndNamesMap =  new HashMap<>(typeVariables.length);
+            genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
             for (int i = 0; i < typeVariables.length; i++) {
                 genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
             }
         } else {
-            genericTypeAndNamesMap =  new HashMap<>(0);
+            genericTypeAndNamesMap = Collections.EMPTY_MAP;
         }
 
         Map<String, Object> result = new HashMap<>(16);

@@ -31,7 +31,9 @@ import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.dubbo.apidocs.annotations.*;
+import org.apache.dubbo.apidocs.annotations.ApiModule;
+import org.apache.dubbo.apidocs.annotations.ApiDoc;
+import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.utils.ClassTypeUtil;
 
 import com.alibaba.fastjson.JSON;
@@ -54,6 +56,7 @@ import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -236,7 +239,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
             }
         } else {
-            genericTypeAndNamesMap =  new HashMap<>(0);
+            genericTypeAndNamesMap = Collections.EMPTY_MAP;
         }
 
         List<ParamBean> apiParamsList = new ArrayList(16);
