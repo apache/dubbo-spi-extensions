@@ -138,7 +138,7 @@ public class ClassTypeUtil {
         // get all fields
         List<Field> allFields = getAllFields(null, classType);
         for (Field field2 : allFields) {
-            if ("serialVersionUID".equals(field2.getName())) {
+            if ("serialVersionUID".equals(field2.getName()) || "this$0".equals(field2.getName())) {
                 continue;
             }
             if (String.class.isAssignableFrom(field2.getType())) {
@@ -162,7 +162,7 @@ public class ClassTypeUtil {
                 if (StringUtils.isNotBlank(genericTypeName)) {
                     // The type of the attribute is generic. Find the generic from the definition of
                     // the class in which the attribute is located
-                    result.put(field2.getName(), initClassTypeWithDefaultValue(null, makeClass(genericTypeName), processCount, true));
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(makeParameterizedType(genericTypeName), makeClass(genericTypeName), processCount, true));
                 } else {
                     // Not generic
                     result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));

@@ -257,7 +257,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         List<Field> allFields = ClassTypeUtil.getAllFields(null, argClass);
         if (allFields.size() > 0) {
             for (Field field : allFields) {
-                if ("serialVersionUID".equals(field.getName())) {
+                if ("serialVersionUID".equals(field.getName()) || "this$0".equals(field.getName())) {
                     continue;
                 }
                 ParamBean paramBean = new ParamBean();
@@ -268,7 +268,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                     paramBean.setJavaType(field.getType().getCanonicalName());
                 } else {
                     paramBean.setJavaType(genericTypeName);
-                    genericType =ClassTypeUtil.makeClass(genericTypeName);
+                    genericType = ClassTypeUtil.makeClass(genericTypeName);
                 }
                 RequestParam requestParam = null;
                 if (field.isAnnotationPresent(RequestParam.class)) {
@@ -291,7 +291,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                                 field.getGenericType(), field.getType(), 0);
                     } else {
                         objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                                null, genericType, 0, true);
+                                ClassTypeUtil.makeParameterizedType(genericTypeName), genericType, 0, true);
                     }
                     if (!ClassTypeUtil.isBaseType(objResult)) {
                         paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);

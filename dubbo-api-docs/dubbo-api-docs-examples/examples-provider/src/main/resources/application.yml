@@ -31,7 +31,9 @@ dubbo:
   application:
     name: dubbo-api-docs-example-provider
   metadata-report:
-    address: nacos://127.0.0.1:8848
+    address: zookeeper://127.0.0.1:2181
+  config-center:
+    address: zookeeper://127.0.0.1:2181
 demo:
   apiversion:
     quickstart: v0.1
