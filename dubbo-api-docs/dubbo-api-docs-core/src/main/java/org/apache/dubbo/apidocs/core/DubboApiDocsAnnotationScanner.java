@@ -411,22 +411,37 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         } else if (Enum.class.isAssignableFrom(classType)) {
             // process enum
             param.setHtmlType(HtmlTypeEnum.SELECT);
+
+            Object[] enumConstants = classType.getEnumConstants();
+            String[] enumValues = new String[enumConstants.length];
+            try {
+                Method getNameMethod = classType.getMethod(METHOD_NAME_NAME);
+                for (int i = 0; i < enumConstants.length; i++) {
+                    Object obj = enumConstants[i];
+                    enumValues[i] = (String) getNameMethod.invoke(obj);
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                LOG.error(e.getMessage(), e);
+            }
+
             if (!hasAllowableValues) {
                 // If there is no optional value, it is taken from the enumeration.
-                //TODO If there is an optional value, it is necessary
-                // to check whether the optional value matches the enumeration. It is add it later
-                Object[] enumConstants = classType.getEnumConstants();
-                String[] enumAllowableValues = new String[enumConstants.length];
-                try {
-                    Method getNameMethod = classType.getMethod(METHOD_NAME_NAME);
-                    for (int i = 0; i < enumConstants.length; i++) {
-                        Object obj = enumConstants[i];
-                        enumAllowableValues[i] = (String) getNameMethod.invoke(obj);
+                param.setAllowableValues(enumValues);
+            } else {
+                // If there has allowable values, it is necessary to check whether the allowable values matches the enumeration.
+                boolean checkSuccess = true;
+                String[] allowableValues = param.getAllowableValues();
+                for (String allowableValue : allowableValues) {
+                    for (String enumValue : enumValues) {
+                        if (!StringUtils.equals(enumValue, allowableValue)) {
+                            checkSuccess = false;
+                        }
                     }
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    LOG.error(e.getMessage(), e);
                 }
-                param.setAllowableValues(enumAllowableValues);
+                if (!checkSuccess) {
+                    LOG.error("The allowed value in the @RequestParam annotation does not match the " +
+                            "annotated enumeration " + classType.getCanonicalName() + ", please check!");
+                }
             }
             processed = true;
         }
