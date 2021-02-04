@@ -46,6 +46,15 @@ import org.apache.dubbo.apidocs.annotations.ResponseProperty;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 
+import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_SERIALVERSIONUID;
+import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_THIS$0;
+import static org.apache.dubbo.apidocs.core.Constants.CLASS_FIELD_NAME;
+import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_LEFT;
+import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_RIGHT;
+import static org.apache.dubbo.apidocs.core.Constants.RESPONSE_STR_EXAMPLE;
+import static org.apache.dubbo.apidocs.core.Constants.ENUM_VALUES_SEPARATOR;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_NAME_NAME;
+
 /**
  * Java class tool class, special for Dubbo doc.
  */
@@ -133,12 +142,12 @@ public class ClassTypeUtil {
 
         Map<String, Object> result = new HashMap<>(16);
         if (isBuildClassAttribute) {
-            result.put("class", classType.getCanonicalName());
+            result.put(CLASS_FIELD_NAME, classType.getCanonicalName());
         }
         // get all fields
         List<Field> allFields = getAllFields(null, classType);
         for (Field field2 : allFields) {
-            if ("serialVersionUID".equals(field2.getName())) {
+            if (SKIP_FIELD_SERIALVERSIONUID.equals(field2.getName()) || SKIP_FIELD_THIS$0.equals(field2.getName())) {
                 continue;
             }
             if (String.class.isAssignableFrom(field2.getType())) {
@@ -149,7 +158,7 @@ public class ClassTypeUtil {
                     ResponseProperty responseProperty = field2.getAnnotation(ResponseProperty.class);
                     StringBuilder strValue = new StringBuilder(responseProperty.value());
                     if (StringUtils.isNotBlank(responseProperty.example())) {
-                        strValue.append("【example: ").append(responseProperty.example()).append("】");
+                        strValue.append(SQUARE_BRACKET_LEFT).append(RESPONSE_STR_EXAMPLE).append(responseProperty.example()).append(SQUARE_BRACKET_RIGHT);
                     }
                     result.put(field2.getName(), strValue.toString());
                 } else {
@@ -162,7 +171,7 @@ public class ClassTypeUtil {
                 if (StringUtils.isNotBlank(genericTypeName)) {
                     // The type of the attribute is generic. Find the generic from the definition of
                     // the class in which the attribute is located
-                    result.put(field2.getName(), initClassTypeWithDefaultValue(null, makeClass(genericTypeName), processCount, true));
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(makeParameterizedType(genericTypeName), makeClass(genericTypeName), processCount, true));
                 } else {
                     // Not generic
                     result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
@@ -199,14 +208,14 @@ public class ClassTypeUtil {
             return "【" + LocalDateTime.class.getName() + "】yyyy-MM-dd HH:mm:ss";
         } else if (Enum.class.isAssignableFrom(classType)) {
             Object[] enumConstants = classType.getEnumConstants();
-            StringBuilder sb = new StringBuilder("|");
+            StringBuilder sb = new StringBuilder(ENUM_VALUES_SEPARATOR);
             try {
-                Method getName = classType.getMethod("name");
+                Method getName = classType.getMethod(METHOD_NAME_NAME);
                 for (Object obj : enumConstants) {
-                    sb.append(getName.invoke(obj)).append("|");
+                    sb.append(getName.invoke(obj)).append(ENUM_VALUES_SEPARATOR);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                LOG.error("", e);
+                LOG.error(e.getMessage(), e);
             }
             return sb.toString();
         } else if (classType.isArray()) {

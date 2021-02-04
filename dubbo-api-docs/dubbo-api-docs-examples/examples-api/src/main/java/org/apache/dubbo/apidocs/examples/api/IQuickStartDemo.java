@@ -17,6 +17,8 @@
 package org.apache.dubbo.apidocs.examples.api;
 
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
+import org.apache.dubbo.apidocs.examples.params.InnerClassRequestBean;
+import org.apache.dubbo.apidocs.examples.params.InnerClassResponseBean;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean2;
@@ -60,4 +62,11 @@ public interface IQuickStartDemo {
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase
      */
     QuickStartRequestBase quickStart4(BigDecimal number, QuickStartRequestBean2 beanParam);
+
+    /**
+     * internal class test.
+     * @param testBean
+     * @return org.apache.dubbo.apidocs.examples.params.InnerClassResponseBean
+     */
+    InnerClassResponseBean<List<String>> quickStart5(InnerClassRequestBean<List<String>> testBean);
 }

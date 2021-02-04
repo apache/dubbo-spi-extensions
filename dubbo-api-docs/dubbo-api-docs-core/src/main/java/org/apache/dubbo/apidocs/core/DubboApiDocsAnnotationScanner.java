@@ -64,6 +64,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.apache.dubbo.apidocs.core.Constants.DOT;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_LEFT;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_RIGHT;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAMETER_SEPARATOR;
+import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_SERIALVERSIONUID;
+import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_THIS$0;
+import static org.apache.dubbo.apidocs.core.Constants.ALLOWABLE_BOOLEAN_TRUE;
+import static org.apache.dubbo.apidocs.core.Constants.ALLOWABLE_BOOLEAN_FALSE;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_NAME_NAME;
 
 /**
  * Scan and process dubbo doc annotations.
@@ -164,7 +173,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         // API details in cache, contain interface parameters and response information
         ApiCacheItem apiParamsAndResp = new ApiCacheItem();
         DubboApiDocsCache.addApiParamsAndResp(
-                moduleAnn.apiInterface().getCanonicalName() + "." + method.getName(), apiParamsAndResp);
+                moduleAnn.apiInterface().getCanonicalName() + DOT + method.getName(), apiParamsAndResp);
 
         Class<?>[] argsClass = method.getParameterTypes();
         Annotation[][] argsAnns = method.getParameterAnnotations();
@@ -184,9 +193,9 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         for (int i = 0; i < argsClass.length; i++) {
             Class<?> argClass = argsClass[i];
             Type parameterType = parametersTypes[i];
-            methodParamInfoSb.append("[").append(i).append("]").append(argClass.getCanonicalName());
+            methodParamInfoSb.append(METHOD_PARAM_INDEX_BOUNDARY_LEFT).append(i).append(METHOD_PARAM_INDEX_BOUNDARY_RIGHT).append(argClass.getCanonicalName());
             if (i + 1 < argsClass.length) {
-                methodParamInfoSb.append(" | ");
+                methodParamInfoSb.append(METHOD_PARAMETER_SEPARATOR);
             }
             Annotation[] argAnns = argsAnns[i];
             ApiParamsCacheItem paramListItem = new ApiParamsCacheItem();
@@ -257,7 +266,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         List<Field> allFields = ClassTypeUtil.getAllFields(null, argClass);
         if (allFields.size() > 0) {
             for (Field field : allFields) {
-                if ("serialVersionUID".equals(field.getName())) {
+                if (SKIP_FIELD_SERIALVERSIONUID.equals(field.getName()) || SKIP_FIELD_THIS$0.equals(field.getName())) {
                     continue;
                 }
                 ParamBean paramBean = new ParamBean();
@@ -268,7 +277,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                     paramBean.setJavaType(field.getType().getCanonicalName());
                 } else {
                     paramBean.setJavaType(genericTypeName);
-                    genericType =ClassTypeUtil.makeClass(genericTypeName);
+                    genericType = ClassTypeUtil.makeClass(genericTypeName);
                 }
                 RequestParam requestParam = null;
                 if (field.isAnnotationPresent(RequestParam.class)) {
@@ -291,7 +300,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                                 field.getGenericType(), field.getType(), 0);
                     } else {
                         objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                                null, genericType, 0, true);
+                                ClassTypeUtil.makeParameterizedType(genericTypeName), genericType, 0, true);
                     }
                     if (!ClassTypeUtil.isBaseType(objResult)) {
                         paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
@@ -397,27 +406,42 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         if (Boolean.class.isAssignableFrom(classType) || boolean.class.isAssignableFrom(classType)) {
             param.setHtmlType(HtmlTypeEnum.SELECT);
             // Boolean can only be true / false. No matter what the previous allowed value is, it is forced to replace
-            param.setAllowableValues(new String[]{"true", "false"});
+            param.setAllowableValues(new String[]{ALLOWABLE_BOOLEAN_TRUE, ALLOWABLE_BOOLEAN_FALSE});
             processed = true;
         } else if (Enum.class.isAssignableFrom(classType)) {
             // process enum
             param.setHtmlType(HtmlTypeEnum.SELECT);
+
+            Object[] enumConstants = classType.getEnumConstants();
+            String[] enumValues = new String[enumConstants.length];
+            try {
+                Method getNameMethod = classType.getMethod(METHOD_NAME_NAME);
+                for (int i = 0; i < enumConstants.length; i++) {
+                    Object obj = enumConstants[i];
+                    enumValues[i] = (String) getNameMethod.invoke(obj);
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                LOG.error(e.getMessage(), e);
+            }
+
             if (!hasAllowableValues) {
                 // If there is no optional value, it is taken from the enumeration.
-                //TODO If there is an optional value, it is necessary
-                // to check whether the optional value matches the enumeration. It is add it later
-                Object[] enumConstants = classType.getEnumConstants();
-                String[] enumAllowableValues = new String[enumConstants.length];
-                try {
-                    Method getNameMethod = classType.getMethod("name");
-                    for (int i = 0; i < enumConstants.length; i++) {
-                        Object obj = enumConstants[i];
-                        enumAllowableValues[i] = (String) getNameMethod.invoke(obj);
+                param.setAllowableValues(enumValues);
+            } else {
+                // If there has allowable values, it is necessary to check whether the allowable values matches the enumeration.
+                boolean checkSuccess = true;
+                String[] allowableValues = param.getAllowableValues();
+                for (String allowableValue : allowableValues) {
+                    for (String enumValue : enumValues) {
+                        if (!StringUtils.equals(enumValue, allowableValue)) {
+                            checkSuccess = false;
+                        }
                     }
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    LOG.error("", e);
                 }
-                param.setAllowableValues(enumAllowableValues);
+                if (!checkSuccess) {
+                    LOG.error("The allowed value in the @RequestParam annotation does not match the " +
+                            "annotated enumeration " + classType.getCanonicalName() + ", please check!");
+                }
             }
             processed = true;
         }

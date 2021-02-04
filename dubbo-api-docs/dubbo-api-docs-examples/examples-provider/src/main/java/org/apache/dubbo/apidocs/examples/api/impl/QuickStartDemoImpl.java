@@ -21,6 +21,8 @@ import org.apache.dubbo.apidocs.annotations.ApiModule;
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.examples.api.IQuickStartDemo;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
+import org.apache.dubbo.apidocs.examples.params.InnerClassRequestBean;
+import org.apache.dubbo.apidocs.examples.params.InnerClassResponseBean;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean;
 import org.apache.dubbo.apidocs.examples.params.QuickStartRequestBean2;
@@ -28,6 +30,7 @@ import org.apache.dubbo.apidocs.examples.params.QuickStartRespBean;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,5 +69,17 @@ public class QuickStartDemoImpl implements IQuickStartDemo {
         response.setBody3("body3");
         response.setMethod("test");
         return response;
+    }
+
+    @ApiDoc(value = "internal class test", description = "internal class test.", responseClassDescription="Internal class test, response bean.")
+    @Override
+    public InnerClassResponseBean<List<String>> quickStart5(InnerClassRequestBean<List<String>> testBean) {
+        InnerClassResponseBean<List<String>> responseBean = new InnerClassResponseBean<>();
+        List<String> respT = new ArrayList<>(2);
+        respT.add("respT string1");
+        respT.add("respT string2");
+        responseBean.settResp(respT);
+
+        return responseBean;
     }
 }
