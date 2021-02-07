@@ -75,5 +75,10 @@ public class Constants {
 
     public static final String ENUM_VALUES_SEPARATOR = "|";
 
+    public static final Object EMPTY_OBJECT_INSTANCE = new Object();
+
+    public static final String STRING_EMPTY = "";
+
+    public static final String STRING_KEY = "key";
 
 }

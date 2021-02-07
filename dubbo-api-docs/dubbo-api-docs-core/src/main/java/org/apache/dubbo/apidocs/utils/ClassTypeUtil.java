@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -54,6 +55,9 @@ import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_RIGHT;
 import static org.apache.dubbo.apidocs.core.Constants.RESPONSE_STR_EXAMPLE;
 import static org.apache.dubbo.apidocs.core.Constants.ENUM_VALUES_SEPARATOR;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_NAME_NAME;
+import static org.apache.dubbo.apidocs.core.Constants.EMPTY_OBJECT_INSTANCE;
+import static org.apache.dubbo.apidocs.core.Constants.STRING_EMPTY;
+import static org.apache.dubbo.apidocs.core.Constants.STRING_KEY;
 
 /**
  * Java class tool class, special for Dubbo doc.
@@ -88,7 +92,20 @@ public class ClassTypeUtil {
     private static final String GENERIC_START_SYMBOL = "<";
 
     public static String calss2Json(Type genericType, Class<?> classType) {
-        Object obj = initClassTypeWithDefaultValue(genericType, classType, 0);
+        Map<String, String> genericTypeAndNamesMap;
+        if (genericType instanceof ParameterizedTypeImpl) {
+            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) genericType;
+            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
+            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+            genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
+            for (int i = 0; i < typeVariables.length; i++) {
+                genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+            }
+        } else {
+            genericTypeAndNamesMap = Collections.EMPTY_MAP;
+        }
+
+        Object obj = initClassTypeWithDefaultValue(genericType, classType, 0, genericTypeAndNamesMap);
         return JSON.toJSONString(obj, FAST_JSON_FEATURES);
     }
 
@@ -100,8 +117,10 @@ public class ClassTypeUtil {
      * @param processCount processCount
      * @return java.lang.Object
      */
-    public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount) {
-        return initClassTypeWithDefaultValue(genericType, classType, processCount, false);
+    public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount,
+                                                       Map<String, String> methodPrarmGenericTypeAndNamesMap) {
+        return initClassTypeWithDefaultValue(genericType, classType, processCount, false,
+                methodPrarmGenericTypeAndNamesMap);
     }
 
     /**
@@ -114,7 +133,8 @@ public class ClassTypeUtil {
      * @return java.lang.Object
      */
     public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount,
-                                                       boolean isBuildClassAttribute) {
+                                                       boolean isBuildClassAttribute,
+                                                       Map<String, String> methodPrarmGenericTypeAndNamesMap) {
         if (processCount >= PROCESS_COUNT_MAX) {
             LOG.warn("The depth of bean has exceeded 10 layers, the deeper layer will be ignored! " +
                     "Please modify the parameter structure or check whether there is circular reference in bean!");
@@ -122,7 +142,8 @@ public class ClassTypeUtil {
         }
         processCount++;
 
-        Object initResult = initClassTypeWithDefaultValueNoProceeField(genericType, classType, processCount);
+        Object initResult = initClassTypeWithDefaultValueNoProceeField(genericType, classType, processCount,
+                methodPrarmGenericTypeAndNamesMap);
         if (null != initResult) {
             return initResult;
         }
@@ -158,12 +179,14 @@ public class ClassTypeUtil {
                     ResponseProperty responseProperty = field2.getAnnotation(ResponseProperty.class);
                     StringBuilder strValue = new StringBuilder(responseProperty.value());
                     if (StringUtils.isNotBlank(responseProperty.example())) {
-                        strValue.append(SQUARE_BRACKET_LEFT).append(RESPONSE_STR_EXAMPLE).append(responseProperty.example()).append(SQUARE_BRACKET_RIGHT);
+                        strValue.append(SQUARE_BRACKET_LEFT).append(RESPONSE_STR_EXAMPLE)
+                                .append(responseProperty.example()).append(SQUARE_BRACKET_RIGHT);
                     }
                     result.put(field2.getName(), strValue.toString());
                 } else {
                     // It's string, but there's no annotation
-                    result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(),
+                            processCount, methodPrarmGenericTypeAndNamesMap));
                 }
             } else {
                 // Check if the type of the property is generic
@@ -171,17 +194,25 @@ public class ClassTypeUtil {
                 if (StringUtils.isNotBlank(genericTypeName)) {
                     // The type of the attribute is generic. Find the generic from the definition of
                     // the class in which the attribute is located
-                    result.put(field2.getName(), initClassTypeWithDefaultValue(makeParameterizedType(genericTypeName), makeClass(genericTypeName), processCount, true));
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(makeParameterizedType(genericTypeName),
+                            makeClass(genericTypeName),
+                            processCount, true, methodPrarmGenericTypeAndNamesMap));
                 } else {
                     // Not generic
-                    result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(), processCount));
+                    result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(),
+                            processCount, methodPrarmGenericTypeAndNamesMap));
                 }
             }
         }
         return result;
     }
 
-    public static Object initClassTypeWithDefaultValueNoProceeField(Type genericType, Class<?> classType, int processCount) {
+    public static Object initClassTypeWithDefaultValueNoProceeField(
+            Type genericType, Class<?> classType, int processCount,
+            Map<String, String> methodPrarmGenericTypeAndNamesMap) {
+        if (null == classType) {
+            return EMPTY_OBJECT_INSTANCE;
+        }
         if (Integer.class.isAssignableFrom(classType) || int.class.isAssignableFrom(classType)) {
             return 0;
         } else if (Byte.class.isAssignableFrom(classType) || byte.class.isAssignableFrom(classType)) {
@@ -193,7 +224,7 @@ public class ClassTypeUtil {
         } else if (Float.class.isAssignableFrom(classType) || float.class.isAssignableFrom(classType)) {
             return 0.0F;
         } else if (String.class.isAssignableFrom(classType)) {
-            return "";
+            return STRING_EMPTY;
         } else if (Character.class.isAssignableFrom(classType) || char.class.isAssignableFrom(classType)) {
             return 'c';
         } else if (Short.class.isAssignableFrom(classType) || short.class.isAssignableFrom(classType)) {
@@ -219,44 +250,88 @@ public class ClassTypeUtil {
             }
             return sb.toString();
         } else if (classType.isArray()) {
-            Class<?> arrType = classType.getComponentType();
-            Object obj = initClassTypeWithDefaultValue(null, arrType, processCount);
+            Object obj;
+            if (null != genericType && genericType instanceof GenericArrayType) {
+                GenericArrayType pt = (GenericArrayType) genericType;
+                String subTypeName = pt.getGenericComponentType().getTypeName();
+
+                boolean isBuildClassAttribute = false;
+                if (null != methodPrarmGenericTypeAndNamesMap) {
+                    String subTypeGenericTypeName = methodPrarmGenericTypeAndNamesMap.get(subTypeName);
+                    if (StringUtils.isNotBlank(subTypeGenericTypeName)) {
+                        subTypeName = subTypeGenericTypeName;
+                        isBuildClassAttribute = true;
+                    }
+                }
+
+                obj = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName),
+                        processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
+            } else {
+                Class<?> arrType = classType.getComponentType();
+                obj = initClassTypeWithDefaultValue(null, arrType, processCount, methodPrarmGenericTypeAndNamesMap);
+            }
             return new Object[]{obj};
         } else if (Collection.class.isAssignableFrom(classType)) {
             List<Object> list = new ArrayList<>(1);
-            if (genericType == null) {
-                list.add(new Object());
+            if (null == genericType) {
+                list.add(EMPTY_OBJECT_INSTANCE);
                 return list;
             }
             Object obj;
             if (genericType instanceof ParameterizedType) {
                 ParameterizedType pt = (ParameterizedType) genericType;
                 String subTypeName = pt.getActualTypeArguments()[0].getTypeName();
-                obj = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName), processCount);
+
+                boolean isBuildClassAttribute = false;
+                if (null != methodPrarmGenericTypeAndNamesMap) {
+                    String subTypeGenericTypeName = methodPrarmGenericTypeAndNamesMap.get(subTypeName);
+                    if (StringUtils.isNotBlank(subTypeGenericTypeName)) {
+                        subTypeName = subTypeGenericTypeName;
+                        isBuildClassAttribute = true;
+                    }
+                }
+
+                obj = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName),
+                        processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
                 list.add(obj);
             }
             return list;
         } else if (Map.class.isAssignableFrom(classType)) {
             Map<String, Object> map = new HashMap<>(1);
             if (genericType == null) {
-                map.put("", new Object());
+                map.put(STRING_KEY, EMPTY_OBJECT_INSTANCE);
                 return map;
             }
             if (genericType instanceof ParameterizedType) {
                 ParameterizedType pt = (ParameterizedType) genericType;
                 String subTypeName = pt.getActualTypeArguments()[1].getTypeName();
-                Object objValue = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName), processCount);
-                map.put("", objValue);
+
+                boolean isBuildClassAttribute = false;
+                if (null != methodPrarmGenericTypeAndNamesMap) {
+                    String subTypeGenericTypeName = methodPrarmGenericTypeAndNamesMap.get(subTypeName);
+                    if (StringUtils.isNotBlank(subTypeGenericTypeName)) {
+                        subTypeName = subTypeGenericTypeName;
+                        isBuildClassAttribute = true;
+                    } else {
+                        map.put(STRING_KEY, EMPTY_OBJECT_INSTANCE);
+                        return map;
+                    }
+                }
+
+                Object objValue = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName),
+                        processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
+                map.put(STRING_KEY, objValue);
             }
             return map;
         } else if (CompletableFuture.class.isAssignableFrom(classType)) {
             // process CompletableFuture
             if (genericType == null) {
-                return new Object();
+                return EMPTY_OBJECT_INSTANCE;
             }
             ParameterizedType pt = (ParameterizedType) genericType;
             String typeName = pt.getActualTypeArguments()[0].getTypeName();
-            return initClassTypeWithDefaultValue(makeParameterizedType(typeName), makeClass(typeName), processCount);
+            return initClassTypeWithDefaultValue(makeParameterizedType(typeName), makeClass(typeName),
+                    processCount, methodPrarmGenericTypeAndNamesMap);
         } else if (BigDecimal.class.isAssignableFrom(classType)) {
             return 0;
         } else if (BigInteger.class.isAssignableFrom(classType)) {

@@ -31,6 +31,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class QuickStartDemoImpl implements IQuickStartDemo {
 
     @ApiDoc(value = "quick start demo, request use generic.", version = "v0.1", description = "quick start demo, request use generic.", responseClassDescription="A quick star response bean")
     @Override
-    public QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, DemoParamBean4> beanParam) {
+    public QuickStartRespBean quickStart2(Map<String, DemoParamBean4> beanList, QuickStartRequestBase<QuickStartRequestBean, InnerClassRequestBean<DemoParamBean4>> beanParam) {
         return new QuickStartRespBean(200, "【" + beanParam.getMethod() + "】hello " + beanParam.getBody3() + ", " + beanParam.toString());
     }
 
@@ -65,7 +66,7 @@ public class QuickStartDemoImpl implements IQuickStartDemo {
     @Override
     public QuickStartRequestBase quickStart4(BigDecimal number, QuickStartRequestBean2 beanParam) {
         QuickStartRequestBase response = new QuickStartRequestBase();
-        response.setBody("body");
+        response.setBody(Arrays.asList("body2-1", "body2-2"));
         response.setBody3("body3");
         response.setMethod("test");
         return response;

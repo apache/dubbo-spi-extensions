@@ -18,6 +18,9 @@ package org.apache.dubbo.apidocs.examples.params;
 
 import org.apache.dubbo.apidocs.annotations.RequestParam;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * QuickStartRequestBase.
  *
@@ -30,9 +33,15 @@ public class QuickStartRequestBase<E, T> implements java.io.Serializable {
     @RequestParam(value = "Request method", required = true)
     private String method;
 
-    private T body;
+    private List<List<T>> body;
 
     private E body3;
+
+    private List<T> body4;
+
+    private Map<String, T> body5;
+
+    private T[] body6;
 
     private QuickStartRequestBean body2;
 
@@ -42,14 +51,6 @@ public class QuickStartRequestBase<E, T> implements java.io.Serializable {
 
     public void setMethod(String method) {
         this.method = method;
-    }
-
-    public T getBody() {
-        return body;
-    }
-
-    public void setBody(T body) {
-        this.body = body;
     }
 
     public QuickStartRequestBean getBody2() {
@@ -68,4 +69,35 @@ public class QuickStartRequestBase<E, T> implements java.io.Serializable {
         this.body3 = body3;
     }
 
+    public List<List<T>> getBody() {
+        return body;
+    }
+
+    public void setBody(List<List<T>> body) {
+        this.body = body;
+    }
+
+    public List<T> getBody4() {
+        return body4;
+    }
+
+    public void setBody4(List<T> body4) {
+        this.body4 = body4;
+    }
+
+    public Map<String, T> getBody5() {
+        return body5;
+    }
+
+    public void setBody5(Map<String, T> body5) {
+        this.body5 = body5;
+    }
+
+    public T[] getBody6() {
+        return body6;
+    }
+
+    public void setBody6(T[] body6) {
+        this.body6 = body6;
+    }
 }

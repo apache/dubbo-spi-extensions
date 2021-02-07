@@ -64,6 +64,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static org.apache.dubbo.apidocs.core.Constants.DOT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_LEFT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_RIGHT;
@@ -112,9 +113,9 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
             ApiModule moduleAnn = apiModuleClass.getAnnotation(ApiModule.class);
             if (!apiModuleClass.isAnnotationPresent(Service.class) && !apiModuleClass.isAnnotationPresent(DubboService.class)) {
-                LOG.warn( "【Warning】" + apiModuleClass.getName() + " @ApiModule annotation is used, " +
-                                "but it is not a dubbo provider (without " + Service.class.getName() + " or " +
-                                DubboService.class.getName() + " annotation)");
+                LOG.warn("【Warning】" + apiModuleClass.getName() + " @ApiModule annotation is used, " +
+                        "but it is not a dubbo provider (without " + Service.class.getName() + " or " +
+                        DubboService.class.getName() + " annotation)");
                 return;
             }
             boolean async;
@@ -193,7 +194,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         for (int i = 0; i < argsClass.length; i++) {
             Class<?> argClass = argsClass[i];
             Type parameterType = parametersTypes[i];
-            methodParamInfoSb.append(METHOD_PARAM_INDEX_BOUNDARY_LEFT).append(i).append(METHOD_PARAM_INDEX_BOUNDARY_RIGHT).append(argClass.getCanonicalName());
+            methodParamInfoSb.append(METHOD_PARAM_INDEX_BOUNDARY_LEFT).append(i)
+                    .append(METHOD_PARAM_INDEX_BOUNDARY_RIGHT).append(argClass.getCanonicalName());
             if (i + 1 < argsClass.length) {
                 methodParamInfoSb.append(METHOD_PARAMETER_SEPARATOR);
             }
@@ -253,7 +255,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) parameterType;
             TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
             Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
-            genericTypeAndNamesMap =  new HashMap<>(typeVariables.length);
+            genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
             for (int i = 0; i < typeVariables.length; i++) {
                 genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
             }
@@ -292,15 +294,17 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                     paramBean.setRequired(false);
                 }
 
-                ParamBean tempParamBean = this.processHtmlType(null == genericType ? field.getType() : genericType, requestParam, paramBean);
+                ParamBean tempParamBean = this.processHtmlType(null == genericType ?
+                        field.getType() : genericType, requestParam, paramBean);
                 if (tempParamBean == null || HtmlTypeEnum.TEXT_AREA.equals(tempParamBean.getHtmlType())) {
                     Object objResult;
                     if (null == genericType) {
                         objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                                field.getGenericType(), field.getType(), 0);
+                                field.getGenericType(), field.getType(), 0, genericTypeAndNamesMap);
                     } else {
                         objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                                ClassTypeUtil.makeParameterizedType(genericTypeName), genericType, 0, true);
+                                ClassTypeUtil.makeParameterizedType(genericTypeName), genericType, 0,
+                                true, genericTypeAndNamesMap);
                     }
                     if (!ClassTypeUtil.isBaseType(objResult)) {
                         paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
@@ -327,7 +331,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
 
             Object objResult = ClassTypeUtil.initClassTypeWithDefaultValue(
-                    parameterType, argClass, 0);
+                    parameterType, argClass, 0, genericTypeAndNamesMap);
             if (!ClassTypeUtil.isBaseType(objResult)) {
                 paramBean.setHtmlType(HtmlTypeEnum.TEXT_AREA);
                 paramBean.setSubParamsJson(JSON.toJSONString(objResult, ClassTypeUtil.FAST_JSON_FEATURES));
