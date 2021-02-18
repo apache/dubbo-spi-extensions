@@ -46,18 +46,6 @@
         <maven_source_version>3.2.1</maven_source_version>
         <maven_javadoc_version>3.0.1</maven_javadoc_version>
     </properties>
-   
-    <modules>
-        <module>dubbo-all</module>
-        <module>dubbo-spi-container</module>
-        <module>dubbo-spi-remoting</module>
-        <module>dubbo-spi-rpc</module>
-        <module>dubbo-spi-registry</module>
-        <module>dubbo-spi-serialization</module>
-        <module>dubbo-spi-configcenter</module>
-        <module>dubbo-spi-metadata</module>
-        <module>dubbo-test</module>
-    </modules>
 
     <dependencies>
         <dependency>
@@ -93,6 +81,22 @@
     </dependencies>
 
     <build>
+        <!-- Used for packaging NOTICE & LICENSE to each sub-module jar-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${maven.multiModuleProjectDirectory}</directory>
+                <targetPath>META-INF/</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>NOTICE</include>
+                    <include>LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -111,4 +115,106 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>dubbo-all</module>
+                <module>dubbo-spi-container</module>
+                <module>dubbo-spi-remoting</module>
+                <module>dubbo-spi-rpc</module>
+                <module>dubbo-spi-registry</module>
+                <module>dubbo-spi-serialization</module>
+                <module>dubbo-spi-configcenter</module>
+                <module>dubbo-spi-metadata</module>
+                <module>dubbo-test</module>
+            </modules>
+
+        </profile>
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>dubbo-api-docs</module>
+                <module>distribution</module>
+            </modules>
+
+            <properties>
+                <log4j2_version>2.11.1</log4j2_version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven_source_version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven_javadoc_version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadoc</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                    <goal>aggregate</goal>
+                                </goals>
+                                <configuration>
+                                    <additionalDependencies>
+                                        <additionalDependency>
+                                            <groupId>org.apache.logging.log4j</groupId>
+                                            <artifactId>log4j-api</artifactId>
+                                            <version>${log4j2_version}</version>
+                                        </additionalDependency>
+                                        <additionalDependency>
+                                            <groupId>org.apache.logging.log4j</groupId>
+                                            <artifactId>log4j-core</artifactId>
+                                            <version>${log4j2_version}</version>
+                                        </additionalDependency>
+                                    </additionalDependencies>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <show>public</show>
+                            <charset>UTF-8</charset>
+                            <encoding>UTF-8</encoding>
+                            <docencoding>UTF-8</docencoding>
+                            <links>
+                                <link>http://docs.oracle.com/javase/8/docs/api</link>
+                            </links>
+                            <doclint>none</doclint>
+                            <excludePackageNames>
+                                org.apache.dubbo.apidocs.examples.*
+                            </excludePackageNames>
+                            <doctitle>Apache Dubbo Extensions ${project.version} API</doctitle>
+                            <windowtitle>Apache Dubbo Extensions ${project.version} API</windowtitle>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
