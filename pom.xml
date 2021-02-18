@@ -131,6 +131,7 @@
                 <module>dubbo-spi-serialization</module>
                 <module>dubbo-spi-configcenter</module>
                 <module>dubbo-spi-metadata</module>
+                <module>dubbo-api-docs</module>
                 <module>dubbo-test</module>
             </modules>
 
