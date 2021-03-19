@@ -120,16 +120,20 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
             boolean async;
             String apiVersion;
+            String apiGroup;
             if (apiModuleClass.isAnnotationPresent(Service.class)) {
                 Service dubboService = apiModuleClass.getAnnotation(Service.class);
                 async = dubboService.async();
                 apiVersion = dubboService.version();
+                apiGroup = dubboService.group();
             } else {
                 DubboService dubboService = apiModuleClass.getAnnotation(DubboService.class);
                 async = dubboService.async();
                 apiVersion = dubboService.version();
+                apiGroup = dubboService.group();
             }
             apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
+            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(apiGroup);
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
             //module name
@@ -138,6 +142,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             moduleCacheItem.setModuleClassName(moduleAnn.apiInterface().getCanonicalName());
             //module version
             moduleCacheItem.setModuleVersion(apiVersion);
+            //module group
+            moduleCacheItem.setModuleGroup(apiGroup);
 
             Method[] apiModuleMethods = apiModuleClass.getMethods();
             // API basic information list in module cache
@@ -145,7 +151,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             moduleCacheItem.setModuleApiList(moduleApiList);
             for (Method method : apiModuleMethods) {
                 if (method.isAnnotationPresent(ApiDoc.class)) {
-                    processApiDocAnnotation(method, moduleApiList, moduleAnn, async, moduleCacheItem, apiVersion);
+                    processApiDocAnnotation(method, moduleApiList, moduleAnn, async, moduleCacheItem, apiVersion, apiGroup);
                 }
             }
         });
@@ -153,7 +159,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
-                                         boolean async, ModuleCacheItem moduleCacheItem, String apiVersion) {
+                                         boolean async, ModuleCacheItem moduleCacheItem, String apiVersion, String apiGroup) {
 
         ApiDoc dubboApi = method.getAnnotation(ApiDoc.class);
 
@@ -168,6 +174,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         apiListItem.setDescription(dubboApi.description());
         //API version
         apiListItem.setApiVersion(apiVersion);
+        //API group
+        apiListItem.setApiGroup(apiGroup);
         //Description of API return data
         apiListItem.setApiRespDec(dubboApi.responseClassDescription());
 
@@ -185,6 +193,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         apiParamsAndResp.setApiName(method.getName());
         apiParamsAndResp.setApiDocName(dubboApi.value());
         apiParamsAndResp.setApiVersion(apiVersion);
+        apiParamsAndResp.setApiGroup(apiGroup);
         apiParamsAndResp.setApiRespDec(dubboApi.responseClassDescription());
         apiParamsAndResp.setDescription(dubboApi.description());
         apiParamsAndResp.setApiModelClass(moduleCacheItem.getModuleClassName());

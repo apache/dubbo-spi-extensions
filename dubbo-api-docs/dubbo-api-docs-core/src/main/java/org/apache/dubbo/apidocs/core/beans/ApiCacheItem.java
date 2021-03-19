@@ -31,6 +31,8 @@ public class ApiCacheItem {
 
     private String apiVersion;
 
+    private String apiGroup;
+
     private String description;
 
     private String apiRespDec;
@@ -121,5 +123,13 @@ public class ApiCacheItem {
 
     public void setMethodParamInfo(String methodParamInfo) {
         this.methodParamInfo = methodParamInfo;
+    }
+
+    public String getApiGroup() {
+        return apiGroup;
+    }
+
+    public void setApiGroup(String apiGroup) {
+        this.apiGroup = apiGroup;
     }
 }
