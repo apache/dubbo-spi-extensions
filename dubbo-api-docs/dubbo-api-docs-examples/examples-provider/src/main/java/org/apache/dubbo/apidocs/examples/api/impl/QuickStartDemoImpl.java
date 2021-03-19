@@ -40,7 +40,7 @@ import java.util.Map;
  *
  * @date 2020/12/23 17:21
  */
-@DubboService(version = "${demo.apiversion.quickstart}")
+@DubboService(version = "${demo.apiversion.quickstart}", group = "demoGroup")
 @ApiModule(value = "quick start demo", apiInterface = IQuickStartDemo.class)
 public class QuickStartDemoImpl implements IQuickStartDemo {
 

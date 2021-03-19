@@ -29,6 +29,8 @@ public class ModuleCacheItem {
 
     private String moduleVersion;
 
+    private String moduleGroup;
+
     private List<ApiCacheItem> moduleApiList;
 
     public String getModuleDocName() {
@@ -61,5 +63,13 @@ public class ModuleCacheItem {
 
     public void setModuleApiList(List<ApiCacheItem> moduleApiList) {
         this.moduleApiList = moduleApiList;
+    }
+
+    public String getModuleGroup() {
+        return moduleGroup;
+    }
+
+    public void setModuleGroup(String moduleGroup) {
+        this.moduleGroup = moduleGroup;
     }
 }
