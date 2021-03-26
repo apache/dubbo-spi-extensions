@@ -22,19 +22,19 @@ dubbo 接口文档、测试工具,根据注解生成文档,并提供测试功能
         * 为避免增加生产环境中的资源占用, 建议单独创建一个配制类用于启用Dubbo Api Docs, 并配合 @Profile("dev") 注解使用
         * 当然, Dubbo Api Docs 仅在项目启动时多消耗了点CPU资源, 并使用了一点点内存用于缓存, 将来会考虑将缓存中的内容放到元数据中心.
 
-### 当前版本: 同Dubbo版本号
+### 当前版本: 2.7.8.2
 
 ```
 <dependency>
     <groupId>org.apache.dubbo</groupId>
     <artifactId>dubbo-api-docs-annotations</artifactId>
-    <version>${dubbo-version}</version>
+    <version>${dubbo-api-docs-version}</version>
 </dependency>
 
 <dependency>
     <groupId>org.apache.dubbo</groupId>
     <artifactId>dubbo-api-docs-core</artifactId>
-    <version>${dubbo-version}</version>
+    <version>${dubbo-api-docs-version}</version>
 </dependency>
 ```
 
@@ -52,11 +52,11 @@ dubbo 接口文档、测试工具,根据注解生成文档,并提供测试功能
 * @ApiModule: 类注解, dubbo接口模块信息,用于标注一个接口类模块的用途
     * value: 模块名称
     * apiInterface: 提供者实现的接口
-    * version: 模块版本
+    * ~~version: 模块版本~~
 * @ApiDoc: 方法注解, dubbo 接口信息,用于标注一个接口的用途
     * value: 接口名称
     * description: 接口描述(可使用html标签)
-    * version: 接口版本
+    * ~~version: 接口版本~~
     * responseClassDescription: 响应的数据的描述
 * @RequestParam: 类属性/方法参数注解,标注请求参数
     * value: 参数名

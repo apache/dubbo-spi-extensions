@@ -25,19 +25,19 @@ Adding some annotations can generate a swagger like document without turning a n
          memory for caching. In the future, it will consider putting the contents of the cache into the metadata 
          center
 
-### Current Version: Same as Dubbo version
+### Current Version: 2.7.8.2
 
 ```
 <dependency>
     <groupId>org.apache.dubbo</groupId>
     <artifactId>dubbo-api-docs-annotations</artifactId>
-    <version>${dubbo-version}</version>
+    <version>${dubbo-api-docs-version}</version>
 </dependency>
 
 <dependency>
     <groupId>org.apache.dubbo</groupId>
     <artifactId>dubbo-api-docs-core</artifactId>
-    <version>${dubbo-version}</version>
+    <version>${dubbo-api-docs-version}</version>
 </dependency>
 ```
 
@@ -56,11 +56,11 @@ Download [dubbo-admin](https://github.com/apache/dubbo-admin) [Download](https:/
 * @ApiModule: class annotation, dubbo API module information, used to mark the purpose of an interface class module
     * value: module name
     * apiInterface: Provider implemented interface
-    * version: module version
+    * ~~version: module version~~
 * @ApiDoc: method annotation, dubbo API information, used to mark the purpose of an dubbo API
     * value: API name
     * description: API description(HTML tags available)
-    * version: API version
+    * ~~version: API version~~
     * responseClassDescription: response class description
 * @RequestParam: class property/method Parameter annotation, mark request parameters
     * value: parameter name
