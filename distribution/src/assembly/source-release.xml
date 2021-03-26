@@ -24,6 +24,14 @@
     <baseDirectory>dubbo-api-docs-src</baseDirectory>
 
     <fileSets>
+         <fileSet>
+            <directory>../</directory>
+            <includes>
+                <include>DISCLAIMER</include>
+                <include>NOTICE</include>
+                <include>LICENSE</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>../</directory>
             <useDefaultExcludes>true</useDefaultExcludes>
