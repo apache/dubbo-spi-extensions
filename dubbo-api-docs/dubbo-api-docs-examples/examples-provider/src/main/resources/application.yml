@@ -27,6 +27,7 @@ dubbo:
   provider:
     timeout: 2000
     filter: metrics
+    group: test
   protocol:
     port: 20881
     name: dubbo

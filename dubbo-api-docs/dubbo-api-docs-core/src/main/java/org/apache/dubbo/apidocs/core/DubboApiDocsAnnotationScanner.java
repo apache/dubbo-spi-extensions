@@ -475,7 +475,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         service.setInterface(serviceClass);
         service.setRef(serviceImplInstance);
         service.setAsync(async);
-//        service.setVersion("1.0.0");
+        service.setGroup("apiDocsGroup");
+        service.setVersion("v1");
         service.export();
     }
 
