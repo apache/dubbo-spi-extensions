@@ -66,7 +66,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.dubbo.apidocs.core.Constants.DOT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_LEFT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_RIGHT;
@@ -138,8 +137,13 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 apiGroup = dubboService.group();
             }
 
-            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(providerConfig == null ? apiVersion : defaultIfBlank(apiVersion, defaultIfBlank(providerConfig.getVersion(), "")) );
-            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(providerConfig == null ? apiGroup : defaultIfBlank(apiGroup, defaultIfBlank(providerConfig.getGroup(), "")) );
+
+            // API version&group safe guard!
+            apiVersion = getApiVersionIfAbsent(apiVersion);
+            apiGroup = getApiGroupIfAbsent(apiGroup);
+
+            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
+            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(apiGroup);
 
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
@@ -163,6 +167,42 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
         });
         LOG.info("================= Dubbo API Docs-- doc annotations scanning and processing completed ================");
+    }
+
+    /**
+     * get provider config(default) api version if param apiVersion is blank
+     * @param apiVersion api version
+     * @return api version is apiVersion when it isn`t blank, or return provider config(default) version
+     */
+    private String getApiVersionIfAbsent(String apiVersion) {
+        if (StringUtils.isBlank(apiVersion)) {
+            if (providerConfig != null) {
+                apiVersion = providerConfig.getVersion();
+            }
+
+            if (StringUtils.isBlank(apiVersion)) {
+                apiVersion = "";
+            }
+        }
+        return apiVersion;
+    }
+
+    /**
+     * get provider config(default) api group if param apiGroup is blank
+     * @param apiGroup api version
+     * @return api group is apiGroup when it isn`t blank, or return provider config(default) group
+     */
+    private String getApiGroupIfAbsent(String apiGroup) {
+        if (StringUtils.isBlank(apiGroup)) {
+            if (providerConfig != null) {
+                apiGroup = providerConfig.getGroup();
+            }
+
+            if (StringUtils.isBlank(apiGroup)) {
+                apiGroup = "";
+            }
+        }
+        return apiGroup;
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
