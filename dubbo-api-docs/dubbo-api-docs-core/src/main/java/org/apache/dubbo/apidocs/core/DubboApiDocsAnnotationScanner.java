@@ -29,6 +29,7 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
+import org.apache.dubbo.config.ProviderConfig;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.dubbo.apidocs.annotations.ApiModule;
@@ -65,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.dubbo.apidocs.core.Constants.DOT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_LEFT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_RIGHT;
@@ -94,6 +96,9 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
 
     @Autowired
     private ProtocolConfig protocol;
+
+    @Autowired(required = false)
+    private ProviderConfig providerConfig;
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
@@ -132,8 +137,10 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 apiVersion = dubboService.version();
                 apiGroup = dubboService.group();
             }
-            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
-            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(apiGroup);
+
+            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(providerConfig == null ? apiVersion : defaultIfBlank(apiVersion, defaultIfBlank(providerConfig.getVersion(), "")) );
+            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(providerConfig == null ? apiGroup : defaultIfBlank(apiGroup, defaultIfBlank(providerConfig.getGroup(), "")) );
+
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
             //module name
@@ -272,7 +279,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             genericTypeAndNamesMap = Collections.EMPTY_MAP;
         }
 
-        List<ParamBean> apiParamsList = new ArrayList(16);
+        List<ParamBean> apiParamsList = new ArrayList<>(16);
         // get all fields
         List<Field> allFields = ClassTypeUtil.getAllFields(null, argClass);
         if (allFields.size() > 0) {
