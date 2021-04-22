@@ -29,6 +29,7 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
+import org.apache.dubbo.config.ProviderConfig;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.dubbo.apidocs.annotations.ApiModule;
@@ -95,6 +96,9 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
     @Autowired
     private ProtocolConfig protocol;
 
+    @Autowired(required = false)
+    private ProviderConfig providerConfig;
+
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         // Register dubbo doc provider
@@ -132,8 +136,15 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 apiVersion = dubboService.version();
                 apiGroup = dubboService.group();
             }
+
+
+            // API version&group safe guard!
+            apiVersion = getApiVersionIfAbsent(apiVersion);
+            apiGroup = getApiGroupIfAbsent(apiGroup);
+
             apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
             apiGroup = applicationContext.getEnvironment().resolvePlaceholders(apiGroup);
+
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
             //module name
@@ -156,6 +167,42 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
         });
         LOG.info("================= Dubbo API Docs-- doc annotations scanning and processing completed ================");
+    }
+
+    /**
+     * get provider config(default) api version if param apiVersion is blank
+     * @param apiVersion api version
+     * @return api version is apiVersion when it isn`t blank, or return provider config(default) version
+     */
+    private String getApiVersionIfAbsent(String apiVersion) {
+        if (StringUtils.isBlank(apiVersion)) {
+            if (providerConfig != null) {
+                apiVersion = providerConfig.getVersion();
+            }
+
+            if (StringUtils.isBlank(apiVersion)) {
+                apiVersion = "";
+            }
+        }
+        return apiVersion;
+    }
+
+    /**
+     * get provider config(default) api group if param apiGroup is blank
+     * @param apiGroup api version
+     * @return api group is apiGroup when it isn`t blank, or return provider config(default) group
+     */
+    private String getApiGroupIfAbsent(String apiGroup) {
+        if (StringUtils.isBlank(apiGroup)) {
+            if (providerConfig != null) {
+                apiGroup = providerConfig.getGroup();
+            }
+
+            if (StringUtils.isBlank(apiGroup)) {
+                apiGroup = "";
+            }
+        }
+        return apiGroup;
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
@@ -272,7 +319,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             genericTypeAndNamesMap = Collections.EMPTY_MAP;
         }
 
-        List<ParamBean> apiParamsList = new ArrayList(16);
+        List<ParamBean> apiParamsList = new ArrayList<>(16);
         // get all fields
         List<Field> allFields = ClassTypeUtil.getAllFields(null, argClass);
         if (allFields.size() > 0) {
