@@ -65,7 +65,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.dubbo.apidocs.core.Constants.DOT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_LEFT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_RIGHT;
@@ -137,13 +139,12 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 apiGroup = dubboService.group();
             }
 
-
             // API version&group safe guard!
-            apiVersion = getApiVersionIfAbsent(apiVersion);
-            apiGroup = getApiGroupIfAbsent(apiGroup);
+            String version = getSupplierValueIfAbsent(apiVersion, () -> ofNullable(providerConfig).map(ProviderConfig::getVersion).orElse(""));
+            String group = getSupplierValueIfAbsent(apiGroup, () -> ofNullable(providerConfig).map(ProviderConfig::getGroup).orElse(""));
 
-            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
-            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(apiGroup);
+            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(version);
+            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(group);
 
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
@@ -170,39 +171,20 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
     }
 
     /**
-     * get provider config(default) api version if param apiVersion is blank
-     * @param apiVersion api version
-     * @return api version is apiVersion when it isn`t blank, or return provider config(default) version
+     * get supplier value if @param value is blank
+     * @param value value
+     * @param supplier supplier lambda
+     * @return return value if not blank, or return supplier value
      */
-    private String getApiVersionIfAbsent(String apiVersion) {
-        if (StringUtils.isBlank(apiVersion)) {
-            if (providerConfig != null) {
-                apiVersion = providerConfig.getVersion();
-            }
+    private String getSupplierValueIfAbsent(String value, Supplier<String> supplier){
+        if (StringUtils.isBlank(value)) {
+            value = supplier.get();
 
-            if (StringUtils.isBlank(apiVersion)) {
-                apiVersion = "";
+            if (StringUtils.isBlank(value)) {
+                value = "";
             }
         }
-        return apiVersion;
-    }
-
-    /**
-     * get provider config(default) api group if param apiGroup is blank
-     * @param apiGroup api version
-     * @return api group is apiGroup when it isn`t blank, or return provider config(default) group
-     */
-    private String getApiGroupIfAbsent(String apiGroup) {
-        if (StringUtils.isBlank(apiGroup)) {
-            if (providerConfig != null) {
-                apiGroup = providerConfig.getGroup();
-            }
-
-            if (StringUtils.isBlank(apiGroup)) {
-                apiGroup = "";
-            }
-        }
-        return apiGroup;
+        return value;
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
