@@ -196,7 +196,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         // API basic information in API list in module
         ApiCacheItem apiListItem = new ApiCacheItem();
         moduleApiList.add(apiListItem);
-        // PI method name
+        // API method name
         apiListItem.setApiName(method.getName());
         // API name
         apiListItem.setApiDocName(dubboApi.value());
