@@ -81,4 +81,6 @@ public class Constants {
 
     public static final String STRING_KEY = "key";
 
+    public static final String NO_ARGS_NO_RETURN_VALUES_METHOD_DESC = "()V";
+
 }

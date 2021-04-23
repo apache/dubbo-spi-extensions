@@ -41,6 +41,8 @@ public class ApiCacheItem {
 
     private List<ApiParamsCacheItem> params;
 
+    private String paramsDesc;
+
     private String response;
 
     private String methodParamInfo;
@@ -131,5 +133,13 @@ public class ApiCacheItem {
 
     public void setApiGroup(String apiGroup) {
         this.apiGroup = apiGroup;
+    }
+
+    public String getParamsDesc() {
+        return paramsDesc;
+    }
+
+    public void setParamsDesc(String paramsDesc) {
+        this.paramsDesc = paramsDesc;
     }
 }
