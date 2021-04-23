@@ -215,12 +215,8 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         // API details in cache, contain interface parameters and response information
         ApiCacheItem apiParamsAndResp = new ApiCacheItem();
 
-        // new cache
         String key = String.format("%s.%s%s", moduleAnn.apiInterface().getCanonicalName(), method.getName(), desc);
         DubboApiDocsCache.addApiParamsAndResp(key, apiParamsAndResp);
-        // old cache
-        String compatibleKey = String.format("%s.%s", moduleAnn.apiInterface().getCanonicalName(), method.getName());
-        DubboApiDocsCache.addApiParamsAndResp(compatibleKey, apiParamsAndResp);
 
         Class<?>[] argsClass = method.getParameterTypes();
         Annotation[][] argsAnns = method.getParameterAnnotations();
