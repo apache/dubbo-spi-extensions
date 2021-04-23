@@ -16,29 +16,29 @@
  */
 package org.apache.dubbo.apidocs.core;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.apidocs.annotations.ApiDoc;
+import org.apache.dubbo.apidocs.annotations.ApiModule;
+import org.apache.dubbo.apidocs.annotations.RequestParam;
 import org.apache.dubbo.apidocs.core.beans.ApiCacheItem;
 import org.apache.dubbo.apidocs.core.beans.ApiParamsCacheItem;
-import org.apache.dubbo.apidocs.core.beans.ModuleCacheItem;
 import org.apache.dubbo.apidocs.core.beans.HtmlTypeEnum;
+import org.apache.dubbo.apidocs.core.beans.ModuleCacheItem;
 import org.apache.dubbo.apidocs.core.beans.ParamBean;
 import org.apache.dubbo.apidocs.core.providers.DubboDocProviderImpl;
 import org.apache.dubbo.apidocs.core.providers.IDubboDocProvider;
+import org.apache.dubbo.apidocs.utils.ClassTypeUtil;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.ProviderConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
-import org.apache.dubbo.config.ProviderConfig;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.dubbo.apidocs.annotations.ApiModule;
-import org.apache.dubbo.apidocs.annotations.ApiDoc;
-import org.apache.dubbo.apidocs.annotations.RequestParam;
-import org.apache.dubbo.apidocs.utils.ClassTypeUtil;
-
-import com.alibaba.fastjson.JSON;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -65,16 +65,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import static org.apache.dubbo.apidocs.core.Constants.DOT;
+import static java.util.Optional.ofNullable;
+import static org.apache.dubbo.apidocs.core.Constants.ALLOWABLE_BOOLEAN_FALSE;
+import static org.apache.dubbo.apidocs.core.Constants.ALLOWABLE_BOOLEAN_TRUE;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_NAME_NAME;
+import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAMETER_SEPARATOR;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_LEFT;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAM_INDEX_BOUNDARY_RIGHT;
-import static org.apache.dubbo.apidocs.core.Constants.METHOD_PARAMETER_SEPARATOR;
+import static org.apache.dubbo.apidocs.core.Constants.NO_ARGS_NO_RETURN_VALUES_METHOD_DESC;
 import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_SERIALVERSIONUID;
 import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_THIS$0;
-import static org.apache.dubbo.apidocs.core.Constants.ALLOWABLE_BOOLEAN_TRUE;
-import static org.apache.dubbo.apidocs.core.Constants.ALLOWABLE_BOOLEAN_FALSE;
-import static org.apache.dubbo.apidocs.core.Constants.METHOD_NAME_NAME;
 
 /**
  * Scan and process dubbo doc annotations.
@@ -137,13 +139,12 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
                 apiGroup = dubboService.group();
             }
 
-
             // API version&group safe guard!
-            apiVersion = getApiVersionIfAbsent(apiVersion);
-            apiGroup = getApiGroupIfAbsent(apiGroup);
+            String version = getSupplierValueIfAbsent(apiVersion, () -> ofNullable(providerConfig).map(ProviderConfig::getVersion).orElse(""));
+            String group = getSupplierValueIfAbsent(apiGroup, () -> ofNullable(providerConfig).map(ProviderConfig::getGroup).orElse(""));
 
-            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(apiVersion);
-            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(apiGroup);
+            apiVersion = applicationContext.getEnvironment().resolvePlaceholders(version);
+            apiGroup = applicationContext.getEnvironment().resolvePlaceholders(group);
 
             ModuleCacheItem moduleCacheItem = new ModuleCacheItem();
             DubboApiDocsCache.addApiModule(moduleAnn.apiInterface().getCanonicalName(), moduleCacheItem);
@@ -170,39 +171,21 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
     }
 
     /**
-     * get provider config(default) api version if param apiVersion is blank
-     * @param apiVersion api version
-     * @return api version is apiVersion when it isn`t blank, or return provider config(default) version
+     * get supplier value if @param value is blank
+     *
+     * @param value    value
+     * @param supplier supplier lambda
+     * @return return value if not blank, or return supplier value
      */
-    private String getApiVersionIfAbsent(String apiVersion) {
-        if (StringUtils.isBlank(apiVersion)) {
-            if (providerConfig != null) {
-                apiVersion = providerConfig.getVersion();
-            }
+    private String getSupplierValueIfAbsent(String value, Supplier<String> supplier) {
+        if (StringUtils.isBlank(value)) {
+            value = supplier.get();
 
-            if (StringUtils.isBlank(apiVersion)) {
-                apiVersion = "";
+            if (StringUtils.isBlank(value)) {
+                value = "";
             }
         }
-        return apiVersion;
-    }
-
-    /**
-     * get provider config(default) api group if param apiGroup is blank
-     * @param apiGroup api version
-     * @return api group is apiGroup when it isn`t blank, or return provider config(default) group
-     */
-    private String getApiGroupIfAbsent(String apiGroup) {
-        if (StringUtils.isBlank(apiGroup)) {
-            if (providerConfig != null) {
-                apiGroup = providerConfig.getGroup();
-            }
-
-            if (StringUtils.isBlank(apiGroup)) {
-                apiGroup = "";
-            }
-        }
-        return apiGroup;
+        return value;
     }
 
     private void processApiDocAnnotation(Method method, List<ApiCacheItem> moduleApiList, ApiModule moduleAnn,
@@ -213,23 +196,27 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
         // API basic information in API list in module
         ApiCacheItem apiListItem = new ApiCacheItem();
         moduleApiList.add(apiListItem);
-        //API method name
+        // API method name
         apiListItem.setApiName(method.getName());
-        //API name
+        // API name
         apiListItem.setApiDocName(dubboApi.value());
         // API description
         apiListItem.setDescription(dubboApi.description());
-        //API version
+        // API version
         apiListItem.setApiVersion(apiVersion);
-        //API group
+        // API group
         apiListItem.setApiGroup(apiGroup);
-        //Description of API return data
+        // Description of API return data
         apiListItem.setApiRespDec(dubboApi.responseClassDescription());
+        // API Method params class desc, skip method name
+        String desc = getMethodParamsDesc(method);
+        apiListItem.setParamsDesc(desc);
 
         // API details in cache, contain interface parameters and response information
         ApiCacheItem apiParamsAndResp = new ApiCacheItem();
-        DubboApiDocsCache.addApiParamsAndResp(
-                moduleAnn.apiInterface().getCanonicalName() + DOT + method.getName(), apiParamsAndResp);
+
+        String key = String.format("%s.%s%s", moduleAnn.apiInterface().getCanonicalName(), method.getName(), desc);
+        DubboApiDocsCache.addApiParamsAndResp(key, apiParamsAndResp);
 
         Class<?>[] argsClass = method.getParameterTypes();
         Annotation[][] argsAnns = method.getParameterAnnotations();
@@ -299,6 +286,20 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
             }
         }
         apiParamsAndResp.setMethodParamInfo(methodParamInfoSb.toString());
+    }
+
+    /**
+     * get method parameter types describe string
+     * return empty string if describe string is no args and no return vals ()V
+     * @param method method
+     * @return method parameter types describe string
+     */
+    private String getMethodParamsDesc(Method method) {
+        String desc = ReflectUtils.getDesc(method).substring(method.getName().length());
+        if (NO_ARGS_NO_RETURN_VALUES_METHOD_DESC.equals(desc)) {
+            desc = "";
+        }
+        return desc;
     }
 
     /**
