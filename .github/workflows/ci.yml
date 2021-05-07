@@ -20,7 +20,7 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: "adopt"
       - name: Prepare build tools
-        run: git clone https://github.com/apache/dubbo.git && ./mvnw clean install -pl dubbo-build-tools
+        run: git clone https://github.com/apache/dubbo.git && cd dubbo && ./mvnw clean install -pl dubbo-build-tools
       - uses: actions/checkout@v2
       - name: Build with Maven
         run: ./mvnw -s .mvn/wrapper/settings.xml --batch-mode --no-transfer-progress clean install -DskipTests=false -DskipIntegrationTests=false -Dcheckstyle.skip=false -Drat.skip=false -Dmaven.javadoc.skip=true
