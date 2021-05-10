@@ -25,7 +25,7 @@ Adding some annotations can generate a swagger like document without turning a n
          memory for caching. In the future, it will consider putting the contents of the cache into the metadata 
          center
 
-### Current Version: 2.7.8.2
+### Current Version: 2.7.8.3
 
 ```
 <dependency>
