@@ -80,7 +80,7 @@
     </issueManagement>
 
     <modules>
-        <module>dubbo-distribution</module>
+        <module>dubbo-extensions-distribution</module>
         <module>dubbo-api-docs</module>
         <module>dubbo-cluster-extensions</module>
         <module>dubbo-common-extensions</module>
