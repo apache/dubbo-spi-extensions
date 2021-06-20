@@ -18,74 +18,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apache</groupId>
-        <artifactId>apache</artifactId>
-        <version>19</version>
-        <relativePath/>
+        <groupId>org.apache.dubbo.extensions</groupId>
+        <artifactId>extensions-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <groupId>org.apache.dubbo</groupId>
+
     <artifactId>dubbo-api-docs</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+
     <name>${project.artifactId}</name>
     <description>Dubbo interface documentation, testing tools</description>
-    <url>https://github.com/apache/dubbo</url>
     <inceptionYear>2020</inceptionYear>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <url>https://github.com/apache/dubbo</url>
-        <connection>scm:git:https://github.com/apache/dubbo-spi-extensions.git</connection>
-        <developerConnection>scm:git:https://github.com/apache/dubbo-spi-extensions.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-    <mailingLists>
-        <mailingList>
-            <name>Development List</name>
-            <subscribe>dev-subscribe@dubbo.apache.org</subscribe>
-            <unsubscribe>dev-unsubscribe@dubbo.apache.org</unsubscribe>
-            <post>dev@dubbo.apache.org</post>
-        </mailingList>
-        <mailingList>
-            <name>Commits List</name>
-            <subscribe>commits-subscribe@dubbo.apache.org</subscribe>
-            <unsubscribe>commits-unsubscribe@dubbo.apache.org</unsubscribe>
-            <post>commits@dubbo.apache.org</post>
-        </mailingList>
-        <mailingList>
-            <name>Issues List</name>
-            <subscribe>issues-subscribe@dubbo.apache.org</subscribe>
-            <unsubscribe>issues-unsubscribe@dubbo.apache.org</unsubscribe>
-            <post>issues@dubbo.apache.org</post>
-        </mailingList>
-    </mailingLists>
-    <developers>
-        <developer>
-            <id>dubbo.io</id>
-            <name>The Dubbo Project Contributors</name>
-            <email>dev-subscribe@dubbo.apache.org</email>
-            <url>http://dubbo.apache.org/</url>
-        </developer>
-    </developers>
-
-    <organization>
-        <name>The Apache Software Foundation</name>
-        <url>http://www.apache.org/</url>
-    </organization>
-
-    <issueManagement>
-        <system>Github Issues</system>
-        <url>https://github.com/apache/dubbo-spi-extensions/issues</url>
-    </issueManagement>
 
     <properties>
-        <revision>2.7.8.3</revision>
         <project.build.jdkVersion>1.8</project.build.jdkVersion>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -96,6 +43,7 @@
 
         <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
         <dubbo.version>2.7.8</dubbo.version>
+        <dubbo_version>2.7.8</dubbo_version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-collections.version>4.2</commons-collections.version>
         <disruptor.version>3.4.2</disruptor.version>
@@ -125,12 +73,12 @@
 
             <!-- Internal libs -->
             <dependency>
-                <groupId>org.apache.dubbo</groupId>
+                <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-api-docs-annotations</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.dubbo</groupId>
+                <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-api-docs-core</artifactId>
                 <version>${revision}</version>
             </dependency>
@@ -243,57 +191,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.rat</groupId>
-                <artifactId>apache-rat-plugin</artifactId>
-                <version>0.12</version>
-                <executions>
-                    <execution>
-                        <id>verify.rat</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/.idea/</exclude>
-                                <exclude>**/*.iml</exclude>
-                                <exclude>**/*.txt</exclude>
-                                <exclude>**/*.sh</exclude>
-                                <exclude>**/*.bat</exclude>
-                                <exclude>**/*.md</exclude>
-                                <exclude>.git/</exclude>
-                                <exclude>**/*.git*</exclude>
-                                <exclude>.gitignore</exclude>
-                                <exclude>**/.settings/*</exclude>
-                                <exclude>**/.classpath</exclude>
-                                <exclude>**/*.properties</exclude>
-                                <exclude>**/.project</exclude>
-                                <exclude>**/target/**</exclude>
-                                <exclude>**/*.log</exclude>
-                                <exclude>.codecov.yml</exclude>
-                                <exclude>.travis.yml</exclude>
-                                <exclude>**/codestyle/*</exclude>
-                                <exclude>**/node_modules/**</exclude>
-                                <exclude>**/.babelrc</exclude>
-                                <exclude>**/.editorconfig</exclude>
-                                <exclude>**/package-lock.json</exclude>
-                                <exclude>**/package.json</exclude>
-                                <exclude>**/OpenSans.css</exclude>
-                                <exclude>**/.eslintignore</exclude>
-                                <exclude>**/.browserslistrc</exclude>
-                                <exclude>**/resources/META-INF/**</exclude>
-                                <exclude>**/src/main/resources/public/**</exclude>
-                                <exclude>**/src/licenses/**</exclude>
-                                <exclude>.github/**</exclude>
-                                <exclude>**/assets/**</exclude>
-                                <exclude>**/yarn.lock</exclude>
-                                <exclude>**/node/**</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>${maven-flatten-version}</version>
@@ -322,17 +219,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${project.build.jdkVersion}</source>
-                    <target>${project.build.jdkVersion}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <compilerArguments>
-                        <verbose/>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
                     <!-- We are not suppose to setup the customer resources here -->
@@ -349,43 +235,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                    <charset>UTF-8</charset>
-                    <encoding>UTF-8</encoding>
-                    <docencoding>UTF-8</docencoding>
-                    <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

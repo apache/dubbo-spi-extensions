@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.dubbo</groupId>
+        <groupId>org.apache.dubbo.extensions</groupId>
         <artifactId>dubbo-api-docs</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -31,7 +31,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-api-docs-annotations</artifactId>
         </dependency>
 
