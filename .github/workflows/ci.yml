@@ -10,7 +10,6 @@ jobs:
       matrix:
         os: [ ubuntu-18.04, windows-2019 ]
         jdk: [ 8, 11 ]
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v2
       - name: "Set up JDK ${{ matrix.jdk }}"
