@@ -80,6 +80,7 @@
     </issueManagement>
 
     <modules>
+        <module>dubbo-extensions-dependencies-bom</module>
         <module>dubbo-extensions-distribution</module>
         <module>dubbo-api-docs</module>
         <module>dubbo-cluster-extensions</module>
@@ -94,8 +95,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.0</revision>
-        <dubbo_version>3.0.0</dubbo_version>
+        <revision>1.0.0-SNAPSHOT</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <hazelcast_version>3.11.1</hazelcast_version>
@@ -126,36 +126,14 @@
         <checkstyle_unix.skip>true</checkstyle_unix.skip>
         <rat.skip>true</rat.skip>
         <jacoco.skip>true</jacoco.skip>
-
-        <spring.version>4.3.16.RELEASE</spring.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-core-spi</artifactId>
-                <version>${dubbo_version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-bom</artifactId>
-                <version>${dubbo_version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-zookeeper</artifactId>
-                <version>${dubbo_version}</version>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-extensions-dependencies-bom</artifactId>
+                <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
