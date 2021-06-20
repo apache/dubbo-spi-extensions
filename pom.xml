@@ -80,13 +80,21 @@
     </issueManagement>
 
     <modules>
-        <module>dubbo-all</module>
+        <module>dubbo-distribution</module>
         <module>dubbo-api-docs</module>
         <module>dubbo-cluster-extensions</module>
+        <module>dubbo-common-extensions</module>
+        <module>dubbo-filter-extensions</module>
+        <module>dubbo-metadata-report-extensions</module>
+        <module>dubbo-registry-extensions</module>
+        <module>dubbo-remoting-extensions</module>
+        <module>dubbo-configcenter-extensions</module>
+        <module>dubbo-rpc-extensions</module>
+        <module>dubbo-serialization-extensions</module>
     </modules>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>1.0.0</revision>
         <dubbo_version>3.0.0</dubbo_version>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
@@ -614,6 +622,7 @@
                                     <goal>aggregate</goal>
                                 </goals>
                                 <configuration>
+                                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                                     <additionalDependencies>
                                         <additionalDependency>
                                             <groupId>org.apache.logging.log4j</groupId>

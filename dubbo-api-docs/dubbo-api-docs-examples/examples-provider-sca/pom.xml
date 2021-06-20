@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.apache.dubbo.examples.apidocs</groupId>
+        <groupId>org.apache.dubbo.extensions.examples.apidocs</groupId>
         <artifactId>dubbo-api-docs-examples</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -33,12 +33,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-api-docs-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo.examples.apidocs</groupId>
+            <groupId>org.apache.dubbo.extensions.examples.apidocs</groupId>
             <artifactId>examples-api</artifactId>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

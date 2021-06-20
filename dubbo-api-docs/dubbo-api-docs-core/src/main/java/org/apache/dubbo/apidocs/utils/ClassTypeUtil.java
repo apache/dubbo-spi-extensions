@@ -16,10 +16,15 @@
  */
 package org.apache.dubbo.apidocs.utils;
 
+import org.apache.dubbo.apidocs.annotations.RequestParam;
+import org.apache.dubbo.apidocs.annotations.ResponseProperty;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.util.ParameterizedTypeImpl;
 import org.apache.commons.lang3.StringUtils;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -42,20 +47,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.dubbo.apidocs.annotations.RequestParam;
-import org.apache.dubbo.apidocs.annotations.ResponseProperty;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-
-import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_SERIALVERSIONUID;
-import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_THIS$0;
 import static org.apache.dubbo.apidocs.core.Constants.CLASS_FIELD_NAME;
-import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_LEFT;
-import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_RIGHT;
-import static org.apache.dubbo.apidocs.core.Constants.RESPONSE_STR_EXAMPLE;
+import static org.apache.dubbo.apidocs.core.Constants.EMPTY_OBJECT_INSTANCE;
 import static org.apache.dubbo.apidocs.core.Constants.ENUM_VALUES_SEPARATOR;
 import static org.apache.dubbo.apidocs.core.Constants.METHOD_NAME_NAME;
-import static org.apache.dubbo.apidocs.core.Constants.EMPTY_OBJECT_INSTANCE;
+import static org.apache.dubbo.apidocs.core.Constants.RESPONSE_STR_EXAMPLE;
+import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_SERIALVERSIONUID;
+import static org.apache.dubbo.apidocs.core.Constants.SKIP_FIELD_THIS$0;
+import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_LEFT;
+import static org.apache.dubbo.apidocs.core.Constants.SQUARE_BRACKET_RIGHT;
 import static org.apache.dubbo.apidocs.core.Constants.STRING_EMPTY;
 import static org.apache.dubbo.apidocs.core.Constants.STRING_KEY;
 
@@ -70,21 +70,21 @@ public class ClassTypeUtil {
      * fastjson features
      */
     public static SerializerFeature[] FAST_JSON_FEATURES = {
-            //Whether to output the field with null value. The default value is false.
-            SerializerFeature.WriteMapNullValue,
-            //If the list field is null, the output is [], not null
-            SerializerFeature.WriteNullListAsEmpty,
-            //If the character type field is null, the output is' ', not null
-            SerializerFeature.WriteNullStringAsEmpty,
-            //If the Boolean field is null, the output is false instead of null
-            SerializerFeature.WriteNullBooleanAsFalse,
-            // Null number output 0
-            SerializerFeature.WriteNullNumberAsZero,
-            //Eliminate the problem of circular reference to the same object.
-            // The default value is false (it may enter a dead cycle if not configured)
-            SerializerFeature.DisableCircularReferenceDetect,
-            // Use. Name() to handle enumeration
-            SerializerFeature.WriteEnumUsingName
+        //Whether to output the field with null value. The default value is false.
+        SerializerFeature.WriteMapNullValue,
+        //If the list field is null, the output is [], not null
+        SerializerFeature.WriteNullListAsEmpty,
+        //If the character type field is null, the output is' ', not null
+        SerializerFeature.WriteNullStringAsEmpty,
+        //If the Boolean field is null, the output is false instead of null
+        SerializerFeature.WriteNullBooleanAsFalse,
+        // Null number output 0
+        SerializerFeature.WriteNullNumberAsZero,
+        //Eliminate the problem of circular reference to the same object.
+        // The default value is false (it may enter a dead cycle if not configured)
+        SerializerFeature.DisableCircularReferenceDetect,
+        // Use. Name() to handle enumeration
+        SerializerFeature.WriteEnumUsingName
     };
 
     private static final int PROCESS_COUNT_MAX = 10;
@@ -93,13 +93,18 @@ public class ClassTypeUtil {
 
     public static String calss2Json(Type genericType, Class<?> classType) {
         Map<String, String> genericTypeAndNamesMap;
-        if (genericType instanceof ParameterizedTypeImpl) {
-            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) genericType;
-            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
-            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
-            genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
-            for (int i = 0; i < typeVariables.length; i++) {
-                genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType parameterTypeImpl = (ParameterizedType) genericType;
+            Type rawType = parameterTypeImpl.getRawType();
+            if (rawType instanceof Class<?>) {
+                TypeVariable<? extends Class<?>>[] typeVariables = ((Class<?>) rawType).getTypeParameters();
+                Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+                genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
+                for (int i = 0; i < typeVariables.length; i++) {
+                    genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+                }
+            } else {
+                genericTypeAndNamesMap = Collections.emptyMap();
             }
         } else {
             genericTypeAndNamesMap = Collections.EMPTY_MAP;
@@ -120,7 +125,7 @@ public class ClassTypeUtil {
     public static Object initClassTypeWithDefaultValue(Type genericType, Class<?> classType, int processCount,
                                                        Map<String, String> methodPrarmGenericTypeAndNamesMap) {
         return initClassTypeWithDefaultValue(genericType, classType, processCount, false,
-                methodPrarmGenericTypeAndNamesMap);
+            methodPrarmGenericTypeAndNamesMap);
     }
 
     /**
@@ -137,28 +142,33 @@ public class ClassTypeUtil {
                                                        Map<String, String> methodPrarmGenericTypeAndNamesMap) {
         if (processCount >= PROCESS_COUNT_MAX) {
             LOG.warn("The depth of bean has exceeded 10 layers, the deeper layer will be ignored! " +
-                    "Please modify the parameter structure or check whether there is circular reference in bean!");
+                "Please modify the parameter structure or check whether there is circular reference in bean!");
             return null;
         }
         processCount++;
 
         Object initResult = initClassTypeWithDefaultValueNoProceeField(genericType, classType, processCount,
-                methodPrarmGenericTypeAndNamesMap);
+            methodPrarmGenericTypeAndNamesMap);
         if (null != initResult) {
             return initResult;
         }
 
         Map<String, String> genericTypeAndNamesMap;
-        if (genericType instanceof ParameterizedTypeImpl) {
-            ParameterizedTypeImpl parameterTypeImpl = (ParameterizedTypeImpl) genericType;
-            TypeVariable<? extends Class<?>>[] typeVariables = parameterTypeImpl.getRawType().getTypeParameters();
-            Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
-            genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
-            for (int i = 0; i < typeVariables.length; i++) {
-                genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType parameterTypeImpl = (ParameterizedType) genericType;
+            Type rawType = parameterTypeImpl.getRawType();
+            if (rawType instanceof Class<?>) {
+                TypeVariable<? extends Class<?>>[] typeVariables = ((Class<?>) rawType).getTypeParameters();
+                Type[] actualTypeArguments = parameterTypeImpl.getActualTypeArguments();
+                genericTypeAndNamesMap = new HashMap<>(typeVariables.length);
+                for (int i = 0; i < typeVariables.length; i++) {
+                    genericTypeAndNamesMap.put(typeVariables[i].getTypeName(), actualTypeArguments[i].getTypeName());
+                }
+            } else {
+                genericTypeAndNamesMap = Collections.emptyMap();
             }
         } else {
-            genericTypeAndNamesMap = Collections.EMPTY_MAP;
+            genericTypeAndNamesMap = Collections.emptyMap();
         }
 
         Map<String, Object> result = new HashMap<>(16);
@@ -180,13 +190,13 @@ public class ClassTypeUtil {
                     StringBuilder strValue = new StringBuilder(responseProperty.value());
                     if (StringUtils.isNotBlank(responseProperty.example())) {
                         strValue.append(SQUARE_BRACKET_LEFT).append(RESPONSE_STR_EXAMPLE)
-                                .append(responseProperty.example()).append(SQUARE_BRACKET_RIGHT);
+                            .append(responseProperty.example()).append(SQUARE_BRACKET_RIGHT);
                     }
                     result.put(field2.getName(), strValue.toString());
                 } else {
                     // It's string, but there's no annotation
                     result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(),
-                            processCount, methodPrarmGenericTypeAndNamesMap));
+                        processCount, methodPrarmGenericTypeAndNamesMap));
                 }
             } else {
                 // Check if the type of the property is generic
@@ -195,12 +205,12 @@ public class ClassTypeUtil {
                     // The type of the attribute is generic. Find the generic from the definition of
                     // the class in which the attribute is located
                     result.put(field2.getName(), initClassTypeWithDefaultValue(makeParameterizedType(genericTypeName),
-                            makeClass(genericTypeName),
-                            processCount, true, methodPrarmGenericTypeAndNamesMap));
+                        makeClass(genericTypeName),
+                        processCount, true, methodPrarmGenericTypeAndNamesMap));
                 } else {
                     // Not generic
                     result.put(field2.getName(), initClassTypeWithDefaultValue(field2.getGenericType(), field2.getType(),
-                            processCount, methodPrarmGenericTypeAndNamesMap));
+                        processCount, methodPrarmGenericTypeAndNamesMap));
                 }
             }
         }
@@ -208,8 +218,8 @@ public class ClassTypeUtil {
     }
 
     public static Object initClassTypeWithDefaultValueNoProceeField(
-            Type genericType, Class<?> classType, int processCount,
-            Map<String, String> methodPrarmGenericTypeAndNamesMap) {
+        Type genericType, Class<?> classType, int processCount,
+        Map<String, String> methodPrarmGenericTypeAndNamesMap) {
         if (null == classType) {
             return EMPTY_OBJECT_INSTANCE;
         }
@@ -265,7 +275,7 @@ public class ClassTypeUtil {
                 }
 
                 obj = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName),
-                        processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
+                    processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
             } else {
                 Class<?> arrType = classType.getComponentType();
                 obj = initClassTypeWithDefaultValue(null, arrType, processCount, methodPrarmGenericTypeAndNamesMap);
@@ -292,7 +302,7 @@ public class ClassTypeUtil {
                 }
 
                 obj = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName),
-                        processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
+                    processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
                 list.add(obj);
             }
             return list;
@@ -319,7 +329,7 @@ public class ClassTypeUtil {
                 }
 
                 Object objValue = initClassTypeWithDefaultValue(makeParameterizedType(subTypeName), makeClass(subTypeName),
-                        processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
+                    processCount, isBuildClassAttribute, methodPrarmGenericTypeAndNamesMap);
                 map.put(STRING_KEY, objValue);
             }
             return map;
@@ -331,7 +341,7 @@ public class ClassTypeUtil {
             ParameterizedType pt = (ParameterizedType) genericType;
             String typeName = pt.getActualTypeArguments()[0].getTypeName();
             return initClassTypeWithDefaultValue(makeParameterizedType(typeName), makeClass(typeName),
-                    processCount, methodPrarmGenericTypeAndNamesMap);
+                processCount, methodPrarmGenericTypeAndNamesMap);
         } else if (BigDecimal.class.isAssignableFrom(classType)) {
             return 0;
         } else if (BigInteger.class.isAssignableFrom(classType)) {
@@ -348,16 +358,16 @@ public class ClassTypeUtil {
      */
     public static boolean isBaseType(Object o) {
         if (o instanceof Integer ||
-                o instanceof Byte ||
-                o instanceof Long ||
-                o instanceof Double ||
-                o instanceof Float ||
-                o instanceof Character ||
-                o instanceof Short ||
-                o instanceof Boolean ||
-                o instanceof String ||
-                o instanceof BigDecimal ||
-                o instanceof BigInteger) {
+            o instanceof Byte ||
+            o instanceof Long ||
+            o instanceof Double ||
+            o instanceof Float ||
+            o instanceof Character ||
+            o instanceof Short ||
+            o instanceof Boolean ||
+            o instanceof String ||
+            o instanceof BigDecimal ||
+            o instanceof BigInteger) {
             return true;
         }
         return false;
@@ -392,7 +402,7 @@ public class ClassTypeUtil {
             String subTypeNames = typeName.substring((typeName.indexOf("<") + 1), (typeName.length() - 1));
             String[] subTypeNamesArray = subTypeNames.split(",");
             Type[] subTypes = makeSubClass(subTypeNamesArray);
-            return ParameterizedTypeImpl.make(typeClass, subTypes, null);
+            return new ParameterizedTypeImpl(subTypes, null, typeClass);
         } catch (ClassNotFoundException e) {
             LOG.warn("Exception getting generics in completabilefuture", e);
             return null;
