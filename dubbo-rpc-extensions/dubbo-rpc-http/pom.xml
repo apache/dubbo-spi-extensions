@@ -47,6 +47,10 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-cluster</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.briandilley.jsonrpc4j</groupId>
             <artifactId>jsonrpc4j</artifactId>
         </dependency>
