@@ -58,11 +58,5 @@
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
     </dependencies>
-
-
 </project>
