@@ -14,16 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.protocol.http;
+package org.apache.dubbo.rpc.protocol.webservice;
 
-/**
- * Custom exception error code for http protocol.
- */
-public interface HttpProtocolErrorCode {
+public class User {
+    private int age;
+    private  String name;
 
-    /**
-     * @return custom error code of exception
-     */
-    int getErrorCode();
+    public int getAge() {
+        return age;
+    }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

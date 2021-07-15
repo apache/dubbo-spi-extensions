@@ -14,14 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.protocol.http;
+package org.apache.dubbo.rpc.protocol.webservice;
 
-public interface HttpService {
-    String sayHello(String name);
+/**
+ * <code>TestService</code>
+ */
 
-    void timeOut(int millis);
+public interface DemoService {
+    void sayHello(String name);
 
-    String customException();
+    String echo(String text);
 
-    String getRemoteApplicationName();
+    long timestamp();
+
+    void throwTimeout();
+
+    String getThreadName();
+
+    int getSize(String[] strs);
+
+    int getSize(Object[] os);
+
+    Object invoke(String service, String method) throws Exception;
+
+    int stringLength(String str);
+
+    User create(int age, String name);
 }
