@@ -17,7 +17,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
@@ -109,6 +109,10 @@
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
         <file_encoding>UTF-8</file_encoding>
+        <!-- Build args -->
+        <argline>-server -Xms256m -Xmx512m -Dfile.encoding=UTF-8
+            -Djava.net.preferIPv4Stack=true -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m
+        </argline>
 
         <maven_jar_version>3.2.0</maven_jar_version>
         <maven_surefire_version>2.22.2</maven_surefire_version>
@@ -125,7 +129,7 @@
         <checkstyle.skip>true</checkstyle.skip>
         <checkstyle_unix.skip>true</checkstyle_unix.skip>
         <rat.skip>true</rat.skip>
-        <jacoco.skip>true</jacoco.skip>
+        <jacoco.skip>false</jacoco.skip>
     </properties>
 
     <dependencyManagement>
@@ -229,8 +233,15 @@
                         <id>report-aggregate</id>
                         <phase>verify</phase>
                         <goals>
-                            <goal>report-aggregate</goal>
+                            <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>target/classes/**/*</include>
+                                <include>target/classes/**</include>
+                                <include>**/*</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
