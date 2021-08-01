@@ -140,7 +140,7 @@ public class RmiProtocolTest {
         exporter.unexport();
     }
 
-
+    @Disabled
     @Test
     public void testRemoteApplicationName() throws Exception {
         int availablePort = NetUtils.getAvailablePort();
