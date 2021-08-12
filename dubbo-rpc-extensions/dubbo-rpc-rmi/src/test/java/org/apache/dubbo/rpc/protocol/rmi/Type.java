@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace java org.apache.dubbo.rpc.protocol.nativethrift
-namespace go demo
+package org.apache.dubbo.rpc.protocol.rmi;
 
-service UserService {
-    string find(1:required i32 id);
+public enum Type {
+    High, Normal, Lower
 }

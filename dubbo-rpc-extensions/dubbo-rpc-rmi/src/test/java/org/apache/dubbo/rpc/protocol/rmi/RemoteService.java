@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.protocol.nativethrift;
+package org.apache.dubbo.rpc.protocol.rmi;
 
-public class UserServiceImpl implements UserService.Iface {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    public String find(int id) throws org.apache.thrift.TException{
-        return "KK"+id;
-    }
+public interface RemoteService extends Remote {
+    String sayHello(String name) throws RemoteException;
+
+    String getThreadName() throws RemoteException;
 }
