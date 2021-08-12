@@ -28,7 +28,9 @@
 
     <artifactId>dubbo-rpc-extensions</artifactId>
     <modules>
+        <module>dubbo-rpc-native-thrift</module>
         <module>dubbo-rpc-http</module>
+        <module>dubbo-rpc-webservice</module>
         <module>dubbo-rpc-rmi</module>
     </modules>
 
