@@ -14,13 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.protocol.rmi;
+namespace java org.apache.dubbo.rpc.protocol.nativethrift
+namespace go demo
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-
-public interface RemoteService extends Remote {
-    String sayHello(String name) throws RemoteException;
-
-    String getThreadName() throws RemoteException;
+service UserService {
+    string find(1:required i32 id);
 }
