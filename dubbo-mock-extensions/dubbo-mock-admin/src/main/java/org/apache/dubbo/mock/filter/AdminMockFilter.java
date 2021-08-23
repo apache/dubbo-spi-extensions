@@ -19,14 +19,22 @@ package org.apache.dubbo.mock.filter;
 
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.common.utils.PojoUtils;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
+import org.apache.dubbo.mock.api.MockResult;
 import org.apache.dubbo.mock.api.MockService;
+import org.apache.dubbo.rpc.AppResponse;
+import org.apache.dubbo.rpc.AsyncRpcResult;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
+
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * AdminMockFilter will intercept the request from user's consumer. if the mock tag is opened,
@@ -42,17 +50,47 @@ public class AdminMockFilter implements ClusterFilter {
     static {
         ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
         mockServiceConfig.setCheck(false);
-
+        mockServiceConfig.setInterface(MockService.class);
         DubboBootstrap.getInstance().reference(mockServiceConfig);
     }
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        // check if open the admin mock config
-
-        // check if the MockService's invoker
-
+        // check if open the admin mock config, global config.
+        
+        // check if the MockService's invoker, then request.
+        if (Objects.equals(invoker.getInterface().getName(), MockService.class.getName())) {
+            return invoker.invoke(invocation);
+        }
+        MockService mockService = DubboBootstrap.getInstance().getCache().get(MockService.class);
+        if (Objects.isNull(mockService)) {
+            throw new RpcException("Cloud not find MockService, please check if it started.");
+        }
         // parse the result from MockService, build the real method's return value.
-        return null;
+        String interfaceName = invoker.getInterface().getName();
+        String methodName = invocation.getMethodName();
+        Object[] params = invocation.getArguments();
+        MockResult mockResult = mockService.mock(interfaceName, methodName, params);
+        if (!mockResult.isEnable()) {
+            return invoker.invoke(invocation);
+        }
+        Class<?> returnType = ((RpcInvocation) invocation).getReturnType();
+        
+        // parse the return data.
+        Object data = parseResult(mockResult.getContent(), returnType);
+        AppResponse appResponse = new AppResponse(data);
+        CompletableFuture<AppResponse> appResponseFuture = new CompletableFuture<>();
+        appResponseFuture.complete(appResponse);
+        return new AsyncRpcResult(appResponseFuture, invocation);
+    }
+    
+    private Object parseResult(String content, Class<?> returnType) {
+        // parse it to json.
+        try {
+            return PojoUtils.realize(content, returnType);
+        } catch (Exception e) {
+            // todo if failed, parse it as protobuf data.
+            return null;
+        }
     }
 }

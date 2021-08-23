@@ -18,22 +18,41 @@
 package org.apache.dubbo.mock.api;
 
 /**
- * The MockService is the service which receive the params from user's consumer and response the mock data
- * which config in Dubbo Admin.
+ * The Mock result which configured in Dubbo Admin.
  *
  * @author chenglu
- * @date 2021-08-23 19:11
+ * @date 2021-08-23 21:50
  */
-public interface MockService {
-
+public class MockResult {
+    
     /**
-     * input the service class name, method name and parameters from consumer.
-     * return the mock data configured in dubbo admin.
-     *
-     * @param interfaceName interface name of consumer.
-     * @param methodName method name of consumer.
-     * @param arguments method params of consumer.
-     * @return configured data in dubbo admin.
+     * if has mock rule or enable the mock rule.
      */
-    MockResult mock(String interfaceName, String methodName, Object[] arguments);
+    private boolean enable;
+    
+    /**
+     * the mock result.
+     */
+    private String content;
+    
+    public boolean isEnable() {
+        return enable;
+    }
+    
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+    
+    public String getContent() {
+        return content;
+    }
+    
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
+    @Override
+    public String toString() {
+        return "MockResult{" + "enable=" + enable + ", content='" + content + '\'' + '}';
+    }
 }
