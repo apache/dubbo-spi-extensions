@@ -46,17 +46,27 @@ import java.util.concurrent.CompletableFuture;
  */
 @Activate(group = CommonConstants.CONSUMER)
 public class AdminMockFilter implements ClusterFilter {
-
+    
+    /**
+     * the global enable mock config.
+     */
+    private static final boolean ENABLE_DUBBO_ADMIN_MOCK;
+    
     static {
         ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
         mockServiceConfig.setCheck(false);
         mockServiceConfig.setInterface(MockService.class);
         DubboBootstrap.getInstance().reference(mockServiceConfig);
+    
+        ENABLE_DUBBO_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty("dubbo.admim.mock.enable", "false"));
     }
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         // check if open the admin mock config, global config.
+        if (!ENABLE_DUBBO_ADMIN_MOCK) {
+            return invoker.invoke(invocation);
+        }
         
         // check if the MockService's invoker, then request.
         if (Objects.equals(invoker.getInterface().getName(), MockService.class.getName())) {
@@ -64,8 +74,9 @@ public class AdminMockFilter implements ClusterFilter {
         }
         MockService mockService = DubboBootstrap.getInstance().getCache().get(MockService.class);
         if (Objects.isNull(mockService)) {
-            throw new RpcException("Cloud not find MockService, please check if it started.");
+            throw new RpcException("Cloud not find MockService, please check if it has started.");
         }
+        
         // parse the result from MockService, build the real method's return value.
         String interfaceName = invoker.getInterface().getName();
         String methodName = invocation.getMethodName();
