@@ -17,12 +17,18 @@
 
 package org.apache.dubbo.mock.filter;
 
+import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.PojoUtils;
+import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.mock.api.MockResult;
+import org.apache.dubbo.mock.api.MockRule;
 import org.apache.dubbo.mock.api.MockService;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.AsyncRpcResult;
@@ -32,9 +38,14 @@ import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+
+import static org.apache.dubbo.mock.api.MockConstants.ADMIN_MOCK_RULE_GROUP;
+import static org.apache.dubbo.mock.api.MockConstants.ADMIN_MOCK_RULE_KEY;
 
 /**
  * AdminMockFilter will intercept the request from user's consumer. if the mock tag is opened,
@@ -46,30 +57,59 @@ import java.util.concurrent.CompletableFuture;
  */
 @Activate(group = CommonConstants.CONSUMER)
 public class AdminMockFilter implements ClusterFilter {
-    
-    /**
-     * the global enable mock config.
-     */
-    private static final boolean ENABLE_DUBBO_ADMIN_MOCK;
+
+    private Logger logger = LoggerFactory.getLogger(AdminMockFilter.class);
+
+    private MockRule mockRule;
     
     static {
         ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
         mockServiceConfig.setCheck(false);
         mockServiceConfig.setInterface(MockService.class);
         DubboBootstrap.getInstance().reference(mockServiceConfig);
-    
-        ENABLE_DUBBO_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty("dubbo.admim.mock.enable", "false"));
+    }
+
+    public AdminMockFilter() {
+        Optional<DynamicConfiguration> dynamicConfigurationOptional = ApplicationModel.getEnvironment().getDynamicConfiguration();
+        if (!dynamicConfigurationOptional.isPresent()) {
+            logger.warn("[Dubbo Admin Mock] could not find configuration center, all consumer request will not be mocked!");
+            return;
+        }
+        DynamicConfiguration dynamicConfiguration = dynamicConfigurationOptional.get();
+        String config = dynamicConfiguration.getConfig(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP);
+        if (StringUtils.isBlank(config)) {
+            mockRule = new MockRule();
+        }
+
+        dynamicConfiguration.addListener(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP, event -> {
+            String content = event.getContent();
+            if (StringUtils.isBlank(content)) {
+                mockRule = new MockRule();
+                return;
+            }
+            mockRule = (MockRule) PojoUtils.realize(content, MockRule.class);
+        });
     }
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         // check if open the admin mock config, global config.
-        if (!ENABLE_DUBBO_ADMIN_MOCK) {
+        if (!mockRule.isEnableMock()) {
+            return invoker.invoke(invocation);
+        }
+
+        String interfaceName = invoker.getInterface().getName();
+        String methodName = invocation.getMethodName();
+        Object[] params = invocation.getArguments();
+
+        // check if the service is in mock list
+        String mockRuleName = interfaceName + "#" + methodName;
+        if (CollectionUtils.isEmpty(mockRule.getEnabledMockRules()) || !mockRule.getEnabledMockRules().contains(mockRuleName)) {
             return invoker.invoke(invocation);
         }
         
         // check if the MockService's invoker, then request.
-        if (Objects.equals(invoker.getInterface().getName(), MockService.class.getName())) {
+        if (Objects.equals(interfaceName, MockService.class.getName())) {
             return invoker.invoke(invocation);
         }
         MockService mockService = DubboBootstrap.getInstance().getCache().get(MockService.class);
@@ -78,15 +118,8 @@ public class AdminMockFilter implements ClusterFilter {
         }
         
         // parse the result from MockService, build the real method's return value.
-        String interfaceName = invoker.getInterface().getName();
-        String methodName = invocation.getMethodName();
-        Object[] params = invocation.getArguments();
         MockResult mockResult = mockService.mock(interfaceName, methodName, params);
-        if (!mockResult.isEnable()) {
-            return invoker.invoke(invocation);
-        }
         Class<?> returnType = ((RpcInvocation) invocation).getReturnType();
-        
         // parse the return data.
         Object data = parseResult(mockResult.getContent(), returnType);
         AppResponse appResponse = new AppResponse(data);
@@ -98,6 +131,9 @@ public class AdminMockFilter implements ClusterFilter {
     private Object parseResult(String content, Class<?> returnType) {
         // parse it to json.
         try {
+            if (StringUtils.isBlank(content)) {
+                return null;
+            }
             return PojoUtils.realize(content, returnType);
         } catch (Exception e) {
             // todo if failed, parse it as protobuf data.
