@@ -77,8 +77,9 @@ public class AdminMockFilter implements ClusterFilter {
         }
         DynamicConfiguration dynamicConfiguration = dynamicConfigurationOptional.get();
         String config = dynamicConfiguration.getConfig(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP);
-        if (StringUtils.isBlank(config)) {
-            mockRule = new MockRule();
+        mockRule = new MockRule();
+        if (StringUtils.isNotEmpty(config)) {
+
         }
 
         dynamicConfiguration.addListener(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP, event -> {
