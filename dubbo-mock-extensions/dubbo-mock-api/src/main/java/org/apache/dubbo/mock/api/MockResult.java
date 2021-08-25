@@ -17,13 +17,15 @@
 
 package org.apache.dubbo.mock.api;
 
+import java.io.Serializable;
+
 /**
  * The Mock result which configured in Dubbo Admin.
  *
  * @author chenglu
  * @date 2021-08-23 21:50
  */
-public class MockResult {
+public class MockResult implements Serializable {
     
     /**
      * if has mock rule or enable the mock rule.

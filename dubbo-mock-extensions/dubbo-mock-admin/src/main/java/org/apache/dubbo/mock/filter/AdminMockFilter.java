@@ -23,7 +23,6 @@ import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.CollectionUtils;
-import org.apache.dubbo.common.utils.PojoUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -39,6 +38,8 @@ import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
 import org.apache.dubbo.rpc.model.ApplicationModel;
+
+import com.google.gson.Gson;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -77,9 +78,10 @@ public class AdminMockFilter implements ClusterFilter {
         }
         DynamicConfiguration dynamicConfiguration = dynamicConfigurationOptional.get();
         String config = dynamicConfiguration.getConfig(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP);
-        mockRule = new MockRule();
         if (StringUtils.isNotEmpty(config)) {
-
+            mockRule = new Gson().fromJson(config, MockRule.class);
+        } else {
+            mockRule = new MockRule();
         }
 
         dynamicConfiguration.addListener(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP, event -> {
@@ -88,7 +90,7 @@ public class AdminMockFilter implements ClusterFilter {
                 mockRule = new MockRule();
                 return;
             }
-            mockRule = (MockRule) PojoUtils.realize(content, MockRule.class);
+            mockRule = new Gson().fromJson(config, MockRule.class);
         });
     }
 
@@ -99,7 +101,7 @@ public class AdminMockFilter implements ClusterFilter {
             return invoker.invoke(invocation);
         }
 
-        String interfaceName = invoker.getInterface().getName();
+        String interfaceName = invocation.getTargetServiceUniqueName();
         String methodName = invocation.getMethodName();
         Object[] params = invocation.getArguments();
 
@@ -120,6 +122,9 @@ public class AdminMockFilter implements ClusterFilter {
         
         // parse the result from MockService, build the real method's return value.
         MockResult mockResult = mockService.mock(interfaceName, methodName, params);
+        if (!mockResult.isEnable()) {
+            return invoker.invoke(invocation);
+        }
         Class<?> returnType = ((RpcInvocation) invocation).getReturnType();
         // parse the return data.
         Object data = parseResult(mockResult.getContent(), returnType);
@@ -132,10 +137,19 @@ public class AdminMockFilter implements ClusterFilter {
     private Object parseResult(String content, Class<?> returnType) {
         // parse it to json.
         try {
-            if (StringUtils.isBlank(content)) {
+            if (Objects.isNull(returnType) || StringUtils.isBlank(content)) {
                 return null;
             }
-            return PojoUtils.realize(content, returnType);
+
+            // todo parse the basic data structure.
+            String returnTypeName = returnType.getName();
+            if (returnTypeName.equals(String.class.getName())) {
+                return content;
+            }
+            if (returnTypeName.equals(Integer.class.getName())) {
+                return Integer.parseInt(content);
+            }
+            return new Gson().fromJson(content, returnType);
         } catch (Exception e) {
             // todo if failed, parse it as protobuf data.
             return null;
