@@ -29,6 +29,9 @@ import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.mock.api.MockResult;
 import org.apache.dubbo.mock.api.MockRule;
 import org.apache.dubbo.mock.api.MockService;
+import org.apache.dubbo.mock.handler.CommonTypeHandler;
+import org.apache.dubbo.mock.handler.ResultContext;
+import org.apache.dubbo.mock.handler.TypeHandler;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.AsyncRpcResult;
 import org.apache.dubbo.rpc.Invocation;
@@ -59,7 +62,9 @@ import static org.apache.dubbo.mock.api.MockConstants.ADMIN_MOCK_RULE_KEY;
 @Activate(group = CommonConstants.CONSUMER)
 public class AdminMockFilter implements ClusterFilter {
 
-    private Logger logger = LoggerFactory.getLogger(AdminMockFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminMockFilter.class);
+
+    private final TypeHandler typeHandler;
 
     private MockRule mockRule;
     
@@ -71,6 +76,7 @@ public class AdminMockFilter implements ClusterFilter {
     }
 
     public AdminMockFilter() {
+        typeHandler = new CommonTypeHandler();
         Optional<DynamicConfiguration> dynamicConfigurationOptional = ApplicationModel.getEnvironment().getDynamicConfiguration();
         if (!dynamicConfigurationOptional.isPresent()) {
             logger.warn("[Dubbo Admin Mock] could not find configuration center, all consumer request will not be mocked!");
@@ -126,33 +132,14 @@ public class AdminMockFilter implements ClusterFilter {
             return invoker.invoke(invocation);
         }
         Class<?> returnType = ((RpcInvocation) invocation).getReturnType();
+
         // parse the return data.
-        Object data = parseResult(mockResult.getContent(), returnType);
+        ResultContext resultContext = ResultContext.newResultContext()
+            .data(mockResult.getContent()).targetType(returnType).build();
+        Object data = typeHandler.handleResult(resultContext);
         AppResponse appResponse = new AppResponse(data);
         CompletableFuture<AppResponse> appResponseFuture = new CompletableFuture<>();
         appResponseFuture.complete(appResponse);
         return new AsyncRpcResult(appResponseFuture, invocation);
-    }
-    
-    private Object parseResult(String content, Class<?> returnType) {
-        // parse it to json.
-        try {
-            if (Objects.isNull(returnType) || StringUtils.isBlank(content)) {
-                return null;
-            }
-
-            // todo parse the basic data structure.
-            String returnTypeName = returnType.getName();
-            if (returnTypeName.equals(String.class.getName())) {
-                return content;
-            }
-            if (returnTypeName.equals(Integer.class.getName())) {
-                return Integer.parseInt(content);
-            }
-            return new Gson().fromJson(content, returnType);
-        } catch (Exception e) {
-            // todo if failed, parse it as protobuf data.
-            return null;
-        }
     }
 }
