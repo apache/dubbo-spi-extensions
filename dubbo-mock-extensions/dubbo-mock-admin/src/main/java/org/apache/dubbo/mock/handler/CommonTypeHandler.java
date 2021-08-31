@@ -6,6 +6,7 @@ import org.apache.dubbo.common.logger.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author chenglu
@@ -40,10 +41,13 @@ public class CommonTypeHandler implements TypeHandler<Object> {
             return null;
         }
         try {
-            return typeHandlers.stream().filter(typeHandler -> typeHandler.isMatch(resultContext))
-                .findFirst()
-                .map(typeHandler -> typeHandler.handleResult(resultContext))
-                .orElse(jsonTypeHandler.handleResult(resultContext));
+            Optional<TypeHandler> typeHandler = typeHandlers.stream()
+                .filter(th -> th.isMatch(resultContext))
+                .findFirst();
+            if (typeHandler.isPresent()) {
+                return typeHandler.get().handleResult(resultContext);
+            }
+            return jsonTypeHandler.handleResult(resultContext);
         } catch (Exception e) {
             logger.warn("[Dubbo Mock] handle the common result failed, will use unknown type handler.", e);
             return unknownTypeHandler.handleResult(resultContext);

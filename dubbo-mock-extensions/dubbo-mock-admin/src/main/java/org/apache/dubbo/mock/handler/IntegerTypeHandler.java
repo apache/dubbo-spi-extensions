@@ -11,7 +11,8 @@ public class IntegerTypeHandler implements TypeHandler<Integer> {
     @Override
     public boolean isMatch(ResultContext resultContext) {
         Class<?> targetType = resultContext.getTargetType();
-        return Objects.equals(targetType, Integer.class) || Objects.equals(targetType, int.class);
+        return Objects.equals(targetType, Integer.class)
+            || Objects.equals(targetType, int.class);
     }
 
     @Override
