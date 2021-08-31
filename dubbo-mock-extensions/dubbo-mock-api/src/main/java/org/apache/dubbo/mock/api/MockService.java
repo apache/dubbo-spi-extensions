@@ -30,10 +30,8 @@ public interface MockService {
      * input the service class name, method name and parameters from consumer.
      * return the mock data configured in dubbo admin.
      *
-     * @param interfaceName interface name of consumer.
-     * @param methodName method name of consumer.
-     * @param arguments method params of consumer.
+     * @param mockContext the request context.
      * @return configured data in dubbo admin.
      */
-    MockResult mock(String interfaceName, String methodName, Object[] arguments);
+    MockResult mock(MockContext mockContext);
 }

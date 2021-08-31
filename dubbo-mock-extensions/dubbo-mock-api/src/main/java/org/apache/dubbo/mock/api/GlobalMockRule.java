@@ -21,16 +21,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * The global mock rule from config center, we will query this rule first.
+ * then decide if we need to query the {@link MockService}.
+ *
  * @author chenglu
- * @date 2021-08-24 11:19
+ * @date 2021-08-24 12:19
  */
-public class MockRule {
+public class GlobalMockRule {
 
+    /**
+     * the global enable mock config. if disabled then all method will not be mocked.
+     */
     private volatile boolean enableMock = false;
 
-    private volatile Set<String> enabledMockRules = new HashSet<>();
+    /**
+     * the enable mock rule, serviceName + methodName
+     */
+    private Set<String> enabledMockRules = new HashSet<>();
 
-    public boolean isEnableMock() {
+    public boolean getEnableMock() {
         return enableMock;
     }
 

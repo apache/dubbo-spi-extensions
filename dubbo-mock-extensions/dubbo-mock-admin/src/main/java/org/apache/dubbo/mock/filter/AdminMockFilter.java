@@ -26,8 +26,9 @@ import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
+import org.apache.dubbo.mock.api.GlobalMockRule;
+import org.apache.dubbo.mock.api.MockContext;
 import org.apache.dubbo.mock.api.MockResult;
-import org.apache.dubbo.mock.api.MockRule;
 import org.apache.dubbo.mock.api.MockService;
 import org.apache.dubbo.mock.handler.CommonTypeHandler;
 import org.apache.dubbo.mock.handler.ResultContext;
@@ -57,7 +58,7 @@ import static org.apache.dubbo.mock.api.MockConstants.ADMIN_MOCK_RULE_KEY;
  * request is agent by the implement of {@link MockService}.
  *
  * @author chenglu
- * @date 2021-08-23 16:14
+ * @date 2021-08-23 23:14
  */
 @Activate(group = CommonConstants.CONSUMER)
 public class AdminMockFilter implements ClusterFilter {
@@ -66,7 +67,7 @@ public class AdminMockFilter implements ClusterFilter {
 
     private final TypeHandler typeHandler;
 
-    private MockRule mockRule;
+    private GlobalMockRule globalMockRule;
     
     static {
         ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
@@ -85,25 +86,27 @@ public class AdminMockFilter implements ClusterFilter {
         DynamicConfiguration dynamicConfiguration = dynamicConfigurationOptional.get();
         String config = dynamicConfiguration.getConfig(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP);
         if (StringUtils.isNotEmpty(config)) {
-            mockRule = new Gson().fromJson(config, MockRule.class);
+            globalMockRule = new Gson().fromJson(config, GlobalMockRule.class);
         } else {
-            mockRule = new MockRule();
+            globalMockRule = new GlobalMockRule();
         }
 
         dynamicConfiguration.addListener(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP, event -> {
             String content = event.getContent();
             if (StringUtils.isBlank(content)) {
-                mockRule = new MockRule();
+                globalMockRule = new GlobalMockRule();
                 return;
             }
-            mockRule = new Gson().fromJson(config, MockRule.class);
+            GlobalMockRule newRule = new Gson().fromJson(config, GlobalMockRule.class);
+            globalMockRule.setEnableMock(newRule.getEnableMock());
+            globalMockRule.setEnabledMockRules(newRule.getEnabledMockRules());
         });
     }
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         // check if open the admin mock config, global config.
-        if (!mockRule.isEnableMock()) {
+        if (!globalMockRule.getEnableMock()) {
             return invoker.invoke(invocation);
         }
 
@@ -113,7 +116,7 @@ public class AdminMockFilter implements ClusterFilter {
 
         // check if the service is in mock list
         String mockRuleName = interfaceName + "#" + methodName;
-        if (CollectionUtils.isEmpty(mockRule.getEnabledMockRules()) || !mockRule.getEnabledMockRules().contains(mockRuleName)) {
+        if (CollectionUtils.isEmpty(globalMockRule.getEnabledMockRules()) || !globalMockRule.getEnabledMockRules().contains(mockRuleName)) {
             return invoker.invoke(invocation);
         }
         
@@ -127,7 +130,9 @@ public class AdminMockFilter implements ClusterFilter {
         }
         
         // parse the result from MockService, build the real method's return value.
-        MockResult mockResult = mockService.mock(interfaceName, methodName, params);
+        MockContext mockContext = MockContext.newMockContext()
+            .serviceName(interfaceName).methodName(methodName).arguments(params).build();
+        MockResult mockResult = mockService.mock(mockContext);
         if (!mockResult.isEnable()) {
             return invoker.invoke(invocation);
         }
