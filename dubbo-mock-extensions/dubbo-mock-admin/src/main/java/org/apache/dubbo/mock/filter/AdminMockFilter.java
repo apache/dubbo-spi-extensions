@@ -140,7 +140,8 @@ public class AdminMockFilter implements ClusterFilter {
 
         // parse the return data.
         ResultContext resultContext = ResultContext.newResultContext()
-            .data(mockResult.getContent()).targetType(returnType).build();
+            .data(mockResult.getContent()).targetType(returnType)
+            .serviceName(interfaceName).methodName(methodName).build();
         Object data = typeHandler.handleResult(resultContext);
         AppResponse appResponse = new AppResponse(data);
         CompletableFuture<AppResponse> appResponseFuture = new CompletableFuture<>();

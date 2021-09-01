@@ -27,5 +27,5 @@ public class MockConstants {
 
     public static final String ADMIN_MOCK_RULE_KEY = "dubbo.admin.global.mock.rules";
 
-    public static final String ADMIN_MOCK_RULE_GROUP = "dubbo.admin";
+    public static final String ADMIN_MOCK_RULE_GROUP = "dubbo";
 }

@@ -43,6 +43,9 @@ public class MockContext implements Serializable {
      */
     private Object[] arguments;
 
+    public MockContext() {
+    }
+
     private MockContext(Builder builder) {
         this.serviceName = builder.serviceName;
         this.methodName = builder.methodName;
