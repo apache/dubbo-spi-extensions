@@ -25,8 +25,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>pom</packaging>
     <artifactId>dubbo-serialization-extensions</artifactId>
 
-
+    <modules>
+        <module>dubbo-serialization-gson</module>
+    </modules>
 </project>
