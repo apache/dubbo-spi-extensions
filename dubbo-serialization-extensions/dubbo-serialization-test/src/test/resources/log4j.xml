@@ -15,21 +15,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
-    <artifactId>dubbo-serialization-extensions</artifactId>
-
-    <modules>
-        <module>dubbo-serialization-test</module>
-        <module>dubbo-serialization-protobuf</module>
-    </modules>
-</project>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="dubbo" class="org.apache.dubbo.common.utils.DubboAppender">
+        <param name="File" value="../../dubbo.log"/>
+        <param name="encoding" value="GBK"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %p [%c:%M] - %m%n"/>
+        </layout>
+    </appender>
+    <root>
+        <level value="INFO"/>
+        <appender-ref ref="dubbo"/>
+    </root>
+</log4j:configuration>
