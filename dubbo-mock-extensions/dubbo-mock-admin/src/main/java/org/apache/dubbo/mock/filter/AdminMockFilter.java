@@ -69,7 +69,7 @@ public class AdminMockFilter implements ClusterFilter {
 
     private final TypeHandler typeHandler;
 
-    private GlobalMockRule globalMockRule;
+    private GlobalMockRule globalMockRule = new GlobalMockRule();
     
     static {
         ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
@@ -88,20 +88,21 @@ public class AdminMockFilter implements ClusterFilter {
         DynamicConfiguration dynamicConfiguration = dynamicConfigurationOptional.get();
         String config = dynamicConfiguration.getConfig(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP);
         if (StringUtils.isNotEmpty(config)) {
-            globalMockRule = new Gson().fromJson(config, GlobalMockRule.class);
-        } else {
-            globalMockRule = new GlobalMockRule();
+            GlobalMockRule newGlobalMockRule = new Gson().fromJson(config, GlobalMockRule.class);
+            globalMockRule.setEnableMock(newGlobalMockRule.getEnableMock());
+            globalMockRule.getEnabledMockRules().addAll(newGlobalMockRule.getEnabledMockRules());
         }
 
         dynamicConfiguration.addListener(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP, event -> {
             String content = event.getContent();
             if (StringUtils.isBlank(content)) {
-                globalMockRule = new GlobalMockRule();
+                globalMockRule.setEnableMock(false);
+                globalMockRule.getEnabledMockRules().clear();
                 return;
             }
             GlobalMockRule newRule = new Gson().fromJson(config, GlobalMockRule.class);
             globalMockRule.setEnableMock(newRule.getEnableMock());
-            globalMockRule.setEnabledMockRules(newRule.getEnabledMockRules());
+            globalMockRule.getEnabledMockRules().addAll(newRule.getEnabledMockRules());
         });
     }
 
