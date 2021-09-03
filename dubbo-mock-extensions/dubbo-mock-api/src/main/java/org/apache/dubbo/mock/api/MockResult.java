@@ -37,7 +37,7 @@ public class MockResult implements Serializable {
      */
     private String content;
     
-    public boolean isEnable() {
+    public boolean getEnable() {
         return enable;
     }
     

@@ -33,6 +33,7 @@ import org.apache.dubbo.mock.api.MockService;
 import org.apache.dubbo.mock.handler.CommonTypeHandler;
 import org.apache.dubbo.mock.handler.ResultContext;
 import org.apache.dubbo.mock.handler.TypeHandler;
+import org.apache.dubbo.mock.utils.ProtobufUtil;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.AsyncRpcResult;
 import org.apache.dubbo.rpc.Invocation;
@@ -47,6 +48,7 @@ import com.google.gson.Gson;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static org.apache.dubbo.mock.api.MockConstants.ADMIN_MOCK_RULE_GROUP;
@@ -112,11 +114,12 @@ public class AdminMockFilter implements ClusterFilter {
 
         String interfaceName = invocation.getTargetServiceUniqueName();
         String methodName = invocation.getMethodName();
-        Object[] params = invocation.getArguments();
+        Object[] params = solveParams(invocation.getArguments());
 
         // check if the service is in mock list
         String mockRuleName = interfaceName + "#" + methodName;
-        if (CollectionUtils.isEmpty(globalMockRule.getEnabledMockRules()) || !globalMockRule.getEnabledMockRules().contains(mockRuleName)) {
+        Set<String> mockRules = globalMockRule.getEnabledMockRules();
+        if (CollectionUtils.isEmpty(mockRules) || !mockRules.contains(mockRuleName)) {
             return invoker.invoke(invocation);
         }
         
@@ -133,7 +136,7 @@ public class AdminMockFilter implements ClusterFilter {
         MockContext mockContext = MockContext.newMockContext()
             .serviceName(interfaceName).methodName(methodName).arguments(params).build();
         MockResult mockResult = mockService.mock(mockContext);
-        if (!mockResult.isEnable()) {
+        if (!mockResult.getEnable()) {
             return invoker.invoke(invocation);
         }
         Class<?> returnType = ((RpcInvocation) invocation).getReturnType();
@@ -147,5 +150,32 @@ public class AdminMockFilter implements ClusterFilter {
         CompletableFuture<AppResponse> appResponseFuture = new CompletableFuture<>();
         appResponseFuture.complete(appResponse);
         return new AsyncRpcResult(appResponseFuture, invocation);
+    }
+
+    /**
+     * Solve the request params, due to the protobuf object has no public constructor.
+     * and we use dubbo protocol, so we must solve it.
+     *
+     * @param arguments arguments
+     * @return new resolved params.
+     */
+    private Object[] solveParams(Object[] arguments) {
+        if (Objects.isNull(arguments)) {
+            return null;
+        }
+        Object[] params = new Object[arguments.length];
+        for (int i = 0; i < arguments.length; i++) {
+            Object argument = arguments[i];
+            if (Objects.isNull(argument)) {
+                params[i] = null;
+                continue;
+            }
+            if (ProtobufUtil.isProtobufClass(argument.getClass())) {
+                params[i] = ProtobufUtil.protobufToJson(argument);
+            } else {
+                params[i] = argument;
+            }
+        }
+        return params;
     }
 }

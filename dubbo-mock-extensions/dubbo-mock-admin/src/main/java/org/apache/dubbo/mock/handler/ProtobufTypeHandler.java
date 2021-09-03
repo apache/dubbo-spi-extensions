@@ -20,12 +20,12 @@ package org.apache.dubbo.mock.handler;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.mock.exception.HandleFailException;
+import org.apache.dubbo.mock.utils.ProtobufUtil;
 
 import com.google.protobuf.Message;
 import com.googlecode.protobuf.format.JsonFormat;
 
 import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * @author chenglu
@@ -37,13 +37,7 @@ public class ProtobufTypeHandler implements TypeHandler<Object> {
 
     @Override
     public boolean isMatch(ResultContext resultContext) {
-        Class<?> superType = resultContext.getTargetType().getSuperclass();
-        if (Objects.isNull(superType)) {
-            return false;
-        }
-        String superTypeName = superType.getName();
-        return Objects.equals(superTypeName, "com.google.protobuf.GeneratedMessageV3")
-            || Objects.equals(superTypeName, "com.google.protobuf.GeneratedMessage");
+        return ProtobufUtil.isProtobufClass(resultContext.getTargetType());
     }
 
     @Override
