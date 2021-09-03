@@ -94,10 +94,10 @@ public class AdminMockFilter implements ClusterFilter {
         }
 
         dynamicConfiguration.addListener(ADMIN_MOCK_RULE_KEY, ADMIN_MOCK_RULE_GROUP, event -> {
+            globalMockRule.getEnabledMockRules().clear();
             String content = event.getContent();
             if (StringUtils.isBlank(content)) {
                 globalMockRule.setEnableMock(false);
-                globalMockRule.getEnabledMockRules().clear();
                 return;
             }
             GlobalMockRule newRule = new Gson().fromJson(config, GlobalMockRule.class);
