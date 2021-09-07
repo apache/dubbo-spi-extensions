@@ -43,5 +43,9 @@ limitations under the License.
             <groupId>de.javakaffee</groupId>
             <artifactId>kryo-serializers</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-common-extensions</artifactId>
+        </dependency>
     </dependencies>
 </project>

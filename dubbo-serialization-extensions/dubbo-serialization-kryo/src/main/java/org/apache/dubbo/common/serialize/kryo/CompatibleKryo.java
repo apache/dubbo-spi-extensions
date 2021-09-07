@@ -18,8 +18,7 @@ package org.apache.dubbo.common.serialize.kryo;
 
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.common.utils.ReflectUtils;
-
+import org.apache.dubbo.common.utils.Utils;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.serializers.JavaSerializer;
@@ -43,7 +42,7 @@ public class CompatibleKryo extends Kryo {
          * default to the default serializer.
          * It is the responsibility of kryo to handle with every standard jdk classes, so we will just escape these classes.
          */
-        if (!isJdk(type) && !type.isArray() && !type.isEnum() && !checkZeroArgConstructor(type)) {
+        if (!Utils.isJdk(type) && !type.isArray() && !type.isEnum() && !Utils.checkZeroArgConstructor(type)) {
             if (logger.isWarnEnabled()) {
                 logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
             }
@@ -52,16 +51,4 @@ public class CompatibleKryo extends Kryo {
         return super.getDefaultSerializer(type);
     }
 
-    public static boolean checkZeroArgConstructor(Class clazz) {
-        try {
-            clazz.getDeclaredConstructor();
-            return true;
-        } catch (NoSuchMethodException e) {
-            return false;
-        }
-    }
-
-    public static boolean isJdk(Class clazz) {
-        return clazz.getName().startsWith("java.") || clazz.getName().startsWith("javax.");
-    }
 }
