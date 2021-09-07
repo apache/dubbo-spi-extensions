@@ -22,8 +22,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:11
+ * handle the {@link Date} type result.
  */
 public class DateTypeHandler implements TypeHandler<Date> {
 

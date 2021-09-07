@@ -20,8 +20,7 @@ package org.apache.dubbo.mock.handler;
 import java.util.Objects;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:21
+ * handle the {@link Double} type result.
  */
 public class DoubleTypeHandler implements TypeHandler<Double> {
 

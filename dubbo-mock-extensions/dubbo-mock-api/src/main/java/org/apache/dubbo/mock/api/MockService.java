@@ -20,9 +20,6 @@ package org.apache.dubbo.mock.api;
 /**
  * The MockService is the service which receive the params from user's consumer and response the mock data
  * which config in Dubbo Admin.
- *
- * @author chenglu
- * @date 2021-08-23 19:11
  */
 public interface MockService {
 

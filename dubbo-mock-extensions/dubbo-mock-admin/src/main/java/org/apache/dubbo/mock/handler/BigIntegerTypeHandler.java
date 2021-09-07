@@ -21,8 +21,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:28
+ * handle the {@link BigInteger} type result.
  */
 public class BigIntegerTypeHandler implements TypeHandler<BigInteger> {
 

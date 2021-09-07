@@ -22,9 +22,6 @@ import java.util.Arrays;
 
 /**
  * The Mock Context will put the data send to MockService Provider.
- *
- * @author chenglu
- * @date 2021-08-31 12:04
  */
 public class MockContext implements Serializable {
 

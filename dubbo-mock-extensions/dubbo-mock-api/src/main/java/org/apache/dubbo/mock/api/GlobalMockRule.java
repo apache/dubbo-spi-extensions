@@ -23,9 +23,6 @@ import java.util.Set;
 /**
  * The global mock rule from config center, we will query this rule first.
  * then decide if we need to query the {@link MockService}.
- *
- * @author chenglu
- * @date 2021-08-24 12:19
  */
 public class GlobalMockRule {
 

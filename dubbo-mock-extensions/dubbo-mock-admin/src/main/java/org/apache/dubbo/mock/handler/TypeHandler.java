@@ -19,9 +19,6 @@ package org.apache.dubbo.mock.handler;
 
 /**
  * TypeHandler works on resolve the data from {@link org.apache.dubbo.mock.api.MockService}.
- *
- * @author chenglu
- * @date 2021-08-30 19:19
  */
 public interface TypeHandler<T> {
 

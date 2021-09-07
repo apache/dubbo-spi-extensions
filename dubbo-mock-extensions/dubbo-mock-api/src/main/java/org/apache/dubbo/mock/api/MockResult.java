@@ -21,9 +21,6 @@ import java.io.Serializable;
 
 /**
  * The Mock result which configured in Dubbo Admin.
- *
- * @author chenglu
- * @date 2021-08-23 21:50
  */
 public class MockResult implements Serializable {
     

@@ -19,9 +19,6 @@ package org.apache.dubbo.mock.exception;
 
 /**
  * The handle result failed exception.
- *
- * @author chenglu
- * @date 2021-08-30 19:21
  */
 public class HandleFailException extends RuntimeException {
 

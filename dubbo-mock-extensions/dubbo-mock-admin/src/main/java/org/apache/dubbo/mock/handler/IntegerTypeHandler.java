@@ -20,8 +20,7 @@ package org.apache.dubbo.mock.handler;
 import java.util.Objects;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:27
+ * handle the {@link Integer} type result.
  */
 public class IntegerTypeHandler implements TypeHandler<Integer> {
 

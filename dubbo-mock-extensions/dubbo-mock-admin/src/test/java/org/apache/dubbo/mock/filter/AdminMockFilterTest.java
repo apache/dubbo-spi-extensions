@@ -36,9 +36,6 @@ import java.util.Collections;
 
 /**
  * {@link AdminMockFilter} unit tests.
- *
- * @author chenglu
- * @date 2021-08-31 12:31
  */
 @RunWith(MockitoJUnitRunner.class)
 public class AdminMockFilterTest {

@@ -27,8 +27,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:46
+ * handle the Json data. mainly work with {@link Gson}.
  */
 public class JsonTypeHandler implements TypeHandler<Object> {
 
@@ -64,6 +63,5 @@ public class JsonTypeHandler implements TypeHandler<Object> {
         } catch (Exception e) {
             throw new HandleFailException(e);
         }
-
     }
 }

@@ -58,9 +58,6 @@ import static org.apache.dubbo.mock.api.MockConstants.ADMIN_MOCK_RULE_KEY;
  * AdminMockFilter will intercept the request from user's consumer. if the mock tag is opened,
  * then the user's consumer will request the mock data configured in Dubbo Admin. The mock data's
  * request is agent by the implement of {@link MockService}.
- *
- * @author chenglu
- * @date 2021-08-23 23:14
  */
 @Activate(group = CommonConstants.CONSUMER)
 public class AdminMockFilter implements ClusterFilter {

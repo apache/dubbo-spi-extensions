@@ -20,8 +20,8 @@ package org.apache.dubbo.mock.handler;
 import java.lang.reflect.Constructor;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:25
+ * {@link UnknownTypeHandler} will handle the handle failed data after other TypeHandler.
+ * It's mainly try to parse the result with constructor.
  */
 public class UnknownTypeHandler implements TypeHandler<Object> {
 

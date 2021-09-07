@@ -27,8 +27,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:25
+ * The {@link CommonTypeHandler} will handle the common result, include basic type, json data and protobuf data.
+ * If handle failed, then will use {@link UnknownTypeHandler} try to handle the result.
  */
 public class CommonTypeHandler implements TypeHandler<Object> {
 

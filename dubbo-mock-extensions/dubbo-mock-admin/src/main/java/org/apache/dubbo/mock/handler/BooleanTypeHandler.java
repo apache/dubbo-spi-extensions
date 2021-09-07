@@ -20,8 +20,7 @@ package org.apache.dubbo.mock.handler;
 import java.util.Objects;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:19
+ * handle the {@link Boolean} type result.
  */
 public class BooleanTypeHandler implements TypeHandler<Boolean> {
 

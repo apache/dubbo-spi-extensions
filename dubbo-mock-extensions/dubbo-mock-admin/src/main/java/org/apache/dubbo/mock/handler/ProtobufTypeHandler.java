@@ -28,8 +28,7 @@ import com.googlecode.protobuf.format.JsonFormat;
 import java.lang.reflect.Method;
 
 /**
- * @author chenglu
- * @date 2021-08-30 19:53
+ * handle the Protobuf object, if handle failed will throw {@link HandleFailException}.
  */
 public class ProtobufTypeHandler implements TypeHandler<Object> {
 

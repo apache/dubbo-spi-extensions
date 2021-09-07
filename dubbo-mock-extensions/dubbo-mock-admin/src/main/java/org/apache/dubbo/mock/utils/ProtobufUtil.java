@@ -24,9 +24,6 @@ import java.util.Objects;
 
 /**
  * ProtobufUtil works on protobuf object and class solve.
- *
- * @author chenglu
- * @date 2021-09-03 19:15
  */
 public class ProtobufUtil {
 
