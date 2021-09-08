@@ -17,7 +17,6 @@
 
 package org.apache.dubbo.mock.filter;
 
-import org.apache.dubbo.mock.api.GlobalMockRule;
 import org.apache.dubbo.rpc.AsyncRpcResult;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
@@ -44,29 +43,16 @@ public class AdminMockFilterTest {
     private AdminMockFilter adminMockFilter;
 
     @Mock
-    private GlobalMockRule globalMockRule;
-
-    @Mock
     private Invoker invoker;
 
     @Mock
     private Invocation invocation;
 
-    @Test(expected = RpcException.class)
+    @Test
     public void testInvoke() {
         Result result = new AsyncRpcResult(null, invocation);
-        Mockito.when(globalMockRule.getEnableMock()).thenReturn(false);
         Mockito.when(invoker.invoke(Mockito.any())).thenReturn(result);
         Object res1 = adminMockFilter.invoke(invoker, invocation);
         Assert.assertEquals(result, res1);
-
-        Mockito.when(globalMockRule.getEnableMock()).thenReturn(true);
-        Result res2 = adminMockFilter.invoke(invoker, invocation);
-        Assert.assertEquals(result, res2);
-
-        Mockito.when(globalMockRule.getEnabledMockRules()).thenReturn(Collections.singleton("A#B"));
-        Mockito.when(invocation.getTargetServiceUniqueName()).thenReturn("A");
-        Mockito.when(invocation.getMethodName()).thenReturn("B");
-        adminMockFilter.invoke(invoker, invocation);
     }
 }
