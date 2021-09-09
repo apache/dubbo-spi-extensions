@@ -17,10 +17,19 @@
 
 package org.apache.dubbo.mock.filter;
 
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.common.extension.ExtensionLoader;
+import org.apache.dubbo.common.lang.ShutdownHookCallbacks;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.CollectionUtils;
+import org.apache.dubbo.config.AbstractConfig;
 import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.ReferenceConfigBase;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
+import org.apache.dubbo.config.utils.ConfigValidationUtils;
 import org.apache.dubbo.mock.api.MockContext;
 import org.apache.dubbo.mock.api.MockResult;
 import org.apache.dubbo.mock.api.MockService;
@@ -32,13 +41,23 @@ import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.AsyncRpcResult;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.Protocol;
+import org.apache.dubbo.rpc.ProxyFactory;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+
+import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER_SIDE;
+import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
+import static org.apache.dubbo.rpc.cluster.Constants.REFER_KEY;
 
 /**
  * AdminMockFilter will intercept the request from user's consumer. if the mock tag is opened,
@@ -48,16 +67,59 @@ import java.util.concurrent.CompletableFuture;
 @Activate(group = CommonConstants.CONSUMER)
 public class AdminMockFilter implements ClusterFilter {
 
+    private static final Logger log = LoggerFactory.getLogger(AdminMockFilter.class);
+
+    private static final String ENABLE_MOCK_KEY = "enable.dubbo.admin.mock";
+
     private final TypeHandler typeHandler = new CommonTypeHandler();;
 
-    private static final boolean ENABLE_ADMIN_MOCK;
-    
-    static {
-        ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
-        mockServiceConfig.setCheck(false);
-        mockServiceConfig.setInterface(MockService.class);
-        DubboBootstrap.getInstance().reference(mockServiceConfig);
-        ENABLE_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty("enable.dubbo.admin.mock", Boolean.FALSE.toString()));
+    private static final boolean ENABLE_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty(ENABLE_MOCK_KEY, Boolean.FALSE.toString()));;
+
+    private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
+
+    private static final Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
+
+    private MockService mockService;
+
+    /**
+     * Get the proxy of {@link MockService}. if not exist, then will create a new instance retrun.
+     *
+     * @return the proxy of {@link MockService}.
+     */
+    private MockService getMockService() {
+        if (Objects.nonNull(mockService)) {
+            return mockService;
+        }
+        synchronized (this) {
+            if (Objects.nonNull(mockService)) {
+                return mockService;
+            }
+            // init the config, the registry is from user's config.
+            ReferenceConfig<MockService> mockServiceConfig = new ReferenceConfig<>();
+            mockServiceConfig.setCheck(false);
+            mockServiceConfig.setInterface(MockService.class);
+            mockServiceConfig.setRegistries(DubboBootstrap.getInstance().getConfigManager().getDefaultRegistries());
+            List<URL> urls = ConfigValidationUtils.loadRegistries(mockServiceConfig, false);
+            if (CollectionUtils.isEmpty(urls)) {
+                return null;
+            }
+            // build the URL parameters
+            URL url = urls.get(0);
+            Map<String, String> map = new HashMap<>();
+            ReferenceConfigBase.appendRuntimeParameters(map);
+            map.put(INTERFACE_KEY, MockService.class.getName());
+            map.put(SIDE_KEY, CONSUMER_SIDE);
+            AbstractConfig.appendParameters(map, mockServiceConfig.getMetrics());
+            AbstractConfig.appendParameters(map, mockServiceConfig.getApplication());
+            AbstractConfig.appendParameters(map, mockServiceConfig.getModule());
+            AbstractConfig.appendParameters(map, mockServiceConfig);
+            url = url.putAttribute(REFER_KEY, map);
+            // create the proxy MockService
+            Invoker<MockService> invoker = protocol.refer(MockService.class, url);
+            mockService = proxyFactory.getProxy(invoker);
+            ShutdownHookCallbacks.INSTANCE.addCallback(invoker::destroy);
+            return mockService;
+        }
     }
 
     @Override
@@ -75,9 +137,10 @@ public class AdminMockFilter implements ClusterFilter {
         if (Objects.equals(interfaceName, MockService.class.getName())) {
             return invoker.invoke(invocation);
         }
-        MockService mockService = DubboBootstrap.getInstance().getCache().get(MockService.class);
+        MockService mockService = getMockService();
         if (Objects.isNull(mockService)) {
-            throw new RpcException("Cloud not find MockService, please check if it has started.");
+            log.warn("[Admin Mock] cloud not find MockService, will ignore this mock.");
+            return invoker.invoke(invocation);
         }
         
         // parse the result from MockService, build the real method's return value.
