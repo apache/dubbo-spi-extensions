@@ -27,12 +27,7 @@ import org.apache.dubbo.common.serialize.model.SerializablePerson;
 import org.apache.dubbo.common.serialize.model.media.Image;
 import org.apache.dubbo.common.serialize.model.media.Media;
 import org.apache.dubbo.common.serialize.model.media.MediaContent;
-import org.apache.dubbo.common.serialize.model.person.BigPerson;
-import org.apache.dubbo.common.serialize.model.person.FullAddress;
-import org.apache.dubbo.common.serialize.model.person.PersonInfo;
-import org.apache.dubbo.common.serialize.model.person.PersonStatus;
-import org.apache.dubbo.common.serialize.model.person.Phone;
-
+import org.apache.dubbo.common.serialize.model.person.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -41,25 +36,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static java.time.Duration.ofMillis;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractSerializationTest {
     protected static Random random = new Random();
@@ -143,7 +123,6 @@ public abstract class AbstractSerializationTest {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
                 byteArrayOutputStream.toByteArray());
         ObjectInput deserialize = serialization.deserialize(url, byteArrayInputStream);
-
         assertFalse(deserialize.readBool());
 
         try {
@@ -1184,5 +1163,5 @@ public abstract class AbstractSerializationTest {
             assertSame(output, output.get("self"));
         });
     }
- 
 }
+

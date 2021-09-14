@@ -14,25 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.support;
 
-import org.apache.dubbo.common.serialize.model.SerializablePerson;
-import org.apache.dubbo.common.serialize.model.person.Phone;
+package org.apache.dubbo.common.serialize.gson;
 
-import org.junit.jupiter.api.Test;
+public class ExceptionWrapper {
 
-import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+    private final Object exception;
 
-public class SerializableClassRegistryTest {
-    @Test
-    public void testAddClasses() {
-        SerializableClassRegistry.registerClass(SerializablePerson.class);
-        SerializableClassRegistry.registerClass(Phone.class);
+    private final String clazz;
 
-        Map<Class<?>, Object> registeredClasses = SerializableClassRegistry.getRegisteredClasses();
-        assertThat(registeredClasses.size(), equalTo(2));
+
+    public ExceptionWrapper(Object exception, String clazz) {
+        this.exception = exception;
+        this.clazz = clazz;
     }
+
+    public Object getException() {
+        return exception;
+    }
+
+
+    public String getClazz() {
+        return clazz;
+    }
+
 }

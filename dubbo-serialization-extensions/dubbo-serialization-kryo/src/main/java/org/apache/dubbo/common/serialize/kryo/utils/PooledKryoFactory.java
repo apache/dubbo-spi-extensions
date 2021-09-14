@@ -14,25 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.support;
+package org.apache.dubbo.common.serialize.kryo.utils;
 
-import org.apache.dubbo.common.serialize.model.SerializablePerson;
-import org.apache.dubbo.common.serialize.model.person.Phone;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.pool.KryoPool;
 
-import org.junit.jupiter.api.Test;
+public class PooledKryoFactory extends AbstractKryoFactory {
 
-import java.util.Map;
+    private KryoPool pool;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+    public PooledKryoFactory() {
+        // Build pool with SoftReferences enabled (optional)
+        pool = new KryoPool.Builder(this).softReferences().build();
+    }
 
-public class SerializableClassRegistryTest {
-    @Test
-    public void testAddClasses() {
-        SerializableClassRegistry.registerClass(SerializablePerson.class);
-        SerializableClassRegistry.registerClass(Phone.class);
+    @Override
+    public Kryo getKryo() {
+        return pool.borrow();
+    }
 
-        Map<Class<?>, Object> registeredClasses = SerializableClassRegistry.getRegisteredClasses();
-        assertThat(registeredClasses.size(), equalTo(2));
+    @Override
+    public void returnKryo(Kryo kryo) {
+        pool.release(kryo);
     }
 }

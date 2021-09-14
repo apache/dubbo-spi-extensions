@@ -14,25 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.support;
+package org.apache.dubbo.common.serialize.protobuf.support;
 
-import org.apache.dubbo.common.serialize.model.SerializablePerson;
-import org.apache.dubbo.common.serialize.model.person.Phone;
-
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-public class SerializableClassRegistryTest {
-    @Test
-    public void testAddClasses() {
-        SerializableClassRegistry.registerClass(SerializablePerson.class);
-        SerializableClassRegistry.registerClass(Phone.class);
-
-        Map<Class<?>, Object> registeredClasses = SerializableClassRegistry.getRegisteredClasses();
-        assertThat(registeredClasses.size(), equalTo(2));
+public class GenericProtobufSerializationTest extends AbstractProtobufSerializationTest {
+    {
+        serialization = new GenericProtobufSerialization();
     }
 }

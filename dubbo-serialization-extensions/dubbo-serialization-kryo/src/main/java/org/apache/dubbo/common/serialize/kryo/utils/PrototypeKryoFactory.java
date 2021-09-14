@@ -14,25 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.support;
+package org.apache.dubbo.common.serialize.kryo.utils;
 
-import org.apache.dubbo.common.serialize.model.SerializablePerson;
-import org.apache.dubbo.common.serialize.model.person.Phone;
+import com.esotericsoftware.kryo.Kryo;
 
-import org.junit.jupiter.api.Test;
+public class PrototypeKryoFactory extends AbstractKryoFactory {
 
-import java.util.Map;
+    @Override
+    public void returnKryo(Kryo kryo) {
+        // do nothing
+    }
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-public class SerializableClassRegistryTest {
-    @Test
-    public void testAddClasses() {
-        SerializableClassRegistry.registerClass(SerializablePerson.class);
-        SerializableClassRegistry.registerClass(Phone.class);
-
-        Map<Class<?>, Object> registeredClasses = SerializableClassRegistry.getRegisteredClasses();
-        assertThat(registeredClasses.size(), equalTo(2));
+    @Override
+    public Kryo getKryo() {
+        return create();
     }
 }

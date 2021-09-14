@@ -19,12 +19,7 @@ package org.apache.dubbo.common.serialize.base;
 import org.apache.dubbo.common.serialize.model.person.Phone;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractSerializationPersonOkTest extends AbstractSerializationTest {
     @Test
