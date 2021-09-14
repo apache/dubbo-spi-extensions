@@ -29,7 +29,6 @@
     <artifactId>dubbo-serialization-extensions</artifactId>
 
     <modules>
-        <module>dubbo-serialization-test</module>
         <module>dubbo-serialization-protobuf</module>
         <module>dubbo-serialization-kryo</module>
         <module>dubbo-serialization-gson</module>
