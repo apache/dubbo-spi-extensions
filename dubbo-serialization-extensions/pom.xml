@@ -29,6 +29,7 @@
     <artifactId>dubbo-serialization-extensions</artifactId>
 
     <modules>
+        <module>dubbo-serialization-fastjson</module>
         <module>dubbo-serialization-avro</module>
         <module>dubbo-serialization-test</module>
     </modules>
