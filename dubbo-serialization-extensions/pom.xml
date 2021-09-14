@@ -30,6 +30,7 @@
 
     <modules>
         <module>dubbo-serialization-avro</module>
+        <module>dubbo-serialization-protostuff</module>
         <module>dubbo-serialization-test</module>
     </modules>
 </project>
