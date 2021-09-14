@@ -19,7 +19,6 @@ package org.apache.dubbo.common.serialize.protostuff;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -252,8 +251,7 @@ public class ProtostuffObjectOutputTest {
         this.flushToInput();
 
         URL actual = (URL) protostuffObjectInput.readObject(URL.class);
-        assertTrue(actual.equals(data));
-        assertThat(data.getParameters(), is(actual.getParameters()));
+        assertThat(actual, is(data));
+        assertThat(actual.getParameters(), is(data.getParameters()));
     }
-
 }
