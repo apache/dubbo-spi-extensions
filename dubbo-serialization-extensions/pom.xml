@@ -30,5 +30,9 @@
 
     <modules>
         <module>dubbo-serialization-gson</module>
+        <module>dubbo-serialization-fst</module>
+        <module>dubbo-serialization-fastjson</module>
+        <module>dubbo-serialization-avro</module>
+        <module>dubbo-serialization-test</module>
     </modules>
 </project>
