@@ -19,19 +19,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <artifactId>dubbo-cluster-extensions</artifactId>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dubbo-cluster-extensions</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dubbo-cluster-broadcast-1</module>
-        <module>dubbo-cluster-loadbalance-peakewma</module>
-    </modules>
+    <artifactId>dubbo-cluster-loadbalance-peakewma</artifactId>
+    <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-cluster</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-rpc-api</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
