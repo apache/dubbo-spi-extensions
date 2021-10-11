@@ -26,7 +26,7 @@
 
     <groupId>org.apache.dubbo.extensions</groupId>
     <artifactId>extensions-parent</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <licenses>
@@ -95,7 +95,4 @@
         <module>dubbo-mock-extensions</module>
     </modules>
 
-    <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
-    </properties>
 </project>
