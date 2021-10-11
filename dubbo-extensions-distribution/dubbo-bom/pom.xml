@@ -21,9 +21,9 @@
 
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
+        <artifactId>dubbo-extensions-dependencies-bom</artifactId>
         <version>${revision}</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
 
     <artifactId>dubbo-extensions-bom</artifactId>
