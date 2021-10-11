@@ -20,9 +20,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
+        <artifactId>dubbo-extensions-dependencies-bom</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

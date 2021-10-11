@@ -118,6 +118,13 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <!-- Dubbo Mock Extensions -->
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-mock-extensions</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
