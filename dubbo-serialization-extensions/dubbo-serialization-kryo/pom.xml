@@ -29,7 +29,7 @@ limitations under the License.
     <description>The kryo serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <dubbo-common-extensions-version>3.0.0</dubbo-common-extensions-version>
+        <dubbo-common-extensions-version>3.0.0-SNAPSHOT</dubbo-common-extensions-version>
     </properties>
     <dependencies>
         <dependency>

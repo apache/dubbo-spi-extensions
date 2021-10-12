@@ -29,7 +29,7 @@
     <artifactId>dubbo-common-extensions</artifactId>
     <version>${revision}</version>
     <properties>
-        <revision>3.0.0</revision>
+        <revision>3.0.0-SNAPSHOT</revision>
     </properties>
 
 </project>

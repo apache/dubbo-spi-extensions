@@ -31,7 +31,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>3.0.0</revision>
+        <revision>3.0.0-SNAPSHOT</revision>
     </properties>
     <modules>
         <module>dubbo-cluster-broadcast-1</module>

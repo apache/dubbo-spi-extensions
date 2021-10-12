@@ -30,7 +30,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>3.0.0</revision>
+        <revision>3.0.0-SNAPSHOT</revision>
     </properties>
     <profiles>
         <profile>

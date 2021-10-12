@@ -34,7 +34,7 @@
     </modules>
 
     <properties>
-        <revision>3.0.0</revision>
+        <revision>3.0.0-SNAPSHOT</revision>
         <protobuf-java-format>1.2</protobuf-java-format>
         <mockito-version>1.9.5</mockito-version>
         <junit-version>4.11</junit-version>
