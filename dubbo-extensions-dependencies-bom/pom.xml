@@ -28,7 +28,7 @@
 
     <groupId>org.apache.dubbo.extensions</groupId>
     <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-    <version>${revision}</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>dubbo-extensions-dependencies-bom</name>
@@ -89,7 +89,6 @@
     </issueManagement>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <hazelcast_version>3.11.1</hazelcast_version>

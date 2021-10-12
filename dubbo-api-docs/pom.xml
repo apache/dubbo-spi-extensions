@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
         <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
 
@@ -33,6 +33,7 @@
     <inceptionYear>2020</inceptionYear>
 
     <properties>
+        <revision>3.0.0</revision>
         <project.build.jdkVersion>1.8</project.build.jdkVersion>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

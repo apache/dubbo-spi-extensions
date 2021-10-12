@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
         <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
 

@@ -20,19 +20,21 @@
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
         <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-mock-extensions</artifactId>
     <packaging>pom</packaging>
+    <version>${revision}</version>
     <modules>
         <module>dubbo-mock-api</module>
         <module>dubbo-mock-admin</module>
     </modules>
 
     <properties>
+        <revision>3.0.0</revision>
         <protobuf-java-format>1.2</protobuf-java-format>
         <mockito-version>1.9.5</mockito-version>
         <junit-version>4.11</junit-version>

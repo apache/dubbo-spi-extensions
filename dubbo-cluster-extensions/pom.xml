@@ -21,13 +21,18 @@
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
         <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-        <version>${revision}</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath>../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-cluster-extensions</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <revision>3.0.0</revision>
+    </properties>
     <modules>
         <module>dubbo-cluster-broadcast-1</module>
         <module>dubbo-cluster-loadbalance-peakewma</module>
