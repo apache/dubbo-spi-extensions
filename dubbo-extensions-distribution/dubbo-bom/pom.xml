@@ -21,9 +21,9 @@
 
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>dubbo-extensions-dependencies-bom</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
 
     <artifactId>dubbo-extensions-bom</artifactId>
@@ -115,6 +115,13 @@
             <dependency>
                 <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-serialization-extensions</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Dubbo Mock Extensions -->
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-mock-extensions</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

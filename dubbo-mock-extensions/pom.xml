@@ -19,20 +19,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>dubbo-extensions-dependencies-bom</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-mock-extensions</artifactId>
     <packaging>pom</packaging>
+    <version>${revision}</version>
     <modules>
         <module>dubbo-mock-api</module>
         <module>dubbo-mock-admin</module>
     </modules>
 
     <properties>
+        <revision>3.0.0-SNAPSHOT</revision>
         <protobuf-java-format>1.2</protobuf-java-format>
         <mockito-version>1.9.5</mockito-version>
         <junit-version>4.11</junit-version>
