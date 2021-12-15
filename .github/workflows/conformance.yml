@@ -50,6 +50,10 @@ jobs:
         run: |
           cd ./dubbo-spi-extensions
           ./mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
+      - name: "Build Scenarios"
+        run: |
+          cd ./dubbo-spi-extensions/test/scenarios
+          ../../mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
 
   prepare_test:
     name: "Prepare Test"
@@ -69,7 +73,7 @@ jobs:
           path: test/jobs
 
   testjob:
-    needs: [ prepare_test, build-extensions ]
+    needs: [ prepare_test,build-extensions ]
     name: 'Conformance Test'
     runs-on: ubuntu-latest
     env:

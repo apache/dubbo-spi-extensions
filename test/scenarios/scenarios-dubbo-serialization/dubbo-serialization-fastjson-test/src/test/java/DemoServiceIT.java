@@ -17,8 +17,8 @@
  *
  */
 
-import org.apache.dubbo.test.serialization.fastjson.testcase.BigPerson;
-import org.apache.dubbo.test.serialization.fastjson.testcase.DemoService;
+import org.apache.dubbo.test.serialization.testcase.BigPerson;
+import org.apache.dubbo.test.serialization.testcase.DemoService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -28,6 +28,6 @@
     <dubbo:registry address="zookeeper://${zookeeper.address:127.0.0.1}:2181"/>
 
     <dubbo:reference id="demoService" check="true"
-                     interface="org.apache.dubbo.test.serialization.fst.testcase.DemoService"/>
+                     interface="org.apache.dubbo.test.serialization.testcase.DemoService"/>
 
 </beans>
