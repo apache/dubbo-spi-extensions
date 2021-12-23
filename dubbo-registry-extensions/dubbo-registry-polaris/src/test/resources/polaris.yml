@@ -1,0 +1,12 @@
+global:
+  serverConnector:
+    addresses:
+      - 9.134.85.14:8091
+consumer:
+  localCache:
+    serviceExpireEnable: false
+    serviceExpireTime: 1h
+    serviceRefreshInterval: 2s
+    type: inmemory
+    persistEnable: false
+    persistDir: /tmp/polaris/backup
