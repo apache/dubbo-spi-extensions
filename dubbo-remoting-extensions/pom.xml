@@ -34,6 +34,7 @@
     </properties>
     <modules>
         <module>dubbo-remoting-quic</module>
+        <module>dubbo-remoting-smart-socket</module>
     </modules>
 
 
