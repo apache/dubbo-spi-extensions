@@ -47,6 +47,7 @@ import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
+import org.apache.dubbo.rpc.model.ScopeModelUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +110,6 @@ public class AdminMockFilter implements ClusterFilter {
             ReferenceConfigBase.appendRuntimeParameters(map);
             map.put(INTERFACE_KEY, MockService.class.getName());
             map.put(SIDE_KEY, CONSUMER_SIDE);
-            AbstractConfig.appendParameters(map, mockServiceConfig.getMetrics());
             AbstractConfig.appendParameters(map, mockServiceConfig.getApplication());
             AbstractConfig.appendParameters(map, mockServiceConfig.getModule());
             AbstractConfig.appendParameters(map, mockServiceConfig);
@@ -117,7 +117,8 @@ public class AdminMockFilter implements ClusterFilter {
             // create the proxy MockService
             Invoker<MockService> invoker = protocol.refer(MockService.class, url);
             mockService = proxyFactory.getProxy(invoker);
-            ShutdownHookCallbacks.INSTANCE.addCallback(invoker::destroy);
+            ScopeModelUtil.getApplicationModel(mockServiceConfig.getScopeModel()).getBeanFactory().getBean(ShutdownHookCallbacks.class)
+                .addCallback(invoker::destroy);
             return mockService;
         }
     }

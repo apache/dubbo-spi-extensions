@@ -124,9 +124,12 @@
         <rat.skip>true</rat.skip>
         <jacoco.skip>false</jacoco.skip>
 
-        <dubbo.version>3.0.0</dubbo.version>
+        <dubbo.version>3.0.5</dubbo.version>
         <spring.version>5.2.8.RELEASE</spring.version>
         <spring-boot.version>2.4.1</spring-boot.version>
+
+        <!-- Fabric8 for Kubernetes -->
+        <fabric8_kubernetes_version>5.3.0</fabric8_kubernetes_version>
 
         <maven_flatten_version>1.2.5</maven_flatten_version>
     </properties>
@@ -167,6 +170,31 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-client</artifactId>
+                <version>${fabric8_kubernetes_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-server-mock</artifactId>
+                <scope>test</scope>
+                <version>${fabric8_kubernetes_version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito_version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -201,6 +229,18 @@
             <artifactId>cglib-nodep</artifactId>
             <version>${cglib_version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito_version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
