@@ -595,6 +595,8 @@
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle.skip}</skip>
                                     <excludes>
+                                        **/istio/v1/auth/Ca.java,
+                                        **/istio/v1/auth/IstioCertificateServiceGrpc.java,
                                         **/generated/**/*,
                                         **/target/**/*,
                                     </excludes>
