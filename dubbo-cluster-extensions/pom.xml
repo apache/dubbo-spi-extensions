@@ -36,6 +36,8 @@
     <modules>
         <module>dubbo-cluster-broadcast-1</module>
         <module>dubbo-cluster-loadbalance-peakewma</module>
+        <module>dubbo-cluster-specify-address-dubbo3</module>
+        <module>dubbo-cluster-specify-address-dubbo2</module>
     </modules>
 
 
