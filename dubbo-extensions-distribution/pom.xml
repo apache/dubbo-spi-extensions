@@ -27,6 +27,7 @@
 
     <artifactId>dubbo-extensions-distribution</artifactId>
     <packaging>pom</packaging>
+    <version>${revision}</version>
 
     <properties>
     </properties>
