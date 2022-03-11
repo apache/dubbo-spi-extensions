@@ -24,7 +24,7 @@
     </parent>
     <artifactId>dubbo-rpc-rmi</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <description>The rmi rpc module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>

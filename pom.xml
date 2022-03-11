@@ -96,7 +96,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.1-SNAPSHOT</revision>
+        <revision>1.0.1</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <hazelcast_version>3.11.1</hazelcast_version>
