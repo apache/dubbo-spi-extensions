@@ -26,6 +26,7 @@
     <artifactId>dubbo-serialization-avro</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
+    <version>1.0.0-SNAPSHOT</version>
     <description>The avro serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>

@@ -21,12 +21,13 @@
 
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-        <relativePath>../../dubbo-extensions-dependencies-bom/pom.xml</relativePath>
-        <version>1.0.0</version>
+        <artifactId>dubbo-extensions-distribution</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>dubbo-extensions-bom</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>dubbo-extensions-bom</name>
