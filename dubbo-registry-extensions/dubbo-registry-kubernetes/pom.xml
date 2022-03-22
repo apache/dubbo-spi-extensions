@@ -29,7 +29,7 @@
     <artifactId>dubbo-registry-kubernetes</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <description>The Kubernetes registry module of Dubbo project</description>
 
     <dependencies>
