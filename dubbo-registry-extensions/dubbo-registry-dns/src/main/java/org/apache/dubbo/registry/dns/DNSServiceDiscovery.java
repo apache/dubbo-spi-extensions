@@ -21,12 +21,12 @@ import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.NamedThreadFactory;
 import org.apache.dubbo.registry.client.DefaultServiceInstance;
-import org.apache.dubbo.registry.client.SelfHostMetaServiceDiscovery;
 import org.apache.dubbo.registry.client.ServiceInstance;
 import org.apache.dubbo.registry.client.event.listener.ServiceInstancesChangedListener;
 import org.apache.dubbo.registry.dns.util.DNSClientConst;
 import org.apache.dubbo.registry.dns.util.DNSResolver;
 import org.apache.dubbo.registry.dns.util.ResolveResult;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ScopeModelUtil;
 
 import java.util.Collections;
@@ -40,17 +40,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class DNSServiceDiscovery extends SelfHostMetaServiceDiscovery {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class DNSServiceDiscovery extends ReflectionBasedServiceDiscovery {
+    private static final Logger logger = LoggerFactory.getLogger(DNSServiceDiscovery.class);
 
     /**
      * DNS properties
      */
 
-    private String addressPrefix;
-    private String addressSuffix;
-    private long pollingCycle;
+    private final String addressPrefix;
+    private final String addressSuffix;
+    private final long pollingCycle;
     private DNSResolver dnsResolver;
 
     /**
@@ -61,10 +60,10 @@ public class DNSServiceDiscovery extends SelfHostMetaServiceDiscovery {
     /**
      * Polling check provider ExecutorService
      */
-    private ScheduledExecutorService pollingExecutorService;
+    private final ScheduledExecutorService pollingExecutorService;
 
-    @Override
-    public void doInitialize(URL registryURL) throws Exception {
+    public DNSServiceDiscovery(ApplicationModel applicationModel, URL registryURL) {
+        super(applicationModel, registryURL);
         this.addressPrefix = registryURL.getParameter(DNSClientConst.ADDRESS_PREFIX, "");
         this.addressSuffix = registryURL.getParameter(DNSClientConst.ADDRESS_SUFFIX, "");
         this.pollingCycle = registryURL.getParameter(DNSClientConst.DNS_POLLING_CYCLE, DNSClientConst.DEFAULT_DNS_POLLING_CYCLE);
@@ -84,6 +83,7 @@ public class DNSServiceDiscovery extends SelfHostMetaServiceDiscovery {
 
     @Override
     public void doDestroy() throws Exception {
+        super.doDestroy();
         dnsResolver.destroy();
         pollingExecutorMap.forEach((serviceName, scheduledFuture) -> scheduledFuture.cancel(true));
         pollingExecutorMap.clear();
