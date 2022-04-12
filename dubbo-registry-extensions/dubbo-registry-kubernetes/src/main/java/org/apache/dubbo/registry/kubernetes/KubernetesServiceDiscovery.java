@@ -27,6 +27,7 @@ import org.apache.dubbo.registry.client.event.ServiceInstancesChangedEvent;
 import org.apache.dubbo.registry.client.event.listener.ServiceInstancesChangedListener;
 import org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst;
 import org.apache.dubbo.registry.kubernetes.util.KubernetesConfigUtils;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ScopeModelUtil;
 
 import com.alibaba.fastjson.JSONObject;
@@ -60,11 +61,11 @@ public class KubernetesServiceDiscovery extends AbstractServiceDiscovery {
 
     private String currentHostname;
 
-    private URL registryURL;
+    private final URL registryURL;
 
-    private String namespace;
+    private final String namespace;
 
-    private boolean enableRegister;
+    private final boolean enableRegister;
 
     public final static String KUBERNETES_PROPERTIES_KEY = "io.dubbo/metadata";
 
@@ -76,8 +77,8 @@ public class KubernetesServiceDiscovery extends AbstractServiceDiscovery {
 
     private final static ConcurrentHashMap<String, AtomicLong> SERVICE_UPDATE_TIME = new ConcurrentHashMap<>(64);
 
-    @Override
-    public void doInitialize(URL registryURL) throws Exception {
+    public KubernetesServiceDiscovery(ApplicationModel applicationModel, URL registryURL) {
+        super(applicationModel, registryURL);
         Config config = KubernetesConfigUtils.createKubernetesConfig(registryURL);
         this.kubernetesClient = new DefaultKubernetesClient(config);
         this.currentHostname = System.getenv("HOSTNAME");
@@ -136,9 +137,13 @@ public class KubernetesServiceDiscovery extends AbstractServiceDiscovery {
         }
     }
 
+    /**
+     * Comparing to {@link AbstractServiceDiscovery#doUpdate(ServiceInstance)}, unregister() is unnecessary here.
+     */
     @Override
     public void doUpdate(ServiceInstance serviceInstance) throws RuntimeException {
-        register(serviceInstance);
+        reportMetadata(serviceInstance.getServiceMetadata());
+        this.doRegister(serviceInstance);
     }
 
     @Override

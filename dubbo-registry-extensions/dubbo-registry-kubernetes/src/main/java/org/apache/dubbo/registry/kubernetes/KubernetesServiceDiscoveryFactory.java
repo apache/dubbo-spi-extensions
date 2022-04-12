@@ -23,6 +23,6 @@ import org.apache.dubbo.registry.client.ServiceDiscovery;
 public class KubernetesServiceDiscoveryFactory extends AbstractServiceDiscoveryFactory {
     @Override
     protected ServiceDiscovery createDiscovery(URL registryURL) {
-        return new KubernetesServiceDiscovery();
+        return new KubernetesServiceDiscovery(applicationModel, registryURL);
     }
 }
