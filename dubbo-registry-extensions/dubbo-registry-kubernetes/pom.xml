@@ -73,7 +73,6 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-metadata-api</artifactId>
             <version>3.0.8-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
