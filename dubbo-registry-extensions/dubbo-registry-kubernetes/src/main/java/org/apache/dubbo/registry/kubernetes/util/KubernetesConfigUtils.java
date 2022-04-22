@@ -24,33 +24,7 @@ import io.fabric8.kubernetes.client.ConfigBuilder;
 
 import java.util.Base64;
 
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.API_VERSION;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.NAMESPACE;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.USERNAME;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.PASSWORD;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.OAUTH_TOKEN;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CA_CERT_FILE;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CA_CERT_DATA;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CLIENT_KEY_FILE;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CLIENT_KEY_DATA;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CLIENT_CERT_FILE;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CLIENT_CERT_DATA;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CLIENT_KEY_ALGO;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CLIENT_KEY_PASSPHRASE;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.CONNECTION_TIMEOUT;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.REQUEST_TIMEOUT;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.WATCH_RECONNECT_INTERVAL;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.ROLLING_TIMEOUT;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.WATCH_RECONNECT_LIMIT;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.LOGGING_INTERVAL;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.TRUST_CERTS;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.HTTP2_DISABLE;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.HTTP_PROXY;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.HTTPS_PROXY;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.PROXY_USERNAME;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.PROXY_PASSWORD;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.NO_PROXY;
-import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.USE_HTTPS;
+import static org.apache.dubbo.registry.kubernetes.util.KubernetesClientConst.*;
 
 public class KubernetesConfigUtils {
 
@@ -100,6 +74,9 @@ public class KubernetesConfigUtils {
     }
 
     private static String buildMasterUrl(URL url) {
+        if (DEFAULT_MASTER_PLACEHOLDER.equalsIgnoreCase(url.getHost())) {
+            return DEFAULT_MASTER_URL;
+        }
         return (url.getParameter(USE_HTTPS, true) ?
             "https://" : "http://")
             + url.getHost() + ":" + url.getPort();

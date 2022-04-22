@@ -16,27 +16,38 @@
  */
 package org.apache.dubbo.registry.kubernetes;
 
+import com.google.gson.Gson;
+import io.fabric8.kubernetes.api.model.ListOptionsBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.Watch;
+import io.fabric8.kubernetes.client.Watcher;
+import io.fabric8.kubernetes.client.WatcherException;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.registry.kubernetes.MeshConstant;
+import org.apache.dubbo.rpc.cluster.router.mesh.route.MeshAppRuleListener;
 import org.apache.dubbo.rpc.cluster.router.mesh.route.MeshEnvListener;
-import org.apache.dubbo.rpc.cluster.router.mesh.route.MeshEnvListenerFactory;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class KubernetesMeshEnvListenerFactory implements MeshEnvListenerFactory {
-    public static final Logger logger = LoggerFactory.getLogger(KubernetesMeshEnvListenerFactory.class);
-    private final AtomicBoolean initialized = new AtomicBoolean(false);
-    private MeshEnvListener listener = null;
+public class NopKubernetesMeshEnvListener implements MeshEnvListener {
 
     @Override
-    public MeshEnvListener getListener() {
-        try {
-            if (initialized.compareAndSet(false, true)) {
-                listener = new NopKubernetesMeshEnvListener();
-            }
-        } catch (Throwable t) {
-            logger.info("Current Env not support Kubernetes.");
-        }
-        return listener;
+    public boolean isEnable() {
+        return false;
+    }
+
+    @Override
+    public void onSubscribe(String appName, MeshAppRuleListener listener) {
+
+    }
+
+    @Override
+    public void onUnSubscribe(String appName) {
+
     }
 }
