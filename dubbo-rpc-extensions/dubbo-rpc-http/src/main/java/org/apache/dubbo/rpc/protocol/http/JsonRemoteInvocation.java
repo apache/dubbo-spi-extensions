@@ -43,7 +43,7 @@ public class JsonRemoteInvocation extends RemoteInvocation {
 
     @Override
     public Object invoke(Object targetObject) throws NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+        InvocationTargetException {
         RpcContext context = RpcContext.getContext();
         context.setAttachments((Map<String, String>) getAttribute(DUBBO_ATTACHMENTS_ATTR_NAME));
 

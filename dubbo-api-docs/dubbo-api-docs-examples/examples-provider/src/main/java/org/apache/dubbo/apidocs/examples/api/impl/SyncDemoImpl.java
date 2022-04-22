@@ -54,7 +54,7 @@ public class SyncDemoImpl implements ISyncDemo {
         return result;
     }
 
-    @ApiDoc(value = "request and response parameters are Strings", responseClassDescription="A string")
+    @ApiDoc(value = "request and response parameters are Strings", responseClassDescription = "A string")
     @Override
     public String demoApi2(@RequestParam(value = "Parameter 1", required = true) String param1, String param2) {
         log.info(" called demoApi2");
@@ -66,15 +66,15 @@ public class SyncDemoImpl implements ISyncDemo {
         return null;
     }
 
-    @ApiDoc(value = "Nonparametric method with Dubbo doc annotation", responseClassDescription="A string")
+    @ApiDoc(value = "Nonparametric method with Dubbo doc annotation", responseClassDescription = "A string")
     @Override
     public String demoApi4() {
         return "asdfasdfsdafds";
     }
 
-    @ApiDoc(value = " Use generics in response", responseClassDescription=" Use generics in response")
+    @ApiDoc(value = " Use generics in response", responseClassDescription = " Use generics in response")
     @Override
-    public BaseResponse<DemoRespBean1> demoApi5(){
+    public BaseResponse<DemoRespBean1> demoApi5() {
         BaseResponse<DemoRespBean1> response = new BaseResponse<>();
         DemoRespBean1 responseData = new DemoRespBean1();
         responseData.setCode("2222");
@@ -87,31 +87,31 @@ public class SyncDemoImpl implements ISyncDemo {
     }
 
     @Override
-    @ApiDoc(value = "Map without generics", responseClassDescription="Map without generics")
+    @ApiDoc(value = "Map without generics", responseClassDescription = "Map without generics")
     public Map demoApi6() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "Map generic with Object", responseClassDescription="Map generic with Object")
+    @ApiDoc(value = "Map generic with Object", responseClassDescription = "Map generic with Object")
     public Map<Object, Object> demoApi7() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "List without generics", responseClassDescription="List without generics")
+    @ApiDoc(value = "List without generics", responseClassDescription = "List without generics")
     public List demoApi10() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "List generic with Object", responseClassDescription="List generic with Object")
+    @ApiDoc(value = "List generic with Object", responseClassDescription = "List generic with Object")
     public List<Object> demoApi9() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "Object", responseClassDescription="Object")
+    @ApiDoc(value = "Object", responseClassDescription = "Object")
     public Object demoApi8() {
         return null;
     }

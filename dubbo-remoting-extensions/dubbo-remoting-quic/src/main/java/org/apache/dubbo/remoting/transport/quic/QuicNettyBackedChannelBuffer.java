@@ -155,7 +155,6 @@ public class QuicNettyBackedChannelBuffer implements ChannelBuffer {
     // AbstractChannelBuffer
 
 
-
     @Override
     public void clear() {
         buffer.clear();

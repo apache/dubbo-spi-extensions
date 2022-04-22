@@ -19,7 +19,7 @@ package org.apache.dubbo.scenario.builder;
 
 public class Constants {
 
-    public static final String ERROR_MSG_FLAG=":ErrorMsg:";
+    public static final String ERROR_MSG_FLAG = ":ErrorMsg:";
 
     public static final int EXIT_FAILED = 1;
     public static final int EXIT_UNMATCHED = 100;

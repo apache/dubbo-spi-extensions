@@ -19,7 +19,6 @@ package org.apache.dubbo.rpc.protocol.webservice;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.URLBuilder;
 import org.apache.dubbo.common.extension.ExtensionLoader;
-import org.apache.dubbo.common.url.component.ServiceConfigURL;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.remoting.http.servlet.DispatcherServlet;
 import org.apache.dubbo.remoting.http.servlet.ServletManager;
@@ -92,16 +91,16 @@ public class WebserviceProtocolTest {
 
 
         URLBuilder builder = new URLBuilder()
-                .setProtocol("webservice")
-                .setHost("127.0.0.1")
-                .setPort(port)
-                .setPath("dubbo-webservice2/" + DemoService.class.getName())
-                .addParameter("server", "servlet")
-                .addParameter("bind.port", port)
-                .addParameter("contextpath", "dubbo-webservice2")
-                .addParameter(SERVICE_PATH_PREFIX, "dubbo-webservice/services")
-                .addParameter("codec", "exchange")
-                .addParameter("timeout", 600000);
+            .setProtocol("webservice")
+            .setHost("127.0.0.1")
+            .setPort(port)
+            .setPath("dubbo-webservice2/" + DemoService.class.getName())
+            .addParameter("server", "servlet")
+            .addParameter("bind.port", port)
+            .addParameter("contextpath", "dubbo-webservice2")
+            .addParameter(SERVICE_PATH_PREFIX, "dubbo-webservice/services")
+            .addParameter("codec", "exchange")
+            .addParameter("timeout", 600000);
         URL url = builder.build();
 
         tomcat.start();
@@ -120,15 +119,15 @@ public class WebserviceProtocolTest {
         int port = NetUtils.getAvailablePort();
 
         URLBuilder builder = new URLBuilder()
-                .setProtocol("webservice")
-                .setHost("127.0.0.1")
-                .setPort(port)
-                .setPath("dubbo-webservice3/" + DemoService.class.getName())
-                .addParameter("server", "jetty")
-                .addParameter("bind.port", port)
-                .addParameter("contextpath", "dubbo-webservice2")
-                .addParameter("codec", "exchange")
-                .addParameter("timeout", 3000);
+            .setProtocol("webservice")
+            .setHost("127.0.0.1")
+            .setPort(port)
+            .setPath("dubbo-webservice3/" + DemoService.class.getName())
+            .addParameter("server", "jetty")
+            .addParameter("bind.port", port)
+            .addParameter("contextpath", "dubbo-webservice2")
+            .addParameter("codec", "exchange")
+            .addParameter("timeout", 3000);
         URL url = builder.build();
 
         tomcat.start();

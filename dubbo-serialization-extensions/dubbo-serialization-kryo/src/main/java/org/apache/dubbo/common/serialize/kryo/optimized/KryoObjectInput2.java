@@ -113,7 +113,7 @@ public class KryoObjectInput2 implements ObjectInput, Cleanable {
             if (len < 0) {
                 return null;
             } else if (len == 0) {
-                return new byte[] {};
+                return new byte[]{};
             } else {
                 return input.readBytes(len);
             }

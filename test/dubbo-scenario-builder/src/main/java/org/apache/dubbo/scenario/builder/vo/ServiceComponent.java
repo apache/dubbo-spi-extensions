@@ -254,31 +254,31 @@ public class ServiceComponent {
     @Override
     public String toString() {
         return "ServiceComponent{" +
-                "image='" + image + '\'' +
-                ", build='" + build + '\'' +
-                ", hostname='" + hostname + '\'' +
-                ", version='" + version + '\'' +
-                ", removeOnExit=" + removeOnExit +
-                ", links=" + links +
-                ", expose=" + expose +
-                ", ports=" + ports +
-                ", entrypoint=" + entrypoint +
-                ", environment=" + environment +
-                ", volumes=" + volumes +
-                ", volumes_from=" + volumes_from +
-                ", depends_on=" + depends_on +
-                ", healthcheck=" + healthcheck +
-                ", type='" + type + '\'' +
-                ", basedir='" + basedir + '\'' +
-                ", mainClass='" + mainClass + '\'' +
-                ", waitPortsBeforeRun=" + waitPortsBeforeRun +
-                ", waitTimeout=" + waitTimeout +
-                ", runDelay=" + runDelay +
-                ", checkPorts=" + checkPorts +
-                ", checkLog='" + checkLog + '\'' +
-                ", tests=" + tests +
-                ", systemProps=" + systemProps +
-                ", jvmFlags=" + jvmFlags +
-                '}';
+            "image='" + image + '\'' +
+            ", build='" + build + '\'' +
+            ", hostname='" + hostname + '\'' +
+            ", version='" + version + '\'' +
+            ", removeOnExit=" + removeOnExit +
+            ", links=" + links +
+            ", expose=" + expose +
+            ", ports=" + ports +
+            ", entrypoint=" + entrypoint +
+            ", environment=" + environment +
+            ", volumes=" + volumes +
+            ", volumes_from=" + volumes_from +
+            ", depends_on=" + depends_on +
+            ", healthcheck=" + healthcheck +
+            ", type='" + type + '\'' +
+            ", basedir='" + basedir + '\'' +
+            ", mainClass='" + mainClass + '\'' +
+            ", waitPortsBeforeRun=" + waitPortsBeforeRun +
+            ", waitTimeout=" + waitTimeout +
+            ", runDelay=" + runDelay +
+            ", checkPorts=" + checkPorts +
+            ", checkLog='" + checkLog + '\'' +
+            ", tests=" + tests +
+            ", systemProps=" + systemProps +
+            ", jvmFlags=" + jvmFlags +
+            '}';
     }
 }

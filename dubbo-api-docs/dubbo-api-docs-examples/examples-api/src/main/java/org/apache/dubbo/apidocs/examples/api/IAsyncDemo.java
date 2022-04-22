@@ -33,6 +33,7 @@ public interface IAsyncDemo {
 
     /**
      * request and response parameters are beans.
+     *
      * @param param1
      * @param param2
      * @return java.util.concurrent.CompletableFuture<org.apache.dubbo.apidocs.examples.responses.DemoRespBean1>
@@ -72,13 +73,15 @@ public interface IAsyncDemo {
 
     /**
      * many generics
+     *
+     * @return java.util.concurrent.CompletableFuture<java.util.List < java.util.List < java.lang.String>>>
      * @param:
-     * @return java.util.concurrent.CompletableFuture<java.util.List<java.util.List<java.lang.String>>>
      */
     CompletableFuture<List<List<String>>> demoApi12();
 
     /**
      * Simple test.
+     *
      * @param param1
      * @param param2
      * @return java.util.concurrent.CompletableFuture<org.apache.dubbo.apidocs.examples.params.DemoParamBean3>

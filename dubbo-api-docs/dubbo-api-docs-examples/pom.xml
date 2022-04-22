@@ -35,7 +35,7 @@
     <properties>
         <skip_maven_deploy>true</skip_maven_deploy>
     </properties>
-    
+
     <modules>
         <module>examples-api</module>
         <module>examples-provider</module>

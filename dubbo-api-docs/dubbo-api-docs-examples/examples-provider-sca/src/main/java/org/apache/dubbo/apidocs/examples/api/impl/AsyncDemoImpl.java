@@ -25,6 +25,7 @@ import org.apache.dubbo.apidocs.examples.params.DemoParamBean3;
 import org.apache.dubbo.apidocs.examples.params.DemoParamBean4;
 import org.apache.dubbo.apidocs.examples.responses.DemoRespBean1;
 import org.apache.dubbo.config.annotation.DubboService;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -51,44 +52,44 @@ public class AsyncDemoImpl implements IAsyncDemo {
     }
 
     @Override
-    @ApiDoc(value = "Map without generics", responseClassDescription="Map without generics")
+    @ApiDoc(value = "Map without generics", responseClassDescription = "Map without generics")
     public CompletableFuture<Map> demoApi6() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "Map generic with Object", responseClassDescription="Map generic with Object")
+    @ApiDoc(value = "Map generic with Object", responseClassDescription = "Map generic with Object")
     public CompletableFuture<Map<Object, Object>> demoApi7() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "List without generics", responseClassDescription="List without generics")
+    @ApiDoc(value = "List without generics", responseClassDescription = "List without generics")
     public CompletableFuture<List> demoApi10() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "List generic with Object", responseClassDescription="List generic with Object")
+    @ApiDoc(value = "List generic with Object", responseClassDescription = "List generic with Object")
     public CompletableFuture<List<Object>> demoApi9() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "Object", responseClassDescription="Object")
+    @ApiDoc(value = "Object", responseClassDescription = "Object")
     public CompletableFuture<Object> demoApi8() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "Integer", responseClassDescription="Integer")
+    @ApiDoc(value = "Integer", responseClassDescription = "Integer")
     public CompletableFuture<Integer> demoApi11() {
         return null;
     }
 
     @Override
-    @ApiDoc(value = "many generics", responseClassDescription="many generics")
-    public CompletableFuture<List<List<String>>> demoApi12(){
+    @ApiDoc(value = "many generics", responseClassDescription = "many generics")
+    public CompletableFuture<List<List<String>>> demoApi12() {
         return null;
     }
 

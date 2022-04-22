@@ -31,9 +31,9 @@ public class ExampleApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(ExampleApplication.class)
-                // Non web applications
-                .web(WebApplicationType.NONE)
-                .run(args);
+            // Non web applications
+            .web(WebApplicationType.NONE)
+            .run(args);
     }
 
 }

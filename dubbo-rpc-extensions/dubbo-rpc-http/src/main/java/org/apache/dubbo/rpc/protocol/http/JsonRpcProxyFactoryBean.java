@@ -30,10 +30,10 @@ import org.springframework.remoting.support.RemoteInvocationBasedAccessor;
  * JsonRpcProxyFactoryBean
  */
 public class JsonRpcProxyFactoryBean extends RemoteInvocationBasedAccessor
-        implements MethodInterceptor,
-        InitializingBean,
-        FactoryBean<Object>,
-        ApplicationContextAware {
+    implements MethodInterceptor,
+    InitializingBean,
+    FactoryBean<Object>,
+    ApplicationContextAware {
     private final JsonProxyFactoryBean jsonProxyFactoryBean;
 
     public JsonRpcProxyFactoryBean(JsonProxyFactoryBean factoryBean) {
@@ -48,7 +48,7 @@ public class JsonRpcProxyFactoryBean extends RemoteInvocationBasedAccessor
 
     @Override
     public Object invoke(MethodInvocation invocation)
-            throws Throwable {
+        throws Throwable {
 
         return jsonProxyFactoryBean.invoke(invocation);
     }

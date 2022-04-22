@@ -152,20 +152,20 @@ public class DockerService {
     @Override
     public String toString() {
         return "DockerService{" +
-                "name='" + name + '\'' +
-                ", imageName='" + imageName + '\'' +
-                ", build='" + build + '\'' +
-                ", hostname='" + hostname + '\'' +
-                ", removeOnExit=" + removeOnExit +
-                ", links=" + links +
-                ", expose=" + expose +
-                ", ports=" + ports +
-                ", entrypoint=" + entrypoint +
-                ", healthcheck=" + healthcheck +
-                ", depends_on=" + depends_on +
-                ", environment=" + environment +
-                ", volumes=" + volumes +
-                ", volumes_from=" + volumes_from +
-                '}';
+            "name='" + name + '\'' +
+            ", imageName='" + imageName + '\'' +
+            ", build='" + build + '\'' +
+            ", hostname='" + hostname + '\'' +
+            ", removeOnExit=" + removeOnExit +
+            ", links=" + links +
+            ", expose=" + expose +
+            ", ports=" + ports +
+            ", entrypoint=" + entrypoint +
+            ", healthcheck=" + healthcheck +
+            ", depends_on=" + depends_on +
+            ", environment=" + environment +
+            ", volumes=" + volumes +
+            ", volumes_from=" + volumes_from +
+            '}';
     }
 }

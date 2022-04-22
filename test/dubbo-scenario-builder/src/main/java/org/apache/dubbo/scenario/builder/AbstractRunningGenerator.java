@@ -17,9 +17,10 @@
 
 package org.apache.dubbo.scenario.builder;
 
+import org.apache.dubbo.scenario.builder.exception.GenerateFailedException;
+
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import org.apache.dubbo.scenario.builder.exception.GenerateFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public abstract class AbstractRunningGenerator implements ScenarioRunningScriptG
         String scriptPath = configuration.outputDir() + File.separator + "scenario.sh";
         try (FileWriter writer = new FileWriter(new File(scriptPath))) {
             cfg.getTemplate("scenario.sh")
-                    .process(root, writer);
+                .process(root, writer);
         } catch (Exception e) {
             LOGGER.error("Failed to write scenario.sh", e);
         }

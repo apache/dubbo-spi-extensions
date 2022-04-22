@@ -18,7 +18,7 @@ package org.apache.dubbo.rpc.protocol.nativethrift;
 
 public class UserServiceImpl implements UserService.Iface {
 
-    public String find(int id) throws org.apache.thrift.TException{
-        return "KK"+id;
+    public String find(int id) throws org.apache.thrift.TException {
+        return "KK" + id;
     }
 }

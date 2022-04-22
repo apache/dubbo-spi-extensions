@@ -34,7 +34,7 @@ public class QuicNettyEventLoopFactory {
     public static EventLoopGroup eventLoopGroup(int threads, String threadFactoryName) {
         ThreadFactory threadFactory = new DefaultThreadFactory(threadFactoryName, true);
         return shouldEpoll() ? new EpollEventLoopGroup(threads, threadFactory) :
-                new NioEventLoopGroup(threads, threadFactory);
+            new NioEventLoopGroup(threads, threadFactory);
     }
 
     public static Class<? extends SocketChannel> socketChannelClass() {

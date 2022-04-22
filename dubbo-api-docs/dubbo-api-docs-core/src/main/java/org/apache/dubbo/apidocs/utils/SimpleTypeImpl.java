@@ -25,12 +25,12 @@ public class SimpleTypeImpl implements Type {
 
     private String typeName;
 
-    public SimpleTypeImpl(String typeName){
+    public SimpleTypeImpl(String typeName) {
         this.typeName = typeName;
     }
 
     @Override
-    public String getTypeName(){
+    public String getTypeName() {
         return typeName;
     }
 

@@ -7,6 +7,7 @@ dubbo 接口文档、测试工具,根据注解生成文档,并提供测试功能
 增加一些注解就能生成类似swagger的文档, 不会把非web的dubbo项目变为web项目.
 
 ## 相关项目
+
 * [dubbo-spi-extensions](https://github.com/apache/dubbo-spi-extensions)
   [\分支: 2.7.x\dubbo-api-docs](https://github.com/apache/dubbo-spi-extensions/tree/2.7.x/dubbo-api-docs):
   Dubbo-Api-Docs 相关注解,解析注解
@@ -17,8 +18,7 @@ dubbo 接口文档、测试工具,根据注解生成文档,并提供测试功能
 1. dubbo项目的方法参数中加上 dubbo api docs 注解
     * dubbo提供者项目引入 dubbo-api-docs-core
     * 如果dubbo的接口和参数是一个单独的jar包项目,引入dubbo-api-docs-annotations
-    * 在提供者项目的项目启动类(标注了@SpringBootApplication的类)或者配制类(标注了@Configuration的类)中增加注解 
-      @EnableDubboApiDocs 以启用Dubbo Api Docs功能
+    * 在提供者项目的项目启动类(标注了@SpringBootApplication的类)或者配制类(标注了@Configuration的类)中增加注解 @EnableDubboApiDocs 以启用Dubbo Api Docs功能
         * 为避免增加生产环境中的资源占用, 建议单独创建一个配制类用于启用Dubbo Api Docs, 并配合 @Profile("dev") 注解使用
         * 当然, Dubbo Api Docs 仅在项目启动时多消耗了点CPU资源, 并使用了一点点内存用于缓存, 将来会考虑将缓存中的内容放到元数据中心.
 

@@ -95,7 +95,7 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
 
         SelfSignedCertificate selfSignedCertificate = new SelfSignedCertificate();
         QuicSslContext context = QuicSslContextBuilder.forServer(
-            selfSignedCertificate.privateKey(), null, selfSignedCertificate.certificate())
+                selfSignedCertificate.privateKey(), null, selfSignedCertificate.certificate())
             .applicationProtocols("http/0.9").build();
 
 
@@ -123,12 +123,12 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
             }).build();
 
         InetSocketAddress address = getBindAddress();
-        logger.info("bind address:"+address);
+        logger.info("bind address:" + address);
         ChannelFuture channelFuture = bootstrap.group(bossGroup)
             .channel(NioDatagramChannel.class)
             .handler(codec)
             .bind(address);
-        channelFuture.addListener((ChannelFutureListener) channelFuture1 -> logger.info("bind finish:"+channelFuture1));
+        channelFuture.addListener((ChannelFutureListener) channelFuture1 -> logger.info("bind finish:" + channelFuture1));
     }
 
     @Override

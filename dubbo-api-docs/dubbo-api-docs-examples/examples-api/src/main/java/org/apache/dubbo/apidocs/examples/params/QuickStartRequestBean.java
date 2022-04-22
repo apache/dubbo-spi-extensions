@@ -61,9 +61,9 @@ public class QuickStartRequestBean implements java.io.Serializable {
     @Override
     public String toString() {
         return "QuickStartRequestBean{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", man=" + man +
-                '}';
+            "name='" + name + '\'' +
+            ", age=" + age +
+            ", man=" + man +
+            '}';
     }
 }

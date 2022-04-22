@@ -111,7 +111,7 @@ public class QuicNettyClient extends AbstractClient {
         logger.info("quic client do connect");
         final QuicNettyClientHandler nettyClientHandler = new QuicNettyClientHandler(getUrl(), this);
         InetSocketAddress address = getConnectAddress();
-        logger.info("quic connect address:"+address);
+        logger.info("quic connect address:" + address);
         QuicChannel quicChannel = QuicChannel.newBootstrap(qchannel)
             .streamHandler(new ChannelInboundHandlerAdapter() {
                 @Override
@@ -132,17 +132,17 @@ public class QuicNettyClient extends AbstractClient {
                     int heartbeatInterval = UrlUtils.getHeartbeat(getUrl());
 
                     quicStreamChannel.pipeline().addLast(
-                        new ChannelInboundHandlerAdapter() {
-                            @Override
-                            public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
-                                if (evt == ChannelInputShutdownReadComplete.INSTANCE) {
-                                    ((QuicChannel) ctx.channel().parent()).close(true, 0,
-                                        ctx.alloc().directBuffer(16)
-                                            .writeBytes(new byte[]{'k', 't', 'h', 'x', 'b', 'y', 'e'}));
+                            new ChannelInboundHandlerAdapter() {
+                                @Override
+                                public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
+                                    if (evt == ChannelInputShutdownReadComplete.INSTANCE) {
+                                        ((QuicChannel) ctx.channel().parent()).close(true, 0,
+                                            ctx.alloc().directBuffer(16)
+                                                .writeBytes(new byte[]{'k', 't', 'h', 'x', 'b', 'y', 'e'}));
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
                         .addLast("decoder", adapter.getDecoder())
                         .addLast("encoder", adapter.getEncoder())
                         .addLast("client-idle-handler", new IdleStateHandler(heartbeatInterval, 0, 0, TimeUnit.MILLISECONDS))
@@ -160,7 +160,6 @@ public class QuicNettyClient extends AbstractClient {
         }
         return schannel.isActive();
     }
-
 
 
     @Override

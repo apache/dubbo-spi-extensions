@@ -17,14 +17,15 @@
  *
  */
 
-import com.google.protobuf.Empty;
-import com.google.protobuf.Int32Value;
-import com.google.protobuf.StringValue;
 import org.apache.dubbo.test.serialization.protobuf.BigPerson;
 import org.apache.dubbo.test.serialization.protobuf.DemoService;
 import org.apache.dubbo.test.serialization.protobuf.FullAddress;
 import org.apache.dubbo.test.serialization.protobuf.PersonInfo;
 import org.apache.dubbo.test.serialization.protobuf.Phone;
+
+import com.google.protobuf.Empty;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.StringValue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

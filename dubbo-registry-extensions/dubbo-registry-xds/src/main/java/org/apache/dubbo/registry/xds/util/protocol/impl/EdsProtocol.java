@@ -16,6 +16,14 @@
  */
 package org.apache.dubbo.registry.xds.util.protocol.impl;
 
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.registry.xds.util.XdsChannel;
+import org.apache.dubbo.registry.xds.util.protocol.AbstractProtocol;
+import org.apache.dubbo.registry.xds.util.protocol.delta.DeltaEndpoint;
+import org.apache.dubbo.registry.xds.util.protocol.message.Endpoint;
+import org.apache.dubbo.registry.xds.util.protocol.message.EndpointResult;
+
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.envoyproxy.envoy.config.core.v3.HealthStatus;
@@ -24,13 +32,6 @@ import io.envoyproxy.envoy.config.core.v3.SocketAddress;
 import io.envoyproxy.envoy.config.endpoint.v3.ClusterLoadAssignment;
 import io.envoyproxy.envoy.config.endpoint.v3.LbEndpoint;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.registry.xds.util.XdsChannel;
-import org.apache.dubbo.registry.xds.util.protocol.AbstractProtocol;
-import org.apache.dubbo.registry.xds.util.protocol.delta.DeltaEndpoint;
-import org.apache.dubbo.registry.xds.util.protocol.message.Endpoint;
-import org.apache.dubbo.registry.xds.util.protocol.message.EndpointResult;
 
 import java.util.Objects;
 import java.util.Set;
@@ -50,13 +51,13 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
     }
 
     @Override
-    protected  EndpointResult decodeDiscoveryResponse(DiscoveryResponse response) {
+    protected EndpointResult decodeDiscoveryResponse(DiscoveryResponse response) {
         if (getTypeUrl().equals(response.getTypeUrl())) {
             Set<Endpoint> set = response.getResourcesList().stream()
-                    .map(EdsProtocol::unpackClusterLoadAssignment)
-                    .filter(Objects::nonNull)
-                    .flatMap((e) -> decodeResourceToEndpoint(e).stream())
-                    .collect(Collectors.toSet());
+                .map(EdsProtocol::unpackClusterLoadAssignment)
+                .filter(Objects::nonNull)
+                .flatMap((e) -> decodeResourceToEndpoint(e).stream())
+                .collect(Collectors.toSet());
             return new EndpointResult(set);
         }
         return new EndpointResult();
@@ -64,9 +65,9 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
 
     private static Set<Endpoint> decodeResourceToEndpoint(ClusterLoadAssignment resource) {
         return resource.getEndpointsList().stream()
-                .flatMap((e) -> e.getLbEndpointsList().stream())
-                .map(EdsProtocol::decodeLbEndpointToEndpoint)
-                .collect(Collectors.toSet());
+            .flatMap((e) -> e.getLbEndpointsList().stream())
+            .map(EdsProtocol::decodeLbEndpointToEndpoint)
+            .collect(Collectors.toSet());
     }
 
     private static Endpoint decodeLbEndpointToEndpoint(LbEndpoint lbEndpoint) {
@@ -75,7 +76,7 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
         endpoint.setAddress(address.getAddress());
         endpoint.setPortValue(address.getPortValue());
         boolean healthy = HealthStatus.HEALTHY.equals(lbEndpoint.getHealthStatus()) ||
-                HealthStatus.UNKNOWN.equals(lbEndpoint.getHealthStatus());
+            HealthStatus.UNKNOWN.equals(lbEndpoint.getHealthStatus());
         endpoint.setHealthy(healthy);
         endpoint.setWeight(lbEndpoint.getLoadBalancingWeight().getValue());
         return endpoint;

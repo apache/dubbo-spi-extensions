@@ -48,7 +48,7 @@ public class ResolveResult {
         if (o == null || getClass() != o.getClass()) return false;
         ResolveResult that = (ResolveResult) o;
         return Objects.equals(hostnameList, that.hostnameList) &&
-                Objects.equals(port, that.port);
+            Objects.equals(port, that.port);
     }
 
     @Override
@@ -59,8 +59,8 @@ public class ResolveResult {
     @Override
     public String toString() {
         return "ResolveResult{" +
-                "hostnameList=" + hostnameList +
-                ", port=" + port +
-                '}';
+            "hostnameList=" + hostnameList +
+            ", port=" + port +
+            '}';
     }
 }

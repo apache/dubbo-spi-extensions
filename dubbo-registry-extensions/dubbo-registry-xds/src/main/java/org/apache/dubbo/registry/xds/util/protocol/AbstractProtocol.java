@@ -16,24 +16,25 @@
  */
 package org.apache.dubbo.registry.xds.util.protocol;
 
-import io.envoyproxy.envoy.config.core.v3.Node;
-import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
-import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
-import io.grpc.stub.StreamObserver;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.NamedThreadFactory;
 import org.apache.dubbo.registry.xds.util.XdsChannel;
 
+import io.envoyproxy.envoy.config.core.v3.Node;
+import io.envoyproxy.envoy.service.discovery.v3.DiscoveryRequest;
+import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
+import io.grpc.stub.StreamObserver;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -186,20 +187,20 @@ public abstract class AbstractProtocol<T, S extends DeltaResource<T>> implements
 
     protected DiscoveryRequest buildDiscoveryRequest(Set<String> resourceNames) {
         return DiscoveryRequest.newBuilder()
-                .setNode(node)
-                .setTypeUrl(getTypeUrl())
-                .addAllResourceNames(resourceNames)
-                .build();
+            .setNode(node)
+            .setTypeUrl(getTypeUrl())
+            .addAllResourceNames(resourceNames)
+            .build();
     }
 
     protected DiscoveryRequest buildDiscoveryRequest(Set<String> resourceNames, DiscoveryResponse response) {
         // for ACK
         return DiscoveryRequest.newBuilder()
-                .setNode(node)
-                .setTypeUrl(response.getTypeUrl())
-                .setVersionInfo(response.getVersionInfo())
-                .setResponseNonce(response.getNonce())
-                .build();
+            .setNode(node)
+            .setTypeUrl(response.getTypeUrl())
+            .setVersionInfo(response.getVersionInfo())
+            .setResponseNonce(response.getNonce())
+            .build();
     }
 
     protected abstract T decodeDiscoveryResponse(DiscoveryResponse response);

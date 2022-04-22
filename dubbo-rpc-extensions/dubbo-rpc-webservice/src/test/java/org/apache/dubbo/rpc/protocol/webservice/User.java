@@ -18,7 +18,7 @@ package org.apache.dubbo.rpc.protocol.webservice;
 
 public class User {
     private int age;
-    private  String name;
+    private String name;
 
     public int getAge() {
         return age;

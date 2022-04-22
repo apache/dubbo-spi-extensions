@@ -28,7 +28,6 @@ import org.apache.maven.surefire.booter.ClassLoaderConfiguration;
 import org.apache.maven.surefire.booter.Classpath;
 import org.apache.maven.surefire.booter.ClasspathConfiguration;
 import org.apache.maven.surefire.booter.ProviderConfiguration;
-import org.apache.maven.surefire.booter.Shutdown;
 import org.apache.maven.surefire.booter.StartupConfiguration;
 import org.apache.maven.surefire.cli.CommandLineOption;
 import org.apache.maven.surefire.junit4.JUnit4Provider;
@@ -99,23 +98,23 @@ public class TestRunnerMain {
 
         File statisticsFile = new File(reportsDirectory, "test-statistics.txt");
         StartupReportConfiguration startupReportConfiguration = new StartupReportConfiguration(true,
-                true,
-                ConsoleReporter.PLAIN,
-                false,
-                true,
-                reportsDirectory,
-                false,
-                "report",
-                statisticsFile,
-                true,
-                10,
-                null,
-                "UTF-8",
-                false
+            true,
+            ConsoleReporter.PLAIN,
+            false,
+            true,
+            reportsDirectory,
+            false,
+            "report",
+            statisticsFile,
+            true,
+            10,
+            null,
+            "UTF-8",
+            false
         );
 
         DirectoryScannerParameters directoryScannerParameters = new DirectoryScannerParameters(testClassesDir,
-                emptyList(), emptyList(), emptyList(), false, "");
+            emptyList(), emptyList(), emptyList(), false, "");
 
         File runStatisticsFile = new File(reportsDirectory, "run-statistics.txt");
         RunOrderParameters runOrderParameters = new RunOrderParameters((String) null, runStatisticsFile);
@@ -134,19 +133,19 @@ public class TestRunnerMain {
         cliOptions.add(CommandLineOption.REACTOR_FAIL_FAST);
 
         ProviderConfiguration providerConfiguration = new ProviderConfiguration(
-                directoryScannerParameters,
-                runOrderParameters,
-                false,
-                reporterConfiguration,
-                null,
-                testRequest,
-                providerProperties,
-                null,
-                false,
-                cliOptions,
-                0,
-                Shutdown.DEFAULT,
-                30
+            directoryScannerParameters,
+            runOrderParameters,
+            false,
+            reporterConfiguration,
+            null,
+            testRequest,
+            providerProperties,
+            null,
+            false,
+            cliOptions,
+            0,
+            Shutdown.DEFAULT,
+            30
         );
 
         String providerClassName = JUnit4Provider.class.getName();//"org.apache.maven.surefire.junit4.JUnit4Provider";
@@ -154,20 +153,20 @@ public class TestRunnerMain {
         Classpath inprocClasspath = getInprocClasspath();
         Classpath surefireClasspath = inprocClasspath;
         AbstractPathConfiguration classpathConfiguration = new ClasspathConfiguration(
-                testClasspath,
-                surefireClasspath,
-                inprocClasspath,
-                false,
-                false
+            testClasspath,
+            surefireClasspath,
+            inprocClasspath,
+            false,
+            false
         );
 
         ClassLoaderConfiguration classloaderConfiguration = new ClassLoaderConfiguration(false, false);
         StartupConfiguration startupConfiguration = new StartupConfiguration(
-                providerClassName,
-                classpathConfiguration,
-                classloaderConfiguration,
-                false,
-                false);
+            providerClassName,
+            classpathConfiguration,
+            classloaderConfiguration,
+            false,
+            false);
 
 
         DefaultScanResult scanResult = getScanResult(testClassesDir, tests);
@@ -177,7 +176,7 @@ public class TestRunnerMain {
         // CompletableFuture.supplyAsync() is executed in the ForkJoinWorkerThread
         // and it only uses system classloader to load classes instead of the IsolatedClassLoader
         ClassloaderSurefireStarter testStarter = new ClassloaderSurefireStarter(startupConfiguration, providerConfiguration,
-                startupReportConfiguration, consoleLogger, ClassLoader.getSystemClassLoader());
+            startupReportConfiguration, consoleLogger, ClassLoader.getSystemClassLoader());
 //        InPluginVMSurefireStarter testStarter = new InPluginVMSurefireStarter(startupConfiguration, providerConfiguration,
 //                startupReportConfiguration, consoleLogger);
 
@@ -186,8 +185,8 @@ public class TestRunnerMain {
 
         String line = "------------------------------------------------------------------------\n";
         consoleLogger.info(String.format(line + "TEST %s, Total: %d, Failures: %d, Errors: %d, Skipped: %d\n" + line,
-                runSuccess ? "SUCCESS" : "FAILURE", runResult.getCompletedCount(), runResult.getFailures(), runResult.getErrors(),
-                runResult.getSkipped()));
+            runSuccess ? "SUCCESS" : "FAILURE", runResult.getCompletedCount(), runResult.getFailures(), runResult.getErrors(),
+            runResult.getSkipped()));
 
 //        File tmpDirectory = new File(reportsDirectory, "tmp");
 //        tmpDirectory.mkdirs();

@@ -16,6 +16,13 @@
  */
 package org.apache.dubbo.registry.xds.util.protocol.impl;
 
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.registry.xds.util.XdsChannel;
+import org.apache.dubbo.registry.xds.util.protocol.AbstractProtocol;
+import org.apache.dubbo.registry.xds.util.protocol.delta.DeltaRoute;
+import org.apache.dubbo.registry.xds.util.protocol.message.RouteResult;
+
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.envoyproxy.envoy.config.core.v3.Node;
@@ -23,12 +30,6 @@ import io.envoyproxy.envoy.config.route.v3.Route;
 import io.envoyproxy.envoy.config.route.v3.RouteAction;
 import io.envoyproxy.envoy.config.route.v3.RouteConfiguration;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.registry.xds.util.XdsChannel;
-import org.apache.dubbo.registry.xds.util.protocol.AbstractProtocol;
-import org.apache.dubbo.registry.xds.util.protocol.delta.DeltaRoute;
-import org.apache.dubbo.registry.xds.util.protocol.message.RouteResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,13 +54,13 @@ public class RdsProtocol extends AbstractProtocol<RouteResult, DeltaRoute> {
     protected RouteResult decodeDiscoveryResponse(DiscoveryResponse response) {
         if (getTypeUrl().equals(response.getTypeUrl())) {
             Map<String, Set<String>> map = response.getResourcesList().stream()
-                    .map(RdsProtocol::unpackRouteConfiguration)
-                    .filter(Objects::nonNull)
-                    .map(RdsProtocol::decodeResourceToListener)
-                    .reduce((a, b) -> {
-                        a.putAll(b);
-                        return a;
-                    }).orElse(new HashMap<>());
+                .map(RdsProtocol::unpackRouteConfiguration)
+                .filter(Objects::nonNull)
+                .map(RdsProtocol::decodeResourceToListener)
+                .reduce((a, b) -> {
+                    a.putAll(b);
+                    return a;
+                }).orElse(new HashMap<>());
             return new RouteResult(map);
         }
         return new RouteResult();
@@ -68,15 +69,15 @@ public class RdsProtocol extends AbstractProtocol<RouteResult, DeltaRoute> {
     private static Map<String, Set<String>> decodeResourceToListener(RouteConfiguration resource) {
         Map<String, Set<String>> map = new HashMap<>();
         resource.getVirtualHostsList()
-                .forEach(virtualHost -> {
-                    Set<String> cluster = virtualHost.getRoutesList().stream()
-                            .map(Route::getRoute)
-                            .map(RouteAction::getCluster)
-                            .collect(Collectors.toSet());
-                    for (String domain : virtualHost.getDomainsList()) {
-                        map.put(domain, cluster);
-                    }
-                });
+            .forEach(virtualHost -> {
+                Set<String> cluster = virtualHost.getRoutesList().stream()
+                    .map(Route::getRoute)
+                    .map(RouteAction::getCluster)
+                    .collect(Collectors.toSet());
+                for (String domain : virtualHost.getDomainsList()) {
+                    map.put(domain, cluster);
+                }
+            });
         return map;
     }
 

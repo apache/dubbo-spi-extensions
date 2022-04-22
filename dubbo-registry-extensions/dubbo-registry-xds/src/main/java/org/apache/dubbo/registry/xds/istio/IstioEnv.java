@@ -16,10 +16,11 @@
  */
 package org.apache.dubbo.registry.xds.istio;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.registry.xds.XdsEnv;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class IstioEnv implements XdsEnv {
         }
         if (serviceAccount == null) {
             throw new UnsupportedOperationException("Unable to found kubernetes service account token file. " +
-                    "Please check if work in Kubernetes and mount service account token file correctly.");
+                "Please check if work in Kubernetes and mount service account token file correctly.");
         }
     }
 

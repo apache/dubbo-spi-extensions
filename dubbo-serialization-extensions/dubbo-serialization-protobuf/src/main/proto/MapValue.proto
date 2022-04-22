@@ -23,5 +23,5 @@ option java_package = "org.apache.dubbo.common.serialize.protobuf.support.wrappe
 option java_multiple_files = false;
 
 message Map{
-    map<string,string> attachments = 1;
+  map<string, string> attachments = 1;
 }

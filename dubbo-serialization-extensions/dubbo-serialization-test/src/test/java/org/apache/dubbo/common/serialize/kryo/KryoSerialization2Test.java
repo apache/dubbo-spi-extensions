@@ -27,6 +27,7 @@ import org.apache.dubbo.common.serialize.model.person.FullAddress;
 import org.apache.dubbo.common.serialize.model.person.PersonInfo;
 import org.apache.dubbo.common.serialize.model.person.PersonStatus;
 import org.apache.dubbo.common.serialize.model.person.Phone;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -87,7 +88,7 @@ public class KryoSerialization2Test {
         objectOutput.flushBuffer();
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-                byteArrayOutputStream.toByteArray());
+            byteArrayOutputStream.toByteArray());
         ObjectInput deserialize = serialization.deserialize(url, byteArrayInputStream);
 
         assertEquals(bigPerson, BigPerson.class.cast(deserialize.readObject(BigPerson.class)));
@@ -105,13 +106,13 @@ public class KryoSerialization2Test {
         objectOutput.writeObject(bigPerson);
 
         Map<String, Object> attachments = new HashMap<>();
-        attachments.put("attachments","attachments");
+        attachments.put("attachments", "attachments");
         objectOutput.writeObject(attachments);
 
         objectOutput.flushBuffer();
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-                byteArrayOutputStream.toByteArray());
+            byteArrayOutputStream.toByteArray());
         ObjectInput deserialize = serialization.deserialize(url, byteArrayInputStream);
 
         assertEquals(bigPerson, BigPerson.class.cast(deserialize.readObject(BigPerson.class)));

@@ -17,15 +17,17 @@
 
 package org.apache.dubbo.common.serialize.protostuff;
 
+import org.apache.dubbo.common.serialize.ObjectInput;
+import org.apache.dubbo.common.serialize.protostuff.utils.WrapperUtils;
+
 import io.protostuff.GraphIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import org.apache.dubbo.common.serialize.ObjectInput;
-import org.apache.dubbo.common.serialize.protostuff.utils.WrapperUtils;
 
 /**
  * Protostuff object input implementation
