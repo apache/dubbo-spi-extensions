@@ -80,12 +80,12 @@ public class CaseConfiguration {
     @Override
     public String toString() {
         return "CaseConfiguration{" +
-                "from='" + from + '\'' +
-                ", props=" + props +
-                ", systemProps=" + systemProps +
-                ", services=" + services +
-                ", timeout=" + timeout +
-                ", ignoreFor='" + ignoreFor + '\'' +
-                '}';
+            "from='" + from + '\'' +
+            ", props=" + props +
+            ", systemProps=" + systemProps +
+            ", services=" + services +
+            ", timeout=" + timeout +
+            ", ignoreFor='" + ignoreFor + '\'' +
+            '}';
     }
 }

@@ -18,10 +18,16 @@ package org.apache.dubbo.common.serialize.base;
 
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.model.Person;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.NotSerializableException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;

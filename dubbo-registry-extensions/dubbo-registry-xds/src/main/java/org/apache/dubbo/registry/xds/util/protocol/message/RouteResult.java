@@ -67,7 +67,7 @@ public class RouteResult {
     @Override
     public String toString() {
         return "RouteResult{" +
-                "domainMap=" + domainMap +
-                '}';
+            "domainMap=" + domainMap +
+            '}';
     }
 }

@@ -1,11 +1,13 @@
 ---
-name: Dubbo-SPI-Extensions issue report template
-about: If you would like to report a issue to Dubbo-SPI-Extensions, please use this template.
+name: Dubbo-SPI-Extensions issue report template about: If you would like to report a issue to Dubbo-SPI-Extensions,
+please use this template.
 
 ---
 
-- [ ] I have searched the [issues](https://github.com/apache/dubbo-spi-extensions/issues) of this repository and believe that this is not a duplicate.
-- [ ] I have checked the [REAMDE](https://github.com/apache/dubbo-admin/blob/dubbo-spi-extensions/README.md) of this repository and believe that this is not a duplicate.
+- [ ] I have searched the [issues](https://github.com/apache/dubbo-spi-extensions/issues) of this repository and believe
+  that this is not a duplicate.
+- [ ] I have checked the [REAMDE](https://github.com/apache/dubbo-admin/blob/dubbo-spi-extensions/README.md) of this
+  repository and believe that this is not a duplicate.
 
 ### Environment
 

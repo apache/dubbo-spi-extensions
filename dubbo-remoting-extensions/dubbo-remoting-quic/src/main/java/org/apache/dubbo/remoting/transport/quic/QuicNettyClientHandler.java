@@ -132,7 +132,7 @@ public class QuicNettyClientHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-            throws Exception {
+        throws Exception {
         QuicNettyChannel channel = QuicNettyChannel.getOrAddChannel(ctx.channel(), url, handler);
         try {
             handler.caught(channel, cause);

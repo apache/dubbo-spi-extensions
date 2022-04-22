@@ -64,9 +64,9 @@ public class BaseResponse<T> implements java.io.Serializable {
     @Override
     public String toString() {
         return "BaseResponse{" +
-                "code='" + code + '\'' +
-                ", message='" + message + '\'' +
-                ", data=" + data +
-                '}';
+            "code='" + code + '\'' +
+            ", message='" + message + '\'' +
+            ", data=" + data +
+            '}';
     }
 }

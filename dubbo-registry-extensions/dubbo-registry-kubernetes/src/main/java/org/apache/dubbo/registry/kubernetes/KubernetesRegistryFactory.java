@@ -20,7 +20,7 @@ import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.support.AbstractRegistryFactory;
 
-public class KubernetesRegistryFactory  extends AbstractRegistryFactory {
+public class KubernetesRegistryFactory extends AbstractRegistryFactory {
 
     @Override
     protected String createRegistryCacheKey(URL url) {

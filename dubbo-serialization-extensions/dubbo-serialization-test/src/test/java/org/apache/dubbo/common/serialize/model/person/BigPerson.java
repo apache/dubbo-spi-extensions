@@ -144,8 +144,8 @@ public class BigPerson implements Serializable {
     @Override
     public String toString() {
         return "BigPerson [personId=" + personId + ", loginName=" + loginName + ", status="
-                + status + ", email=" + email + ", penName=" + penName + ", infoProfile="
-                + infoProfile + "]";
+            + status + ", email=" + email + ", penName=" + penName + ", infoProfile="
+            + infoProfile + "]";
     }
 
 }

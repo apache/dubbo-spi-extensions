@@ -14,11 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.protocol.nativethrift;
+package org.apache.dubbo.registry.kubernetes;
 
-public class UserServiceImpl implements UserService.Iface {
+import org.apache.dubbo.rpc.cluster.router.mesh.route.MeshAppRuleListener;
+import org.apache.dubbo.rpc.cluster.router.mesh.route.MeshEnvListener;
 
-    public String find(int id) throws org.apache.thrift.TException {
-        return "KK" + id;
+public class NopKubernetesMeshEnvListener implements MeshEnvListener {
+
+    @Override
+    public boolean isEnable() {
+        return false;
+    }
+
+    @Override
+    public void onSubscribe(String appName, MeshAppRuleListener listener) {
+
+    }
+
+    @Override
+    public void onUnSubscribe(String appName) {
+
     }
 }

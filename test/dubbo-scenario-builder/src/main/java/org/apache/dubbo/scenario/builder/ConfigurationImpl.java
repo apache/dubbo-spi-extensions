@@ -17,11 +17,12 @@
 
 package org.apache.dubbo.scenario.builder;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.scenario.builder.exception.ConfigureFileNotFoundException;
 import org.apache.dubbo.scenario.builder.vo.CaseConfiguration;
 import org.apache.dubbo.scenario.builder.vo.DockerService;
 import org.apache.dubbo.scenario.builder.vo.ServiceComponent;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -133,7 +134,7 @@ public class ConfigurationImpl implements IConfiguration {
         }
 
         logger.info("scenarioName:{}, timeout: {}, testImageVersion: {}, debugServices:{}, config: {}",
-                scenarioName, scenarioTimeout, testImageVersion, debugServices, configuration);
+            scenarioName, scenarioTimeout, testImageVersion, debugServices, configuration);
 
         if (StringUtils.isNotBlank(configuration.getIgnoreFor())) {
             logger.warn("{} Ignore testing for: {}", Constants.ERROR_MSG_FLAG, configuration.getIgnoreFor());
@@ -246,7 +247,7 @@ public class ConfigurationImpl implements IConfiguration {
             ServiceComponent service = entry.getValue();
             String type = service.getType();
             if (isAppOrTestService(type)) {
-                service.setImage(SAMPLE_TEST_IMAGE+":"+testImageVersion);
+                service.setImage(SAMPLE_TEST_IMAGE + ":" + testImageVersion);
                 service.setBasedir(toAbsolutePath(service.getBasedir()));
                 if (service.getVolumes() == null) {
                     service.setVolumes(new ArrayList<>());
@@ -272,7 +273,7 @@ public class ConfigurationImpl implements IConfiguration {
 
                 //set run delay
                 if (service.getRunDelay() > 0) {
-                    setEnv(service, ENV_RUN_DELAY, service.getRunDelay()+"");
+                    setEnv(service, ENV_RUN_DELAY, service.getRunDelay() + "");
                 }
 
                 //set check timeout
@@ -286,7 +287,7 @@ public class ConfigurationImpl implements IConfiguration {
                         String debugOpts;
                         if (isJdk9OrLater) {
                             debugOpts = String.format("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:%s", debugPort);
-                        }else {
+                        } else {
                             debugOpts = String.format("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=%s", debugPort);
                         }
                         appendEnv(service, ENV_DEBUG_OPTS, debugOpts);
@@ -561,8 +562,8 @@ public class ConfigurationImpl implements IConfiguration {
                 links.add(service.getHostname());
                 if (service.isRemoveOnExit()) {
                     removeImagesScript.append("docker rmi ")
-                            .append(service.getImage())
-                            .append(System.lineSeparator());
+                        .append(service.getImage())
+                        .append(System.lineSeparator());
                 }
             });
         }

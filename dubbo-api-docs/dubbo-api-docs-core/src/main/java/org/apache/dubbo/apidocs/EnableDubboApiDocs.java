@@ -19,6 +19,7 @@ package org.apache.dubbo.apidocs;
 import org.apache.dubbo.apidocs.core.DubboApiDocsAnnotationScanner;
 
 import org.springframework.context.annotation.Import;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

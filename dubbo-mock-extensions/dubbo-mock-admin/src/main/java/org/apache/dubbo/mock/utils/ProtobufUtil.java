@@ -27,7 +27,8 @@ import java.util.Objects;
  */
 public class ProtobufUtil {
 
-    private ProtobufUtil() {}
+    private ProtobufUtil() {
+    }
 
     public static boolean isProtobufClass(Class<?> targetType) {
         if (Objects.isNull(targetType)) {

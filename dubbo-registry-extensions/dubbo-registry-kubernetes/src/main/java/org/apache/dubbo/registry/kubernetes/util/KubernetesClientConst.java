@@ -17,6 +17,8 @@
 package org.apache.dubbo.registry.kubernetes.util;
 
 public class KubernetesClientConst {
+    public static final String DEFAULT_MASTER_PLACEHOLDER = "DEFAULT_MASTER_HOST";
+    public static final String DEFAULT_MASTER_URL = "https://kubernetes.default.svc";
 
     public final static String ENABLE_REGISTER = "enableRegister";
 

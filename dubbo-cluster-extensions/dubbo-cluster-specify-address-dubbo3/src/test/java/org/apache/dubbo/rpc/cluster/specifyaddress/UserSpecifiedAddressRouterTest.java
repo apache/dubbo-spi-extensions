@@ -40,7 +40,7 @@ public class UserSpecifiedAddressRouterTest {
     public void setup() {
         applicationModel = ApplicationModel.defaultModel();
         ServiceModel serviceModel = Mockito.mock(ServiceModel.class);
-        Mockito.when(serviceModel.getServiceInterfaceClass()).thenReturn((Class)DemoService.class);
+        Mockito.when(serviceModel.getServiceInterfaceClass()).thenReturn((Class) DemoService.class);
         consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value").addParameter("check", "false")
             .addParameter("version", "1.0.0").addParameter("group", "Dubbo")
             .setScopeModel(applicationModel.newModule()).setServiceModel(serviceModel);

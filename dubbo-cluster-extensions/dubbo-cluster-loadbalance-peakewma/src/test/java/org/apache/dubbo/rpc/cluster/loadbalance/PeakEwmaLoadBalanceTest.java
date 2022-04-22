@@ -18,6 +18,7 @@ package org.apache.dubbo.rpc.cluster.loadbalance;
 
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcStatus;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

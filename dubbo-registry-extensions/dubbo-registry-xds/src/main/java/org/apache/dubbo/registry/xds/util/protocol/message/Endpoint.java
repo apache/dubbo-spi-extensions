@@ -59,11 +59,11 @@ public class Endpoint {
     @Override
     public String toString() {
         return "Endpoint{" +
-                "address='" + address + '\'' +
-                ", portValue='" + portValue + '\'' +
-                ", healthy=" + healthy +
-                ", weight=" + weight +
-                '}';
+            "address='" + address + '\'' +
+            ", portValue='" + portValue + '\'' +
+            ", healthy=" + healthy +
+            ", weight=" + weight +
+            '}';
     }
 
     @Override
@@ -76,9 +76,9 @@ public class Endpoint {
         }
         Endpoint endpoint = (Endpoint) o;
         return healthy == endpoint.healthy &&
-                weight == endpoint.weight &&
-                Objects.equals(address, endpoint.address) &&
-                Objects.equals(portValue, endpoint.portValue);
+            weight == endpoint.weight &&
+            Objects.equals(address, endpoint.address) &&
+            Objects.equals(portValue, endpoint.portValue);
     }
 
     @Override

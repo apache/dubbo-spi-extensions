@@ -16,7 +16,6 @@
  */
 package org.apache.dubbo.common.serialize.kryo.utils;
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import org.apache.dubbo.common.serialize.kryo.CompatibleKryo;
 import org.apache.dubbo.common.serialize.support.SerializableClassRegistry;
 
@@ -24,6 +23,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.pool.KryoFactory;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 import de.javakaffee.kryoserializers.BitSetSerializer;
 import de.javakaffee.kryoserializers.GregorianCalendarSerializer;
@@ -71,8 +71,8 @@ public abstract class AbstractKryoFactory implements KryoFactory {
 
     /**
      * only supposed to be called at startup time
-     *
-     *  later may consider adding support for custom serializer, custom id, etc
+     * <p>
+     * later may consider adding support for custom serializer, custom id, etc
      */
     public void registerClass(Class clazz) {
 

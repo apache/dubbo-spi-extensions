@@ -151,12 +151,12 @@ public class PilotExchanger {
         // observation will be created when RDS updates
         if (CollectionUtils.isNotEmpty(router)) {
             long endpointRequest =
-                    edsProtocol.observeResource(
-                            router,
-                            endpointResult ->
-                                    // notify consumers
-                                    domainObserveConsumer.get(domain).forEach(
-                                            consumer1 -> consumer1.accept(endpointResult.getEndpoints())));
+                edsProtocol.observeResource(
+                    router,
+                    endpointResult ->
+                        // notify consumers
+                        domainObserveConsumer.get(domain).forEach(
+                            consumer1 -> consumer1.accept(endpointResult.getEndpoints())));
             domainObserveRequest.put(domain, endpointRequest);
         }
     }

@@ -16,14 +16,10 @@
  */
 package org.apache.dubbo.common.serialize.fastjson;
 
-import com.alibaba.fastjson.JSONObject;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
 import org.apache.dubbo.common.serialize.model.Organization;
 import org.apache.dubbo.common.serialize.model.Person;
 
+import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,11 +27,14 @@ import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FastJsonObjectInputTest {

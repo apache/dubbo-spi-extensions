@@ -202,7 +202,7 @@ public class ReflectionBasedServiceDiscovery extends AbstractServiceDiscovery {
             String consumerId = ScopeModelUtil.getApplicationModel(registryURL.getScopeModel()).getApplicationName() + NetUtils.getLocalHost();
             String metadata = metadataService.getAndListenInstanceMetadata(
                 consumerId, metadataString -> {
-                    if(logger.isDebugEnabled()) {
+                    if (logger.isDebugEnabled()) {
                         logger.debug("Receive callback: " + metadataString + serviceInstance);
                     }
                     if (StringUtils.isEmpty(metadataString)) {
@@ -270,7 +270,7 @@ public class ReflectionBasedServiceDiscovery extends AbstractServiceDiscovery {
         if (metadataServiceProxies.containsKey(key)) {
             Object metadataServiceProxy = metadataServiceProxies.remove(key);
             if (metadataServiceProxy instanceof Destroyable) {
-                ((Destroyable)metadataServiceProxy).$destroy();
+                ((Destroyable) metadataServiceProxy).$destroy();
             }
         }
     }

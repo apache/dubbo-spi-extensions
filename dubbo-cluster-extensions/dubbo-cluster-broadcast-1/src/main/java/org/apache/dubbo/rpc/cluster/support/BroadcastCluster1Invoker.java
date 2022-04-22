@@ -51,7 +51,7 @@ public class BroadcastCluster1Invoker<T> extends AbstractClusterInvoker<T> {
     private static final String BROADCAST_RESULTS_KEY = "broadcast.results";
 
     private final ExecutorService executor = Executors.newCachedThreadPool(
-            new NamedInternalThreadFactory("broadcast_cluster1", true));
+        new NamedInternalThreadFactory("broadcast_cluster1", true));
 
     public BroadcastCluster1Invoker(Directory<T> directory) {
         super(directory);
@@ -66,7 +66,7 @@ public class BroadcastCluster1Invoker<T> extends AbstractClusterInvoker<T> {
         if (hasException(res.exception)) {
             return createResult(invocation, res.exception, res.resultList);
         }
-        Object value = res.resultList.stream().map(it->it.getData()).findFirst().orElse(null);
+        Object value = res.resultList.stream().map(it -> it.getData()).findFirst().orElse(null);
         return createResult(invocation, value, res.resultList);
     }
 
@@ -95,7 +95,7 @@ public class BroadcastCluster1Invoker<T> extends AbstractClusterInvoker<T> {
         }
 
         return new InvokeResult(resultList.stream().map(BroadcastResult::getException)
-                .filter(it -> null != it).findFirst().orElse(null), resultList);
+            .filter(it -> null != it).findFirst().orElse(null), resultList);
 
     }
 

@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * from https://gist.github.com/hengyunabc/644f8e84908b7b405c532a51d8e34ba9
  */
 public class ClassLoaderUtils {
-    @SuppressWarnings({ "restriction", "unchecked" })
+    @SuppressWarnings({"restriction", "unchecked"})
     public static URL[] getUrls(ClassLoader classLoader) {
         if (classLoader instanceof URLClassLoader) {
             return ((URLClassLoader) classLoader).getURLs();

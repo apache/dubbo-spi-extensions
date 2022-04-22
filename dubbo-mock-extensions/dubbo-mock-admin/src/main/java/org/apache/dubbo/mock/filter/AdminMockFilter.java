@@ -72,9 +72,11 @@ public class AdminMockFilter implements ClusterFilter {
 
     private static final String ENABLE_MOCK_KEY = "enable.dubbo.admin.mock";
 
-    private final TypeHandler typeHandler = new CommonTypeHandler();;
+    private final TypeHandler typeHandler = new CommonTypeHandler();
+    ;
 
-    private static final boolean ENABLE_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty(ENABLE_MOCK_KEY, Boolean.FALSE.toString()));;
+    private static final boolean ENABLE_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty(ENABLE_MOCK_KEY, Boolean.FALSE.toString()));
+    ;
 
     private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 
@@ -143,7 +145,7 @@ public class AdminMockFilter implements ClusterFilter {
             log.warn("[Admin Mock] cloud not find MockService, will ignore this mock.");
             return invoker.invoke(invocation);
         }
-        
+
         // parse the result from MockService, build the real method's return value.
         MockContext mockContext = MockContext.newMockContext()
             .serviceName(interfaceName).methodName(methodName).arguments(params).build();

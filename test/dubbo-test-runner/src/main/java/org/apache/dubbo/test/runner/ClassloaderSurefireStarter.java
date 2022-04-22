@@ -22,7 +22,6 @@ package org.apache.dubbo.test.runner;
 import org.apache.maven.plugin.surefire.CommonReflector;
 import org.apache.maven.plugin.surefire.StartupReportConfiguration;
 import org.apache.maven.plugin.surefire.log.api.ConsoleLogger;
-import org.apache.maven.surefire.booter.ClasspathConfiguration;
 import org.apache.maven.surefire.booter.ProviderConfiguration;
 import org.apache.maven.surefire.booter.StartupConfiguration;
 import org.apache.maven.surefire.booter.SurefireExecutionException;
@@ -38,8 +37,7 @@ import static org.apache.maven.surefire.booter.ProviderFactory.invokeProvider;
 /**
  * Starts the provider in specify classloader.
  */
-public class ClassloaderSurefireStarter
-{
+public class ClassloaderSurefireStarter {
     private final StartupConfiguration startupConfig;
     private final StartupReportConfiguration startupReportConfig;
     private final ProviderConfiguration providerConfig;
@@ -50,8 +48,7 @@ public class ClassloaderSurefireStarter
                                       ProviderConfiguration providerConfig,
                                       StartupReportConfiguration startupReportConfig,
                                       ConsoleLogger consoleLogger,
-                                      ClassLoader testClassLoader)
-    {
+                                      ClassLoader testClassLoader) {
         this.startupConfig = startupConfig;
         this.startupReportConfig = startupReportConfig;
         this.providerConfig = providerConfig;
@@ -59,28 +56,24 @@ public class ClassloaderSurefireStarter
         this.testClassLoader = testClassLoader;
     }
 
-    public RunResult runSuitesInProcess( DefaultScanResult scanResult )
-        throws SurefireExecutionException, TestSetFailedException
-    {
+    public RunResult runSuitesInProcess(DefaultScanResult scanResult)
+        throws SurefireExecutionException, TestSetFailedException {
         // The test classloader must be constructed first to avoid issues with commons-logging until we properly
         // separate the TestNG classloader
 
         Map<String, String> providerProperties = providerConfig.getProviderProperties();
-        scanResult.writeTo( providerProperties );
+        scanResult.writeTo(providerProperties);
 
         startupConfig.writeSurefireTestClasspathProperty();
 
         CommonReflector surefireReflector = new CommonReflector(testClassLoader);
 
-        Object factory = surefireReflector.createReportingReporterFactory( startupReportConfig, consoleLogger );
+        Object factory = surefireReflector.createReportingReporterFactory(startupReportConfig, consoleLogger);
 
-        try
-        {
-            return invokeProvider( null, testClassLoader, factory, providerConfig, false, startupConfig, true );
-        }
-        catch ( InvocationTargetException e )
-        {
-            throw new SurefireExecutionException( "Exception in provider", e.getTargetException() );
+        try {
+            return invokeProvider(null, testClassLoader, factory, providerConfig, false, startupConfig, true);
+        } catch (InvocationTargetException e) {
+            throw new SurefireExecutionException("Exception in provider", e.getTargetException());
         }
     }
 

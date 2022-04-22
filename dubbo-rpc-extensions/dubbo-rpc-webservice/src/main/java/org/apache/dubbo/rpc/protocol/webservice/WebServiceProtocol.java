@@ -16,18 +16,6 @@
  */
 package org.apache.dubbo.rpc.protocol.webservice;
 
-import org.apache.cxf.binding.soap.SoapTransportFactory;
-import org.apache.cxf.common.util.StringUtils;
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.service.model.OperationInfo;
-import org.apache.cxf.transport.Destination;
-
-import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
-import org.apache.cxf.transport.http.DestinationRegistry;
-import org.apache.cxf.transport.http.DestinationRegistryImpl;
-import org.apache.cxf.transport.http.HttpDestinationFactory;
-import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.remoting.RemotingServer;
@@ -39,15 +27,26 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.protocol.AbstractProxyProtocol;
 
+import org.apache.cxf.binding.soap.SoapTransportFactory;
 import org.apache.cxf.bus.extension.ExtensionManagerBus;
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.frontend.ClientProxyFactoryBean;
 import org.apache.cxf.frontend.ServerFactoryBean;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.service.model.OperationInfo;
+import org.apache.cxf.transport.Destination;
+import org.apache.cxf.transport.http.AbstractHTTPDestination;
+import org.apache.cxf.transport.http.DestinationRegistry;
+import org.apache.cxf.transport.http.DestinationRegistryImpl;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transport.http.HttpDestinationFactory;
 import org.apache.cxf.transport.servlet.ServletController;
 import org.apache.cxf.transport.servlet.ServletDestinationFactory;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.cxf.wsdl.service.factory.AbstractServiceConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -57,10 +56,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
-import static org.apache.dubbo.common.constants.CommonConstants.SERVICE_PATH_PREFIX;
 import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_TIMEOUT;
 import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_SERVER;
 import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_SERVER_SERVLET;
+import static org.apache.dubbo.common.constants.CommonConstants.SERVICE_PATH_PREFIX;
 import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
 
 /**
@@ -76,7 +75,7 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
 
     private ServerFactoryBean serverFactoryBean = null;
 
-    private DestinationRegistry destinationRegistry=null;
+    private DestinationRegistry destinationRegistry = null;
 
     private HttpBinder httpBinder;
 
@@ -99,7 +98,7 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
     @Override
     protected <T> Runnable doExport(T impl, Class<T> type, URL url) throws RpcException {
         transportFactory = new SoapTransportFactory();
-        destinationRegistry  = new DestinationRegistryImpl();
+        destinationRegistry = new DestinationRegistryImpl();
         String addr = getAddr(url);
         ProtocolServer protocolServer = serverMap.get(addr);
         if (protocolServer == null) {
@@ -117,14 +116,14 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
         return new Runnable() {
             @Override
             public void run() {
-                if(serverFactoryBean.getServer()!= null) {
+                if (serverFactoryBean.getServer() != null) {
                     serverFactoryBean.getServer().destroy();
                 }
-                if(serverFactoryBean.getBus()!=null) {
+                if (serverFactoryBean.getBus() != null) {
                     serverFactoryBean.getBus().shutdown(true);
                 }
                 ProtocolServer httpServer = serverMap.get(addr);
-                if(httpServer != null){
+                if (httpServer != null) {
                     httpServer.close();
                     serverMap.remove(addr);
                 }
@@ -181,10 +180,10 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
                 synchronized (this) {
                     if (servletController == null) {
 
-                        if(server == null){
+                        if (server == null) {
                             server = WebServiceProtocol.this.serverFactoryBean.getServer();
                         }
-                        Destination d = WebServiceProtocol.this.transportFactory.getDestination(server.getEndpoint().getEndpointInfo(),bus);
+                        Destination d = WebServiceProtocol.this.transportFactory.getDestination(server.getEndpoint().getEndpointInfo(), bus);
                         destinationRegistry.addDestination((AbstractHTTPDestination) d);
                         this.servletController = new ServletController(destinationRegistry, httpServlet.getServletConfig(), httpServlet);
                     }
@@ -203,7 +202,7 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
             if (StringUtils.isEmpty(action)) {
                 action = method.getName();
             }
-            return uri+"#"+action;
+            return uri + "#" + action;
         }
     }
 

@@ -60,7 +60,7 @@ public class DemoServiceImpl implements DemoService {
         return service + ":" + method;
     }
 
-    public User create(int age, String name){
+    public User create(int age, String name) {
         User user = new User();
         user.setAge(age);
         user.setName(name);

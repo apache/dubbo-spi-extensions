@@ -198,9 +198,9 @@ public class PersonInfo implements Serializable {
     @Override
     public String toString() {
         return "PersonInfo [phones=" + phones + ", fax=" + fax + ", fullAddress=" + fullAddress
-                + ", mobileNo=" + mobileNo + ", name=" + name + ", male=" + male + ", female="
-                + female + ", department=" + department + ", jobTitle=" + jobTitle
-                + ", homepageUrl=" + homepageUrl + "]";
+            + ", mobileNo=" + mobileNo + ", name=" + name + ", male=" + male + ", female="
+            + female + ", department=" + department + ", jobTitle=" + jobTitle
+            + ", homepageUrl=" + homepageUrl + "]";
     }
 
 }

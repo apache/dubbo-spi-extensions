@@ -19,7 +19,7 @@ import "google/protobuf/struct.proto";
 // Keep this package for backward compatibility.
 package istio.v1.auth;
 
-option go_package="istio.io/api/security/v1alpha1";
+option go_package = "istio.io/api/security/v1alpha1";
 
 // Certificate request message. The authentication should be based on:
 // 1. Bearer tokens carried in the side channel;

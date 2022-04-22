@@ -32,7 +32,7 @@ public class KubernetesMeshEnvListenerFactory implements MeshEnvListenerFactory 
     public MeshEnvListener getListener() {
         try {
             if (initialized.compareAndSet(false, true)) {
-                listener = new KubernetesMeshEnvListener();
+                listener = new NopKubernetesMeshEnvListener();
             }
         } catch (Throwable t) {
             logger.info("Current Env not support Kubernetes.");

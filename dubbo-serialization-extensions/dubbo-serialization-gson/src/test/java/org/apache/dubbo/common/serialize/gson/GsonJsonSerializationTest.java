@@ -19,10 +19,10 @@ package org.apache.dubbo.common.serialize.gson;
 
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -23,7 +23,7 @@ spring:
 dubbo:
   registry:
     address: zookeeper://127.0.0.1:2181
-#    group: DEFAULT_GROUP
+  #    group: DEFAULT_GROUP
   provider:
     timeout: 2000
     filter: metrics
@@ -35,10 +35,10 @@ dubbo:
     name: dubbo-api-docs-example-provider
   metadata-report:
     address: zookeeper://127.0.0.1:2181
-#    group: DEFAULT_GROUP
+  #    group: DEFAULT_GROUP
   config-center:
     address: zookeeper://127.0.0.1:2181
-#    group: DEFAULT_GROUP
+  #    group: DEFAULT_GROUP
   metrics:
     port: ${dubbo.protocol.port}
     protocol: dubbo

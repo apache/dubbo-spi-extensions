@@ -44,6 +44,7 @@ public interface IQuickStartDemo {
 
     /**
      * quick start demo2, request use generic.
+     *
      * @param beanList
      * @param beanParam
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
@@ -52,12 +53,14 @@ public interface IQuickStartDemo {
 
     /**
      * quick start demo3, request use multiple generic.
+     *
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRespBean
      */
     QuickStartRespBean quickStart3(QuickStartRequestBean2 beanParam);
 
     /**
      * quick start demo4, response use multiple generic bean, but not set generic.
+     *
      * @param beanParam
      * @return org.apache.dubbo.apidocs.examples.params.QuickStartRequestBase
      */
@@ -65,6 +68,7 @@ public interface IQuickStartDemo {
 
     /**
      * internal class test.
+     *
      * @param testBean
      * @return org.apache.dubbo.apidocs.examples.params.InnerClassResponseBean
      */

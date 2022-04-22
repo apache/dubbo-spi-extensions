@@ -7,6 +7,7 @@ Dubbo api documents, test tools, generate documents according to annotations, an
 Adding some annotations can generate a swagger like document without turning a non web Dubbo project into a web project
 
 ## Involving repositorys
+
 * [dubbo-spi-extensions](https://github.com/apache/dubbo-spi-extensions)
   [\branch: 2.7.x\dubbo-api-docs](https://github.com/apache/dubbo-spi-extensions/tree/2.7.x/dubbo-api-docs):
   Dubbo-Api-Docs related annotation ,annotation parsing
@@ -17,13 +18,12 @@ Adding some annotations can generate a swagger like document without turning a n
 1. Dubbo api docs annotation added to method parameters of Dubbo project
     * Dubbo provider project introduces dubbo-api-docs-core
     * If Dubbo's interface and parameters are a separate jar package project, introduce dubbo-api-docs-annotations
-    * Add the annotation @EnableDubboApiDocs to the project startup class (marked with @SpringBootApplication) 
+    * Add the annotation @EnableDubboApiDocs to the project startup class (marked with @SpringBootApplication)
       or configuration class (marked with @Configuration) of the provider project to enable the Dubbo API Docs
-       * In order to avoid increasing the resource consumption in the production environment, it is recommended
-         to create a configuration class to enable Dubbo API Docs, and use it with the @Profile("dev") annotation
-       * Of course, Dubbo API Docs consumed a little CPU resources when the project starting and used a little 
-         memory for caching. In the future, it will consider putting the contents of the cache into the metadata 
-         center
+        * In order to avoid increasing the resource consumption in the production environment, it is recommended to
+          create a configuration class to enable Dubbo API Docs, and use it with the @Profile("dev") annotation
+        * Of course, Dubbo API Docs consumed a little CPU resources when the project starting and used a little memory
+          for caching. In the future, it will consider putting the contents of the cache into the metadata center
 
 ### Current Version: 2.7.8.3
 
@@ -42,6 +42,7 @@ Adding some annotations can generate a swagger like document without turning a n
 ```
 
 2.
+
 Download [dubbo-admin](https://github.com/apache/dubbo-admin) [Download](https://github.com/apache/dubbo-admin/releases)
 
 3. Start dubbo-admin

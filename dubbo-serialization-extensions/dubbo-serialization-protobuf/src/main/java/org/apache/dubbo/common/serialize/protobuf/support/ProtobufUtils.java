@@ -86,10 +86,10 @@ public class ProtobufUtils {
     /* Protobuf */
 
     private static ConcurrentMap<Class<? extends MessageLite>, MessageMarshaller> marshallers =
-            new ConcurrentHashMap<>();
+        new ConcurrentHashMap<>();
 
     private static volatile ExtensionRegistryLite globalRegistry =
-            ExtensionRegistryLite.getEmptyRegistry();
+        ExtensionRegistryLite.getEmptyRegistry();
 
     static {
         // Built-in types need to be registered in advance
@@ -119,7 +119,7 @@ public class ProtobufUtils {
         MessageMarshaller<?> marshaller = marshallers.get(requestClass);
         if (marshaller == null) {
             throw new IllegalStateException(String.format("Protobuf classes should be registered in advance before " +
-                    "do serialization, class name: %s", requestClass.getName()));
+                "do serialization, class name: %s", requestClass.getName()));
         }
         return (T) marshaller.parse(is);
     }
@@ -153,10 +153,10 @@ public class ProtobufUtils {
 
     private static StackTraceElementProto toStackTraceElement(StackTraceElement element) {
         final StackTraceElementProto.Builder builder =
-                StackTraceElementProto.newBuilder()
-                        .setClassName(element.getClassName())
-                        .setMethodName(element.getMethodName())
-                        .setLineNumber(element.getLineNumber());
+            StackTraceElementProto.newBuilder()
+                .setClassName(element.getClassName())
+                .setMethodName(element.getMethodName())
+                .setLineNumber(element.getLineNumber());
         if (element.getFileName() != null) {
             builder.setFileName(element.getFileName());
         }

@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
@@ -53,7 +52,7 @@ public class DockerComposeRunningGenerator extends AbstractRunningGenerator {
         }
         try {
             cfg.getTemplate("docker-compose.template")
-                    .process(root, new FileWriter(new File(configuration.outputDir(), "docker-compose.yml")));
+                .process(root, new FileWriter(new File(configuration.outputDir(), "docker-compose.yml")));
         } catch (TemplateException | IOException e) {
             LOGGER.error("", e);
         }

@@ -108,7 +108,7 @@ public class GenericProtobufObjectOutput implements ObjectOutput {
          */
         if (obj == null) {
             throw new IllegalStateException("This serialization only supports google protobuf objects, " +
-                    "please use com.google.protobuf.Empty instead if you want to transmit null values.");
+                "please use com.google.protobuf.Empty instead if you want to transmit null values.");
             // obj = ProtobufUtils.convertNullToEmpty();
         }
         if (!ProtobufUtils.isSupported(obj.getClass())) {
