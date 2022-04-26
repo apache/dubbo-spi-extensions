@@ -18,6 +18,7 @@ package org.apache.dubbo.rpc.cluster.loadbalance;
 
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcStatus;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -77,6 +78,7 @@ public class PeakEwmaLoadBalanceTest extends LoadBalanceBaseTest {
 
     private Callable<Boolean> getTask(boolean needShake) {
         PeakEwmaLoadBalance lb = new PeakEwmaLoadBalance();
+        lb.setApplicationModel(ApplicationModel.defaultModel());
         return () -> {
             boolean needShakeTemp = needShake;
             for (int i = 0; i < INVOKE_NUM; i++) {
