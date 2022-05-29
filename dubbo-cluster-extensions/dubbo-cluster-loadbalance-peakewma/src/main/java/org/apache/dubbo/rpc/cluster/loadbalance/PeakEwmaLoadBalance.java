@@ -21,6 +21,7 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcStatus;
 import org.apache.dubbo.rpc.model.ApplicationModel;
+import org.apache.dubbo.rpc.model.ScopeModelAware;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * https://github.com/twitter/finagle/blob/1bc837c4feafc0096e43c0e98516a8e1c50c4421
  * /finagle-core/src/main/scala/com/twitter/finagle/loadbalancer/PeakEwma.scala
  */
-public class PeakEwmaLoadBalance extends AbstractLoadBalance {
+public class PeakEwmaLoadBalance extends AbstractLoadBalance implements ScopeModelAware {
 
     public static final String NAME = "peakewma";
 
@@ -50,8 +51,16 @@ public class PeakEwmaLoadBalance extends AbstractLoadBalance {
 
     private static final double PENALTY = Long.MAX_VALUE >> 16;
 
+    //double precision
+    private static final double ZERO_COST = 1E-6;
+
     // The mean lifetime of `cost`, it reaches its half-life after decayTime*ln(2).
-    private static double decayTime = ApplicationModel.getEnvironment().getConfiguration().getInt(PEAK_EWMA_DECAY_TIME, 10_000);
+    private static double decayTime;
+
+    @Override
+    public void setApplicationModel(ApplicationModel applicationModel) {
+        decayTime = applicationModel.getModelEnvironment().getConfiguration().getInt(PEAK_EWMA_DECAY_TIME, 10_000);
+    }
 
     private ConcurrentMap<RpcStatus, Metric> methodMap = new ConcurrentHashMap<>();
 
@@ -64,8 +73,8 @@ public class PeakEwmaLoadBalance extends AbstractLoadBalance {
 
         // calculate running time And active num
         private RpcStatus rpcStatus;
-        private long succeededOffset;
-        private long succeededElapsedOffset;
+        private long invokeOffset;
+        private long invokeElapsedOffset;
 
         //lock for get and set cost
         ReentrantLock ewmaLock = new ReentrantLock();
@@ -74,15 +83,15 @@ public class PeakEwmaLoadBalance extends AbstractLoadBalance {
             this.rpcStatus = rpcStatus;
             this.lastUpdateTime = System.currentTimeMillis();
             this.cost = 0.0;
-            this.succeededOffset = 0;
-            this.succeededElapsedOffset = 0;
+            this.invokeOffset = 0;
+            this.invokeElapsedOffset = 0;
         }
 
         private void observe() {
             double rtt = 0;
-            long succeed = this.rpcStatus.getSucceeded() - this.succeededOffset;
+            long succeed = this.rpcStatus.getSucceeded() - this.invokeOffset;
             if (succeed != 0) {
-                rtt = (this.rpcStatus.getSucceededElapsed() * 1.0 - this.succeededElapsedOffset) / succeed;
+                rtt = (this.rpcStatus.getSucceededElapsed() * 1.0 - this.invokeElapsedOffset) / succeed;
             }
 
             final long currentTime = System.currentTimeMillis();
@@ -95,8 +104,8 @@ public class PeakEwmaLoadBalance extends AbstractLoadBalance {
             }
 
             lastUpdateTime = currentTime;
-            succeededOffset = rpcStatus.getSucceeded();
-            succeededElapsedOffset = rpcStatus.getSucceededElapsed();
+            invokeOffset = rpcStatus.getTotal();
+            invokeElapsedOffset = rpcStatus.getTotalElapsed();
         }
 
         private double getCost() {
@@ -105,8 +114,10 @@ public class PeakEwmaLoadBalance extends AbstractLoadBalance {
             int active = rpcStatus.getActive();
             ewmaLock.unlock();
 
+            double costTemp = cost;
+
             //If we don't have any latency history, we penalize the host on the first probe.
-            return (cost == 0.0 && active != 0) ? PENALTY + active : cost * (active + 1);
+            return (costTemp < ZERO_COST && active != 0) ? PENALTY + active : costTemp * (active + 1);
         }
     }
 
