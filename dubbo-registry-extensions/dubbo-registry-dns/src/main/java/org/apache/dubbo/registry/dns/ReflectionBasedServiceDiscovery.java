@@ -262,7 +262,7 @@ public class ReflectionBasedServiceDiscovery extends AbstractServiceDiscovery {
     }
 
     private synchronized MetadataService getMetadataServiceProxy(ServiceInstance instance) {
-        return metadataServiceProxies.computeIfAbsent(computeKey(instance), k -> MetadataUtils.referProxy(instance));
+        return metadataServiceProxies.computeIfAbsent(computeKey(instance), k -> MetadataUtils.referProxy(instance).getProxy()));
     }
 
     private synchronized void destroyMetadataServiceProxy(ServiceInstance instance) {
