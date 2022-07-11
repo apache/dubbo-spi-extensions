@@ -140,7 +140,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
             }
             return invocation;
         });
-        String key = url.toIdentityString();
+        String key = new URL("http", url.getHost(), url.getPort(), url.getPath(), url.getParameters()).toIdentityString();
         if (isGeneric) {
             key = key + "/" + GENERIC_KEY;
         }
