@@ -52,7 +52,7 @@ import static redis.embedded.RedisServer.newRedisServer;
 public class RedisProtocolTest {
 
     private static final String
-            REDIS_URL_TEMPLATE = "redis://%slocalhost:%d",
+            REDIS_URL_TEMPLATE = "redis://%slocalhost:%d/TestService",
             REDIS_PASSWORD = "123456",
             REDIS_URL_AUTH_SECTION = "username:" + REDIS_PASSWORD + "@";
 
