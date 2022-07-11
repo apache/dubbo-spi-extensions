@@ -1,0 +1,2 @@
+hessian-protocol-server=org.apache.dubbo.rpc.protocol.hessian.HessianProtocolFilter
+hessian-protocol-client=org.apache.dubbo.rpc.protocol.hessian.HessianProtocolClientFilter

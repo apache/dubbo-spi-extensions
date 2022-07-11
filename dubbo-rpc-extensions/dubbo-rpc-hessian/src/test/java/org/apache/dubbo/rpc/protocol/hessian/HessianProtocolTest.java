@@ -32,6 +32,8 @@ import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.ProxyFactory;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.Cluster;
+import org.apache.dubbo.rpc.cluster.directory.StaticDirectory;
 import org.apache.dubbo.rpc.service.GenericService;
 
 import org.junit.jupiter.api.AfterEach;
@@ -41,6 +43,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -249,10 +252,12 @@ public class HessianProtocolTest {
         URL url = URL.valueOf("hessian://127.0.0.1:" + port + "/" + HessianService.class.getName() + "?version=1.0.0&hessian.overload.method=true").addParameter("application", "consumer");
         Exporter<HessianService> exporter = protocol.export(proxyFactory.getInvoker(server, HessianService.class, url));
         Invoker<HessianService> invoker = protocol.refer(HessianService.class, url);
-        HessianService client = proxyFactory.getProxy(invoker);
+        Cluster cluster = ExtensionLoader.getExtensionLoader(Cluster.class).getAdaptiveExtension();
+        Invoker<HessianService> clusterInvoker = cluster.join(new StaticDirectory<>(Collections.singletonList(invoker)), true);
+        HessianService client = proxyFactory.getProxy(clusterInvoker);
         String result = client.getRemoteApplicationName();
         Assertions.assertEquals("consumer", result);
-        invoker.destroy();
+        clusterInvoker.destroy();
         exporter.unexport();
     }
 

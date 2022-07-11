@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -182,14 +183,15 @@ public class HessianProtocol extends AbstractProxyProtocol {
             } else {
                 RpcContext.getContext().setRemoteAddress(request.getRemoteAddr(), request.getRemotePort());
 
+                Map<String, String> attachments = new HashMap<>();
                 Enumeration<String> enumeration = request.getHeaderNames();
                 while (enumeration.hasMoreElements()) {
                     String key = enumeration.nextElement();
                     if (key.startsWith(DEFAULT_EXCHANGER)) {
-                        RpcContext.getContext().setAttachment(key.substring(DEFAULT_EXCHANGER.length()),
-                                request.getHeader(key));
+                        attachments.put(key.substring(DEFAULT_EXCHANGER.length()), request.getHeader(key));
                     }
                 }
+                HessianProtocolFilter.setAttachments(attachments);
 
                 try {
                     skeleton.invoke(request.getInputStream(), response.getOutputStream(), Hessian2FactoryInitializer.getInstance().getSerializerFactory());
