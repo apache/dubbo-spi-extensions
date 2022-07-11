@@ -26,10 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static org.apache.dubbo.common.serialize.Constants.MSGPACK_SERIALIZATION_ID;
-
 public class MsgpackSerialization implements Serialization {
 
+    byte MSGPACK_SERIALIZATION_ID = 27;
 
     @Override
     public byte getContentTypeId() {
