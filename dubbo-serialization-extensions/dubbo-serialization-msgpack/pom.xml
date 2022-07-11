@@ -24,7 +24,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>dubbo-serialization-kryo</artifactId>
+    <artifactId>dubbo-serialization-msgpack</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
