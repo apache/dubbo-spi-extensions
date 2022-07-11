@@ -55,7 +55,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-native-hession</artifactId>
             <version>${project.version}</version>
         </dependency>
