@@ -37,6 +37,8 @@
         <module>dubbo-serialization-fst</module>
         <module>dubbo-serialization-fastjson</module>
         <module>dubbo-serialization-avro</module>
+        <module>dubbo-serialization-msgpack</module>
+        <module>dubbo-serialization-native-hession</module>
         <module>dubbo-serialization-test</module>
     </modules>
 </project>

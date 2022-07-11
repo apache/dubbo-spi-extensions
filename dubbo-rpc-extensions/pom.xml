@@ -36,6 +36,9 @@
         <module>dubbo-rpc-http</module>
         <module>dubbo-rpc-webservice</module>
         <module>dubbo-rpc-rmi</module>
+        <module>dubbo-rpc-hessian</module>
+        <module>dubbo-rpc-memcached</module>
+        <module>dubbo-rpc-redis</module>
     </modules>
 
 </project>
