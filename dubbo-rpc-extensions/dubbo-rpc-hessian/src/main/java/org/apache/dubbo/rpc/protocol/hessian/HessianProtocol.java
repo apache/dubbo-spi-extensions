@@ -134,7 +134,7 @@ public class HessianProtocol extends AbstractProxyProtocol {
         hessianProxyFactory.setConnectTimeout(timeout);
         hessianProxyFactory.setReadTimeout(timeout);
         hessianProxyFactory.setSerializerFactory(Hessian2FactoryInitializer.getInstance().getSerializerFactory());
-        return (T) hessianProxyFactory.create(serviceType, url.setProtocol("http").toJavaURL(), Thread.currentThread().getContextClassLoader());
+        return (T) hessianProxyFactory.create(serviceType, new URL("http", url.getHost(), url.getPort(), url.getPath(), url.getParameters()).toJavaURL(), Thread.currentThread().getContextClassLoader());
     }
 
     @Override

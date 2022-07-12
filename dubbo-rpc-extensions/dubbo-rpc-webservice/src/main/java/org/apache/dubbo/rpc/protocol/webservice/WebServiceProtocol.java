@@ -139,7 +139,7 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
         if (!StringUtils.isEmpty(servicePathPrefix) && PROTOCOL_SERVER_SERVLET.equals(url.getParameter(PROTOCOL_SERVER))) {
             url = url.setPath(servicePathPrefix + "/" + url.getPath());
         }
-        proxyFactoryBean.setAddress(url.setProtocol("http").toIdentityString());
+        proxyFactoryBean.setAddress(new URL("http", url.getHost(), url.getPort(), url.getPath(), url.getParameters()).toIdentityString());
         proxyFactoryBean.setServiceClass(serviceType);
         proxyFactoryBean.setBus(bus);
         T ref = (T) proxyFactoryBean.create();
