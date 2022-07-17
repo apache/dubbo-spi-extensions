@@ -60,6 +60,8 @@ public class SeataTransactionPropagationConsumerFilterTest {
         Mockito.verify(invocation, Mockito.times(1)).setAttachment(RootContext.KEY_BRANCH_TYPE, "SAGA");
         Mockito.verify(invocation, Mockito.times(4)).setAttachment(Mockito.any(), Mockito.any());
 
+        RootContext.unbind();
+        RootContext.unbindBranchType();
         moduleModel.destroy();
     }
 }
