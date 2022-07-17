@@ -163,7 +163,7 @@
 
     <build>
         <plugins>
-            <plugin>
+           <!--  <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin-version}</version>
@@ -189,7 +189,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -201,7 +201,7 @@
                         <dependencies>expand</dependencies>
                     </pomElements>
                 </configuration>
-                <executions>
+               <!--  <executions>
                     <execution>
                         <id>flatten</id>
                         <phase>process-resources</phase>
@@ -216,7 +216,7 @@
                             <goal>clean</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions> -->
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
