@@ -34,7 +34,6 @@
         <dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-tm</artifactId>
-            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
