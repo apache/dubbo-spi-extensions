@@ -605,7 +605,7 @@ public class JEtcdClientWrapper {
     private ManagedChannel newChannel(Client client) {
         try {
             Field connectionField = client.getClass().getDeclaredField("connectionManager");
-            ReflectUtils.makeAccessible(connectionField);
+            connectionField.setAccessible(true);
             Object connection = connectionField.get(client);
             Method channel = connection.getClass().getDeclaredMethod("getChannel");
             ReflectUtils.makeAccessible(channel);

@@ -32,8 +32,8 @@ import redis.clients.jedis.JedisPubSub;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
-import static org.apache.dubbo.common.constants.CommonConstants.COLON_SPLIT_PATTERN;
 import static org.apache.dubbo.common.constants.CommonConstants.COMMA_SPLIT_PATTERN;
 
 public class ClusterRedisClient extends AbstractRedisClient implements RedisClient {
@@ -46,6 +46,7 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
     private static final int DEFAULT_MAX_ATTEMPTS = 5;
 
     private JedisCluster jedisCluster;
+    private Pattern COLON_SPLIT_PATTERN = Pattern.compile("\\s*[:]+\\s*");
 
     public ClusterRedisClient(URL url) {
         super(url);
