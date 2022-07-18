@@ -316,7 +316,7 @@
             </dependency>
             <dependency>
                 <groupId>io.seata</groupId>
-                <artifactId>seata-tm</artifactId>
+                <artifactId>seata-core</artifactId>
                 <version>${seata_version}</version>
             </dependency>
         </dependencies>

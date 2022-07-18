@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>io.seata</groupId>
-            <artifactId>seata-tm</artifactId>
+            <artifactId>seata-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
