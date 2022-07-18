@@ -124,6 +124,7 @@
         <etcd_launcher_version>0.5.7</etcd_launcher_version>
         <netty4_version>4.1.66.Final</netty4_version>
         <consul_process_version>2.2.1</consul_process_version>
+        <consul_version>1.4.2</consul_version>
         <consul_client_version>1.3.7</consul_client_version>
         <test_container_version>1.15.2</test_container_version>
 
@@ -404,6 +405,11 @@
                 <artifactId>embedded-consul</artifactId>
                 <version>${consul_process_version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.ecwid.consul</groupId>
+                <artifactId>consul-api</artifactId>
+                <version>${consul_version}</version>
             </dependency>
             <dependency>
                 <groupId>com.orbitz.consul</groupId>
