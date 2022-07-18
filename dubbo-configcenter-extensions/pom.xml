@@ -27,6 +27,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dubbo-configcenter-extensions</artifactId>
+    <packaging>pom</packaging>
     <version>${revision}</version>
 
+    <modules>
+        <module>dubbo-configcenter-consul</module>
+        <module>dubbo-configcenter-etcd</module>
+    </modules>
 </project>
