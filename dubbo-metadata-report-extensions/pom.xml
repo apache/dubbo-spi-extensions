@@ -28,4 +28,10 @@
 
     <artifactId>dubbo-metadata-report-extensions</artifactId>
     <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>dubbo-metadata-report-consul</module>
+        <module>dubbo-metadata-report-etcd</module>
+    </modules>
 </project>
