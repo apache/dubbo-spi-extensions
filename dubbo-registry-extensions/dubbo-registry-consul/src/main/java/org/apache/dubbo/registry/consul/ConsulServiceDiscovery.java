@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -180,7 +181,14 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
     }
 
     @Override
-    public void addServiceInstancesChangedListener(ServiceInstancesChangedListener listener)
+    protected void doUnregister(ServiceInstance serviceInstance) {
+        String id = buildId(serviceInstance);
+        ttlScheduler.remove(id);
+        client.agentServiceDeregister(id, aclToken);
+    }
+
+    @Override
+    public synchronized void addServiceInstancesChangedListener(ServiceInstancesChangedListener listener)
         throws NullPointerException, IllegalArgumentException {
         Set<String> serviceNames = listener.getServiceNames();
         for (String serviceName : serviceNames) {
@@ -188,17 +196,26 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
             if (notifier == null) {
                 Response<List<HealthService>> response = getHealthServices(serviceName, -1, buildWatchTimeout());
                 Long consulIndex = response.getConsulIndex();
-                notifier = new ConsulNotifier(serviceName, consulIndex, listener);
+                notifier = new ConsulNotifier(serviceName, consulIndex);
             }
+            notifier.addListener(listener);
             notifierExecutor.execute(notifier);
         }
     }
 
     @Override
-    protected void doUnregister(ServiceInstance serviceInstance) {
-        String id = buildId(serviceInstance);
-        ttlScheduler.remove(id);
-        client.agentServiceDeregister(id, aclToken);
+    public synchronized void removeServiceInstancesChangedListener(ServiceInstancesChangedListener listener) throws IllegalArgumentException {
+        Set<String> serviceNames = listener.getServiceNames();
+        for (String serviceName : serviceNames) {
+            ConsulNotifier notifier = notifiers.get(serviceName);
+            if (notifier != null) {
+                notifier.removeListener(listener);
+                if (notifier.getListenerCount() == 0) {
+                    notifier.stop();
+                    notifiers.remove(serviceName);
+                }
+            }
+        }
     }
 
     @Override
@@ -310,25 +327,6 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
         return tags;
     }
 
-    private Map<String, String> buildMetadata(ServiceInstance serviceInstance) {
-        Map<String, String> metadata = new LinkedHashMap<>();
-        metadata.putAll(getScCompatibleMetadata(registeringTags));
-        if (CollectionUtils.isNotEmptyMap(serviceInstance.getMetadata())) {
-            metadata.putAll(serviceInstance.getMetadata());
-        }
-        metadata = encodeMetadata(metadata);
-        return metadata;
-    }
-
-    private Map<String, String> encodeMetadata(Map<String, String> metadata) {
-        if (metadata == null) {
-            return metadata;
-        }
-        Map<String, String> encoded = new HashMap<>(metadata.size());
-        metadata.forEach((k, v) -> encoded.put(Base64.getEncoder().encodeToString(k.getBytes()), v));
-        return encoded;
-    }
-
     private Map<String, String> decodeMetadata(Map<String, String> metadata) {
         if (metadata == null) {
             return metadata;
@@ -351,17 +349,17 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
     }
 
     private class ConsulNotifier implements Runnable {
-        private String serviceName;
+        private final String serviceName;
         private long consulIndex;
         private boolean running;
 
-        private ServiceInstancesChangedListener listener;
+        private final List<ServiceInstancesChangedListener> listener;
 
-        ConsulNotifier(String serviceName, long consulIndex, ServiceInstancesChangedListener listener) {
+        ConsulNotifier(String serviceName, long consulIndex) {
             this.serviceName = serviceName;
             this.consulIndex = consulIndex;
             this.running = true;
-            this.listener = listener;
+            this.listener = new CopyOnWriteArrayList<>();
         }
 
         @Override
@@ -378,8 +376,20 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
                 consulIndex = currentIndex;
                 List<HealthService> services = response.getValue();
                 List<ServiceInstance> serviceInstances = convert(services);
-                listener.onEvent(new ServiceInstancesChangedEvent(serviceName, serviceInstances));
+                listener.forEach(l -> l.onEvent(new ServiceInstancesChangedEvent(serviceName, serviceInstances)));
             }
+        }
+
+        public void addListener(ServiceInstancesChangedListener listener) {
+            this.listener.add(listener);
+        }
+
+        public void removeListener(ServiceInstancesChangedListener listener) {
+            this.listener.remove(listener);
+        }
+
+        public int getListenerCount() {
+            return this.listener.size();
         }
 
         void stop() {
