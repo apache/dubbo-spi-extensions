@@ -25,6 +25,7 @@ import org.apache.dubbo.common.config.configcenter.TreePathDynamicConfiguration;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.CollectionUtils;
+import org.apache.dubbo.common.utils.StringUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.net.HostAndPort;
@@ -32,7 +33,6 @@ import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
 import com.orbitz.consul.cache.KVCache;
 import com.orbitz.consul.model.kv.Value;
-import org.apache.dubbo.common.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -45,11 +45,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import static org.apache.dubbo.common.constants.CommonConstants.PATH_SEPARATOR;
-import static org.apache.dubbo.common.constants.CommonConstants.TOKEN;
-import static org.apache.dubbo.common.constants.ConsulConstants.DEFAULT_WATCH_TIMEOUT;
-import static org.apache.dubbo.common.constants.ConsulConstants.WATCH_TIMEOUT;
-import static org.apache.dubbo.common.constants.ConsulConstants.DEFAULT_PORT;
-import static org.apache.dubbo.common.constants.ConsulConstants.INVALID_PORT;
 
 /**
  * config center implementation for consul
@@ -67,12 +62,12 @@ public class ConsulDynamicConfiguration extends TreePathDynamicConfiguration {
 
     public ConsulDynamicConfiguration(URL url) {
         super(url);
-        watchTimeout = url.getParameter(WATCH_TIMEOUT, DEFAULT_WATCH_TIMEOUT);
+        watchTimeout = url.getParameter(ConsulConstants.WATCH_TIMEOUT, ConsulConstants.DEFAULT_WATCH_TIMEOUT);
         String host = url.getHost();
-        int port = INVALID_PORT != url.getPort() ? url.getPort() : DEFAULT_PORT;
+        int port = ConsulConstants.INVALID_PORT != url.getPort() ? url.getPort() : ConsulConstants.DEFAULT_PORT;
         Consul.Builder builder = Consul.builder()
                 .withHostAndPort(HostAndPort.fromParts(host, port));
-        String token = url.getParameter(TOKEN, (String) null);
+        String token = url.getParameter(ConsulConstants.TOKEN, (String) null);
         if (StringUtils.isNotEmpty(token)) {
             builder.withAclToken(token);
         }
