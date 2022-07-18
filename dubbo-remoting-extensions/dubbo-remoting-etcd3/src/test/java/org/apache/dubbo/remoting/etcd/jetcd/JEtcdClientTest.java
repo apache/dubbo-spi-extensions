@@ -415,7 +415,7 @@ public class JEtcdClientTest {
         try {
             // hack, use reflection to get the shared channel.
             Field connectionField = client.getClass().getDeclaredField("connectionManager");
-            ReflectUtils.makeAccessible(connectionField);
+            connectionField.setAccessible(true);
             Object connection = connectionField.get(client);
             Method channelMethod = connection.getClass().getDeclaredMethod("getChannel");
             ReflectUtils.makeAccessible(channelMethod);
