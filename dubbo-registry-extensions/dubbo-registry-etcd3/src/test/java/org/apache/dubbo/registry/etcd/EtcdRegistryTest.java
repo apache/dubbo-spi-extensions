@@ -55,8 +55,9 @@ import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.RegistryFactory;
-import org.apache.dubbo.registry.support.AbstractRegistryFactory;
+import org.apache.dubbo.registry.support.RegistryManager;
 import org.apache.dubbo.remoting.Constants;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -96,7 +97,7 @@ public class EtcdRegistryTest {
     URL serviceUrl3 = URL.valueOf("dubbo://" + NetUtils.getLocalHost() + "/" + outerService + "?methods=test1,test2");
     URL registryUrl = URL.valueOf("etcd3://127.0.0.1:2379/org.apache.dubbo.registry.RegistryService");
     URL consumerUrl = URL.valueOf("dubbo://" + NetUtils.getLocalHost() + ":2018" + "/" + service + "?methods=test1,test2");
-    RegistryFactory registryFactory = ExtensionLoader.getExtensionLoader(RegistryFactory.class).getAdaptiveExtension();
+    RegistryFactory registryFactory = ExtensionLoader.getExtensionLoader(RegistryFactory.class).getExtension("etcd3", false);
     EtcdRegistry registry;
     URL subscribe = new URL(
             ADMIN_PROTOCOL, NetUtils.getLocalHost(), 0, "",
@@ -307,7 +308,8 @@ public class EtcdRegistryTest {
         registry = (EtcdRegistry) registryFactory.getRegistry(registryUrl);
         Assertions.assertNotNull(registry);
         if (!registry.isAvailable()) {
-            AbstractRegistryFactory.destroyAll();
+            RegistryManager registryManager = ApplicationModel.defaultModel().getBeanFactory().getBean(RegistryManager.class);
+            registryManager.destroyAll();
             registry = (EtcdRegistry) registryFactory.getRegistry(registryUrl);
         }
     }
