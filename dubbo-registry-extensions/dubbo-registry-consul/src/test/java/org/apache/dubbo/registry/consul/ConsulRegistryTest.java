@@ -22,6 +22,7 @@ import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.status.RegistryStatusChecker;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import com.pszymczyk.consul.ConsulProcess;
 import com.pszymczyk.consul.ConsulStarterBuilder;
@@ -71,6 +72,7 @@ public class ConsulRegistryTest {
 
         consulRegistryFactory = new ConsulRegistryFactory();
         this.consulRegistry = (ConsulRegistry) consulRegistryFactory.createRegistry(registryUrl);
+        consulRegistryFactory.setApplicationModel(ApplicationModel.defaultModel());
     }
 
     @AfterEach
@@ -131,7 +133,7 @@ public class ConsulRegistryTest {
 
     @Test
     public void testStatusChecker() {
-        RegistryStatusChecker registryStatusChecker = new RegistryStatusChecker();
+        RegistryStatusChecker registryStatusChecker = new RegistryStatusChecker(ApplicationModel.defaultModel());
         Status status = registryStatusChecker.check();
         assertThat(status.getLevel(), is(Status.Level.UNKNOWN));
 

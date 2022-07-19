@@ -197,6 +197,7 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
                 Response<List<HealthService>> response = getHealthServices(serviceName, -1, buildWatchTimeout());
                 Long consulIndex = response.getConsulIndex();
                 notifier = new ConsulNotifier(serviceName, consulIndex);
+                notifiers.put(serviceName, notifier);
             }
             notifier.addListener(listener);
             notifierExecutor.execute(notifier);
