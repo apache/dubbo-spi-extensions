@@ -27,7 +27,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <artifactId>dubbo-remoting-etcd3</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
