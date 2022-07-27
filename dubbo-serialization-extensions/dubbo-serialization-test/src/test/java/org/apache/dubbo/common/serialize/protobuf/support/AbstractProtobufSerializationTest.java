@@ -347,6 +347,11 @@ public class AbstractProtobufSerializationTest {
     public void testPbMap() throws Exception {
         Map<String, Object> attachments = new HashMap<>();
         attachments.put("key", "value");
+        attachments.put("int", Integer.MAX_VALUE);
+        attachments.put("long", Long.MAX_VALUE);
+        attachments.put("bool", true);
+        attachments.put("float", 0.0001);
+        attachments.put("double", 0.0001d);
         ObjectOutput objectOutput = serialization.serialize(url, byteArrayOutputStream);
         objectOutput.writeAttachments(attachments);
         objectOutput.flushBuffer();

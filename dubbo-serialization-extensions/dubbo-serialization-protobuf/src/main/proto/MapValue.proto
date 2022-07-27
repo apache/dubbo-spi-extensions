@@ -22,6 +22,9 @@ package org.apache.dubbo.common.serialize.protobuf.support.wrapper;
 option java_package = "org.apache.dubbo.common.serialize.protobuf.support.wrapper";
 option java_multiple_files = false;
 
+import "google/protobuf/any.proto";
+
 message Map{
   map<string, string> attachments = 1;
+  map<string, google.protobuf.Any> attachmentsV2 = 2;
 }
