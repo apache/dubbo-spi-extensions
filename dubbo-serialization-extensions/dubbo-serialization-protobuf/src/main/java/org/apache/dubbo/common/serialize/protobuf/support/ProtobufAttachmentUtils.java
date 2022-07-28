@@ -60,10 +60,12 @@ public class ProtobufAttachmentUtils {
 
     static MapValue.Map wrap(Map<String, Object> attachments) throws IOException {
         Map<String, Any> genericAttachments = new HashMap<>(attachments.size());
+        Map<String, String> stringAttachments = new HashMap<>(attachments.size());
         for (Map.Entry<String, Object> entry : attachments.entrySet()) {
             genericAttachments.put(entry.getKey(), marshal(entry.getValue()));
+            stringAttachments.put(entry.getKey(), String.valueOf(entry.getValue()));
         }
-        return MapValue.Map.newBuilder().putAllAttachmentsV2(genericAttachments).build();
+        return MapValue.Map.newBuilder().putAllAttachmentsV2(genericAttachments).putAllAttachments(stringAttachments).build();
     }
 
     static Map<String, Object> unwrap(MapValue.Map map) throws InvalidProtocolBufferException {
