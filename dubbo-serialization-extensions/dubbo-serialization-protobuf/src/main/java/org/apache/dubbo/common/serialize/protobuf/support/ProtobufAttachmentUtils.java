@@ -90,6 +90,9 @@ public class ProtobufAttachmentUtils {
             className = obj.getClass().getCanonicalName();
         }
         BuiltinMarshaller marshaller = marshallers.get(className);
+        if (marshaller == null) {
+            throw new IllegalStateException(className + " in attachment is not supported by protobuf.");
+        }
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ProtobufUtils.serialize(StringValue.newBuilder().setValue(className).build(), stream);
@@ -102,6 +105,9 @@ public class ProtobufAttachmentUtils {
         InputStream stream = new ByteArrayInputStream(any.getValue().toByteArray());
         String className = ProtobufUtils.deserialize(stream, StringValue.class).getValue();
         BuiltinMarshaller marshaller = marshallers.get(className);
+        if (marshaller == null) {
+            throw new IllegalStateException(className + " in attachment is not supported by protobuf.");
+        }
         return marshaller.unmarshal(stream);
     }
 
