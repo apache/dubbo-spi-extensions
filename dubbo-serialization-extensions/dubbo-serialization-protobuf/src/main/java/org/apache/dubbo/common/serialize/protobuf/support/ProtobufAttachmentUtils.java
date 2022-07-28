@@ -16,21 +16,33 @@
  */
 package org.apache.dubbo.common.serialize.protobuf.support;
 
-import com.google.protobuf.*;
+import com.google.protobuf.Any;
+import com.google.protobuf.BoolValue;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.DoubleValue;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FloatValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.Int64Value;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.StringValue;
 
 import org.apache.dubbo.common.serialize.protobuf.support.wrapper.MapValue;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * ProtobufAttachmentUtils
- *
- * @date 2022-07-27
  */
 public class ProtobufAttachmentUtils {
     private static Map<String, BuiltinMarshaller> marshallers = new HashMap<>();
+    private final static String NULL_CLASS_NAME = "null";
 
     static {
         marshaller(String.class, new StringMarshaller());
@@ -39,6 +51,7 @@ public class ProtobufAttachmentUtils {
         marshaller(Boolean.class, new BooleanMarshaller());
         marshaller(Float.class, new FloatMarshaller());
         marshaller(Double.class, new DoubleMarshaller());
+        marshallers.put(NULL_CLASS_NAME, new NullMarshaller());
     }
 
     static void marshaller(Class<?> clazz, BuiltinMarshaller marshaller) {
@@ -72,7 +85,10 @@ public class ProtobufAttachmentUtils {
     }
 
     private static Any marshal(Object obj) throws IOException {
-        String className = obj.getClass().getCanonicalName();
+        String className = NULL_CLASS_NAME;
+        if (obj != null) {
+            className = obj.getClass().getCanonicalName();
+        }
         BuiltinMarshaller marshaller = marshallers.get(className);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -164,6 +180,19 @@ public class ProtobufAttachmentUtils {
         @Override
         public Double unmarshal(InputStream stream) throws InvalidProtocolBufferException {
             return ProtobufUtils.deserialize(stream, DoubleValue.class).getValue();
+        }
+    }
+
+    static class NullMarshaller implements BuiltinMarshaller<Object> {
+
+        @Override
+        public void marshal(Object obj, OutputStream stream) throws IOException {
+            ProtobufUtils.serialize(Empty.newBuilder().build(), stream);
+        }
+
+        @Override
+        public Object unmarshal(InputStream stream) throws InvalidProtocolBufferException {
+            return null;
         }
     }
 }

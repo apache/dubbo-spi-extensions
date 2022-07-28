@@ -352,6 +352,7 @@ public class AbstractProtobufSerializationTest {
         attachments.put("bool", true);
         attachments.put("float", 0.0001);
         attachments.put("double", 0.0001d);
+        attachments.put("null", null);
         ObjectOutput objectOutput = serialization.serialize(url, byteArrayOutputStream);
         objectOutput.writeAttachments(attachments);
         objectOutput.flushBuffer();
