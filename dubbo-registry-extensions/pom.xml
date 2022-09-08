@@ -37,5 +37,6 @@
         <module>dubbo-registry-etcd3</module>
         <module>dubbo-registry-redis</module>
         <module>dubbo-registry-sofa</module>
+        <module>dubbo-registry-nameservice</module>
     </modules>
 </project>
