@@ -212,10 +212,6 @@ public class NameServiceRegistry extends FailbackRegistry {
         try {
             String topic = serviceName.getValue();
             TopicRouteData topicRouteData = this.mqAdminExt.examineTopicRouteInfo(topic);
-            Map<String, String> brokerAddrBybrokerName = new HashMap<>();
-            for (BrokerData brokerData : topicRouteData.getBrokerDatas()) {
-                brokerAddrBybrokerName.put(brokerData.getBrokerName(), brokerData.selectBrokerAddr());
-            }
             for (QueueData queueData : topicRouteData.getQueueDatas()) {
                 if (!PermName.isReadable(queueData.getPerm())) {
                     continue;
