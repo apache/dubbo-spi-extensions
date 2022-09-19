@@ -16,10 +16,6 @@
  */
 package org.apache.dubbo.rpc.rocketmq;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.remoting.buffer.ChannelBuffer;
@@ -53,6 +49,10 @@ import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageConst;
 import org.apache.rocketmq.common.message.MessageExt;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+
 
 public class RocketMQProtocol extends AbstractProtocol {
 
@@ -84,7 +84,14 @@ public class RocketMQProtocol extends AbstractProtocol {
         RocketMQExporter<T> exporter = new RocketMQExporter<T>(invoker, url, exporterMap);
 
         String topic = exporter.getKey();
-        RocketMQProtocolServer rocketMQProtocolServer = this.openServer(url, CommonConstants.PROVIDER);
+        RocketMQProtocolServer rocketMQProtocolServer;
+        try {
+        	rocketMQProtocolServer = this.openServer(url, CommonConstants.PROVIDER);
+        }catch(Exception e) {
+        	String exeptionInfo = String.format("create rocketmq client fail, url is %s , topic is %s, cause is %s" ,url, topic, e.getMessage());
+            logger.error(exeptionInfo , e);
+        	throw new RpcException(exeptionInfo,e);
+        }
         try {
             String groupModel = url.getParameter("groupModel");
             if (Objects.nonNull(groupModel) && Objects.equals(groupModel, "select")) {
@@ -111,7 +118,9 @@ public class RocketMQProtocol extends AbstractProtocol {
             }
             return exporter;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+        	String exeptionInfo = String.format("topic subscirbe fail, topic is %s, cause is %s" , topic, e.getMessage());
+            logger.error(exeptionInfo , e);
+        	throw new RpcException(exeptionInfo,e);
         }
     }
 
@@ -152,8 +161,9 @@ public class RocketMQProtocol extends AbstractProtocol {
             RocketMQInvoker<T> rocketMQInvoker = new RocketMQInvoker<>(type, url, rocketMQProtocolServer);
             return rocketMQInvoker;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+        	String exceptionInfo = String.format("protocol binding refer fail, url is %s , cause is %s ", url,e.getMessage());
+            logger.error(exceptionInfo, e);
+            throw new RpcException(exceptionInfo,e);
         }
     }
 
@@ -211,23 +221,25 @@ public class RocketMQProtocol extends AbstractProtocol {
                         response.setResult(result);
                     }
                 } catch (Exception e) {
-                    response.setErrorMessage(e.getMessage());
+                	String exceptionInfo = String.format("data decode or invoke fail, url is %s cause is %s", url ,e.getMessage());
+                    response.setErrorMessage(exceptionInfo);
                     response.setStatus(Response.BAD_REQUEST);
-                    logger.error(e);
-
+                    logger.error(exceptionInfo,e);
                 }
                 ChannelBuffer buffer = new DynamicChannelBuffer(2048);
                 try {
                     rocketmqCountCodec.encode(channel, buffer, response);
                 } catch (Exception e) {
-                    response.setErrorMessage(e.getMessage());
+                	String exceptionInfo =  String.format("encode fail, url is %s cause is %s", url ,e.getMessage());
+                    response.setErrorMessage(exceptionInfo);
                     response.setStatus(Response.BAD_REQUEST);
-                    logger.error(e);
+                    logger.error(exceptionInfo,e);
                     try {
                         buffer = new DynamicChannelBuffer(2048);
                         rocketmqCountCodec.encode(channel, buffer, response);
                     } catch (IOException e1) {
-                        logger.error(e1);
+                    	String exceptionInfo1 =  String.format("encode exception response fail, url is %s cause is %s", url ,e.getMessage());
+                        logger.error(exceptionInfo1,e1);
                         continue;
                     }
                 }
@@ -240,7 +252,8 @@ public class RocketMQProtocol extends AbstractProtocol {
                         logger.debug(String.format("send result is : %s", sendResult));
                     }
                 } catch (Exception e) {
-                    logger.error(e);
+                	String exceptionInfo =  String.format("send response fail, url is %s cause is %s", url ,e.getMessage());
+                    logger.error(exceptionInfo,e);
                 }
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;

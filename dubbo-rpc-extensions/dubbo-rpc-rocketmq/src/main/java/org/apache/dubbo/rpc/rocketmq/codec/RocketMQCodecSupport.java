@@ -18,7 +18,6 @@ package org.apache.dubbo.rpc.rocketmq.codec;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.serialize.Serialization;
-import org.apache.dubbo.common.serialize.support.DefaultSerializationSelector;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.remoting.transport.CodecSupport;
 import org.apache.dubbo.rpc.AppResponse;
@@ -28,6 +27,8 @@ import static org.apache.dubbo.rpc.Constants.INVOCATION_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 
 public class RocketMQCodecSupport {
+	
+	private final static String DEFAULT_REMOTING_SERIALIZATION_PROPERTY = "hessian2";
 
     public static Serialization getRequestSerialization(URL url, Invocation invocation) {
         Object serializationTypeObj = invocation.get(SERIALIZATION_ID_KEY);
@@ -35,7 +36,7 @@ public class RocketMQCodecSupport {
             return CodecSupport.getSerializationById((byte) serializationTypeObj);
         }
         return url.getOrDefaultFrameworkModel().getExtensionLoader(Serialization.class).getExtension(
-            url.getParameter(org.apache.dubbo.remoting.Constants.SERIALIZATION_KEY, DefaultSerializationSelector.getDefaultRemotingSerialization()));
+            url.getParameter(org.apache.dubbo.remoting.Constants.SERIALIZATION_KEY, DEFAULT_REMOTING_SERIALIZATION_PROPERTY));
     }
 
     public static Serialization getResponseSerialization(URL url, AppResponse appResponse) {
@@ -48,6 +49,6 @@ public class RocketMQCodecSupport {
             }
         }
         return url.getOrDefaultFrameworkModel().getExtensionLoader(Serialization.class).getExtension(
-            url.getParameter(Constants.SERIALIZATION_KEY, DefaultSerializationSelector.getDefaultRemotingSerialization()));
+            url.getParameter(Constants.SERIALIZATION_KEY, DEFAULT_REMOTING_SERIALIZATION_PROPERTY));
     }
 }

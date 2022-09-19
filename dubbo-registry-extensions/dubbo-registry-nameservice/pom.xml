@@ -27,7 +27,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>dubbo-registry-nameservice</artifactId>
 	<name>dubbo-registry-nameservice</name>
-	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

@@ -16,17 +16,6 @@
  */
 package org.apache.dubbo.rpc.rocketmq;
 
-import static org.apache.dubbo.common.constants.CommonConstants.ENABLE_TIMEOUT_COUNTDOWN_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_ATTACHMENT_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.TIME_COUNTDOWN_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
@@ -55,6 +44,12 @@ import org.apache.rocketmq.client.producer.RequestCallback;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.exception.RemotingTooMuchRequestException;
+
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+
 
 
 public class RocketMQInvoker<T> extends AbstractInvoker<T> {
@@ -98,9 +93,8 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
     protected Result doInvoke(Invocation invocation) throws Throwable {
         RpcInvocation inv = (RpcInvocation) invocation;
         final String methodName = RpcUtils.getMethodName(invocation);
-        inv.setAttachment(PATH_KEY, getUrl().getPath());
-        inv.setAttachment(VERSION_KEY, version);
-        // 直连
+        inv.setAttachment(CommonConstants.PATH_KEY, getUrl().getPath());
+        inv.setAttachment(CommonConstants.VERSION_KEY, version);
         try {
 
             RocketMQChannel channel = new RocketMQChannel();
@@ -111,11 +105,10 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
 
             boolean isOneway = RpcUtils.isOneway(getUrl(), invocation);
             int timeout = calculateTimeout(invocation, methodName);
-            invocation.put(TIMEOUT_KEY, timeout);
+            invocation.put(CommonConstants.TIMEOUT_KEY, timeout);
 
             Request request = new Request();
             request.setData(inv);
-            // 动态，heap，dirct
             DynamicChannelBuffer buffer = new DynamicChannelBuffer(2048);
 
             rocketMQCountCodec.encode(channel, buffer, request);
@@ -129,7 +122,7 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
             }
             message.putUserProperty(RocketMQProtocolConstant.SEND_ADDRESS, NetUtils.getLocalHost());
             Long messageTimeout = System.currentTimeMillis() + timeout;
-            message.putUserProperty(TIMEOUT_KEY, messageTimeout.toString());
+            message.putUserProperty(CommonConstants.TIMEOUT_KEY, messageTimeout.toString());
             message.putUserProperty(RocketMQProtocolConstant.URL_STRING, getUrl().toString());
             if (isOneway) {
                 if (Objects.isNull(messageQueue)) {
@@ -140,7 +133,7 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
                 return AsyncRpcResult.newDefaultAsyncResult(invocation);
             } else {
                 CompletableFuture<AppResponse> appResponseFuture = DefaultFuture.newFuture(channel, request, timeout, this.getCallbackExecutor(getUrl(), inv))
-                    .thenApply(obj -> (AppResponse) obj);
+                        .thenApply(obj -> (AppResponse) obj);
                 DubboRequestCallback dubboRequestCallback = new DubboRequestCallback();
                 AsyncRpcResult result = new AsyncRpcResult(appResponseFuture, inv);
                 if (Objects.isNull(messageQueue)) {
@@ -151,28 +144,31 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
                 return result;
             }
         } catch (RemotingTooMuchRequestException e) {
-            throw new RpcException(RpcException.TIMEOUT_EXCEPTION, "Invoke remote method timeout. method: "
-                + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage(), e);
+            String exceptionInfo = "Invoke remote method timeout. method: "
+                    + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage();
+            logger.error(exceptionInfo, e);
+            throw new RpcException(RpcException.TIMEOUT_EXCEPTION, exceptionInfo, e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new RpcException(RpcException.NETWORK_EXCEPTION, "Failed to invoke remote method: "
-                + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage(), e);
+            String exceptionInfo = "Failed to invoke remote method: "
+                    + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage();
+            logger.error(exceptionInfo, e);
+            throw new RpcException(RpcException.NETWORK_EXCEPTION, exceptionInfo, e);
         }
     }
 
     @SuppressWarnings("deprecation")
     private int calculateTimeout(Invocation invocation, String methodName) {
-        Object countdown = RpcContext.getContext().get(TIME_COUNTDOWN_KEY);
+        Object countdown = RpcContext.getContext().get(CommonConstants.TIME_COUNTDOWN_KEY);
         int timeout = 1000;
         if (countdown == null) {
             timeout = (int) RpcUtils.getTimeout(getUrl(), methodName, RpcContext.getContext(), this.timeout);
-            if (getUrl().getParameter(ENABLE_TIMEOUT_COUNTDOWN_KEY, false)) {
-                invocation.setObjectAttachment(TIMEOUT_ATTACHMENT_KEY, timeout); // pass timeout to remote server
+            if (getUrl().getParameter(CommonConstants.ENABLE_TIMEOUT_COUNTDOWN_KEY, false)) {
+                invocation.setObjectAttachment(CommonConstants.TIMEOUT_ATTACHMENT_KEY, timeout); // pass timeout to remote server
             }
         } else {
             TimeoutCountDown timeoutCountDown = (TimeoutCountDown) countdown;
             timeout = (int) timeoutCountDown.timeRemaining(TimeUnit.MILLISECONDS);
-            invocation.setObjectAttachment(TIMEOUT_ATTACHMENT_KEY, timeout);// pass timeout to remote server
+            invocation.setObjectAttachment(CommonConstants.TIMEOUT_ATTACHMENT_KEY, timeout);// pass timeout to remote server
         }
         return timeout;
     }

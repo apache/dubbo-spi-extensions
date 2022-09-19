@@ -16,19 +16,9 @@
  */
 package org.apache.dubbo.registry.nameservice;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.URLBuilder;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.constants.RegistryConstants;
 import org.apache.dubbo.common.logger.Logger;
@@ -51,9 +41,23 @@ import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
 import org.apache.rocketmq.tools.admin.DefaultMQAdminExtImpl;
 import org.apache.rocketmq.tools.admin.MQAdminExt;
 
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
+
 public class NameServiceRegistry extends FailbackRegistry {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(NameServiceRegistry.class);
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -73,7 +77,7 @@ public class NameServiceRegistry extends FailbackRegistry {
 
     public NameServiceRegistry(URL url) {
         super(url);
-        this.isNotRoute = !url.getParameter("route", false);
+        this.isNotRoute = url.getParameter("route", true);
         if (this.isNotRoute) {
             return;
         }
@@ -87,7 +91,9 @@ public class NameServiceRegistry extends FailbackRegistry {
             mqAdminExt.start();
             this.initBeasInfo();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            String exeptionInfo = String.format("initBeasInfo pullRoute exception , cause %s ", e.getMessage());
+            logger.error(exeptionInfo, e);
+            throw new RuntimeException(exeptionInfo, e);
         }
         this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
             @Override
@@ -110,7 +116,8 @@ public class NameServiceRegistry extends FailbackRegistry {
                         e.getValue().listener.notify(urls);
                     }
                 } catch (Exception e) {
-                    logger.error("ScheduledTask pullRoute exception", e);
+                    String exeptionInfo = String.format("ScheduledTask pullRoute exception , cause %s ", e.getMessage());
+                    logger.error(exeptionInfo, e);
                 }
             }
         }, 1000 * 10, 3000 * 10, TimeUnit.MILLISECONDS);
@@ -122,16 +129,16 @@ public class NameServiceRegistry extends FailbackRegistry {
     }
 
     private URL createProviderURL(ServiceName serviceName, URL url, int queue) {
-        Map<String, String> parameters = url.getParameters();
-        parameters.put(CommonConstants.INTERFACE_KEY, serviceName.getServiceInterface());
-        parameters.put(CommonConstants.PATH_KEY, serviceName.getServiceInterface());
-        parameters.put("bean.name", "ServiceBean:" + serviceName.getServiceInterface());
-        parameters.put(CommonConstants.SIDE_KEY, CommonConstants.PROVIDER);
-        parameters.put(RegistryConstants.CATEGORY_KEY, "providers");
-        parameters.put(CommonConstants.PROTOCOL_KEY, "rocketmq");
-        parameters.put("queueId", queue + "");
-        parameters.put("topic", serviceName.getValue());
-        return new URL("rocketmq", this.getUrl().getIp(), this.getUrl().getPort(), url.getPath(), parameters);
+        URLBuilder builder = URLBuilder.from(url).setProtocol("rocketmq").setAddress(this.getUrl().getAddress());
+        builder.addParameter(CommonConstants.INTERFACE_KEY, serviceName.getServiceInterface());
+        builder.addParameter(CommonConstants.PATH_KEY, serviceName.getServiceInterface());
+        builder.addParameter("bean.name", "ServiceBean:" + serviceName.getServiceInterface());
+        builder.addParameter(CommonConstants.SIDE_KEY, CommonConstants.PROVIDER);
+        builder.addParameter(RegistryConstants.CATEGORY_KEY, "providers");
+        builder.addParameter(CommonConstants.PROTOCOL_KEY, "rocketmq");
+        builder.addParameter("queueId", queue + "");
+        builder.addParameter("topic", serviceName.getValue());
+        return builder.build();
     }
 
     private ServiceName createServiceName(URL url) {
@@ -148,14 +155,16 @@ public class NameServiceRegistry extends FailbackRegistry {
                     this.mqAdminExt.createAndUpdateTopicConfig(entry.getValue().selectBrokerAddr(), topicConfig);
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                String exceptionInfo = String.format("create topic fial, topic name is %s , cause %s", serviceName.getValue(), e.getMessage());
+                logger.error(exceptionInfo, e);
+                throw new RuntimeException(exceptionInfo, e);
             }
         }
     }
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -171,7 +180,7 @@ public class NameServiceRegistry extends FailbackRegistry {
     @Override
     public void doSubscribe(URL url, NotifyListener listener) {
         if (Objects.equals(url.getCategory(),
-            org.apache.dubbo.common.constants.RegistryConstants.CONFIGURATORS_CATEGORY)) {
+                org.apache.dubbo.common.constants.RegistryConstants.CONFIGURATORS_CATEGORY)) {
             return;
         }
         ServiceName serviceName = this.createServiceName(url);
@@ -181,7 +190,9 @@ public class NameServiceRegistry extends FailbackRegistry {
                 return;
             }
         } catch (InterruptedException | MQBrokerException | RemotingException | MQClientException e) {
-            throw new RuntimeException(e);
+            String exceptionInfo = String.format("query topic consume fial, topic name is %s , url is %s , cause %s", serviceName.getValue(), url, e.getMessage());
+            logger.error(exceptionInfo, e);
+            throw new RuntimeException(exceptionInfo, e);
         }
         List<URL> urls = new ArrayList<URL>();
         if (this.isNotRoute) {
@@ -215,7 +226,9 @@ public class NameServiceRegistry extends FailbackRegistry {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            String exceptionInfo = String.format("query topic route fial, topic name is %s , url is %s , cause %s", serviceName.getValue(), url, e.getMessage());
+            logger.error(exceptionInfo, e);
+            throw new RuntimeException(exceptionInfo, e);
         }
     }
 
