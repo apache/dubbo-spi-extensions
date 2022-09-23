@@ -9,11 +9,11 @@
 - 引入依赖
 
 ```xml
-<denpendency>
+<dependency>
     <groupId>org.apache.dubbo.extensions</groupId>
     <artifactId>dubbo-mock-admin</artifactId>
-    <version>last</version>
-</denpendency>
+    <version>3.0.0</version>
+</dependency>
 ```
 
 - 开启模拟返回开关 将``` -Denable.dubbo.admin.mock=true ```添加到JVM启动参数中。
