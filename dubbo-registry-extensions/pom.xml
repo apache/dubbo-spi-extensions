@@ -35,6 +35,5 @@
         <module>dubbo-registry-redis</module>
         <module>dubbo-registry-sofa</module>
         <module>dubbo-registry-nameservice</module>
-    	<module>dubbo-registry-nameservice</module>
   </modules>
 </project>
