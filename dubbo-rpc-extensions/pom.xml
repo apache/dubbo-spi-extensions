@@ -39,11 +39,7 @@
         <module>dubbo-rpc-hessian</module>
         <module>dubbo-rpc-memcached</module>
         <module>dubbo-rpc-redis</module>
-<<<<<<< HEAD
         <module>dubbo-rpc-rocketmq</module>
-=======
-        <module>dubbo-rpc-rocket</module>
->>>>>>> master
     </modules>
 
 </project>
