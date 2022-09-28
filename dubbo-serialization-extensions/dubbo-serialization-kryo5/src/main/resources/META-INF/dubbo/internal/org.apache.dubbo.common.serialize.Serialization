@@ -1,0 +1,2 @@
+kryo=org.apache.dubbo.common.serialize.kryo5.KryoSerialization
+kryo2=org.apache.dubbo.common.serialize.kryo5.optimized.KryoSerialization2

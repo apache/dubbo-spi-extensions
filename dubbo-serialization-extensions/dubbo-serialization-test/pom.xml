@@ -63,6 +63,11 @@
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-serialization-kryo5</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-avro</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
