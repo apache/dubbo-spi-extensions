@@ -28,3 +28,8 @@ message Map{
   map<string, string> attachments = 1;
   map<string, google.protobuf.Any> attachmentsV2 = 2;
 }
+
+message Attachment{
+  string type = 1;
+  google.protobuf.Any data = 2;
+}
