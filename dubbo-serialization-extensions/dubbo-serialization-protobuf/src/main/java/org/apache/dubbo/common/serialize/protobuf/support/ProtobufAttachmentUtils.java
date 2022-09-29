@@ -16,9 +16,10 @@
  */
 package org.apache.dubbo.common.serialize.protobuf.support;
 
+import org.apache.dubbo.common.serialize.protobuf.support.wrapper.MapValue;
+
 import com.google.protobuf.Any;
 import com.google.protobuf.BoolValue;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.DoubleValue;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FloatValue;
@@ -26,14 +27,9 @@ import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.StringValue;
+import com.google.protobuf.util.JsonFormat;
 
-import org.apache.dubbo.common.serialize.protobuf.support.wrapper.MapValue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +40,8 @@ public class ProtobufAttachmentUtils {
     private static Map<String, BuiltinMarshaller> marshallers = new HashMap<>();
     private final static String NULL_CLASS_NAME = "null";
 
+    private final static JsonFormat.TypeRegistry typeRegistry;
+
     static {
         marshaller(String.class, new StringMarshaller());
         marshaller(Integer.class, new IntegerMarshaller());
@@ -52,6 +50,21 @@ public class ProtobufAttachmentUtils {
         marshaller(Float.class, new FloatMarshaller());
         marshaller(Double.class, new DoubleMarshaller());
         marshallers.put(NULL_CLASS_NAME, new NullMarshaller());
+        typeRegistry = JsonFormat.TypeRegistry
+            .newBuilder()
+            .add(StringValue.getDescriptor())
+            .add(Int32Value.getDescriptor())
+            .add(Int64Value.getDescriptor())
+            .add(BoolValue.getDescriptor())
+            .add(FloatValue.getDescriptor())
+            .add(DoubleValue.getDescriptor())
+            .add(Empty.getDescriptor())
+            .add(MapValue.Attachment.getDescriptor())
+            .build();
+    }
+
+    static JsonFormat.TypeRegistry getTypeRegistry() {
+        return typeRegistry;
     }
 
     static void marshaller(Class<?> clazz, BuiltinMarshaller marshaller) {
@@ -96,110 +109,111 @@ public class ProtobufAttachmentUtils {
             throw new IllegalStateException(className + " in attachment is not supported by protobuf.");
         }
 
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        ProtobufUtils.serialize(StringValue.newBuilder().setValue(className).build(), stream);
-        marshaller.marshal(obj, stream);
-        stream.flush();
-        return Any.newBuilder().setValue(ByteString.copyFrom(stream.toByteArray())).build();
+        MapValue.Attachment attachment = MapValue.Attachment.newBuilder()
+            .setType(className)
+            .setData(marshaller.marshal(obj))
+            .build();
+        return Any.pack(attachment);
     }
 
     private static Object unmarshal(Any any) throws InvalidProtocolBufferException {
-        InputStream stream = new ByteArrayInputStream(any.getValue().toByteArray());
-        String className = ProtobufUtils.deserialize(stream, StringValue.class).getValue();
+        MapValue.Attachment attachment = any.unpack(MapValue.Attachment.class);
+        String className = attachment.getType();
         BuiltinMarshaller marshaller = marshallers.get(className);
         if (marshaller == null) {
             throw new IllegalStateException(className + " in attachment is not supported by protobuf.");
         }
-        return marshaller.unmarshal(stream);
+        return marshaller.unmarshal(attachment.getData());
     }
 
     private static interface BuiltinMarshaller<T> {
-        void marshal(T obj, OutputStream stream) throws IOException;
+        Any marshal(T obj) throws IOException;
 
-        T unmarshal(InputStream stream) throws InvalidProtocolBufferException;
+        T unmarshal(Any any) throws InvalidProtocolBufferException;
     }
 
     static class StringMarshaller implements BuiltinMarshaller<String> {
         @Override
-        public void marshal(String obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(StringValue.newBuilder().setValue(obj).build(), stream);
+        public Any marshal(String obj) throws IOException {
+            return Any.pack(StringValue.newBuilder().setValue(obj).build());
         }
 
         @Override
-        public String unmarshal(InputStream stream) throws InvalidProtocolBufferException {
-            return ProtobufUtils.deserialize(stream, StringValue.class).getValue();
+        public String unmarshal(Any any) throws InvalidProtocolBufferException {
+            return any.unpack(StringValue.class).getValue();
         }
     }
 
     static class IntegerMarshaller implements BuiltinMarshaller<Integer> {
         @Override
-        public void marshal(Integer obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(Int32Value.newBuilder().setValue(obj).build(), stream);
+        public Any marshal(Integer obj) throws IOException {
+            return Any.pack(Int32Value.newBuilder().setValue(obj).build());
         }
 
         @Override
-        public Integer unmarshal(InputStream stream) throws InvalidProtocolBufferException {
-            return ProtobufUtils.deserialize(stream, Int32Value.class).getValue();
+        public Integer unmarshal(Any any) throws InvalidProtocolBufferException {
+            return any.unpack(Int32Value.class).getValue();
         }
+
     }
 
     static class LongMarshaller implements BuiltinMarshaller<Long> {
         @Override
-        public void marshal(Long obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(Int64Value.newBuilder().setValue(obj).build(), stream);
+        public Any marshal(Long obj) throws IOException {
+            return Any.pack(Int64Value.newBuilder().setValue(obj).build());
         }
 
         @Override
-        public Long unmarshal(InputStream stream) throws InvalidProtocolBufferException {
-            return ProtobufUtils.deserialize(stream, Int64Value.class).getValue();
+        public Long unmarshal(Any any) throws InvalidProtocolBufferException {
+            return any.unpack(Int64Value.class).getValue();
         }
     }
 
     static class BooleanMarshaller implements BuiltinMarshaller<Boolean> {
         @Override
-        public void marshal(Boolean obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(BoolValue.newBuilder().setValue(obj).build(), stream);
+        public Any marshal(Boolean obj) throws IOException {
+            return Any.pack(BoolValue.newBuilder().setValue(obj).build());
         }
 
         @Override
-        public Boolean unmarshal(InputStream stream) throws InvalidProtocolBufferException {
-            return ProtobufUtils.deserialize(stream, BoolValue.class).getValue();
+        public Boolean unmarshal(Any any) throws InvalidProtocolBufferException {
+            return any.unpack(BoolValue.class).getValue();
         }
     }
 
     static class FloatMarshaller implements BuiltinMarshaller<Float> {
         @Override
-        public void marshal(Float obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(FloatValue.newBuilder().setValue(obj).build(), stream);
+        public Any marshal(Float obj) throws IOException {
+            return Any.pack(FloatValue.newBuilder().setValue(obj).build());
         }
 
         @Override
-        public Float unmarshal(InputStream stream) throws InvalidProtocolBufferException {
-            return ProtobufUtils.deserialize(stream, FloatValue.class).getValue();
+        public Float unmarshal(Any any) throws InvalidProtocolBufferException {
+            return any.unpack(FloatValue.class).getValue();
         }
     }
 
     static class DoubleMarshaller implements BuiltinMarshaller<Double> {
         @Override
-        public void marshal(Double obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(DoubleValue.newBuilder().setValue(obj).build(), stream);
+        public Any marshal(Double obj) throws IOException {
+            return Any.pack(DoubleValue.newBuilder().setValue(obj).build());
         }
 
         @Override
-        public Double unmarshal(InputStream stream) throws InvalidProtocolBufferException {
-            return ProtobufUtils.deserialize(stream, DoubleValue.class).getValue();
+        public Double unmarshal(Any any) throws InvalidProtocolBufferException {
+            return any.unpack(DoubleValue.class).getValue();
         }
     }
 
     static class NullMarshaller implements BuiltinMarshaller<Object> {
 
         @Override
-        public void marshal(Object obj, OutputStream stream) throws IOException {
-            ProtobufUtils.serialize(Empty.newBuilder().build(), stream);
+        public Any marshal(Object obj) throws IOException {
+            return Any.pack(Empty.newBuilder().build());
         }
 
         @Override
-        public Object unmarshal(InputStream stream) throws InvalidProtocolBufferException {
+        public Object unmarshal(Any any) throws InvalidProtocolBufferException {
             return null;
         }
     }
