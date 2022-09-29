@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.dubbo.common.constants.CommonConstants.HEARTBEAT_EVENT;
@@ -145,10 +144,8 @@ public class GenericProtobufJsonObjectOutput implements ObjectOutput {
             return;
         }
 
-        Map<String, String> stringAttachments = new HashMap<>();
-        attachments.forEach((k, v) -> stringAttachments.put(k, (String) v));
-        MapValue.Map proto = MapValue.Map.newBuilder().putAllAttachments(stringAttachments).build();
-        writer.write(ProtobufUtils.serializeJson(proto));
+        MapValue.Map map = ProtobufAttachmentUtils.wrap(attachments);
+        writer.write(ProtobufUtils.serializeJson(map, ProtobufAttachmentUtils.getTypeRegistry()));
         writer.println();
         writer.flush();
     }

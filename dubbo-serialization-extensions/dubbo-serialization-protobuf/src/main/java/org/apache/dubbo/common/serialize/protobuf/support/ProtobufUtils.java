@@ -72,8 +72,29 @@ public class ProtobufUtils {
         return (T) builder.build();
     }
 
+    static <T> T deserializeJson(String json, Class<T> requestClass, JsonFormat.TypeRegistry typeRegistry) throws InvalidProtocolBufferException {
+        Builder builder;
+        try {
+            builder = getMessageBuilder(requestClass);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Get google protobuf message builder from " + requestClass.getName() + "failed", e);
+        }
+        JsonFormat.parser()
+            .usingTypeRegistry(typeRegistry)
+            .merge(json, builder);
+        return (T) builder.build();
+    }
+
     static String serializeJson(Object value) throws InvalidProtocolBufferException {
-        Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
+        Printer printer = JsonFormat.printer()
+            .omittingInsignificantWhitespace();
+        return printer.print((MessageOrBuilder) value);
+    }
+
+    static String serializeJson(Object value, JsonFormat.TypeRegistry typeRegistry) throws InvalidProtocolBufferException {
+        Printer printer = JsonFormat.printer()
+            .usingTypeRegistry(typeRegistry)
+            .omittingInsignificantWhitespace();
         return printer.print((MessageOrBuilder) value);
     }
 
