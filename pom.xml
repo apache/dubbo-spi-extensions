@@ -381,7 +381,7 @@
                     <flattenMode>resolveCiFriendliesOnly</flattenMode>
                 </configuration>
                 <executions>
-                    <!-- <execution>
+                    <execution>
                         <id>flatten</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -394,7 +394,7 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
-                    </execution> -->
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
