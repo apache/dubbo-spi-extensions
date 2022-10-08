@@ -90,8 +90,7 @@ public abstract class AbstractKryoFactory extends Pool<Kryo> {
 
         Kryo kryo = new CompatibleKryo();
 
-        // TODO
-//        kryo.setReferences(false);
+        kryo.setReferences(true);
         kryo.setRegistrationRequired(registrationRequired);
 
         kryo.addDefaultSerializer(Throwable.class, new JavaSerializer());
