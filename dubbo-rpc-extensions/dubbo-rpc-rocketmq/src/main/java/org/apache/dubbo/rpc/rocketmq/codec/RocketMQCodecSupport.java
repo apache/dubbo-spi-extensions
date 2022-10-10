@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.dubbo.rpc.rocketmq.codec;
 
 import org.apache.dubbo.common.URL;
@@ -27,8 +28,8 @@ import static org.apache.dubbo.rpc.Constants.INVOCATION_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 
 public class RocketMQCodecSupport {
-	
-	private final static String DEFAULT_REMOTING_SERIALIZATION_PROPERTY = "hessian2";
+
+    private final static String DEFAULT_REMOTING_SERIALIZATION_PROPERTY = "hessian2";
 
     public static Serialization getRequestSerialization(URL url, Invocation invocation) {
         Object serializationTypeObj = invocation.get(SERIALIZATION_ID_KEY);

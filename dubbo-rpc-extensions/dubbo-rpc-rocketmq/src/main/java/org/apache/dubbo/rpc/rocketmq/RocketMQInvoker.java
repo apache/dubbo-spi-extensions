@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.dubbo.rpc.rocketmq;
 
 
@@ -49,7 +50,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
 
 
 public class RocketMQInvoker<T> extends AbstractInvoker<T> {
@@ -132,7 +132,8 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
                 }
                 return AsyncRpcResult.newDefaultAsyncResult(invocation);
             } else {
-                CompletableFuture<AppResponse> appResponseFuture = DefaultFuture.newFuture(channel, request, timeout, this.getCallbackExecutor(getUrl(), inv))
+                CompletableFuture<AppResponse> appResponseFuture =
+                    DefaultFuture.newFuture(channel, request, timeout, this.getCallbackExecutor(getUrl(), inv))
                         .thenApply(obj -> (AppResponse) obj);
                 DubboRequestCallback dubboRequestCallback = new DubboRequestCallback();
                 AsyncRpcResult result = new AsyncRpcResult(appResponseFuture, inv);
@@ -145,12 +146,12 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
             }
         } catch (RemotingTooMuchRequestException e) {
             String exceptionInfo = "Invoke remote method timeout. method: "
-                    + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage();
+                + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage();
             logger.error(exceptionInfo, e);
             throw new RpcException(RpcException.TIMEOUT_EXCEPTION, exceptionInfo, e);
         } catch (Exception e) {
             String exceptionInfo = "Failed to invoke remote method: "
-                    + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage();
+                + invocation.getMethodName() + ", provider: " + getUrl() + ", cause: " + e.getMessage();
             logger.error(exceptionInfo, e);
             throw new RpcException(RpcException.NETWORK_EXCEPTION, exceptionInfo, e);
         }
