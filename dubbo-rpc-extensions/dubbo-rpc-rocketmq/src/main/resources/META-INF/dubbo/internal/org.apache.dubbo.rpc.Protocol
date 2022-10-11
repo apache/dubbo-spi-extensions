@@ -1,0 +1,1 @@
+rocketmq=org.apache.dubbo.rpc.rocketmq.RocketMQProtocol
