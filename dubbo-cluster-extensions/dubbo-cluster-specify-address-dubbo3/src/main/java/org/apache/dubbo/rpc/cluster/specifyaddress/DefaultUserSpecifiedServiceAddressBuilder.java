@@ -20,6 +20,7 @@ import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.apache.dubbo.common.url.component.DubboServiceAddressURL;
 import org.apache.dubbo.common.url.component.PathURLAddress;
+import org.apache.dubbo.common.url.component.ServiceConfigURL;
 import org.apache.dubbo.common.url.component.URLParam;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.rpc.Invocation;
@@ -49,9 +50,14 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
     public <T> URL buildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl) {
         if (!invokers.isEmpty()) {
             URL template = invokers.iterator().next().getUrl();
-            template = template.setHost(address.getIp());
-            if (address.getPort() != 0) {
-                template = template.setPort(address.getPort());
+            if (template.getUrlAddress() == null) {
+                PathURLAddress urlAddress = new PathURLAddress(template.getProtocol(), template.getUsername(), template.getPassword(), template.getPath(), address.getIp(), address.getPort());
+                template = new ServiceConfigURL(urlAddress, template.getUrlParam(), template.getAttributes());
+            } else {
+                template = template.setHost(address.getIp());
+                if (address.getPort() != 0) {
+                    template = template.setPort(address.getPort());
+                }
             }
             return template;
         } else {
@@ -62,8 +68,8 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
                 port = protocolExtensionLoader.getExtension(protocol).getDefaultPort();
             }
             return new DubboServiceAddressURL(
-                new PathURLAddress(protocol, null, null, consumerUrl.getPath(), ip, port),
-                URLParam.parse(""), consumerUrl, null);
+                    new PathURLAddress(protocol, null, null, consumerUrl.getPath(), ip, port),
+                    URLParam.parse(""), consumerUrl, null);
         }
     }
 
@@ -75,7 +81,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
         parameters.put(GROUP_KEY, consumerUrl.getGroup());
         String protocol = StringUtils.isEmpty(url.getProtocol()) ? consumerUrl.getParameter(PROTOCOL_KEY, DUBBO) : url.getProtocol();
         return new DubboServiceAddressURL(
-            new PathURLAddress(protocol, null, null, consumerUrl.getPath(), url.getHost(), url.getPort()),
-            URLParam.parse(parameters), consumerUrl, null);
+                new PathURLAddress(protocol, null, null, consumerUrl.getPath(), url.getHost(), url.getPort()),
+                URLParam.parse(parameters), consumerUrl, null);
     }
 }
