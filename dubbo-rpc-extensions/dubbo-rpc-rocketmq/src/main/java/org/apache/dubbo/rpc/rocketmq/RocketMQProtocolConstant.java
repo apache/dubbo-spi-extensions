@@ -17,9 +17,9 @@
 
 package org.apache.dubbo.rpc.rocketmq;
 
-import java.net.InetSocketAddress;
-
 import org.apache.dubbo.common.utils.NetUtils;
+
+import java.net.InetSocketAddress;
 
 public interface RocketMQProtocolConstant {
 

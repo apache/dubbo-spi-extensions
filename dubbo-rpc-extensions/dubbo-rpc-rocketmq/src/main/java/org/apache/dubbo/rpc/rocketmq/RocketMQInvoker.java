@@ -39,7 +39,6 @@ import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.protocol.AbstractInvoker;
 import org.apache.dubbo.rpc.rocketmq.codec.RocketMQCountCodec;
 import org.apache.dubbo.rpc.support.RpcUtils;
-
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.RequestCallback;
 import org.apache.rocketmq.common.message.Message;
@@ -135,7 +134,7 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
                 CompletableFuture<AppResponse> appResponseFuture =
                     DefaultFuture.newFuture(channel, request, timeout, this.getCallbackExecutor(getUrl(), inv))
                         .thenApply(obj -> (AppResponse) obj);
-                DubboRequestCallback dubboRequestCallback = new DubboRequestCallback();
+                RequestCallback dubboRequestCallback = this.getRequestCallback();
                 AsyncRpcResult result = new AsyncRpcResult(appResponseFuture, inv);
                 if (Objects.isNull(messageQueue)) {
                     defaultMQProducer.request(message, dubboRequestCallback, timeout);
@@ -157,9 +156,13 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
         }
     }
 
+    public RequestCallback getRequestCallback() {
+        return new DubboRequestCallback();
+    }
+
     @SuppressWarnings("deprecation")
     private int calculateTimeout(Invocation invocation, String methodName) {
-        Object countdown = RpcContext.getContext().get(CommonConstants.TIME_COUNTDOWN_KEY);
+        Object countdown = RpcContext.getContext().get().get(CommonConstants.TIME_COUNTDOWN_KEY);
         int timeout = 1000;
         if (countdown == null) {
             timeout = (int) RpcUtils.getTimeout(getUrl(), methodName, RpcContext.getContext(), this.timeout);

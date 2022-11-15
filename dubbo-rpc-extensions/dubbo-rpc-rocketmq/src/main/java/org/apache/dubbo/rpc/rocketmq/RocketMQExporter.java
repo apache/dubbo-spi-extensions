@@ -22,14 +22,14 @@ import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.apache.dubbo.common.constants.RegistryConstants.DEFAULT_CATEGORY;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.zip.CRC32;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Exporter;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.protocol.AbstractExporter;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.zip.CRC32;
 
 public class RocketMQExporter<T> extends AbstractExporter<T> {
 
