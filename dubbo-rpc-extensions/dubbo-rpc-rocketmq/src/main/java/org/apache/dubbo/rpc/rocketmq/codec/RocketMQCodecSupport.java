@@ -17,15 +17,15 @@
 
 package org.apache.dubbo.rpc.rocketmq.codec;
 
+import static org.apache.dubbo.rpc.Constants.INVOCATION_KEY;
+import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
+
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.serialize.Serialization;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.remoting.transport.CodecSupport;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.Invocation;
-
-import static org.apache.dubbo.rpc.Constants.INVOCATION_KEY;
-import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 
 public class RocketMQCodecSupport {
 

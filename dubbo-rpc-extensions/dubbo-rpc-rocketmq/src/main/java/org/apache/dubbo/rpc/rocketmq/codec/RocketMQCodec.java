@@ -17,6 +17,11 @@
 
 package org.apache.dubbo.rpc.rocketmq.codec;
 
+import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+
 import org.apache.dubbo.common.Version;
 import org.apache.dubbo.common.io.Bytes;
 import org.apache.dubbo.common.logger.Logger;
@@ -39,11 +44,6 @@ import org.apache.dubbo.rpc.model.FrameworkModel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 
 /**

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.dubbo.registry.nameservice;
 
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -23,12 +24,12 @@ import static org.apache.dubbo.common.constants.RegistryConstants.CATEGORY_KEY;
 import static org.apache.dubbo.common.constants.RegistryConstants.DEFAULT_CATEGORY;
 import static org.apache.dubbo.common.utils.StringUtils.isBlank;
 
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.StringUtils;
+
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.CRC32;
-
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.utils.StringUtils;
 
 public class ServiceName {
 

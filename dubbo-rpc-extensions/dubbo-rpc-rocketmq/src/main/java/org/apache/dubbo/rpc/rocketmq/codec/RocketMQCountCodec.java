@@ -25,7 +25,7 @@ import org.apache.dubbo.rpc.model.FrameworkModel;
 import java.io.IOException;
 
 
-public final class RocketMQCountCodec implements Codec2 {
+public class RocketMQCountCodec implements Codec2 {
 
     private RocketMQCodec codec;
 
