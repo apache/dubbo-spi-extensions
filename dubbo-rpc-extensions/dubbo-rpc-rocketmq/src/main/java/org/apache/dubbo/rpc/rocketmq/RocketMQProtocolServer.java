@@ -17,18 +17,20 @@
 
 package org.apache.dubbo.rpc.rocketmq;
 
-import java.util.Map;
-import java.util.Objects;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.common.extension.ExtensionLoader;
+import org.apache.dubbo.common.threadpool.manager.ExecutorRepository;
 import org.apache.dubbo.remoting.RemotingServer;
 import org.apache.dubbo.rpc.ProtocolServer;
-
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
 public class RocketMQProtocolServer implements ProtocolServer {
 
@@ -57,6 +59,8 @@ public class RocketMQProtocolServer implements ProtocolServer {
     private String customizedTraceTopic;
 
     private int sendMsgTimeout;
+
+    private ExecutorService executor;
 
 
     public void setMessageListenerConcurrently(MessageListenerConcurrently messageListenerConcurrently) {
@@ -118,7 +122,6 @@ public class RocketMQProtocolServer implements ProtocolServer {
             defaultMQProducer.setNamesrvAddr(this.address);
             defaultMQProducer.setSendMsgTimeout(this.sendMsgTimeout);
             defaultMQProducer.setInstanceName("producer- " + inistanceName);
-            defaultMQProducer.setSendMsgTimeout(this.sendMsgTimeout);
 
             defaultMQProducer.start();
 
@@ -126,10 +129,21 @@ public class RocketMQProtocolServer implements ProtocolServer {
             this.defaultMQProducer = defaultMQProducer;
             if (Objects.equals(this.model, CommonConstants.PROVIDER) || Objects.equals(this.model, CommonConstants.CALLBACK_INSTANCES_LIMIT_KEY)) {
                 this.createConsumer();
+                this.executor = this.getSharedExecutorService(this.url);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ExecutorService getSharedExecutorService(URL url) {
+        ExecutorRepository executorRepository =
+            ExtensionLoader.getExtensionLoader(ExecutorRepository.class).getDefaultExtension();
+        ExecutorService executor = executorRepository.getExecutor(url);
+        if (executor == null) {
+            executor = executorRepository.createExecutorIfAbsent(url);
+        }
+        return executor;
     }
 
     public synchronized void createConsumer() throws MQClientException {
@@ -159,6 +173,10 @@ public class RocketMQProtocolServer implements ProtocolServer {
     @Override
     public Map<String, Object> getAttributes() {
         return null;
+    }
+
+    public ExecutorService getExecutorService(){
+        return this.executor;
     }
 
 }

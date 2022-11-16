@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.dubbo.registry.nameservice;
 
 
@@ -25,7 +26,6 @@ import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.support.FailbackRegistry;
-
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.TopicConfig;
@@ -40,7 +40,6 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.apache.rocketmq.tools.admin.DefaultMQAdminExt;
 import org.apache.rocketmq.tools.admin.DefaultMQAdminExtImpl;
 import org.apache.rocketmq.tools.admin.MQAdminExt;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,26 +99,24 @@ public class NameServiceRegistry extends FailbackRegistry {
                 return new Thread(r, "dubbo-registry-nameservice");
             }
         });
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    NameServiceRegistry.this.initBeasInfo();
+        scheduledExecutorService.scheduleAtFixedRate(this::run, 1000 * 10, 3000 * 10, TimeUnit.MILLISECONDS);
+    }
 
-                    if (consumerRegistryInfoWrapperMap.isEmpty()) {
-                        return;
-                    }
-                    for (Entry<URL, RegistryInfoWrapper> e : consumerRegistryInfoWrapperMap.entrySet()) {
-                        List<URL> urls = new ArrayList<URL>();
-                        NameServiceRegistry.this.pullRoute(e.getValue().serviceName, e.getKey(), urls);
-                        e.getValue().listener.notify(urls);
-                    }
-                } catch (Exception e) {
-                    String exeptionInfo = String.format("ScheduledTask pullRoute exception , cause %s ", e.getMessage());
-                    logger.error(exeptionInfo, e);
-                }
+    private void run() {
+        try {
+            this.initBeasInfo();
+            if (consumerRegistryInfoWrapperMap.isEmpty()) {
+                return;
             }
-        }, 1000 * 10, 3000 * 10, TimeUnit.MILLISECONDS);
+            for (Entry<URL, RegistryInfoWrapper> e : consumerRegistryInfoWrapperMap.entrySet()) {
+                List<URL> urls = new ArrayList<URL>();
+                this.pullRoute(e.getValue().serviceName, e.getKey(), urls);
+                e.getValue().listener.notify(urls);
+            }
+        } catch (Exception e) {
+            String exeptionInfo = String.format("ScheduledTask pullRoute exception , cause %s ", e.getMessage());
+            logger.error(exeptionInfo, e);
+        }
     }
 
     private void initBeasInfo() throws Exception {
@@ -145,20 +142,27 @@ public class NameServiceRegistry extends FailbackRegistry {
     }
 
     private void createTopic(ServiceName serviceName) {
-        if (!this.topicList.getTopicList().contains(serviceName.getValue())) {
-            try {
-                TopicConfig topicConfig = new TopicConfig(serviceName.getValue());
-                topicConfig.setReadQueueNums(2);
-                topicConfig.setWriteQueueNums(2);
-                for (Entry<String, BrokerData> entry : clusterInfo.getBrokerAddrTable().entrySet()) {
-                    this.mqAdminExt.createAndUpdateTopicConfig(entry.getValue().selectBrokerAddr(), topicConfig);
-                }
-            } catch (Exception e) {
-                String exceptionInfo = String.format("create topic fial, topic name is %s , cause %s", serviceName.getValue(), e.getMessage());
-                logger.error(exceptionInfo, e);
-                throw new RuntimeException(exceptionInfo, e);
-            }
+        if (this.isNotRoute) {
+            return;
         }
+        if (this.topicList.getTopicList().contains(serviceName.getValue())) {
+            return;
+        }
+        try {
+            TopicConfig topicConfig = new TopicConfig(serviceName.getValue());
+            topicConfig.setReadQueueNums(2);
+            topicConfig.setWriteQueueNums(2);
+            for (Entry<String, BrokerData> entry : clusterInfo.getBrokerAddrTable().entrySet()) {
+                for (String brokerAddr : entry.getValue().getBrokerAddrs().values()) {
+                    this.mqAdminExt.createAndUpdateTopicConfig(brokerAddr, topicConfig);
+                }
+            }
+        } catch (Exception e) {
+            String exceptionInfo = String.format("create topic fial, topic name is %s , cause %s", serviceName.getValue(), e.getMessage());
+            logger.error(exceptionInfo, e);
+            throw new RuntimeException(exceptionInfo, e);
+        }
+
     }
 
     @Override
@@ -179,7 +183,7 @@ public class NameServiceRegistry extends FailbackRegistry {
     @Override
     public void doSubscribe(URL url, NotifyListener listener) {
         if (Objects.equals(url.getCategory(),
-                org.apache.dubbo.common.constants.RegistryConstants.CONFIGURATORS_CATEGORY)) {
+            org.apache.dubbo.common.constants.RegistryConstants.CONFIGURATORS_CATEGORY)) {
             return;
         }
         ServiceName serviceName = this.createServiceName(url);
@@ -189,7 +193,8 @@ public class NameServiceRegistry extends FailbackRegistry {
                 return;
             }
         } catch (InterruptedException | MQBrokerException | RemotingException | MQClientException e) {
-            String exceptionInfo = String.format("query topic consume fial, topic name is %s , url is %s , cause %s", serviceName.getValue(), url, e.getMessage());
+            String exceptionInfo =
+                String.format("query topic consume fial, topic name is %s , url is %s , cause %s", serviceName.getValue(), url, e.getMessage());
             logger.error(exceptionInfo, e);
             throw new RuntimeException(exceptionInfo, e);
         }
@@ -221,7 +226,8 @@ public class NameServiceRegistry extends FailbackRegistry {
                 }
             }
         } catch (Exception e) {
-            String exceptionInfo = String.format("query topic route fial, topic name is %s , url is %s , cause %s", serviceName.getValue(), url, e.getMessage());
+            String exceptionInfo =
+                String.format("query topic route fial, topic name is %s , url is %s , cause %s", serviceName.getValue(), url, e.getMessage());
             logger.error(exceptionInfo, e);
             throw new RuntimeException(exceptionInfo, e);
         }
@@ -235,7 +241,9 @@ public class NameServiceRegistry extends FailbackRegistry {
     private class RegistryInfoWrapper {
 
         private NotifyListener listener;
-
         private ServiceName serviceName;
+
+        public RegistryInfoWrapper() {
+        }
     }
 }

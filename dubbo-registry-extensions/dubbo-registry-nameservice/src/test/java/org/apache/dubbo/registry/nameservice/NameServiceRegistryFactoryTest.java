@@ -17,15 +17,29 @@
 
 package org.apache.dubbo.registry.nameservice;
 
-import org.apache.dubbo.common.URL;
 import org.apache.dubbo.registry.Registry;
-import org.apache.dubbo.registry.support.AbstractRegistryFactory;
 
-public class NameServiceRegistryFactory extends AbstractRegistryFactory {
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.annotation.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-    @Override
-    protected Registry createRegistry(URL url) {
-        return new NameServiceRegistry(url);
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(value = {NameServiceRegistryFactory.class})
+public class NameServiceRegistryFactoryTest {
+
+    @Mock
+    private NameServiceRegistry registry;
+
+    @Test
+    public void createRegistryTest() throws Exception {
+
+        PowerMockito.whenNew(NameServiceRegistry.class).withAnyArguments().thenReturn(registry);
+        NameServiceRegistryFactory registryFactory = new NameServiceRegistryFactory();
+        Registry registry = registryFactory.createRegistry(null);
+        Assert.assertEquals(registry, this.registry);
     }
-
 }

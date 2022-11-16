@@ -19,6 +19,7 @@ package org.apache.dubbo.rpc.rocketmq;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.buffer.ChannelBuffer;
 import org.apache.dubbo.remoting.buffer.DynamicChannelBuffer;
 import org.apache.dubbo.remoting.buffer.HeapChannelBuffer;
@@ -36,7 +37,6 @@ import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.model.ScopeModel;
 import org.apache.dubbo.rpc.protocol.AbstractProtocol;
 import org.apache.dubbo.rpc.rocketmq.codec.RocketMQCountCodec;
-
 import org.apache.rocketmq.client.common.ClientErrorCode;
 import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
@@ -96,24 +96,7 @@ public class RocketMQProtocol extends AbstractProtocol {
         try {
             String groupModel = url.getParameter("groupModel");
             if (Objects.nonNull(groupModel) && Objects.equals(groupModel, "select")) {
-                if (Objects.isNull(url.getParameter(CommonConstants.GROUP_KEY)) &&
-                    Objects.isNull((url.getParameter(CommonConstants.GROUP_KEY)))) {
-                    // error
-                }
-                StringBuffer stringBuffer = new StringBuffer();
-                boolean isGroup = false;
-                if (Objects.nonNull(url.getParameter(CommonConstants.GROUP_KEY))) {
-                    stringBuffer.append(CommonConstants.GROUP_KEY).append("=").append(url.getParameter(CommonConstants.GROUP_KEY));
-                    isGroup = true;
-                }
-                if (Objects.nonNull(url.getParameter(CommonConstants.VERSION_KEY))) {
-                    if (isGroup) {
-                        stringBuffer.append(" and ");
-                    }
-                    stringBuffer.append(CommonConstants.VERSION_KEY).append("=").append(url.getParameter(CommonConstants.VERSION_KEY));
-                }
-                MessageSelector messageSelector = MessageSelector.bySql(stringBuffer.toString());
-                rocketMQProtocolServer.getDefaultMQPushConsumer().subscribe(topic, messageSelector);
+                rocketMQProtocolServer.getDefaultMQPushConsumer().subscribe(topic, this.createMessageSelector(url));
             } else {
                 rocketMQProtocolServer.getDefaultMQPushConsumer().subscribe(topic, CommonConstants.ANY_VALUE);
             }
@@ -123,6 +106,26 @@ public class RocketMQProtocol extends AbstractProtocol {
             logger.error(exeptionInfo, e);
             throw new RpcException(exeptionInfo, e);
         }
+    }
+
+    private MessageSelector createMessageSelector(URL url) {
+        if (Objects.isNull(url.getParameter(CommonConstants.GROUP_KEY)) &&
+            Objects.isNull((url.getParameter(CommonConstants.VERSION_KEY)))) {
+            throw new RuntimeException("group and version is not null");
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        boolean isGroup = false;
+        if (Objects.nonNull(url.getParameter(CommonConstants.GROUP_KEY))) {
+            stringBuffer.append(CommonConstants.GROUP_KEY).append("=").append(url.getParameter(CommonConstants.GROUP_KEY));
+            isGroup = true;
+        }
+        if (Objects.nonNull(url.getParameter(CommonConstants.VERSION_KEY))) {
+            if (isGroup) {
+                stringBuffer.append(" and ");
+            }
+            stringBuffer.append(CommonConstants.VERSION_KEY).append("=").append(url.getParameter(CommonConstants.VERSION_KEY));
+        }
+        return MessageSelector.bySql(stringBuffer.toString());
     }
 
     private RocketMQProtocolServer openServer(URL url, String model) {
@@ -149,9 +152,11 @@ public class RocketMQProtocol extends AbstractProtocol {
         RocketMQProtocolServer rocketMQProtocolServer = new RocketMQProtocolServer();
         rocketMQProtocolServer.setModel(model);
         DubboMessageListenerConcurrently dubboMessageListenerConcurrently = new DubboMessageListenerConcurrently();
+        dubboMessageListenerConcurrently.defaultMQProducer = rocketMQProtocolServer.getDefaultMQProducer();
+        dubboMessageListenerConcurrently.rocketMQProtocolServer = rocketMQProtocolServer;
         rocketMQProtocolServer.setMessageListenerConcurrently(dubboMessageListenerConcurrently);
         rocketMQProtocolServer.reset(url);
-        dubboMessageListenerConcurrently.defaultMQProducer = rocketMQProtocolServer.getDefaultMQProducer();
+
         return rocketMQProtocolServer;
     }
 
@@ -174,91 +179,123 @@ public class RocketMQProtocol extends AbstractProtocol {
 
         private DefaultMQProducer defaultMQProducer;
 
+        private RocketMQProtocolServer rocketMQProtocolServer;
+
+
+
         @SuppressWarnings("deprecation")
         @Override
         public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-
             for (MessageExt messageExt : msgs) {
-                String timeoutString = messageExt.getUserProperty(CommonConstants.TIMEOUT_KEY);
-                Long timeout = Long.valueOf(timeoutString);
-
-                RpcContext.getContext().setRemoteAddress(messageExt.getUserProperty(RocketMQProtocolConstant.SEND_ADDRESS), 9876);
-                String urlString = messageExt.getUserProperty(RocketMQProtocolConstant.URL_STRING);
-                URL url = URL.valueOf(urlString);
-
-                RocketMQChannel channel = new RocketMQChannel();
-                channel.setRemoteAddress(RpcContext.getContext().getRemoteAddress());
-                channel.setUrl(url);
-                channel.setUrlString(urlString);
-                channel.setMessageExt(messageExt);
-                channel.setDefaultMQProducer(defaultMQProducer);
-                channel.setRocketMQCountCodec(rocketmqCountCodec);
-
-
-                Response response = new Response();
-                try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(String.format("reply message ext is : %s", messageExt));
+                rocketMQProtocolServer.getExecutorService().submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        execute(messageExt);
                     }
-                    if (Objects.isNull(messageExt.getProperty(MessageConst.PROPERTY_CLUSTER))) {
-                        MQClientException exception = new MQClientException(ClientErrorCode.CREATE_REPLY_MESSAGE_EXCEPTION,
-                            "create reply message fail, requestMessage error, property[" + MessageConst.PROPERTY_CLUSTER + "] is null.");
-                        response.setErrorMessage(exception.getMessage());
-                        response.setStatus(Response.BAD_REQUEST);
-                        logger.error(exception);
-                    } else {
-                        HeapChannelBuffer heapChannelBuffer = new HeapChannelBuffer(messageExt.getBody());
-                        Object object = rocketmqCountCodec.decode(channel, heapChannelBuffer);
-                        String topic = messageExt.getTopic();
-                        Invocation inv = (Invocation) ((Request) object).getData();
-                        if (timeout < System.currentTimeMillis()) {
-                            logger.warn(String.format("message timeoute time is %d invocation is %s ", timeout, inv));
-                            continue;
-                        }
-                        Invoker<?> invoker = exporterMap.get(topic).getInvoker();
-
-                        RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());
-                        Result result = invoker.invoke(inv);
-                        response.setStatus(Response.OK);
-                        response.setResult(result);
-                    }
-                } catch (Exception e) {
-                    String exceptionInfo = String.format("data decode or invoke fail, url is %s cause is %s", url, e.getMessage());
-                    response.setErrorMessage(exceptionInfo);
-                    response.setStatus(Response.BAD_REQUEST);
-                    logger.error(exceptionInfo, e);
-                }
-                ChannelBuffer buffer = new DynamicChannelBuffer(2048);
-                try {
-                    rocketmqCountCodec.encode(channel, buffer, response);
-                } catch (Exception e) {
-                    String exceptionInfo = String.format("encode fail, url is %s cause is %s", url, e.getMessage());
-                    response.setErrorMessage(exceptionInfo);
-                    response.setStatus(Response.BAD_REQUEST);
-                    logger.error(exceptionInfo, e);
-                    try {
-                        buffer = new DynamicChannelBuffer(2048);
-                        rocketmqCountCodec.encode(channel, buffer, response);
-                    } catch (IOException e1) {
-                        String exceptionInfo1 = String.format("encode exception response fail, url is %s cause is %s", url, e.getMessage());
-                        logger.error(exceptionInfo1, e1);
-                        continue;
-                    }
-                }
-                try {
-                    Message newMessage = MessageUtil.createReplyMessage(messageExt, buffer.array());
-                    newMessage.putUserProperty(RocketMQProtocolConstant.SEND_ADDRESS, RocketMQProtocolConstant.LOCAL_ADDRESS.getHostString());
-                    newMessage.putUserProperty(RocketMQProtocolConstant.URL_STRING, urlString);
-                    SendResult sendResult = defaultMQProducer.send(newMessage, 3000);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(String.format("send result is : %s", sendResult));
-                    }
-                } catch (Exception e) {
-                    String exceptionInfo = String.format("send response fail, url is %s cause is %s", url, e.getMessage());
-                    logger.error(exceptionInfo, e);
-                }
+                });
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+        }
+
+        private void execute(MessageExt messageExt){
+            RpcContext.getContext().setRemoteAddress(messageExt.getUserProperty(RocketMQProtocolConstant.SEND_ADDRESS), 9876);
+            String urlString = messageExt.getUserProperty(RocketMQProtocolConstant.URL_STRING);
+            URL url = URL.valueOf(urlString);
+
+            RocketMQChannel channel = new RocketMQChannel();
+            channel.setRemoteAddress(RpcContext.getContext().getRemoteAddress());
+            channel.setUrl(url);
+            channel.setUrlString(urlString);
+            channel.setMessageExt(messageExt);
+            channel.setDefaultMQProducer(defaultMQProducer);
+            channel.setRocketMQCountCodec(rocketmqCountCodec);
+
+            Response response = this.invoke(messageExt, channel, url);
+            if (Objects.isNull(response)) {
+                return;
+            }
+            ChannelBuffer buffer = this.createChannelBuffer(channel, response, url);
+            if (Objects.isNull(buffer)) {
+                return;
+            }
+            this.sendMessage(messageExt, buffer, url, urlString);
+        }
+
+        private Response invoke(MessageExt messageExt, Channel channel, URL url) {
+            Response response = new Response();
+            try {
+                String timeoutString = messageExt.getUserProperty(CommonConstants.TIMEOUT_KEY);
+                Long timeout = Long.valueOf(timeoutString);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(String.format("reply message ext is : %s", messageExt));
+                }
+                if (Objects.isNull(messageExt.getProperty(MessageConst.PROPERTY_CLUSTER))) {
+                    MQClientException exception = new MQClientException(ClientErrorCode.CREATE_REPLY_MESSAGE_EXCEPTION,
+                        "create reply message fail, requestMessage error, property[" + MessageConst.PROPERTY_CLUSTER + "] is null.");
+                    response.setErrorMessage(exception.getMessage());
+                    response.setStatus(Response.BAD_REQUEST);
+                    logger.error(exception);
+                } else {
+                    HeapChannelBuffer heapChannelBuffer = new HeapChannelBuffer(messageExt.getBody());
+                    Object object = rocketmqCountCodec.decode(channel, heapChannelBuffer);
+                    String topic = messageExt.getTopic();
+                    Invocation inv = (Invocation) ((Request) object).getData();
+                    if (timeout < System.currentTimeMillis()) {
+                        logger.warn(String.format("message timeoute time is %d invocation is %s ", timeout, inv));
+                        return null;
+                    }
+                    Invoker<?> invoker = exporterMap.get(topic).getInvoker();
+
+                    RpcContext.getContext().setRemoteAddress(channel.getRemoteAddress());
+                    Result result = invoker.invoke(inv);
+                    response.setStatus(Response.OK);
+                    response.setResult(result);
+                }
+            } catch (Exception e) {
+                String exceptionInfo = String.format("data decode or invoke fail, url is %s cause is %s", url, e.getMessage());
+                response.setErrorMessage(exceptionInfo);
+                response.setStatus(Response.BAD_REQUEST);
+                logger.error(exceptionInfo, e);
+            }
+            return response;
+        }
+
+        private ChannelBuffer createChannelBuffer(Channel channel, Response response, URL url) {
+            ChannelBuffer buffer = new DynamicChannelBuffer(2048);
+            try {
+                rocketmqCountCodec.encode(channel, buffer, response);
+            } catch (Exception e) {
+                String exceptionInfo = String.format("encode fail, url is %s cause is %s", url, e.getMessage());
+                response.setErrorMessage(exceptionInfo);
+                response.setStatus(Response.BAD_REQUEST);
+                logger.error(exceptionInfo, e);
+                try {
+                    buffer = new DynamicChannelBuffer(2048);
+                    rocketmqCountCodec.encode(channel, buffer, response);
+                } catch (IOException e1) {
+                    String exceptionInfo1 = String.format("encode exception response fail, url is %s cause is %s", url, e.getMessage());
+                    logger.error(exceptionInfo1, e1);
+                    buffer = null;
+                }
+            }
+            return buffer;
+        }
+
+        private boolean sendMessage(MessageExt messageExt, ChannelBuffer buffer, URL url, String urlString) {
+            try {
+                Message newMessage = MessageUtil.createReplyMessage(messageExt, buffer.array());
+                newMessage.putUserProperty(RocketMQProtocolConstant.SEND_ADDRESS, RocketMQProtocolConstant.LOCAL_ADDRESS.getHostString());
+                newMessage.putUserProperty(RocketMQProtocolConstant.URL_STRING, urlString);
+                SendResult sendResult = defaultMQProducer.send(newMessage, 3000);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(String.format("send result is : %s", sendResult));
+                }
+                return true;
+            } catch (Exception e) {
+                String exceptionInfo = String.format("send response fail, url is %s cause is %s", url, e.getMessage());
+                logger.error(exceptionInfo, e);
+                return false;
+            }
         }
 
     }
