@@ -36,6 +36,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-api</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.ecwid.consul</groupId>
