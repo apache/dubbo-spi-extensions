@@ -39,6 +39,7 @@ limitations under the License.
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.protostuff</groupId>

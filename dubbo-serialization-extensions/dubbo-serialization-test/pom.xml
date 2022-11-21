@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-common</artifactId>
+            <artifactId>dubbo</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>gson</artifactId>

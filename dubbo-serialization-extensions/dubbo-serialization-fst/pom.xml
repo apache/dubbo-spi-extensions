@@ -35,6 +35,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>de.ruedigermoeller</groupId>
