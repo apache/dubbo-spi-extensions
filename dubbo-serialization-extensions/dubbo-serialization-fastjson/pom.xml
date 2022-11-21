@@ -27,7 +27,7 @@ limitations under the License.
     <artifactId>dubbo-serialization-fastjson</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <description>The fastjson serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>

@@ -28,7 +28,7 @@ limitations under the License.
     <artifactId>dubbo-serialization-protostuff</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <description>The protostuff serialization module of dubbo project</description>
 
     <properties>

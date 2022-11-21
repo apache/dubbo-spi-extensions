@@ -25,7 +25,7 @@ limitations under the License.
     </parent>
 
     <artifactId>dubbo-serialization-native-hession</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>The native-hession serialization module of dubbo project</description>

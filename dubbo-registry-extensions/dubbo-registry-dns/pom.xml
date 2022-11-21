@@ -29,13 +29,14 @@
     <artifactId>dubbo-registry-dns</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <description>The DNS registry module of Dubbo project</description>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
