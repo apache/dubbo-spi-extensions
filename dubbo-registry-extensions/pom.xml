@@ -28,9 +28,7 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <modules>
-        <module>dubbo-registry-kubernetes</module>
         <module>dubbo-registry-dns</module>
-        <module>dubbo-registry-xds</module>
         <module>dubbo-registry-consul</module>
         <module>dubbo-registry-etcd3</module>
         <module>dubbo-registry-redis</module>
