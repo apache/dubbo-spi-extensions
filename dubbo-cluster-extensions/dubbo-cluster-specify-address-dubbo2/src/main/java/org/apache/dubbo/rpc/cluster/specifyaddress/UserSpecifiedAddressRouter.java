@@ -31,14 +31,24 @@ import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.apache.dubbo.common.constants.CommonConstants.*;
+import static org.apache.dubbo.common.constants.CommonConstants.DUBBO;
+import static org.apache.dubbo.common.constants.CommonConstants.MONITOR_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
+
 
 public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     private final static Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
@@ -248,7 +258,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
                 .build();
     }
 
-    public <T> URL rebuildAddress(Address address, URL consumerUrl) {
+    public URL rebuildAddress(Address address, URL consumerUrl) {
         URL url = address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getParameter(VERSION_KEY, "0.0.0"));
