@@ -240,20 +240,20 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
             String ip = address.getIp();
             int port = address.getPort();
             if (port == 0) {
-                port = this.protocol.getDefaultPort();
+                port = ExtensionLoader.getExtensionLoader(Protocol.class).getDefaultExtension().getDefaultPort();
             }
-            return turnRegistryUrlToConsumerUrl(consumerUrl, ip, port);
+            return copyConsumerUrl(consumerUrl, ip, port, new HashMap<>());
         }
     }
 
-    private URL turnRegistryUrlToConsumerUrl(URL url, String ip, int port) {
+    private URL copyConsumerUrl(URL url, String ip, int port, Map<String, String> parameters) {
         return URLBuilder.from(url)
                 .setHost(ip)
                 .setPort(port)
-                .setProtocol(DUBBO)
+                .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
                 .setPath(url.getPath())
                 .clearParameters()
-                .addParameters(url.getParameters())
+                .addParameters(parameters)
                 .removeParameter(MONITOR_KEY)
                 .build();
     }
@@ -263,12 +263,8 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getParameter(VERSION_KEY, "0.0.0"));
         parameters.put(GROUP_KEY, consumerUrl.getParameter(GROUP_KEY));
-        String ip = address.getIp();
-        int port = address.getPort();
-        if (port == 0) {
-            port = this.protocol.getDefaultPort();
-        }
-        return turnRegistryUrlToConsumerUrl(consumerUrl, ip, port);
+        parameters.putAll(consumerUrl.getParameters());
+        return copyConsumerUrl(consumerUrl, url.getHost(), url.getPort(),parameters);
     }
 
     private Invoker<T> getOrBuildInvokerCache(URL url) {
@@ -303,11 +299,12 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     private Invoker<T> refer(URL url) {
+
         try {
-            Class interfaceClass = Class.forName(getUrl().getServiceName(), true, ClassUtils.getClassLoader());
-            return protocol.refer(interfaceClass, url);
+            Class interfaceClass = Class.forName(getUrl().getServiceInterface(), true, ClassUtils.getClassLoader());
+            return this.protocol.refer(interfaceClass, url);
         } catch (ClassNotFoundException e) {
-            throw new RpcException(e);
+            throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
