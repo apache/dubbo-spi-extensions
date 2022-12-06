@@ -1,0 +1,1 @@
+disableRetry=org.apache.dubbo.rpc.cluster.specifyaddress.DisableRetryClusterFilter

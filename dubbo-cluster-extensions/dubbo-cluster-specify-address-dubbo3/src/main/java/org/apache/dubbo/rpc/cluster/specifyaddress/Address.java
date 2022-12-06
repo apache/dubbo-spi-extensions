@@ -31,6 +31,8 @@ public class Address implements Serializable {
     // address - priority: 1
     private URL urlAddress;
     private boolean needToCreate = false;
+    // If disabled, the failfast strategy will be selected
+    private boolean disableRetry = true;
 
     public Address(String ip, int port) {
         this.ip = ip;
@@ -42,6 +44,13 @@ public class Address implements Serializable {
         this.ip = ip;
         this.port = port;
         this.needToCreate = needToCreate;
+    }
+
+    public Address(String ip, int port, boolean needToCreate, boolean disableRetry) {
+        this.ip = ip;
+        this.port = port;
+        this.needToCreate = needToCreate;
+        this.disableRetry = disableRetry;
     }
 
     public Address(URL address) {
@@ -80,6 +89,14 @@ public class Address implements Serializable {
 
     public void setNeedToCreate(boolean needToCreate) {
         this.needToCreate = needToCreate;
+    }
+
+    public boolean isDisableRetry() {
+        return disableRetry;
+    }
+
+    public void setDisableRetry(boolean disableRetry) {
+        this.disableRetry = disableRetry;
     }
 
     @Override

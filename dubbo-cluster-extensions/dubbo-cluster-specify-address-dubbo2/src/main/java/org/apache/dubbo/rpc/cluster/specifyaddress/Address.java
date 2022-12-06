@@ -32,6 +32,8 @@ public class Address implements Serializable {
     private URL urlAddress;
     private boolean needToCreate = false;
 
+    private boolean disableRetry = true;
+
     public Address(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -42,6 +44,18 @@ public class Address implements Serializable {
         this.ip = ip;
         this.port = port;
         this.needToCreate = needToCreate;
+    }
+
+    /**
+     * If disabled, can avoid retrying to local clusters with non-specified ip
+     * Otherwise, the thread variable will not be removed automatically and
+     * needs to be triggered manually {@link UserSpecifiedAddressUtil#removeAddress()}
+     */
+    public Address(String ip, int port, boolean needToCreate, boolean disableRetry) {
+        this.ip = ip;
+        this.port = port;
+        this.needToCreate = needToCreate;
+        this.disableRetry = disableRetry;
     }
 
     public Address(URL address) {
@@ -82,14 +96,22 @@ public class Address implements Serializable {
         this.needToCreate = needToCreate;
     }
 
+    public boolean isDisableRetry() {
+        return disableRetry;
+    }
+
+    public void setDisableRetry(boolean disableRetry) {
+        this.disableRetry = disableRetry;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
-            "ip='" + ip + '\'' +
-            ", port=" + port +
-            ", address=" + urlAddress +
-            ", needToCreate=" + needToCreate +
-            '}';
+                "ip='" + ip + '\'' +
+                ", port=" + port +
+                ", address=" + urlAddress +
+                ", needToCreate=" + needToCreate +
+                '}';
     }
 
     @Override

@@ -31,11 +31,24 @@ public class UserSpecifiedAddressUtil {
     }
 
     public static Address getAddress() {
+
+        Address current = null;
         try {
-            return ADDRESS.get();
+            current = ADDRESS.get();
         } finally {
-            // work once
-            ADDRESS.remove();
+            // work once when disable retry
+            if (current != null && current.isDisableRetry()) {
+                ADDRESS.remove();
+            }
         }
+        return current;
+    }
+
+    public static Address current() {
+        return ADDRESS.get();
+    }
+
+    public static void removeAddress() {
+        ADDRESS.remove();
     }
 }
