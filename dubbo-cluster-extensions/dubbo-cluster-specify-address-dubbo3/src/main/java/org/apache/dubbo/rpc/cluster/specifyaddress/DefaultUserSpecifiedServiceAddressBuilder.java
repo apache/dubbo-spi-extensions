@@ -81,7 +81,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
             }
             template = new DubboServiceAddressURL(
                     new PathURLAddress(protocol, null, null, consumerUrl.getPath(), ip, port),
-                    URLParam.parse(""), consumerUrl, null);
+                    consumerUrl.getUrlParam(), consumerUrl, null);
         }
 
         return template;
