@@ -21,13 +21,14 @@ import org.apache.dubbo.common.extension.ExtensionScope;
 import org.apache.dubbo.common.extension.SPI;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 
 import java.util.List;
 
 @SPI(scope = ExtensionScope.APPLICATION)
 public interface UserSpecifiedServiceAddressBuilder {
 
-    <T> URL buildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl);
+    <T> URL buildAddress(List<Invoker<T>> invokers, SpecifyAddress<URL> address, Invocation invocation, URL consumerUrl);
 
-    <T> URL rebuildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl);
+    <T> URL rebuildAddress(List<Invoker<T>> invokers, SpecifyAddress<URL> address, Invocation invocation, URL consumerUrl);
 }

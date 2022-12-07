@@ -27,6 +27,7 @@ import org.apache.dubbo.registry.client.InstanceAddressURL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Protocol;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
     }
 
     @Override
-    public <T> URL buildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl) {
+    public <T> URL buildAddress(List<Invoker<T>> invokers, SpecifyAddress<URL> address, Invocation invocation, URL consumerUrl) {
 
         boolean useFixed = false;
         URL template = null;
@@ -88,7 +89,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
     }
 
     @Override
-    public <T> URL rebuildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl) {
+    public <T> URL rebuildAddress(List<Invoker<T>> invokers, SpecifyAddress<URL> address, Invocation invocation, URL consumerUrl) {
         URL url = address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getVersion());

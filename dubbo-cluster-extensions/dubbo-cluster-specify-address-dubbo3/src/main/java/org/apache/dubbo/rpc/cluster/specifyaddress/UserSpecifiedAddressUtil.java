@@ -16,10 +16,12 @@
  */
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.threadlocal.InternalThreadLocal;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 
 public class UserSpecifiedAddressUtil {
-    private final static InternalThreadLocal<Address> ADDRESS = new InternalThreadLocal<>();
+    private final static InternalThreadLocal<SpecifyAddress<URL>> ADDRESS = new InternalThreadLocal<>();
 
     /**
      * Set specified address to next invoke
@@ -27,24 +29,23 @@ public class UserSpecifiedAddressUtil {
      * @param address specified address
      */
     public static void setAddress(Address address) {
-        ADDRESS.set(address);
+        SpecifyAddress<URL> specifyAddress = new SpecifyAddress<>();
+        specifyAddress.setIp(address.getIp());
+        specifyAddress.setPort(address.getPort());
+        specifyAddress.setUrlAddress(address.getUrlAddress());
+        specifyAddress.setNeedToCreate(address.isNeedToCreate());
+        ADDRESS.set(specifyAddress);
     }
 
-    public static Address getAddress() {
-
-        Address current = null;
-        try {
-            current = ADDRESS.get();
-        } finally {
-            // work once when disable retry
-            if (current != null && current.isDisableRetry()) {
-                ADDRESS.remove();
-            }
-        }
-        return current;
+    public static void setSpecifyAddress(SpecifyAddress<URL> specifyAddress) {
+        ADDRESS.set(specifyAddress);
     }
 
-    public static Address current() {
+    public static SpecifyAddress<URL> current() {
         return ADDRESS.get();
+    }
+
+    public static void removeAddress() {
+        ADDRESS.remove();
     }
 }

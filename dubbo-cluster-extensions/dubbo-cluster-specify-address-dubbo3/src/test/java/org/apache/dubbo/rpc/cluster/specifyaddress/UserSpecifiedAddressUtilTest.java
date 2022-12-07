@@ -22,12 +22,10 @@ import org.junit.jupiter.api.Test;
 public class UserSpecifiedAddressUtilTest {
     @Test
     public void test() {
-        Assertions.assertNull(UserSpecifiedAddressUtil.getAddress());
+        Assertions.assertNull(UserSpecifiedAddressUtil.current());
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.1", 0));
-        Assertions.assertEquals(new Address("127.0.0.1", 0), UserSpecifiedAddressUtil.getAddress());
-        Assertions.assertNull(UserSpecifiedAddressUtil.getAddress());
+        Assertions.assertEquals(new Address("127.0.0.1", 0), UserSpecifiedAddressUtil.current());
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.1", 12345));
-        Assertions.assertNotEquals(new Address("127.0.0.1", 0), UserSpecifiedAddressUtil.getAddress());
-        Assertions.assertNull(UserSpecifiedAddressUtil.getAddress());
+        Assertions.assertNotEquals(new Address("127.0.0.1", 0), UserSpecifiedAddressUtil.current());
     }
 }

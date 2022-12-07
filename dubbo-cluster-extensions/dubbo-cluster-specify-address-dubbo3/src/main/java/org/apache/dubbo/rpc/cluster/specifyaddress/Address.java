@@ -17,10 +17,15 @@
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Use {@link SpecifyAddress} instead.
+ */
+@Deprecated
 public class Address implements Serializable {
     // ip - priority: 3
     private String ip;
@@ -31,8 +36,6 @@ public class Address implements Serializable {
     // address - priority: 1
     private URL urlAddress;
     private boolean needToCreate = false;
-    // If disabled, the failfast strategy will be selected
-    private boolean disableRetry = true;
 
     public Address(String ip, int port) {
         this.ip = ip;
@@ -44,13 +47,6 @@ public class Address implements Serializable {
         this.ip = ip;
         this.port = port;
         this.needToCreate = needToCreate;
-    }
-
-    public Address(String ip, int port, boolean needToCreate, boolean disableRetry) {
-        this.ip = ip;
-        this.port = port;
-        this.needToCreate = needToCreate;
-        this.disableRetry = disableRetry;
     }
 
     public Address(URL address) {
@@ -89,14 +85,6 @@ public class Address implements Serializable {
 
     public void setNeedToCreate(boolean needToCreate) {
         this.needToCreate = needToCreate;
-    }
-
-    public boolean isDisableRetry() {
-        return disableRetry;
-    }
-
-    public void setDisableRetry(boolean disableRetry) {
-        this.disableRetry = disableRetry;
     }
 
     @Override

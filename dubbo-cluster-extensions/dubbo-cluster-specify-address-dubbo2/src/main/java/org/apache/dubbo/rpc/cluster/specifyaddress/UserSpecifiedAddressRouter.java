@@ -29,6 +29,7 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
 
 import java.util.Collections;
@@ -85,13 +86,17 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> List<Invoker<T>> route(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-        Address address = UserSpecifiedAddressUtil.getAddress();
+
+        Object addressObj = invocation.getObjectAttachment(SpecifyAddress.name);
 
         // 1. check if set address in ThreadLocal
-        if (address == null) {
+        if (addressObj == null) {
             return invokers;
         }
+
+        SpecifyAddress<URL> address = (SpecifyAddress<URL>) addressObj;
 
         List<Invoker<T>> result = new LinkedList<>();
 
@@ -112,7 +117,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         return invokers;
     }
 
-    private Invoker<?> getInvokerByURL(Address address) {
+    private Invoker<?> getInvokerByURL(SpecifyAddress<URL> address) {
         tryLoadSpecifiedMap();
 
         // try to find in directory
@@ -140,7 +145,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         return getOrBuildInvokerCache(newUrl);
     }
 
-    public Invoker<?> getInvokerByIp(Address address) {
+    public Invoker<?> getInvokerByIp(SpecifyAddress<URL> address) {
         tryLoadSpecifiedMap();
 
         String ip = address.getIp();
@@ -168,7 +173,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
 
-    private void throwException(Address address) {
+    private void throwException(SpecifyAddress<URL> address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
                 + getUrl().getServiceKey() + "]");
     }
@@ -228,7 +233,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
 
-    public <T> URL buildAddress(List<Invoker<T>> invokers, Address address, URL consumerUrl) {
+    public <T> URL buildAddress(List<Invoker<T>> invokers, SpecifyAddress<URL> address, URL consumerUrl) {
         if (!invokers.isEmpty()) {
             URL template = invokers.iterator().next().getUrl();
             template = template.setHost(address.getIp());
@@ -258,7 +263,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
                 .build();
     }
 
-    public URL rebuildAddress(Address address, URL consumerUrl) {
+    public URL rebuildAddress(SpecifyAddress<URL> address, URL consumerUrl) {
         URL url = address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getParameter(VERSION_KEY, "0.0.0"));

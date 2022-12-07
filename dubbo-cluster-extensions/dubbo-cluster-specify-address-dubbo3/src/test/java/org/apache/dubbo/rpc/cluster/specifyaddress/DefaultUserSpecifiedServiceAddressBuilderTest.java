@@ -19,6 +19,7 @@ package org.apache.dubbo.rpc.cluster.specifyaddress;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ServiceModel;
 
@@ -35,7 +36,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
 
         DefaultUserSpecifiedServiceAddressBuilder defaultUserSpecifiedServiceAddressBuilder = new DefaultUserSpecifiedServiceAddressBuilder(applicationModel);
 
-        Address address = new Address("127.0.0.1", 0);
+        SpecifyAddress<URL> address = new SpecifyAddress<>("127.0.0.1", 0);
         ServiceModel serviceModel = Mockito.mock(ServiceModel.class);
         URL consumerUrl = URL.valueOf("").addParameter("Test", "Value").setScopeModel(applicationModel).setServiceModel(serviceModel);
         URL url = defaultUserSpecifiedServiceAddressBuilder.buildAddress(Collections.emptyList(), address, Mockito.mock(Invocation.class), consumerUrl);
@@ -45,7 +46,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address("127.0.0.1", 20770);
+        address = new SpecifyAddress<>("127.0.0.1", 20770);
         url = defaultUserSpecifiedServiceAddressBuilder.buildAddress(Collections.emptyList(), address, Mockito.mock(Invocation.class), consumerUrl);
         Assertions.assertEquals("127.0.0.1", url.getHost());
         Assertions.assertEquals(20770, url.getPort());
@@ -57,7 +58,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Invoker invoker = Mockito.mock(Invoker.class);
         Mockito.when(invoker.getUrl()).thenReturn(invokerUrl);
 
-        address = new Address("127.0.0.1", 20770);
+        address = new SpecifyAddress<>("127.0.0.1", 20770);
         url = defaultUserSpecifiedServiceAddressBuilder.buildAddress(Collections.singletonList(invoker), address, Mockito.mock(Invocation.class), consumerUrl);
         Assertions.assertEquals("127.0.0.1", url.getHost());
         Assertions.assertEquals(20770, url.getPort());
@@ -66,7 +67,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address("127.0.0.1", 0);
+        address = new SpecifyAddress<>("127.0.0.1", 0);
         url = defaultUserSpecifiedServiceAddressBuilder.buildAddress(Collections.singletonList(invoker), address, Mockito.mock(Invocation.class), consumerUrl);
         Assertions.assertEquals("127.0.0.1", url.getHost());
         Assertions.assertEquals(20660, url.getPort());
@@ -84,7 +85,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
 
         DefaultUserSpecifiedServiceAddressBuilder defaultUserSpecifiedServiceAddressBuilder = new DefaultUserSpecifiedServiceAddressBuilder(applicationModel);
 
-        Address address = new Address(URL.valueOf("127.0.0.1:12345?Test=Value"));
+        SpecifyAddress<URL> address = new SpecifyAddress<>(URL.valueOf("127.0.0.1:12345?Test=Value"));
         ServiceModel serviceModel = Mockito.mock(ServiceModel.class);
         URL consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value")
             .addParameter("version", "1.0.0").addParameter("group", "Dubbo")
@@ -98,7 +99,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address(URL.valueOf("127.0.0.1:12345?Test=Value1"));
+        address = new SpecifyAddress<>(URL.valueOf("127.0.0.1:12345?Test=Value1"));
         consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value")
             .addParameter("version", "1.0.0").addParameter("group", "Dubbo")
             .setScopeModel(applicationModel).setServiceModel(serviceModel);
@@ -111,7 +112,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
+        address = new SpecifyAddress<>(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
         consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value")
             .addParameter("version", "1.0.0").addParameter("group", "Dubbo")
             .setScopeModel(applicationModel).setServiceModel(serviceModel);
@@ -125,7 +126,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
+        address = new SpecifyAddress<>(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
         consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value")
             .addParameter("version", "1.0.0")
             .setScopeModel(applicationModel).setServiceModel(serviceModel);
@@ -139,7 +140,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
+        address = new SpecifyAddress<>(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
         consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value")
             .addParameter("group", "Dubbo")
             .setScopeModel(applicationModel).setServiceModel(serviceModel);
@@ -153,7 +154,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
         Assertions.assertEquals(serviceModel, url.getServiceModel());
         Assertions.assertEquals(applicationModel, url.getScopeModel());
 
-        address = new Address(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
+        address = new SpecifyAddress<>(URL.valueOf("127.0.0.1:12345?Test1=Value1"));
         consumerUrl = URL.valueOf("127.0.0.2:20880").addParameter("Test", "Value")
             .setScopeModel(applicationModel).setServiceModel(serviceModel);
         url = defaultUserSpecifiedServiceAddressBuilder.rebuildAddress(Collections.emptyList(), address, Mockito.mock(Invocation.class), consumerUrl);

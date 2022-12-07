@@ -36,6 +36,11 @@
             <version>2.7.18</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-cluster-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
 </project>

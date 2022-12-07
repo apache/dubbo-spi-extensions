@@ -27,6 +27,7 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 import org.apache.dubbo.rpc.cluster.router.RouterSnapshotNode;
 import org.apache.dubbo.rpc.cluster.router.state.AbstractStateRouter;
 import org.apache.dubbo.rpc.cluster.router.state.BitList;
@@ -69,7 +70,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         this.scheduledExecutorService = referenceUrl.getScopeModel().getDefaultExtension(ExecutorRepository.class).nextScheduledExecutor();
         this.protocol = referenceUrl.getOrDefaultFrameworkModel().getExtensionLoader(Protocol.class).getAdaptiveExtension();
         this.userSpecifiedServiceAddressBuilder = referenceUrl.getScopeModel().getExtensionLoader(UserSpecifiedServiceAddressBuilder.class)
-            .getExtension(referenceUrl.getParameter(USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY, DefaultUserSpecifiedServiceAddressBuilder.NAME));
+                .getExtension(referenceUrl.getParameter(USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY, DefaultUserSpecifiedServiceAddressBuilder.NAME));
     }
 
     @Override
@@ -83,18 +84,21 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected BitList<Invoker<T>> doRoute(BitList<Invoker<T>> invokers, URL url, Invocation invocation,
                                           boolean needToPrintMessage, Holder<RouterSnapshotNode<T>> nodeHolder,
                                           Holder<String> messageHolder) throws RpcException {
-        Address address = UserSpecifiedAddressUtil.getAddress();
+        Object addressObj = invocation.getObjectAttachment(SpecifyAddress.name);
 
         // 1. check if set address in ThreadLocal
-        if (address == null) {
+        if (addressObj == null) {
             if (needToPrintMessage) {
                 messageHolder.set("No address specified, continue.");
             }
             return continueRoute(invokers, url, invocation, needToPrintMessage, nodeHolder);
         }
+
+        SpecifyAddress<URL> address = (SpecifyAddress<URL>) addressObj;
 
         BitList<Invoker<T>> result = new BitList<>(invokers, true);
 
@@ -110,7 +114,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
 
         // 3. check if set ip and port
         if (StringUtils.isNotEmpty(address.getIp())) {
-            Invoker<T> invoker = getInvokerByIp(address, invocation);
+            Invoker<T> invoker = getInvokerByIp(address);
             if (invoker != null) {
                 result.add(invoker);
                 if (needToPrintMessage) {
@@ -140,7 +144,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         return true;
     }
 
-    private Invoker<T> getInvokerByURL(Address address, Invocation invocation) {
+    private Invoker<T> getInvokerByURL(SpecifyAddress<URL> address, Invocation invocation) {
         tryLoadSpecifiedMap();
 
         // try to find in directory
@@ -200,7 +204,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         return cache.getInvoker();
     }
 
-    public Invoker<T> getInvokerByIp(Address address, Invocation invocation) {
+    public Invoker<T> getInvokerByIp(SpecifyAddress<URL> address) {
         tryLoadSpecifiedMap();
 
         String ip = address.getIp();
@@ -220,13 +224,13 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         }
 
         if (!address.isNeedToCreate()) {
-            throwException(invocation, address);
+            throwException(address);
         }
 
         return null;
     }
 
-    public Invoker<T> createInvoker(Address address, Invocation invocation) {
+    public Invoker<T> createInvoker(SpecifyAddress<URL> address, Invocation invocation) {
         return getOrBuildInvokerCache(userSpecifiedServiceAddressBuilder.buildAddress(invokers, address, invocation, getUrl()));
     }
 
@@ -234,9 +238,9 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         return (Invoker<T>) protocol.refer(getUrl().getServiceModel().getServiceInterfaceClass(), url);
     }
 
-    private void throwException(Invocation invocation, Address address) {
+    private void throwException(SpecifyAddress<URL> address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
-            + getUrl().getServiceKey() + "]");
+                + getUrl().getServiceKey() + "]");
     }
 
     private Map<String, Invoker<T>> processIp(List<Invoker<T>> invokerList) {

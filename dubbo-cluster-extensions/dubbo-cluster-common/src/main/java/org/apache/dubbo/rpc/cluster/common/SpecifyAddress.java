@@ -14,19 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.cluster.specifyaddress;
-
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
+package org.apache.dubbo.rpc.cluster.common;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Use {@link SpecifyAddress} instead.
- */
-@Deprecated
-public class Address implements Serializable {
+public class SpecifyAddress<U> implements Serializable {
+
+    public static final String name = "specifyAddress";
+
     // ip - priority: 3
     private String ip;
 
@@ -34,22 +30,29 @@ public class Address implements Serializable {
     private int port;
 
     // address - priority: 1
-    private URL urlAddress;
+    private U urlAddress;
     private boolean needToCreate = false;
 
-    public Address(String ip, int port) {
+    public SpecifyAddress() {
+
+    }
+
+    public SpecifyAddress(String ip, int port) {
         this.ip = ip;
         this.port = port;
         this.urlAddress = null;
     }
 
-    public Address(String ip, int port, boolean needToCreate) {
+    /**
+     * disableRetry default value is true, will disable failover
+     */
+    public SpecifyAddress(String ip, int port, boolean needToCreate) {
         this.ip = ip;
         this.port = port;
         this.needToCreate = needToCreate;
     }
 
-    public Address(URL address) {
+    public SpecifyAddress(U address) {
         this.ip = null;
         this.port = 0;
         this.urlAddress = address;
@@ -71,11 +74,11 @@ public class Address implements Serializable {
         this.port = port;
     }
 
-    public URL getUrlAddress() {
+    public U getUrlAddress() {
         return urlAddress;
     }
 
-    public void setUrlAddress(URL urlAddress) {
+    public void setUrlAddress(U urlAddress) {
         this.urlAddress = urlAddress;
     }
 
@@ -105,7 +108,7 @@ public class Address implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Address address = (Address) o;
+        SpecifyAddress<?> address = (SpecifyAddress<?>) o;
         return port == address.port && needToCreate == address.needToCreate && Objects.equals(ip, address.ip) && Objects.equals(urlAddress, address.urlAddress);
     }
 
