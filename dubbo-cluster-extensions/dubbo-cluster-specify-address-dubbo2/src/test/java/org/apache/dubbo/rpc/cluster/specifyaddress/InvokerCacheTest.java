@@ -18,6 +18,7 @@ package org.apache.dubbo.rpc.cluster.specifyaddress;
 
 import org.apache.dubbo.rpc.Invoker;
 
+import org.apache.dubbo.rpc.cluster.common.InvokerCache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,7 +26,7 @@ import org.mockito.Mockito;
 public class InvokerCacheTest {
     @Test
     public void test() throws InterruptedException {
-        InvokerCache<Object> cache = new InvokerCache<>(Mockito.mock(Invoker.class));
+        InvokerCache<Invoker<Object>> cache = new InvokerCache<>(Mockito.mock(Invoker.class));
         long originTime = cache.getLastAccess();
         Thread.sleep(5);
         cache.getInvoker();

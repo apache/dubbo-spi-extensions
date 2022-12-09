@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.cluster.specifyaddress;
+package org.apache.dubbo.rpc.cluster.common;
 
-import org.apache.dubbo.rpc.Invoker;
 
 public class InvokerCache<T> {
     private long lastAccess = System.currentTimeMillis();
-    private final Invoker<T> invoker;
+    private final T invoker;
 
-    public InvokerCache(Invoker<T> invoker) {
+    public InvokerCache(T invoker) {
         this.invoker = invoker;
     }
 
@@ -30,7 +29,7 @@ public class InvokerCache<T> {
         return lastAccess;
     }
 
-    public Invoker<T> getInvoker() {
+    public T getInvoker() {
         lastAccess = System.currentTimeMillis();
         return invoker;
     }

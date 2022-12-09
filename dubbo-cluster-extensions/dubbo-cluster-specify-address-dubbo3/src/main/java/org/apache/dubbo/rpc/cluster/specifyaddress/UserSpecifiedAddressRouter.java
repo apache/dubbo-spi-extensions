@@ -27,6 +27,7 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.common.InvokerCache;
 import org.apache.dubbo.rpc.cluster.common.SpecifyAddress;
 import org.apache.dubbo.rpc.cluster.router.RouterSnapshotNode;
 import org.apache.dubbo.rpc.cluster.router.state.AbstractStateRouter;
@@ -56,7 +57,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
     private volatile Map<String, Invoker<T>> address2Invoker;
 
     private final Lock cacheLock = new ReentrantLock();
-    private final Map<URL, InvokerCache<T>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
+    private final Map<URL, InvokerCache<Invoker<T>>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
 
     private final UserSpecifiedServiceAddressBuilder userSpecifiedServiceAddressBuilder;
 
@@ -176,7 +177,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
     private Invoker<T> getOrBuildInvokerCache(URL url) {
         logger.info("Unable to find a proper invoker from directory. Try to create new invoker. New URL: " + url);
 
-        InvokerCache<T> cache;
+        InvokerCache<Invoker<T>> cache;
         cacheLock.lock();
         try {
             cache = newInvokerCache.get(url);
@@ -279,7 +280,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
 
     // For ut only
     @Deprecated
-    protected Map<URL, InvokerCache<T>> getNewInvokerCache() {
+    protected Map<URL, InvokerCache<Invoker<T>>> getNewInvokerCache() {
         return newInvokerCache;
     }
 
@@ -315,9 +316,9 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
             cacheLock.lock();
             try {
                 if (newInvokerCache.size() > 0) {
-                    Iterator<Map.Entry<URL, InvokerCache<T>>> iterator = newInvokerCache.entrySet().iterator();
+                    Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
                     while (iterator.hasNext()) {
-                        Map.Entry<URL, InvokerCache<T>> entry = iterator.next();
+                        Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
                         if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
                             iterator.remove();
                             entry.getValue().getInvoker().destroy();

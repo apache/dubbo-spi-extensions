@@ -25,9 +25,11 @@ public class UserSpecifiedAddressUtil {
 
     /**
      * Set specified address to next invoke
+     * use setSpecifyAddress(SpecifyAddress<URL> specifyAddress) replace
      *
      * @param address specified address
      */
+    @Deprecated
     public static void setAddress(Address address) {
         SpecifyAddress<URL> specifyAddress = new SpecifyAddress<>();
         specifyAddress.setIp(address.getIp());
@@ -37,6 +39,11 @@ public class UserSpecifiedAddressUtil {
         ADDRESS.set(specifyAddress);
     }
 
+    /**
+     * Set specified address to next invoke
+     *
+     * @param specifyAddress specified address
+     */
     public static void setSpecifyAddress(SpecifyAddress<URL> specifyAddress) {
         ADDRESS.set(specifyAddress);
     }
