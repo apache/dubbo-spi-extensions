@@ -49,6 +49,7 @@ public class PolarisRegistryServiceDiscoveryTest {
     public static void setup() {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("namespace", "dubbo-java-test");
+        parameters.put("persist_enable", "false");
         URL url = new URL("polaris", "183.47.111.80", 8091, parameters);
         applicationModel = FrameworkModel.defaultModel().newApplication();
         applicationModel.getApplicationConfigManager().setApplication(new ApplicationConfig("Test"));

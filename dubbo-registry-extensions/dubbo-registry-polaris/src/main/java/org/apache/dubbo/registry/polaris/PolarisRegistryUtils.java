@@ -17,6 +17,7 @@
 
 package org.apache.dubbo.registry.polaris;
 
+import com.tencent.polaris.common.registry.BaseBootConfigHandler;
 import com.tencent.polaris.common.registry.PolarisOperator;
 import com.tencent.polaris.common.registry.PolarisOperators;
 import org.apache.dubbo.common.URL;
@@ -31,7 +32,8 @@ public class PolarisRegistryUtils {
             if (null != existsOperator) {
                 return existsOperator;
             } else {
-                PolarisOperator polarisOperator = new PolarisOperator(host, port, registryURL.getParameters());
+                PolarisOperator polarisOperator = new PolarisOperator(
+                    host, port, registryURL.getParameters(), new BaseBootConfigHandler());
                 PolarisOperators.INSTANCE.addPolarisOperator(polarisOperator);
                 return polarisOperator;
             }

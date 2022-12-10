@@ -28,9 +28,13 @@ import com.tencent.polaris.common.registry.PolarisOperators;
 import com.tencent.polaris.common.router.ObjectParser;
 import com.tencent.polaris.common.router.RuleHandler;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
@@ -47,6 +51,8 @@ public class PolarisRouter extends AbstractRouter {
     private final RuleHandler routeRuleHandler;
 
     private final PolarisOperator polarisOperator;
+
+    private final AtomicReference<Map<URL, InstanceInvoker<?>>> invokersCache = new AtomicReference<>();
 
     public PolarisRouter(URL url) {
         super(url);
@@ -65,16 +71,19 @@ public class PolarisRouter extends AbstractRouter {
         if (null == polarisOperator) {
             return invokers;
         }
-        List<Instance> instances;
-        if (invokers.get(0) instanceof Instance) {
-            instances = (List<Instance>) ((List<?>) invokers);
-        } else {
-            instances = new ArrayList<>();
-            for (Invoker<T> invoker : invokers) {
-                instances.add(new InstanceInvoker<>(invoker, polarisOperator.getPolarisConfig().getNamespace()));
-            }
+        List<Instance> instances = new ArrayList<>(invokers.size());
+        Map<URL, InstanceInvoker<?>> instanceInvokerMap = invokersCache.get();
+        if (null == instanceInvokerMap) {
+            instanceInvokerMap = Collections.emptyMap();
         }
-
+        for (Invoker<T> invoker : invokers) {
+                InstanceInvoker<?> instanceInvoker = instanceInvokerMap.get(invoker.getUrl());
+                if (null != instanceInvoker) {
+                    instances.add(instanceInvoker);
+                } else {
+                    instances.add(new InstanceInvoker<>(invoker, polarisOperator.getPolarisConfig().getNamespace()));
+                }
+        }
         String service = url.getServiceInterface();
         ServiceRule serviceRule = polarisOperator.getServiceRule(service, EventType.ROUTING);
         Object ruleObject = serviceRule.getRule();
@@ -107,5 +116,16 @@ public class PolarisRouter extends AbstractRouter {
         List<Instance> resultInstances = polarisOperator
                 .route(service, invocation.getMethodName(), arguments, instances);
         return (List<Invoker<T>>) ((List<?>) resultInstances);
+    }
+
+    public <T> void notify(List<Invoker<T>> invokers) {
+        if (null == polarisOperator) {
+            return;
+        }
+        Map<URL, InstanceInvoker<?>> instanceInvokers = new HashMap<>(invokers.size());
+        for (Invoker<T> invoker : invokers) {
+            instanceInvokers.put(invoker.getUrl(), new InstanceInvoker<>(invoker, polarisOperator.getPolarisConfig().getNamespace()));
+        }
+        invokersCache.set(instanceInvokers);
     }
 }

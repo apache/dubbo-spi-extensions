@@ -220,4 +220,8 @@ public class InstanceInvoker<T> implements Instance, Invoker<T> {
     public int hashCode() {
         return Objects.hash(defaultInstance);
     }
+
+    public Invoker<T> getInvoker() {
+        return invoker;
+    }
 }

@@ -40,6 +40,7 @@ public class PolarisRegistryTest {
     public static void setup() {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("namespace", "dubbo-java-test");
+        parameters.put("persist_enable", "false");
         URL url = new URL("polaris", "183.47.111.80", 8091, parameters);
         polarisRegistry = new PolarisRegistry(url);
     }
