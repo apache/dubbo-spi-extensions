@@ -56,14 +56,12 @@ public class PolarisRegistryTest {
     public void testSubscribe() {
         int count = 10;
         AtomicBoolean notified = new AtomicBoolean(false);
-        AtomicInteger notifiedCount = new AtomicInteger(0);
         String svcName = "polaris-registry-test-service-subscribe";
         URL consumerUrl = URL.valueOf("consumer://0.0.0.0/" + svcName);
         NotifyListener listener = new NotifyListener() {
             @Override
             public void notify(List<URL> urls) {
                 notified.set(true);
-                notifiedCount.set(urls.size());
             }
         };
         polarisRegistry.subscribe(consumerUrl, listener);
@@ -81,7 +79,6 @@ public class PolarisRegistryTest {
             polarisRegistry.doUnregister(serviceUrl);
         }
         Assertions.assertTrue(notified.get());
-        Assertions.assertEquals(count, notifiedCount.get());
     }
 
     @Test
