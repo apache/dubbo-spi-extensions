@@ -35,7 +35,7 @@
         <module>dubbo-cluster-loadbalance-peakewma</module>
         <module>dubbo-cluster-specify-address-dubbo3</module>
         <module>dubbo-cluster-specify-address-dubbo2</module>
-        <module>dubbo-cluster-common</module>
+        <module>dubbo-cluster-specify-address-common</module>
     </modules>
 
 
