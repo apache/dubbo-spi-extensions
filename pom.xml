@@ -80,21 +80,21 @@
         <url>https://github.com/apache/dubbo-spi-extensions/issues</url>
     </issueManagement>
 
-<!--    <modules>-->
-<!--        <module>dubbo-extensions-dependencies-bom</module>-->
-<!--        <module>dubbo-extensions-distribution</module>-->
-<!--        <module>dubbo-api-docs</module>-->
-<!--        <module>dubbo-cluster-extensions</module>-->
-<!--        <module>dubbo-common-extensions</module>-->
-<!--        <module>dubbo-filter-extensions</module>-->
-<!--        <module>dubbo-metadata-report-extensions</module>-->
-<!--        <module>dubbo-registry-extensions</module>-->
-<!--        <module>dubbo-remoting-extensions</module>-->
-<!--        <module>dubbo-configcenter-extensions</module>-->
-<!--        <module>dubbo-rpc-extensions</module>-->
-<!--        <module>dubbo-serialization-extensions</module>-->
-<!--        <module>dubbo-mock-extensions</module>-->
-<!--    </modules>-->
+    <modules>
+        <module>dubbo-extensions-dependencies-bom</module>
+        <module>dubbo-extensions-distribution</module>
+        <module>dubbo-api-docs</module>
+        <module>dubbo-cluster-extensions</module>
+        <module>dubbo-common-extensions</module>
+        <module>dubbo-filter-extensions</module>
+        <module>dubbo-metadata-report-extensions</module>
+        <module>dubbo-registry-extensions</module>
+        <module>dubbo-remoting-extensions</module>
+        <module>dubbo-configcenter-extensions</module>
+        <module>dubbo-rpc-extensions</module>
+        <module>dubbo-serialization-extensions</module>
+        <module>dubbo-mock-extensions</module>
+    </modules>
 
     <properties>
         <revision>1.0.4-SNAPSHOT</revision>
