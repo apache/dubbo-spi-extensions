@@ -37,7 +37,7 @@ public class Address implements Serializable {
 
     }
 
-    protected Address(String ip, int port) {
+    public Address(String ip, int port) {
         this.ip = ip;
         this.port = port;
         this.urlAddress = null;
@@ -46,13 +46,13 @@ public class Address implements Serializable {
     /**
      * disableRetry default value is true, will disable failover
      */
-    protected Address(String ip, int port, boolean needToCreate) {
+    public Address(String ip, int port, boolean needToCreate) {
         this.ip = ip;
         this.port = port;
         this.needToCreate = needToCreate;
     }
 
-    protected Address(Object address) {
+    public Address(Object address) {
         this.ip = null;
         this.port = 0;
         this.urlAddress = address;
