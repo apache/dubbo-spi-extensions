@@ -1,0 +1,136 @@
+name: Extensions Conformance Tests
+
+on:
+  pull_request:
+    paths:
+      - "**"
+      - "!**/*.md"
+      - "!docs/**"
+  push:
+    paths:
+      - '**'
+      - "!**/*.md"
+      - "!docs/**"
+
+env:
+  FORK_COUNT: 2
+  FAIL_FAST: 0
+  SHOW_ERROR_DETAIL: 1
+  BUILD_OPTS: --batch-mode --no-snapshot-updates --no-transfer-progress -Dmaven.wagon.http.retryHandler.count=3 clean package dependency:copy-dependencies -DskipTests
+
+jobs:
+  build-extensions:
+    name: "Build Extensions"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: dubbo-spi-extensions
+      - uses: actions/checkout@v2
+        with:
+          repository: 'apache/dubbo'
+          ref: '3.0'
+          path: dubbo
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - uses: actions/cache@v2
+        name: "Cache local Maven repository"
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-extensions-maven${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-extensions-maven
+      - name: "Build tools"
+        run: |
+          cd ./dubbo
+          ./mvnw --batch-mode -U -e --no-transfer-progress install -pl dubbo-build-tools -am -DskipTests=true
+      - name: "Build with Maven"
+        run: |
+          cd ./dubbo-spi-extensions
+          ./mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
+      - name: "Build Scenarios"
+        run: |
+          cd ./dubbo-spi-extensions/test/scenarios
+          ../../mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
+
+  prepare_test:
+    name: "Prepare Test"
+    runs-on: ubuntu-latest
+    env:
+      #'JOB_COUNT' MUST match 'job_id' list of 'testjob'
+      JOB_COUNT: 3
+    steps:
+      - uses: actions/checkout@v1
+      - name: Prepare test list
+        run: |
+          bash ./test/scripts/prepare-test.sh
+      - name: Upload test list
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-list
+          path: test/jobs
+
+  testjob:
+    needs: [ prepare_test,build-extensions ]
+    name: 'Conformance Test'
+    runs-on: ubuntu-latest
+    env:
+      JAVA_VER: ${{matrix.java}}
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 8,11 ]
+        #testjob id list MUST match 'JOB_COUNT' of 'prepare_test'
+        job_id: [ 1,2,3 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK ${{matrix.java}}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{matrix.java}}
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-extensions-maven${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-extensions-maven
+      - name: Download test list
+        uses: actions/download-artifact@v2
+        with:
+          name: test-list
+          path: test/jobs/
+      - name: Build test image
+        run: |
+          cd test && bash ./build-test-image.sh
+      - name: Run tests
+        run: cd test && bash ./run-tests.sh
+      - name: Upload test result
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-result
+          path: test/jobs/*-result*
+
+  test_result:
+    needs: [ testjob ]
+    name: 'Test Result (Java${{matrix.java}})'
+    if: always()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ 8,11 ]
+    env:
+      JAVA_VER: ${{matrix.java}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download test result
+        uses: actions/download-artifact@v2
+        with:
+          name: test-result
+          path: test/jobs/
+      - name: Merge test result - java ${{matrix.java}}
+        run: ./test/scripts/merge-test-results.sh

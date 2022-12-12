@@ -1,0 +1,1 @@
+nameservice=org.apache.dubbo.registry.nameservice.NameServiceRegistryFactory

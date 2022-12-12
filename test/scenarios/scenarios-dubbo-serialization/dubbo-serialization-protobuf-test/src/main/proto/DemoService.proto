@@ -1,0 +1,79 @@
+// Licensed to the Apache Software Foundation (ASF) under one or more
+// contributor license agreements.  See the NOTICE file distributed with
+// this work for additional information regarding copyright ownership.
+// The ASF licenses this file to You under the Apache License, Version 2.0
+// (the "License"); you may not use this file except in compliance with
+// the License.  You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "org.apache.dubbo.test.serialization.protobuf";
+option java_outer_classname = "DemoServiceProto";
+option objc_class_prefix = "DEMOSRV";
+
+package demoservice;
+
+// The demo service definition.
+service DemoService {
+  rpc testVoid (google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc testString (google.protobuf.StringValue) returns (google.protobuf.StringValue) {}
+  rpc testBase (google.protobuf.Int32Value) returns (google.protobuf.Int32Value) {}
+  rpc testObject (BigPerson) returns (BigPerson) {}
+}
+
+message BigPerson {
+  string personId = 1;
+  string loginName = 2;
+  enum PersonStatus {
+    ENABLED = 0;
+    DISABLED = 1;
+  }
+  PersonStatus status = 3;
+  string email = 4;
+  string penName = 5;
+  PersonInfo infoProfile = 6;
+}
+
+message PersonInfo{
+  repeated Phone phones = 1;
+  Phone fax = 2;
+  FullAddress fullAddress = 3;
+  string mobileNo = 4;
+  string name = 5;
+  bool male = 6;
+  bool female = 7;
+  string department = 8;
+  string jobTitle = 9;
+  string homepageUrl = 10;
+}
+
+message Phone{
+  string country = 1;
+  string area = 2;
+  string number = 3;
+  string extensionNumber = 4;
+}
+
+message FullAddress{
+  string countryId = 1;
+  string countryName = 2;
+  string provinceName = 3;
+  string cityId = 4;
+  string cityName = 5;
+  string streetAddress = 6;
+  string zipCode = 7;
+}
+
+

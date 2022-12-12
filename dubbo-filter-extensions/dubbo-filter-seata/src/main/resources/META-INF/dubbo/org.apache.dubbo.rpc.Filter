@@ -1,0 +1,2 @@
+seata-provider=org.apache.dubbo.seata.SeataTransactionPropagationProviderFilter
+seata-consumer=org.apache.dubbo.seata.SeataTransactionPropagationConsumerFilter
