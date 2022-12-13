@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.NetUtils;
+import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.registry.NotifyListener;
 import org.apache.dubbo.registry.client.DefaultServiceInstance;
@@ -67,7 +67,8 @@ public class PolarisRegistryServiceDiscoveryTest {
     public void testRegister() {
         int count = 10;
         String svcName = "polaris-registry-test-service-register";
-        List<ServiceInstance> serviceInstances = buildInstanceUrls(svcName, 11300, count);
+        String host = NetUtils.getLocalHost();
+        List<ServiceInstance> serviceInstances = buildInstanceUrls(svcName, host, 11300, count);
         for (ServiceInstance serviceInstance : serviceInstances) {
             polarisRegistryServiceDiscovery.doRegister(serviceInstance);
         }
@@ -76,17 +77,20 @@ public class PolarisRegistryServiceDiscoveryTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        List<ServiceInstance> instances = polarisRegistryServiceDiscovery.getInstances(svcName);
-        Assertions.assertEquals(count, instances.size());
-        for (ServiceInstance serviceInstance : serviceInstances) {
-            polarisRegistryServiceDiscovery.doUnregister(serviceInstance);
+        try {
+            List<ServiceInstance> instances = polarisRegistryServiceDiscovery.getInstances(svcName);
+            Assertions.assertEquals(count, countInstanceByHost(host, instances));
+        } finally {
+            for (ServiceInstance serviceInstance : serviceInstances) {
+                polarisRegistryServiceDiscovery.doUnregister(serviceInstance);
+            }
         }
     }
 
-    private static List<ServiceInstance> buildInstanceUrls(String service, int startPort, int count) {
+    private static List<ServiceInstance> buildInstanceUrls(String service, String host, int startPort, int count) {
         List<ServiceInstance> serviceUrls = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            ServiceInstance serviceInstance = new DefaultServiceInstance(service, NetUtils.getLocalHost(), startPort + i, applicationModel);
+            ServiceInstance serviceInstance = new DefaultServiceInstance(service, host, startPort + i, applicationModel);
             serviceUrls.add(serviceInstance);
         }
         return serviceUrls;
@@ -96,7 +100,6 @@ public class PolarisRegistryServiceDiscoveryTest {
     public void testSubscribe() {
         int count = 10;
         AtomicBoolean notified = new AtomicBoolean(false);
-        AtomicInteger notifiedCount = new AtomicInteger(0);
         String svcName = "polaris-registry-test-service-subscribe";
         Set<String> services = new HashSet<>();
         services.add(svcName);
@@ -117,9 +120,10 @@ public class PolarisRegistryServiceDiscoveryTest {
                 return consumerUrl;
             }
         };
+        String host = NetUtils.getLocalHost();
         serviceInstancesChangedListener.addListenerAndNotify(consumerUrl, listener);
         polarisRegistryServiceDiscovery.addServiceInstancesChangedListener(serviceInstancesChangedListener);
-        List<ServiceInstance> instances = buildInstanceUrls(svcName, 11300, count);
+        List<ServiceInstance> instances = buildInstanceUrls(svcName, host, 11300, count);
         for (ServiceInstance instance : instances) {
             polarisRegistryServiceDiscovery.doRegister(instance);
         }
@@ -134,5 +138,15 @@ public class PolarisRegistryServiceDiscoveryTest {
         for (ServiceInstance serviceInstance : instances) {
             polarisRegistryServiceDiscovery.doUnregister(serviceInstance);
         }
+    }
+
+    private static int countInstanceByHost(String host, List<ServiceInstance> instances) {
+        int count = 0;
+        for (ServiceInstance instance : instances) {
+            if (StringUtils.isEquals(host, instance.getHost())) {
+                count++;
+            }
+        }
+        return count;
     }
 }

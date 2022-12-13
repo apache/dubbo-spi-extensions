@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.NetUtils;
+import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.registry.NotifyListener;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -65,27 +66,32 @@ public class PolarisRegistryTest {
             }
         };
         polarisRegistry.subscribe(consumerUrl, listener);
-        List<URL> serviceUrls = buildInstanceUrls(svcName, 11300, count);
-        for (URL serviceUrl : serviceUrls) {
-            polarisRegistry.doRegister(serviceUrl);
-        }
+        String host = NetUtils.getLocalHost();
+        List<URL> serviceUrls = buildInstanceUrls(svcName, host, 11300, count);
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            for (URL serviceUrl : serviceUrls) {
+                polarisRegistry.doRegister(serviceUrl);
+            }
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            polarisRegistry.unsubscribe(consumerUrl, listener);
+            Assertions.assertTrue(notified.get());
+        } finally {
+            for (URL serviceUrl : serviceUrls) {
+                polarisRegistry.doUnregister(serviceUrl);
+            }
         }
-        polarisRegistry.unsubscribe(consumerUrl, listener);
-        for (URL serviceUrl : serviceUrls) {
-            polarisRegistry.doUnregister(serviceUrl);
-        }
-        Assertions.assertTrue(notified.get());
     }
 
     @Test
     public void testRegister() {
         String svcName = "polaris-registry-test-service-register";
         int count = 10;
-        List<URL> serviceUrls = buildInstanceUrls(svcName, 11300, count);
+        String host = NetUtils.getLocalHost();
+        List<URL> serviceUrls = buildInstanceUrls(svcName, host,11300, count);
         for (URL serviceUrl : serviceUrls) {
             polarisRegistry.doRegister(serviceUrl);
         }
@@ -94,22 +100,34 @@ public class PolarisRegistryTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Instance[] availableInstances = polarisRegistry.getPolarisOperator().getAvailableInstances(svcName, true);
-        Assertions.assertEquals(count, availableInstances.length);
-        for (URL serviceUrl : serviceUrls) {
-            polarisRegistry.doUnregister(serviceUrl);
+        try {
+            Instance[] availableInstances = polarisRegistry.getPolarisOperator().getAvailableInstances(svcName, true);
+            Assertions.assertEquals(count, countInstanceByHost(host, availableInstances));
+        } finally {
+            for (URL serviceUrl : serviceUrls) {
+                polarisRegistry.doUnregister(serviceUrl);
+            }
         }
     }
 
-    private static List<URL> buildInstanceUrls(String service, int startPort, int count) {
+    private static List<URL> buildInstanceUrls(String service, String host, int startPort, int count) {
         List<URL> serviceUrls = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            URL serviceUrl = URL.valueOf("dubbo://" + NetUtils.getLocalHost() + ":" +
+            URL serviceUrl = URL.valueOf("dubbo://" + host + ":" +
                 Integer.toString(startPort + i) + "/" + service + "?methods=test1,test2");
             serviceUrls.add(serviceUrl);
         }
         return serviceUrls;
     }
 
+    private static int countInstanceByHost(String host, Instance[] instances) {
+        int count = 0;
+        for (Instance instance : instances) {
+            if (StringUtils.isEquals(host, instance.getHost())) {
+                count++;
+            }
+        }
+        return count;
+    }
 
 }
