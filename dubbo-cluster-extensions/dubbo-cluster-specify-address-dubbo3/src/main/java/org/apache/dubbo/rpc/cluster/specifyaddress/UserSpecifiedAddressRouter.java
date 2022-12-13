@@ -88,7 +88,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
     protected BitList<Invoker<T>> doRoute(BitList<Invoker<T>> invokers, URL url, Invocation invocation,
                                           boolean needToPrintMessage, Holder<RouterSnapshotNode<T>> nodeHolder,
                                           Holder<String> messageHolder) throws RpcException {
-        Object addressObj = invocation.getObjectAttachment(Address.name);
+        Object addressObj = invocation.get(Address.name);
 
         // 1. check if set address in ThreadLocal
         if (addressObj == null) {
