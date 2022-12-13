@@ -23,7 +23,6 @@ public class UserSpecifiedAddressUtil {
 
     /**
      * Set specified address to next invoke
-     * use setSpecifyAddress(SpecifyAddress<URL> specifyAddress) replace
      *
      * @param address specified address
      */
