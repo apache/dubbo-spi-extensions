@@ -69,7 +69,7 @@ public class ReportFilter extends PolarisOperatorDelegate implements Filter {
             if (null != rpcException) {
                 code = rpcException.getCode();
                 if (code == RpcException.LIMIT_EXCEEDED_EXCEPTION) {
-                    // 限流异常不进行熔断
+                    // we won't consider limit exception as error
                     retStatus = RetStatus.RetSuccess;
                 }
             } else {
