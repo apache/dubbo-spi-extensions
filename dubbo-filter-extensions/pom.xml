@@ -31,5 +31,6 @@
     <version>${revision}</version>
     <modules>
         <module>dubbo-filter-seata</module>
+        <module>dubbo-filter-polaris-dubbo2</module>
     </modules>
 </project>

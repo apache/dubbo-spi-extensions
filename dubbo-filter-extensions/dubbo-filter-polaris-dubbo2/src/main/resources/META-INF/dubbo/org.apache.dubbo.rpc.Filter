@@ -1,0 +1,3 @@
+polaris_report=org.apache.dubbo.filter.dubbo2.ReportFilter
+polaris_circuitbreaker=org.apache.dubbo.filter.dubbo2.CircuitBreakerFilter
+polaris_ratelimit=org.apache.dubbo.filter.dubbo2.RateLimitFilter
