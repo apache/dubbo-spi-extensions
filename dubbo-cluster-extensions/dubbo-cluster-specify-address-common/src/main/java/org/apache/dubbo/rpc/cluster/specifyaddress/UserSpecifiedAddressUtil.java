@@ -30,11 +30,12 @@ public class UserSpecifiedAddressUtil {
         ADDRESS.set(address);
     }
 
-    public static Address current() {
-        return ADDRESS.get();
-    }
-
-    public static void removeAddress() {
-        ADDRESS.remove();
+    public static Address getAddress() {
+        try {
+            return ADDRESS.get();
+        } finally {
+            // work once
+            ADDRESS.remove();
+        }
     }
 }

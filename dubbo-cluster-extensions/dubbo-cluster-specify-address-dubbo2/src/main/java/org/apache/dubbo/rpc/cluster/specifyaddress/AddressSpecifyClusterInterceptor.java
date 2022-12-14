@@ -30,10 +30,9 @@ public class AddressSpecifyClusterInterceptor implements ClusterInterceptor {
 
     @Override
     public void before(AbstractClusterInvoker<?> clusterInvoker, Invocation invocation) {
-        Address current = UserSpecifiedAddressUtil.current();
+        Address current = UserSpecifiedAddressUtil.getAddress();
         if (current != null) {
             invocation.put(Address.name, current);
-            UserSpecifiedAddressUtil.removeAddress();
         }
     }
 

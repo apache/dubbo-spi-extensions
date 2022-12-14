@@ -33,10 +33,9 @@ public class AddressSpecifyClusterFilter implements ClusterFilter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
 
-        Address current = UserSpecifiedAddressUtil.current();
+        Address current = UserSpecifiedAddressUtil.getAddress();
         if (current != null) {
             invocation.put(Address.name, current);
-            UserSpecifiedAddressUtil.removeAddress();
         }
         return invoker.invoke(invocation);
     }

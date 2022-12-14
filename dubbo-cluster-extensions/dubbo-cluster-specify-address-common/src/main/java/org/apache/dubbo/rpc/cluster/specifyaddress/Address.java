@@ -16,6 +16,8 @@
  */
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
+import org.apache.dubbo.common.URL;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -30,7 +32,7 @@ public class Address implements Serializable {
     private int port;
 
     // address - priority: 1
-    private Object urlAddress;
+    private URL urlAddress;
     private boolean needToCreate = false;
 
     public Address() {
@@ -52,7 +54,7 @@ public class Address implements Serializable {
         this.needToCreate = needToCreate;
     }
 
-    public Address(Object address) {
+    public Address(URL address) {
         this.ip = null;
         this.port = 0;
         this.urlAddress = address;
@@ -78,7 +80,7 @@ public class Address implements Serializable {
         return urlAddress;
     }
 
-    public void setUrlAddress(Object urlAddress) {
+    public void setUrlAddress(URL urlAddress) {
         this.urlAddress = urlAddress;
     }
 
