@@ -148,7 +148,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         tryLoadSpecifiedMap();
 
         // try to find in directory
-        URL urlAddress = (URL) address.getUrlAddress();
+        URL urlAddress = address.getUrlAddress();
         String targetAddress = urlAddress.getHost() + ":" + urlAddress.getPort();
         Invoker<T> invoker = address2Invoker.get(targetAddress);
         if (invoker != null) {

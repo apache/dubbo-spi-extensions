@@ -35,10 +35,6 @@ public class Address implements Serializable {
     private URL urlAddress;
     private boolean needToCreate = false;
 
-    public Address() {
-
-    }
-
     public Address(String ip, int port) {
         this.ip = ip;
         this.port = port;
@@ -76,7 +72,7 @@ public class Address implements Serializable {
         this.port = port;
     }
 
-    public Object getUrlAddress() {
+    public URL getUrlAddress() {
         return urlAddress;
     }
 

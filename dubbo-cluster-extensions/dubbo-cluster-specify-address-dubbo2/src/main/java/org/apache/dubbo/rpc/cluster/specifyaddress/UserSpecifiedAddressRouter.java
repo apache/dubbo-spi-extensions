@@ -121,7 +121,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         tryLoadSpecifiedMap();
 
         // try to find in directory
-        URL urlAddress = (URL)address.getUrlAddress();
+        URL urlAddress = address.getUrlAddress();
         String targetAddress = urlAddress.getHost() + ":" + urlAddress.getPort();
         Invoker<?> invoker = address2Invoker.get(targetAddress);
         if (invoker != null) {
