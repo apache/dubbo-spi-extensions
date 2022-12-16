@@ -81,7 +81,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
             }
             template = new DubboServiceAddressURL(
                     new PathURLAddress(protocol, null, null, consumerUrl.getPath(), ip, port),
-                    URLParam.parse(""), consumerUrl, null);
+                    consumerUrl.getUrlParam(), consumerUrl, null);
         }
 
         return template;
@@ -89,7 +89,7 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
 
     @Override
     public <T> URL rebuildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl) {
-        URL url = address.getUrlAddress();
+        URL url = (URL) address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getVersion());
         parameters.put(GROUP_KEY, consumerUrl.getGroup());

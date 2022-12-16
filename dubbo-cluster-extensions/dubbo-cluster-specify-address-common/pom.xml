@@ -26,21 +26,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dubbo-cluster-specify-address-dubbo2</artifactId>
+    <artifactId>dubbo-cluster-specify-address-common</artifactId>
     <version>1.0.2-SNAPSHOT</version>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
-            <version>2.7.18</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-cluster-specify-address-common</artifactId>
-            <version>${project.version}</version>
+            <artifactId>dubbo-common</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
+
 
 </project>

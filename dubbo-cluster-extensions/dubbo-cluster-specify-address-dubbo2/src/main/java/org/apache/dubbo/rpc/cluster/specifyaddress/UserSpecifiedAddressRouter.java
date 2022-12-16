@@ -30,14 +30,15 @@ import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
+import org.apache.dubbo.rpc.cluster.specifyaddress.common.InvokerCache;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,9 +46,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.apache.dubbo.common.constants.CommonConstants.DUBBO;
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.MONITOR_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 
 
 public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
@@ -66,7 +67,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     private final AtomicBoolean launchRemovalTask = new AtomicBoolean(false);
 
 
-    private final Map<URL, InvokerCache<T>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
+    private final Map<URL, InvokerCache<Invoker<T>>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
 
     public UserSpecifiedAddressRouter(URL referenceUrl) {
         super(referenceUrl);
@@ -85,13 +86,17 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> List<Invoker<T>> route(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-        Address address = UserSpecifiedAddressUtil.getAddress();
+
+        Object addressObj = invocation.get(Address.name);
 
         // 1. check if set address in ThreadLocal
-        if (address == null) {
+        if (addressObj == null) {
             return invokers;
         }
+
+        Address address = (Address) addressObj;
 
         List<Invoker<T>> result = new LinkedList<>();
 
@@ -259,7 +264,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     public URL rebuildAddress(Address address, URL consumerUrl) {
-        URL url = address.getUrlAddress();
+        URL url = (URL) address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getParameter(VERSION_KEY, "0.0.0"));
         parameters.put(GROUP_KEY, consumerUrl.getParameter(GROUP_KEY));
@@ -270,7 +275,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     private Invoker<T> getOrBuildInvokerCache(URL url) {
         logger.info("Unable to find a proper invoker from directory. Try to create new invoker. New URL: " + url);
 
-        InvokerCache<T> cache;
+        InvokerCache<Invoker<T>> cache;
         cacheLock.lock();
         try {
             cache = newInvokerCache.get(url);
@@ -314,9 +319,9 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
             cacheLock.lock();
             try {
                 if (newInvokerCache.size() > 0) {
-                    Iterator<Map.Entry<URL, InvokerCache<T>>> iterator = newInvokerCache.entrySet().iterator();
+                    Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
                     while (iterator.hasNext()) {
-                        Map.Entry<URL, InvokerCache<T>> entry = iterator.next();
+                        Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
                         if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
                             iterator.remove();
                             entry.getValue().getInvoker().destroy();

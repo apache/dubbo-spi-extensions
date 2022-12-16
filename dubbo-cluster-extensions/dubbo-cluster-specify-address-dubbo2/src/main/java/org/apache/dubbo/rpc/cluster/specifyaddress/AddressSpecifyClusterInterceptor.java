@@ -16,22 +16,29 @@
  */
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
-import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.cluster.interceptor.ClusterInterceptor;
+import org.apache.dubbo.rpc.cluster.support.AbstractClusterInvoker;
 
-public class InvokerCache<T> {
-    private long lastAccess = System.currentTimeMillis();
-    private final Invoker<T> invoker;
+/**
+ * The SPECIFY ADDRESS field is handed over to the attachment by the thread
+ */
+@Activate(group = CommonConstants.CONSUMER)
+public class AddressSpecifyClusterInterceptor implements ClusterInterceptor {
 
-    public InvokerCache(Invoker<T> invoker) {
-        this.invoker = invoker;
+    @Override
+    public void before(AbstractClusterInvoker<?> clusterInvoker, Invocation invocation) {
+        Address current = UserSpecifiedAddressUtil.getAddress();
+        if (current != null) {
+            invocation.put(Address.name, current);
+        }
     }
 
-    public long getLastAccess() {
-        return lastAccess;
-    }
 
-    public Invoker<T> getInvoker() {
-        lastAccess = System.currentTimeMillis();
-        return invoker;
+    @Override
+    public void after(AbstractClusterInvoker<?> clusterInvoker, Invocation invocation) {
+
     }
 }

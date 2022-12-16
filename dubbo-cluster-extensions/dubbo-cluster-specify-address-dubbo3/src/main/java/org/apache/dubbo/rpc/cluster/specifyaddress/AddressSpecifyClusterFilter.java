@@ -16,26 +16,29 @@
  */
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
-import org.apache.dubbo.common.threadlocal.InternalThreadLocal;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.Result;
+import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
 
-public class UserSpecifiedAddressUtil {
-    private final static InternalThreadLocal<Address> ADDRESS = new InternalThreadLocal<>();
+/**
+ * The SPECIFY ADDRESS field is handed over to the attachment by the thread
+ */
+@Activate(group = {"consumer"})
+public class AddressSpecifyClusterFilter implements ClusterFilter {
 
-    /**
-     * Set specified address to next invoke
-     *
-     * @param address specified address
-     */
-    public static void setAddress(Address address) {
-        ADDRESS.set(address);
-    }
 
-    public static Address getAddress() {
-        try {
-            return ADDRESS.get();
-        } finally {
-            // work once
-            ADDRESS.remove();
+    @Override
+    public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
+
+        Address current = UserSpecifiedAddressUtil.getAddress();
+        if (current != null) {
+            invocation.put(Address.name, current);
         }
+        return invoker.invoke(invocation);
     }
+
+
 }

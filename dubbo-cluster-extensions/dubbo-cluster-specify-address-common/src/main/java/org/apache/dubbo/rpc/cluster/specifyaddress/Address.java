@@ -22,6 +22,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Address implements Serializable {
+
+    public static final String name = "specifyAddress";
+
     // ip - priority: 3
     private String ip;
 
@@ -38,6 +41,9 @@ public class Address implements Serializable {
         this.urlAddress = null;
     }
 
+    /**
+     * disableRetry default value is true, will disable failover
+     */
     public Address(String ip, int port, boolean needToCreate) {
         this.ip = ip;
         this.port = port;

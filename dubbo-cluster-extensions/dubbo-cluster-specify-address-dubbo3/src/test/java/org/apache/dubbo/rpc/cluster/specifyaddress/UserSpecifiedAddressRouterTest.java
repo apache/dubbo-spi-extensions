@@ -20,6 +20,7 @@ import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.router.state.BitList;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ServiceModel;
@@ -67,11 +68,15 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertNull(userSpecifiedAddressRouter.getAddress2Invoker());
         Assertions.assertNull(userSpecifiedAddressRouter.getIp2Invoker());
 
+        Invocation invocation = new RpcInvocation();
+        Invoker mockInvoker = Mockito.mock(Invoker.class);
+        AddressSpecifyClusterFilter clusterFilter = new AddressSpecifyClusterFilter();
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.1", 0));
+        clusterFilter.invoke(mockInvoker,invocation);
 
         // no address
         Assertions.assertThrows(RpcException.class, () ->
-            userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null));
+            userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation, false, null, null));
 
         Assertions.assertNotNull(userSpecifiedAddressRouter.getAddress2Invoker());
         Assertions.assertNotNull(userSpecifiedAddressRouter.getIp2Invoker());
@@ -89,8 +94,13 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertEquals(BitList.emptyList(),
             userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null));
 
+        Invocation invocation = new RpcInvocation();
+        Invoker<Object> mockInvoker = Mockito.mock(Invoker.class);
+        AddressSpecifyClusterFilter clusterFilter = new AddressSpecifyClusterFilter();
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20880")));
-        BitList<Invoker<Object>> invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        clusterFilter.invoke(mockInvoker,invocation);
+
+        BitList<Invoker<Object>> invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.1", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20880, invokers.get(0).getUrl().getPort());
@@ -98,29 +108,37 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertEquals(consumerUrl.getVersion(), invokers.get(0).getUrl().getVersion());
         Assertions.assertEquals(consumerUrl.getGroup(), invokers.get(0).getUrl().getGroup());
 
-        Invoker<Object> mockInvoker = Mockito.mock(Invoker.class);
         Mockito.when(mockInvoker.getUrl()).thenReturn(URL.valueOf("simple://127.0.0.1:20880?Test1=Value"));
 
         userSpecifiedAddressRouter.notify(new BitList<>(Collections.singletonList(mockInvoker)));
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20880")));
-        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation1 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation1);
+
+        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation1, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals(mockInvoker, invokers.get(0));
 
         userSpecifiedAddressRouter.notify(new BitList<>(Collections.singletonList(mockInvoker)));
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20880?Test1=Value")));
-        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation2 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation2);
+        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation2, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals(mockInvoker, invokers.get(0));
 
         userSpecifiedAddressRouter.notify(new BitList<>(Collections.singletonList(mockInvoker)));
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("simple://127.0.0.1:20880")));
-        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation3 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation3);
+        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation3, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals(mockInvoker, invokers.get(0));
 
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("dubbo://127.0.0.1:20880")));
-        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation4 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation4);
+        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation4, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.1", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20880, invokers.get(0).getUrl().getPort());
@@ -129,7 +147,10 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertEquals(consumerUrl.getGroup(), invokers.get(0).getUrl().getGroup());
 
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20770")));
-        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation5 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation5);
+
+        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation5, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.1", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20770, invokers.get(0).getUrl().getPort());
@@ -138,7 +159,9 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertEquals(consumerUrl.getGroup(), invokers.get(0).getUrl().getGroup());
 
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20770?Test1=Value1")));
-        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation6 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation6);
+        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation6, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.1", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20770, invokers.get(0).getUrl().getPort());
@@ -147,7 +170,9 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertEquals(consumerUrl.getGroup(), invokers.get(0).getUrl().getGroup());
 
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.2:20770?Test1=Value1")));
-        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation7 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation7);
+        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation7, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.2", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20770, invokers.get(0).getUrl().getPort());
@@ -156,7 +181,9 @@ public class UserSpecifiedAddressRouterTest {
         Assertions.assertEquals(consumerUrl.getGroup(), invokers.get(0).getUrl().getGroup());
 
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20880?Test1=Value&Test2=Value&Test3=Value")));
-        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation8 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation8);
+        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation8, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.1", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20880, invokers.get(0).getUrl().getPort());
@@ -175,30 +202,41 @@ public class UserSpecifiedAddressRouterTest {
             userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null));
 
         Invoker<Object> mockInvoker = Mockito.mock(Invoker.class);
+        AddressSpecifyClusterFilter clusterFilter = new AddressSpecifyClusterFilter();
         Mockito.when(mockInvoker.getUrl()).thenReturn(consumerUrl);
 
         userSpecifiedAddressRouter.notify(new BitList<>(Collections.singletonList(mockInvoker)));
 
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.2", 0));
-        BitList<Invoker<Object>> invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation);
+        BitList<Invoker<Object>> invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals(mockInvoker, invokers.get(0));
 
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.2", 20880));
-        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation1 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation1);
+        invokers = userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation1, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals(mockInvoker, invokers.get(0));
 
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.2", 20770));
+        Invocation invocation2 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation2);
         Assertions.assertThrows(RpcException.class, () ->
-            userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null));
+            userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation2, false, null, null));
 
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.3", 20880));
+        Invocation invocation3 = new RpcInvocation();
+        clusterFilter.invoke(mockInvoker,invocation3);
         Assertions.assertThrows(RpcException.class, () ->
-            userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, Mockito.mock(Invocation.class), false, null, null));
+            userSpecifiedAddressRouter.doRoute(new BitList<>(Collections.singletonList(mockInvoker)), consumerUrl, invocation3, false, null, null));
 
-        UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.2", 20770, true));
-        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation4 = new RpcInvocation();
+        UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.2", 20770,true));
+        clusterFilter.invoke(mockInvoker,invocation4);
+        invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation4, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.2", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20770, invokers.get(0).getUrl().getPort());
@@ -208,12 +246,17 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRemovalTask() throws InterruptedException {
         UserSpecifiedAddressRouter.EXPIRE_TIME = 10;
         UserSpecifiedAddressRouter<Object> userSpecifiedAddressRouter = new UserSpecifiedAddressRouter<>(consumerUrl);
 
         UserSpecifiedAddressUtil.setAddress(new Address(URL.valueOf("127.0.0.1:20880")));
-        BitList<Invoker<Object>> invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, Mockito.mock(Invocation.class), false, null, null);
+        Invocation invocation = new RpcInvocation();
+        Invoker<Object> mockInvoker = Mockito.mock(Invoker.class);
+        AddressSpecifyClusterFilter clusterFilter = new AddressSpecifyClusterFilter();
+        clusterFilter.invoke(mockInvoker,invocation);
+        BitList<Invoker<Object>> invokers = userSpecifiedAddressRouter.doRoute(BitList.emptyList(), consumerUrl, invocation, false, null, null);
         Assertions.assertEquals(1, invokers.size());
         Assertions.assertEquals("127.0.0.1", invokers.get(0).getUrl().getHost());
         Assertions.assertEquals(20880, invokers.get(0).getUrl().getPort());
