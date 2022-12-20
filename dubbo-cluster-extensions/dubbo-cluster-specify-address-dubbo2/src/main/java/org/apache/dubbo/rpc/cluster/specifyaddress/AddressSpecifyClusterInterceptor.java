@@ -18,9 +18,14 @@ package org.apache.dubbo.rpc.cluster.specifyaddress;
 
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.registry.integration.DynamicDirectory;
+import org.apache.dubbo.registry.integration.RegistryDirectory;
 import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.cluster.Directory;
 import org.apache.dubbo.rpc.cluster.interceptor.ClusterInterceptor;
 import org.apache.dubbo.rpc.cluster.support.AbstractClusterInvoker;
+
+import java.lang.reflect.Field;
 
 /**
  * The SPECIFY ADDRESS field is handed over to the attachment by the thread
@@ -33,6 +38,24 @@ public class AddressSpecifyClusterInterceptor implements ClusterInterceptor {
         Address current = UserSpecifiedAddressUtil.getAddress();
         if (current != null) {
             invocation.put(Address.name, current);
+        }
+
+        try {
+            Field nodeInvoker = clusterInvoker.getClass().getDeclaredField("clusterInvoker");
+            nodeInvoker.setAccessible(true);
+            Object clusterObj = nodeInvoker.get(clusterInvoker);
+            if (clusterObj instanceof AbstractClusterInvoker) {
+                //禁用本地service校验
+                Directory<?> directory = ((AbstractClusterInvoker<?>)clusterObj).getDirectory();
+                if (directory instanceof RegistryDirectory) {
+                    RegistryDirectory<?> rd = (RegistryDirectory<?>) directory;
+
+                    Field forbiddenField = DynamicDirectory.class.getDeclaredField("forbidden");
+                    forbiddenField.setAccessible(true);
+                    forbiddenField.set(rd, false);
+                }
+            }
+        } catch (NoSuchFieldException | IllegalAccessException ignore) {
         }
     }
 
