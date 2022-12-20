@@ -45,7 +45,7 @@ public class AddressSpecifyClusterInterceptor implements ClusterInterceptor {
             nodeInvoker.setAccessible(true);
             Object clusterObj = nodeInvoker.get(clusterInvoker);
             if (clusterObj instanceof AbstractClusterInvoker) {
-                //禁用本地service校验
+                // Disable the existence check of the local cluster service
                 Directory<?> directory = ((AbstractClusterInvoker<?>)clusterObj).getDirectory();
                 if (directory instanceof RegistryDirectory) {
                     RegistryDirectory<?> rd = (RegistryDirectory<?>) directory;
