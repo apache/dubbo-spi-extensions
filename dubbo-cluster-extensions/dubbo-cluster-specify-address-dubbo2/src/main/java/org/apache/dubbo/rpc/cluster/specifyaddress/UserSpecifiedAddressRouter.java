@@ -48,6 +48,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import static org.apache.dubbo.common.constants.CommonConstants.DUBBO;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.MONITOR_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 
@@ -233,7 +234,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
 
-    public <T> URL buildAddress(List<Invoker<T>> invokers, Address address, URL consumerUrl) {
+    public URL buildAddress(List<Invoker<T>> invokers, Address address, URL consumerUrl) {
         if (!invokers.isEmpty()) {
             URL template = invokers.iterator().next().getUrl();
             template = template.setHost(address.getIp());
@@ -252,10 +253,11 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     private URL copyConsumerUrl(URL url, String ip, int port, Map<String, String> parameters) {
+        String protocol = url.getParameter(PROTOCOL_KEY, DUBBO);
         return URLBuilder.from(url)
                 .setHost(ip)
                 .setPort(port)
-                .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
+                .setProtocol(protocol)
                 .setPath(url.getPath())
                 .clearParameters()
                 .addParameters(parameters)
@@ -264,7 +266,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
     }
 
     public URL rebuildAddress(Address address, URL consumerUrl) {
-        URL url = (URL) address.getUrlAddress();
+        URL url = address.getUrlAddress();
         Map<String, String> parameters = new HashMap<>(url.getParameters());
         parameters.put(VERSION_KEY, consumerUrl.getParameter(VERSION_KEY, "0.0.0"));
         parameters.put(GROUP_KEY, consumerUrl.getParameter(GROUP_KEY));
