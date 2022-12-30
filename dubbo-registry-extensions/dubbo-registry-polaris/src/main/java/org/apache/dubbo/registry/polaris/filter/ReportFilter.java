@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.filter.dubbo2;
+package org.apache.dubbo.registry.polaris.filter;
 
 
 import com.tencent.polaris.api.pojo.RetStatus;
