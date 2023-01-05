@@ -25,13 +25,14 @@
 
     <artifactId>dubbo-registry-polaris</artifactId>
     <name>dubbo-registry-polaris</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <description>Dubbo registry extension for PolarisMesh, support instance register, discover, health-check capabilities.</description>
 
     <dependencies>
         <dependency>
             <groupId>com.tencent.polaris</groupId>
             <artifactId>polaris-adapter-dubbo</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
