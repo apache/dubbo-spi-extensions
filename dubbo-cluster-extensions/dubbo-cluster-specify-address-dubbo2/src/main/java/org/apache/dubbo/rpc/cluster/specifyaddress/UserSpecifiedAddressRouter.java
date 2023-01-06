@@ -18,32 +18,27 @@ package org.apache.dubbo.rpc.cluster.specifyaddress;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.URLBuilder;
+import org.apache.dubbo.common.beanutil.JavaBeanDescriptor;
+import org.apache.dubbo.common.beanutil.JavaBeanSerializeUtil;
 import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.threadpool.manager.ExecutorRepository;
 import org.apache.dubbo.common.utils.ClassUtils;
 import org.apache.dubbo.common.utils.CollectionUtils;
+import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
-import org.apache.dubbo.rpc.Invocation;
-import org.apache.dubbo.rpc.Invoker;
-import org.apache.dubbo.rpc.Protocol;
-import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
 import org.apache.dubbo.rpc.cluster.specifyaddress.common.InvokerCache;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 import static org.apache.dubbo.common.constants.CommonConstants.DUBBO;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -99,22 +94,29 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         Address address = (Address) addressObj;
 
         List<Invoker<T>> result = new LinkedList<>();
+        Invoker<T> invoker = null;
 
         // 2. check if set address url
         if (address.getUrlAddress() != null) {
-            Invoker<?> invoker = getInvokerByURL(address);
-            result.add((Invoker) invoker);
-            return result;
+            invoker = (Invoker<T>) getInvokerByURL(address);
+        } else if (StringUtils.isNotEmpty(address.getIp())) {
+            // 3. check if set ip and port
+            invoker = (Invoker<T>) getInvokerByIp(address);
         }
 
-        // 3. check if set ip and port
-        if (StringUtils.isNotEmpty(address.getIp())) {
-            Invoker<?> invoker = getInvokerByIp(address);
-            result.add((Invoker) invoker);
-            return result;
+        if (invoker == null) {
+            result = invokers;
+        } else {
+            result.add(invoker);
+            // Gateway mode(service not found) use JavaBeanDescriptor as the type of arg,
+            // so that the gateway provider can deserialize success
+            if (address.isGatewayMode()) {
+                UserSpecifiedAddressUtil.convertParameterTypeToJavaBeanDescriptor(invocation);
+            }
         }
 
-        return invokers;
+
+        return result;
     }
 
     private Invoker<?> getInvokerByURL(Address address) {

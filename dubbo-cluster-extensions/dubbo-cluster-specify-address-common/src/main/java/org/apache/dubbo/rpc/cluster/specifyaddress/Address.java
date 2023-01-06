@@ -34,6 +34,8 @@ public class Address implements Serializable {
     // address - priority: 1
     private URL urlAddress;
     private boolean needToCreate = false;
+    // if true will convert param type to JavaBeanDescriptor
+    private boolean gatewayMode = false;
 
     public Address(String ip, int port) {
         this.ip = ip;
@@ -41,13 +43,14 @@ public class Address implements Serializable {
         this.urlAddress = null;
     }
 
-    /**
-     * disableRetry default value is true, will disable failover
-     */
     public Address(String ip, int port, boolean needToCreate) {
-        this.ip = ip;
-        this.port = port;
+        this(ip, port);
         this.needToCreate = needToCreate;
+    }
+
+    public Address(String ip, int port, boolean needToCreate, boolean gatewayMode) {
+        this(ip, port, needToCreate);
+        this.gatewayMode = gatewayMode;
     }
 
     public Address(URL address) {
@@ -86,6 +89,14 @@ public class Address implements Serializable {
 
     public void setNeedToCreate(boolean needToCreate) {
         this.needToCreate = needToCreate;
+    }
+
+    public boolean isGatewayMode() {
+        return gatewayMode;
+    }
+
+    public void setGatewayMode(boolean gatewayMode) {
+        this.gatewayMode = gatewayMode;
     }
 
     @Override

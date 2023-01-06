@@ -16,9 +16,21 @@
  */
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
+import org.apache.dubbo.common.beanutil.JavaBeanDescriptor;
+import org.apache.dubbo.common.beanutil.JavaBeanSerializeUtil;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.threadlocal.InternalThreadLocal;
+import org.apache.dubbo.common.utils.ReflectUtils;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.RpcInvocation;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class UserSpecifiedAddressUtil {
+
+    private final static Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressUtil.class);
     private final static InternalThreadLocal<Address> ADDRESS = new InternalThreadLocal<>();
 
     /**
@@ -38,4 +50,23 @@ public class UserSpecifiedAddressUtil {
             ADDRESS.remove();
         }
     }
+
+    public static void convertParameterTypeToJavaBeanDescriptor(Invocation invocation) {
+        if (!(invocation instanceof RpcInvocation)) {
+            logger.warn("Non-RpcInvocation type, gateway mode does not take effect, type:" + invocation.getClass().getName());
+            return;
+        }
+        Class<?>[] parameterTypes = invocation.getParameterTypes();
+        Arrays.fill(parameterTypes, JavaBeanDescriptor.class);
+
+        Object[] arguments = invocation.getArguments();
+        for (int i = 0; i < arguments.length; i++) {
+            JavaBeanDescriptor jbdArg = JavaBeanSerializeUtil.serialize(arguments[i]);
+            arguments[i] = jbdArg;
+        }
+
+        ((RpcInvocation) invocation).setParameterTypesDesc(ReflectUtils.getDesc(parameterTypes));
+        ((RpcInvocation) invocation).setCompatibleParamSignatures(Stream.of(parameterTypes).map(Class::getName).toArray(String[]::new));
+    }
+
 }
