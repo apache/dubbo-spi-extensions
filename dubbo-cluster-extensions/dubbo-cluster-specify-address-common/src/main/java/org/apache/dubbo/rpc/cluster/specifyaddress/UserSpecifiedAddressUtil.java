@@ -57,6 +57,8 @@ public class UserSpecifiedAddressUtil {
             return;
         }
         Class<?>[] parameterTypes = invocation.getParameterTypes();
+        invocation.setObjectAttachment("originParameterType", getDesc(parameterTypes));
+
         Arrays.fill(parameterTypes, JavaBeanDescriptor.class);
 
         Object[] arguments = invocation.getArguments();
@@ -69,4 +71,7 @@ public class UserSpecifiedAddressUtil {
         ((RpcInvocation) invocation).setCompatibleParamSignatures(Stream.of(parameterTypes).map(Class::getName).toArray(String[]::new));
     }
 
+    private static String[] getDesc(Class<?>[] parameterTypes) {
+        return Arrays.stream(parameterTypes).map(Class::getName).toArray(String[]::new);
+    }
 }
