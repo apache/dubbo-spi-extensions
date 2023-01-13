@@ -70,7 +70,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         this.scheduledExecutorService = referenceUrl.getScopeModel().getDefaultExtension(ExecutorRepository.class).nextScheduledExecutor();
         this.protocol = referenceUrl.getOrDefaultFrameworkModel().getExtensionLoader(Protocol.class).getAdaptiveExtension();
         this.userSpecifiedServiceAddressBuilder = referenceUrl.getScopeModel().getExtensionLoader(UserSpecifiedServiceAddressBuilder.class)
-            .getExtension(referenceUrl.getParameter(USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY, DefaultUserSpecifiedServiceAddressBuilder.NAME));
+                .getExtension(referenceUrl.getParameter(USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY, DefaultUserSpecifiedServiceAddressBuilder.NAME));
     }
 
     @Override
@@ -240,7 +240,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
 
     private void throwException(Address address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
-            + getUrl().getServiceKey() + "]");
+                + getUrl().getServiceKey() + "]");
     }
 
     private Map<String, Invoker<T>> processIp(List<Invoker<T>> invokerList) {

@@ -175,7 +175,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
 
     private void throwException(Address address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
-            + getUrl().getServiceKey() + "]");
+                + getUrl().getServiceKey() + "]");
     }
 
 
@@ -253,14 +253,14 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
 
     private URL copyConsumerUrl(URL url, String ip, int port, Map<String, String> parameters) {
         return URLBuilder.from(url)
-            .setHost(ip)
-            .setPort(port)
-            .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
-            .setPath(url.getPath())
-            .clearParameters()
-            .addParameters(parameters)
-            .removeParameter(MONITOR_KEY)
-            .build();
+                .setHost(ip)
+                .setPort(port)
+                .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
+                .setPath(url.getPath())
+                .clearParameters()
+                .addParameters(parameters)
+                .removeParameter(MONITOR_KEY)
+                .build();
     }
 
     public URL rebuildAddress(Address address, URL consumerUrl) {
