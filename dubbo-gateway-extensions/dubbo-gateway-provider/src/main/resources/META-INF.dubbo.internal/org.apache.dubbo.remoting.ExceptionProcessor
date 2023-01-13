@@ -1,1 +1,1 @@
-snf=gateway.consumer.ServiceNotFoundExceptionProcessor
+snf=org.apache.dubbo.gateway.provider.ServiceNotFoundExceptionProcessor

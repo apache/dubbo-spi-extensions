@@ -1,1 +1,1 @@
-snfConfig=gateway.consumer.ConfigDeployListener
+snfConfig=org.apache.dubbo.gateway.provider.ConfigDeployListener
