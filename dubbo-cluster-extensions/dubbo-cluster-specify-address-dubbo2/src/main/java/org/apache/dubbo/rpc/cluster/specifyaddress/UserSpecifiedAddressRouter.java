@@ -16,18 +16,6 @@
  */
 package org.apache.dubbo.rpc.cluster.specifyaddress;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.URLBuilder;
 import org.apache.dubbo.common.extension.ExtensionLoader;
@@ -43,6 +31,19 @@ import org.apache.dubbo.rpc.Protocol;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
 import org.apache.dubbo.rpc.cluster.specifyaddress.common.InvokerCache;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static org.apache.dubbo.common.constants.CommonConstants.DUBBO;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -98,29 +99,22 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         Address address = (Address) addressObj;
 
         List<Invoker<T>> result = new LinkedList<>();
-        Invoker<T> invoker = null;
 
         // 2. check if set address url
         if (address.getUrlAddress() != null) {
-            invoker = (Invoker<T>) getInvokerByURL(address);
-        } else if (StringUtils.isNotEmpty(address.getIp())) {
-            // 3. check if set ip and port
-            invoker = (Invoker<T>) getInvokerByIp(address);
+            Invoker<?> invoker = getInvokerByURL(address);
+            result.add((Invoker) invoker);
+            return result;
         }
 
-        if (invoker == null) {
-            result = invokers;
-        } else {
-            result.add(invoker);
-            // Gateway mode(service not found) use JavaBeanDescriptor as the type of arg,
-            // so that the gateway provider can deserialize success
-            if (address.isGatewayMode()) {
-                UserSpecifiedAddressUtil.convertParameterTypeToJavaBeanDescriptor(invocation);
-            }
+        // 3. check if set ip and port
+        if (StringUtils.isNotEmpty(address.getIp())) {
+            Invoker<?> invoker = getInvokerByIp(address);
+            result.add((Invoker) invoker);
+            return result;
         }
 
-
-        return result;
+        return invokers;
     }
 
     private Invoker<?> getInvokerByURL(Address address) {
@@ -181,7 +175,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
 
     private void throwException(Address address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
-                + getUrl().getServiceKey() + "]");
+            + getUrl().getServiceKey() + "]");
     }
 
 
@@ -259,14 +253,14 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
 
     private URL copyConsumerUrl(URL url, String ip, int port, Map<String, String> parameters) {
         return URLBuilder.from(url)
-                .setHost(ip)
-                .setPort(port)
-                .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
-                .setPath(url.getPath())
-                .clearParameters()
-                .addParameters(parameters)
-                .removeParameter(MONITOR_KEY)
-                .build();
+            .setHost(ip)
+            .setPort(port)
+            .setProtocol(url.getProtocol() == null ? DUBBO : url.getProtocol())
+            .setPath(url.getPath())
+            .clearParameters()
+            .addParameters(parameters)
+            .removeParameter(MONITOR_KEY)
+            .build();
     }
 
     public URL rebuildAddress(Address address, URL consumerUrl) {

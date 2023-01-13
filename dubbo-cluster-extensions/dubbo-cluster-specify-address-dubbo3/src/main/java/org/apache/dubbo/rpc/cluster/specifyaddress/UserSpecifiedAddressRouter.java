@@ -70,7 +70,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         this.scheduledExecutorService = referenceUrl.getScopeModel().getDefaultExtension(ExecutorRepository.class).nextScheduledExecutor();
         this.protocol = referenceUrl.getOrDefaultFrameworkModel().getExtensionLoader(Protocol.class).getAdaptiveExtension();
         this.userSpecifiedServiceAddressBuilder = referenceUrl.getScopeModel().getExtensionLoader(UserSpecifiedServiceAddressBuilder.class)
-                .getExtension(referenceUrl.getParameter(USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY, DefaultUserSpecifiedServiceAddressBuilder.NAME));
+            .getExtension(referenceUrl.getParameter(USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY, DefaultUserSpecifiedServiceAddressBuilder.NAME));
     }
 
     @Override
@@ -101,49 +101,43 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         Address address = (Address) addressObj;
 
         BitList<Invoker<T>> result = new BitList<>(invokers, true);
-        Invoker<T> invoker = null;
 
         // 2. check if set address url
         if (address.getUrlAddress() != null) {
-            invoker = getInvokerByURL(address, invocation);
+            Invoker<T> invoker = getInvokerByURL(address, invocation);
+            result.add(invoker);
             if (needToPrintMessage) {
                 messageHolder.set("URL Address has been set. URL Address: " + address.getUrlAddress());
-            }
-        } else if (StringUtils.isNotEmpty(address.getIp())) {
-            // 3. check if set ip and port
-            invoker = getInvokerByIp(address);
-            if (invoker == null) {
-                if (address.isNeedToCreate()) {
-                    invoker = createInvoker(address, invocation);
-                    if (needToPrintMessage) {
-                        messageHolder.set("Target Ip has been set and address cannot be found in directory, build new one. Target Ip: " + address.getIp() + " Port: " + address.getPort());
-                    }
-                }
-            } else {
-                // target ip is not contains in directory
-                if (needToPrintMessage) {
-                    messageHolder.set("Target Ip has been set and address can be found in directory, build new one. Target Ip: " + address.getIp() + " Port: " + address.getPort());
-                }
-            }
-        }
-
-        if (invoker == null) {
-            if (needToPrintMessage) {
-                messageHolder.set("Target Address has not been set.");
-            }
-            return continueRoute(invokers, url, invocation, needToPrintMessage, nodeHolder);
-        } else {
-            result.add(invoker);
-            // Gateway mode(service not found) use JavaBeanDescriptor as the type of arg,
-            // so that the gateway provider can deserialize success
-            if (address.isGatewayMode()) {
-                UserSpecifiedAddressUtil.convertParameterTypeToJavaBeanDescriptor(invocation);
             }
             return result;
         }
 
-    }
+        // 3. check if set ip and port
+        if (StringUtils.isNotEmpty(address.getIp())) {
+            Invoker<T> invoker = getInvokerByIp(address);
+            if (invoker != null) {
+                result.add(invoker);
+                if (needToPrintMessage) {
+                    messageHolder.set("Target Ip has been set and address can be found in directory. Target Ip: " + address.getIp() + " Port: " + address.getPort());
+                }
+                return result;
+            } // target ip is not contains in directory
 
+            if (address.isNeedToCreate()) {
+                invoker = createInvoker(address, invocation);
+                result.add(invoker);
+                if (needToPrintMessage) {
+                    messageHolder.set("Target Ip has been set and address cannot be found in directory, build new one. Target Ip: " + address.getIp() + " Port: " + address.getPort());
+                }
+                return result;
+            }
+        }
+
+        if (needToPrintMessage) {
+            messageHolder.set("Target Address has not been set.");
+        }
+        return continueRoute(invokers, url, invocation, needToPrintMessage, nodeHolder);
+    }
 
     @Override
     protected boolean supportContinueRoute() {
@@ -246,7 +240,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
 
     private void throwException(Address address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
-                + getUrl().getServiceKey() + "]");
+            + getUrl().getServiceKey() + "]");
     }
 
     private Map<String, Invoker<T>> processIp(List<Invoker<T>> invokerList) {

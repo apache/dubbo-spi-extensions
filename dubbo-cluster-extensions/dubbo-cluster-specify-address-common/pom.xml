@@ -34,11 +34,6 @@
             <artifactId>dubbo-common</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-rpc-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
 
