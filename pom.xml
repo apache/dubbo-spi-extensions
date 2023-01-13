@@ -94,6 +94,7 @@
         <module>dubbo-rpc-extensions</module>
         <module>dubbo-serialization-extensions</module>
         <module>dubbo-mock-extensions</module>
+        <module>dubbo-gateway-extensions</module>
     </modules>
 
     <properties>
