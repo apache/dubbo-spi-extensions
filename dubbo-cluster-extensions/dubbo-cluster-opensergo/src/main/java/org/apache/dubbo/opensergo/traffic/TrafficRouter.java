@@ -64,6 +64,7 @@ public class TrafficRouter extends AbstractRouter {
         this.openSergoNamespace =url.getParameter(OPENSERGO_NAMESPACE_KEY, "default");
         if (StringUtils.isEmpty(openSergoHost)) {
             LOGGER.error("init OpenSergo service router error due to miss OpenSergo host.");
+            return;
         }
         LOGGER.info(String.format("init OpenSergo service router, url is %s, parameters are %s", url,
             url.getParameters()));
@@ -85,6 +86,12 @@ public class TrafficRouter extends AbstractRouter {
 
     @Override
     public <T> RouterResult<Invoker<T>> route(List<Invoker<T>> invokers, URL url, Invocation invocation, boolean needToPrintMessage) throws RpcException {
+        if (null == invokers || invokers.size() == 0) {
+            return new RouterResult<>(invokers);
+        }
+        if (null == clusterManager) {
+            return new RouterResult<>(invokers);
+        }
         TrafficContext trafficContext = getTrafficContext(invocation);
         List<Instance> instances = clusterManager.route(trafficContext);
         return new RouterResult<>(instancesToInvokers(instances));
@@ -113,7 +120,9 @@ public class TrafficRouter extends AbstractRouter {
     @Override
     public <T> void notify(List<Invoker<T>> invokers) {
         super.notify(invokers);
-        clusterManager.notify(invokersToInstances(invokers));
+        if (null != clusterManager) {
+            clusterManager.notify(invokersToInstances(invokers));
+        }
     }
 
     private <T> List<Instance> invokersToInstances(List<Invoker<T>> invokers) {
@@ -136,6 +145,9 @@ public class TrafficRouter extends AbstractRouter {
 
     @Override
     public void stop() {
+        if (null == openSergoDataSourceGroup) {
+            return;
+        }
         try {
             openSergoDataSourceGroup.close();
         }
