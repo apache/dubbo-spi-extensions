@@ -35,8 +35,11 @@ import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.cluster.Constants;
 import org.apache.dubbo.rpc.cluster.router.AbstractRouter;
 import org.apache.dubbo.rpc.cluster.router.RouterResult;
+
+import org.springframework.util.StringUtils;
 
 public class TrafficRouter extends AbstractRouter {
     private static final Logger LOGGER = LoggerFactory.getLogger(TrafficRouter.class);
@@ -45,15 +48,30 @@ public class TrafficRouter extends AbstractRouter {
     private InstanceManager instanceManager;
     private ClusterManager clusterManager;
     private OpenSergoDataSourceGroup openSergoDataSourceGroup;
+    private String openSergoHost;
+    private Integer openSergoPort;
+    private String openSergoNamespace;
+
+    private final static String OPENSERGO_HOST_KEY = "opensergo.host";
+    private final static String OPENSERGO_PORT_KEY = "opensergo.port";
+    private final static String OPENSERGO_NAMESPACE_KEY = "opensergo.namespace";
 
 
     public TrafficRouter(URL url) {
         super(url);
+        this.openSergoHost = url.getParameter(OPENSERGO_HOST_KEY);
+        this.openSergoPort = url.getParameter(OPENSERGO_PORT_KEY, 10246);
+        this.openSergoNamespace =url.getParameter(OPENSERGO_NAMESPACE_KEY, "default");
+        if (StringUtils.isEmpty(openSergoHost)) {
+            LOGGER.error("init OpenSergo service router error due to miss OpenSergo host.");
+        }
+        LOGGER.info(String.format("init OpenSergo service router, url is %s, parameters are %s", url,
+            url.getParameters()));
         filters = new ArrayList<>();
         instanceManager = new DefaultInstanceManager();
         clusterManager = new ClusterManager(filters,null, instanceManager);
         filters.add(new TrafficRouterFilter(clusterManager));
-        this.openSergoDataSourceGroup = new OpenSergoDataSourceGroup("127.0.0.1", 10246, "default", url.getApplication());
+        this.openSergoDataSourceGroup = new OpenSergoDataSourceGroup(openSergoHost, openSergoPort, openSergoNamespace, url.getApplication());
         try {
             openSergoDataSourceGroup.start();
         }
