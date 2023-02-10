@@ -46,16 +46,7 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
  */
 public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
 
-    private DecodeableRpcInvocation rpcInvocation;
-
     private static final String DEFAULT_OMNIPOTENT_SERVICE = OmnipotentService.class.getName();
-
-    @Override
-    public void setContext(Object context) {
-        if (context instanceof DecodeableRpcInvocation) {
-            this.rpcInvocation = (DecodeableRpcInvocation) context;
-        }
-    }
 
     @Override
     public boolean shouldHandleError(Throwable data) {
@@ -92,16 +83,17 @@ public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
     }
 
     @Override
-    public void customPts(Class<?>[] pts) {
-        if (rpcInvocation != null) {
-            rpcInvocation.setAttachment(OmnipotentCommonConstants.ORIGIN_GENERIC_PARAMETER_TYPES, pts);
+    public void customPts(Object context, Class<?>[] pts) {
+        if (!(context instanceof DecodeableRpcInvocation)) {
+            return;
         }
+        ((DecodeableRpcInvocation) context).setAttachment(OmnipotentCommonConstants.ORIGIN_GENERIC_PARAMETER_TYPES, pts);
     }
 
     @Override
-    public void customAttachment(Map<String, Object> map) {
+    public void customAttachment(Object context, Map<String, Object> map) {
 
-        if (rpcInvocation == null) {
+        if (!(context instanceof DecodeableRpcInvocation)) {
             return;
         }
         // Omn needs to use the default path, version and group,
@@ -115,16 +107,16 @@ public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
     }
 
     @Override
-    public void cleanUp() {
+    public void cleanUp(Object context) {
 
-        if (rpcInvocation == null) {
+        if (!(context instanceof DecodeableRpcInvocation)) {
             return;
         }
-        ObjectInput objectInput = rpcInvocation.getObjectInput();
+        ObjectInput objectInput = ((DecodeableRpcInvocation) context).getObjectInput();
         if ((objectInput instanceof Cleanable)) {
             ((Cleanable) objectInput).cleanup();
         }
-        rpcInvocation.setObjectInput(null);
+        ((DecodeableRpcInvocation) context).setObjectInput(null);
     }
 
 
