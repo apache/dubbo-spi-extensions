@@ -22,6 +22,7 @@ import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.remoting.ExceptionProcessor;
 import org.apache.dubbo.remoting.RetryHandleException;
 import org.apache.dubbo.remoting.ServiceNotFoundException;
+import org.apache.dubbo.remoting.exchange.ErrorData;
 import org.apache.dubbo.remoting.exchange.ExchangeChannel;
 import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.rpc.Invocation;
@@ -56,10 +57,10 @@ public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
     @Override
     public String wrapAndHandleException(ExchangeChannel channel, Request req) throws RetryHandleException {
         Object data = req.getData();
-        if (!(data instanceof DecodeableRpcInvocation)) {
+        if (!(data instanceof ErrorData)) {
             return null;
         }
-        DecodeableRpcInvocation invocation = (DecodeableRpcInvocation) data;
+        DecodeableRpcInvocation invocation = (DecodeableRpcInvocation) ((ErrorData) data).getData();
 
         invocation.setAttachment(OmnipotentCommonConstants.ORIGIN_PATH_KEY, invocation.getAttachment(PATH_KEY));
         // Replace serviceName in req with omn
