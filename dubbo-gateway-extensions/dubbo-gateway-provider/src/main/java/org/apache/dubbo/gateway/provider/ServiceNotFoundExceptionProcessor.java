@@ -27,6 +27,7 @@ import org.apache.dubbo.remoting.exchange.ExchangeChannel;
 import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.protocol.dubbo.DecodeableRpcInvocation;
+import org.apache.dubbo.rpc.protocol.dubbo.RetryDecodeableRpcInvocation;
 
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
         if (!(data instanceof ErrorData)) {
             return null;
         }
-        DecodeableRpcInvocation invocation = (DecodeableRpcInvocation) ((ErrorData) data).getData();
+        RetryDecodeableRpcInvocation invocation = (RetryDecodeableRpcInvocation) ((ErrorData) data).getData();
 
         invocation.setAttachment(OmnipotentCommonConstants.ORIGIN_PATH_KEY, invocation.getAttachment(PATH_KEY));
         // Replace serviceName in req with omn
@@ -110,14 +111,14 @@ public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
     @Override
     public void cleanUp(Object context) {
 
-        if (!(context instanceof DecodeableRpcInvocation)) {
+        if (!(context instanceof RetryDecodeableRpcInvocation)) {
             return;
         }
-        ObjectInput objectInput = ((DecodeableRpcInvocation) context).getObjectInput();
+        ObjectInput objectInput = ((RetryDecodeableRpcInvocation) context).getObjectInput();
         if ((objectInput instanceof Cleanable)) {
             ((Cleanable) objectInput).cleanup();
         }
-        ((DecodeableRpcInvocation) context).setObjectInput(null);
+        ((RetryDecodeableRpcInvocation) context).setObjectInput(null);
     }
 
 
