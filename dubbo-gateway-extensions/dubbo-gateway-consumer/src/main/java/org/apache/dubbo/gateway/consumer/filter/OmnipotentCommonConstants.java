@@ -15,22 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.gateway.provider;
+package org.apache.dubbo.gateway.consumer.filter;
 
 public interface OmnipotentCommonConstants {
-
-    //save orgin group when service is omn
-    String ORIGIN_GROUP_KEY = "originGroup";
-
-    String ORIGIN_GENERIC_PARAMETER_TYPES = "originGenericParameterTypes";
-
-    String $INVOKE_OMN = "$invokeOmn";
-
-    String ORIGIN_PATH_KEY = "originPath";
-
-    String ORIGIN_METHOD_KEY = "originMethod";
-
-    String ORIGIN_VERSION_KEY = "originVersion";
 
     String ORIGIN_PARAMETER_TYPES = "originParameterType";
 

@@ -94,7 +94,7 @@ public class OmnSerFilter implements Filter, Filter.Listener {
             return;
         }
         Class<?>[] parameterTypes = invocation.getParameterTypes();
-        invocation.setObjectAttachment("originParameterType", getDesc(parameterTypes));
+        invocation.setObjectAttachment(OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES, getDesc(parameterTypes));
 
         Arrays.fill(parameterTypes, JavaBeanDescriptor.class);
 

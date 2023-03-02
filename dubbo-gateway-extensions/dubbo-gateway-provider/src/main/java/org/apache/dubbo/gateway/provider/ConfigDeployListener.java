@@ -14,7 +14,7 @@ public class ConfigDeployListener implements ApplicationDeployListener {
 
     @Override
     public void onStarted(ApplicationModel scopeModel) {
-        ApplicationModel.defaultModel().getCurrentConfig().getParameters().put(EXCEPTION_PROCESSOR_KEY,"snf");
+        System.setProperty(EXCEPTION_PROCESSOR_KEY,"snf");
     }
 
     @Override
