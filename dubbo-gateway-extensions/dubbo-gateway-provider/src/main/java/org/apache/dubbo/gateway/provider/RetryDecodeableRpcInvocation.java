@@ -18,7 +18,6 @@
 package org.apache.dubbo.gateway.provider;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.beanutil.JavaBeanAccessor;
 import org.apache.dubbo.common.beanutil.JavaBeanDescriptor;
 import org.apache.dubbo.common.beanutil.JavaBeanSerializeUtil;
 import org.apache.dubbo.common.serialize.Cleanable;
@@ -33,7 +32,6 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.protocol.dubbo.DecodeableRpcInvocation;
 import org.apache.dubbo.rpc.protocol.dubbo.DubboCodec;
-import org.apache.dubbo.rpc.support.RpcUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +46,6 @@ import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.METHOD_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-import static org.apache.dubbo.common.constants.LoggerCodeConstants.PROTOCOL_FAILED_DECODE;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
 
@@ -63,22 +60,6 @@ public class RetryDecodeableRpcInvocation extends DecodeableRpcInvocation {
         super(frameworkModel, channel, request, is, id);
     }
 
-    @Override
-    public void decode() throws Exception {
-        if (!hasDecoded && channel != null && inputStream != null) {
-            try {
-                decode(channel, inputStream);
-            } catch (Throwable e) {
-                if (log.isWarnEnabled()) {
-                    log.warn(PROTOCOL_FAILED_DECODE, "", "", "Decode rpc invocation failed: " + e.getMessage(), e);
-                }
-                request.setBroken(true);
-                request.setData(e);
-            } finally {
-                hasDecoded = true;
-            }
-        }
-    }
 
     @Override
     public Object decode(Channel channel, InputStream input) throws IOException {
