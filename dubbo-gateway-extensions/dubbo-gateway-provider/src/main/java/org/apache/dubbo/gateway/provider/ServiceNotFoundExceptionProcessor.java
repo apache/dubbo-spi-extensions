@@ -9,8 +9,15 @@ import org.apache.dubbo.rpc.protocol.dubbo.ExceptionProcessor;
 import java.io.InputStream;
 
 public class ServiceNotFoundExceptionProcessor implements ExceptionProcessor {
+
+    public FrameworkModel frameworkModel;
+
+    public ServiceNotFoundExceptionProcessor(FrameworkModel frameworkModel) {
+        this.frameworkModel = frameworkModel;
+    }
+
     @Override
-    public DecodeableRpcInvocation getRetryDecodeableRpcInvocation(FrameworkModel frameworkModel, Channel channel, Request req, InputStream is, byte proto) {
+    public DecodeableRpcInvocation getRetryDecodeableRpcInvocation(Channel channel, Request req, InputStream is, byte proto) {
         return new RetryDecodeableRpcInvocation(frameworkModel, channel, req, is, proto);
     }
 }
