@@ -40,5 +40,6 @@
         <module>dubbo-serialization-msgpack</module>
         <module>dubbo-serialization-native-hession</module>
         <module>dubbo-serialization-test</module>
+        <module>dubbo-serialization-kryo4</module>
     </modules>
 </project>
