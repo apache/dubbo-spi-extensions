@@ -40,8 +40,8 @@ limitations under the License.
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.esotericsoftware.kryo</groupId>
-            <artifactId>kryo5</artifactId>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
         </dependency>
         <dependency>
             <groupId>de.javakaffee</groupId>
