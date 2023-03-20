@@ -29,7 +29,7 @@ limitations under the License.
     <artifactId>dubbo-serialization-kryo4</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>${revision}</version>
+    <version>1.0.2-SNAPSHOT</version>
     <description>The kryo4 serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
