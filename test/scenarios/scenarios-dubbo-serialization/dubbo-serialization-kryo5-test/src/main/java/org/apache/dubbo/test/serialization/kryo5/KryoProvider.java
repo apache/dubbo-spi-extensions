@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.dubbo.test.serialization.kryo;
+package org.apache.dubbo.test.serialization.kryo5;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

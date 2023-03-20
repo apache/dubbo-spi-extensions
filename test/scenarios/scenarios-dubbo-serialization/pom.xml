@@ -29,7 +29,7 @@
         <module>dubbo-serialization-gson-test</module>
         <module>dubbo-serialization-fastjson-test</module>
         <module>dubbo-serialization-fst-test</module>
-        <module>dubbo-serialization-kryo-test</module>
+        <module>dubbo-serialization-kryo5-test</module>
         <module>dubbo-serialization-protobuf-test</module>
         <module>dubbo-serialization-protostuff-test</module>
         <module>dubbo-serialization-testcase</module>

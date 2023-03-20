@@ -25,6 +25,7 @@
 
     <modules>
         <module>scenarios-dubbo-serialization</module>
+        <module>scenarios-dubbo-serialization/dubbo-serialization-kryo4-test</module>
     </modules>
 
     <properties>

@@ -24,7 +24,7 @@ limitations under the License.
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>dubbo-serialization-kryo</artifactId>
+    <artifactId>dubbo-serialization-kryo5</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <version>1.0.2-SNAPSHOT</version>
