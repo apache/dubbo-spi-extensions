@@ -58,7 +58,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-kryo</artifactId>
+            <artifactId>dubbo-serialization-kryo5</artifactId>
             <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
