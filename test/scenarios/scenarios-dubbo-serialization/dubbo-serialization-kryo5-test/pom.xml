@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-kryo5</artifactId>
-            <version>${dubbo.serialization.version}</version>
+            <version>${dubbo.extensions.version}</version>
         </dependency>
 
         <dependency>
