@@ -1,1 +1,1 @@
-omnipotent=org.apache.dubbo.gateway.filter.OmnipotentFilter
+omnipotent=org.apache.dubbo.gateway.provider.filter.OmnipotentFilter
