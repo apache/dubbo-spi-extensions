@@ -58,8 +58,6 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
     private static final String DEFAULT_OMNIPOTENT_SERVICE = OmnipotentService.class.getName();
 
 
-    private static final boolean CHECK_SERIALIZATION = Boolean.parseBoolean(System.getProperty(SERIALIZATION_SECURITY_CHECK_KEY, "true"));
-
     public SnfDecodeableRpcInvocation(FrameworkModel frameworkModel, Channel channel, Request request, InputStream is, byte id) {
         super(frameworkModel, channel, request, is, id);
     }
