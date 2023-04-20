@@ -17,6 +17,8 @@
 
 package org.apache.dubbo.gateway.provider;
 
+import org.apache.dubbo.common.beanutil.JavaBeanDescriptor;
+import org.apache.dubbo.common.beanutil.JavaBeanSerializeUtil;
 import org.apache.dubbo.common.serialize.Cleanable;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.utils.CollectionUtils;
@@ -77,8 +79,6 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
         String version = in.readUTF();
         setAttachment(VERSION_KEY, version);
 
-        String keyWithoutGroup = keyWithoutGroup(path, version);
-
         setMethodName(in.readUTF());
 
         String desc = in.readUTF();
@@ -87,12 +87,6 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
         ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
 
         try {
-            if (CHECK_SERIALIZATION) {
-                PermittedSerializationKeeper keeper = frameworkModel.getBeanFactory().getBean(PermittedSerializationKeeper.class);
-                if (!keeper.checkSerializationPermitted(keyWithoutGroup, serializationType)) {
-                    throw new IOException("Unexpected serialization id:" + serializationType + " received from network, please check if the peer send the right id.");
-                }
-            }
             Object[] args = DubboCodec.EMPTY_OBJECT_ARRAY;
             Class<?>[] pts = DubboCodec.EMPTY_CLASS_ARRAY;
             if (desc.length() > 0) {
@@ -107,10 +101,11 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
             setAttachment(ORIGIN_GENERIC_PARAMETER_TYPES, pts);
 
             Map<String, Object> map = in.readAttachments();
+            Class<?>[] retryPts = null;
             if (CollectionUtils.isNotEmptyMap(map)) {
                 if (map.containsKey(ORIGIN_PARAMETER_TYPES_DESC)) {
                     String originParameterTypesDesc = map.get(ORIGIN_PARAMETER_TYPES_DESC).toString();
-                    Class<?>[] retryPts = drawPts(path, version, desc, DubboCodec.EMPTY_CLASS_ARRAY);
+                    retryPts = drawPts(path, version, originParameterTypesDesc, DubboCodec.EMPTY_CLASS_ARRAY);
                     boolean snf = (retryPts == DubboCodec.EMPTY_CLASS_ARRAY) && !RpcUtils.isGenericCall(originParameterTypesDesc, getMethodName()) && !RpcUtils.isEcho(originParameterTypesDesc, getMethodName());
                     if (snf) {
                         setAttachment(OmnipotentCommonConstants.ORIGIN_PATH_KEY, getAttachment(PATH_KEY));
@@ -127,24 +122,40 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
                         setAttachment(METHOD_KEY, $INVOKE_OMN);
                         setMethodName($INVOKE_OMN);
                         setParameterTypes(new Class<?>[]{Invocation.class});
-                    }
-                }
 
-
-                if (isGenericOmnCall(getMethodName(), path)) {
-                    // Omn needs to use the default path, version and group,
-                    // and the original value starts with origin to save the variable
-                    map.remove(PATH_KEY);
-                    map.remove(VERSION_KEY);
-                    if (map.containsKey(GROUP_KEY)) {
-                        map.put(ORIGIN_GROUP_KEY, map.get(GROUP_KEY));
-                        map.remove(GROUP_KEY);
+                        // Omn needs to use the default path, version and group,
+                        // and the original value starts with origin to save the variable
+                        map.remove(PATH_KEY);
+                        map.remove(VERSION_KEY);
+                        if (map.containsKey(GROUP_KEY)) {
+                            map.put(ORIGIN_GROUP_KEY, map.get(GROUP_KEY));
+                            map.remove(GROUP_KEY);
+                        }
+                        retryPts = (Class<?>[]) getObjectAttachments().get(ORIGIN_GENERIC_PARAMETER_TYPES);
                     }
                 }
 
                 addObjectAttachments(map);
             }
 
+            boolean isConvert = false;
+            for (Class<?> clazz : pts) {
+                if (clazz == JavaBeanDescriptor.class) {
+                    isConvert = true;
+                    break;
+                }
+            }
+            if (isConvert) {
+                setParameterTypes(retryPts);
+                pts = retryPts;
+                Object[] newArgs = new Object[args.length];
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i] instanceof JavaBeanDescriptor) {
+                        newArgs[i] = JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) args[i]);
+                    }
+                }
+                args = newArgs;
+            }
             decodeArgument(channel, pts, args);
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read invocation data failed.", e));
@@ -157,7 +168,4 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
         return this;
     }
 
-    public static boolean isGenericOmnCall(String method, String serviceName) {
-        return $INVOKE_OMN.equals(method) && serviceName.equals(OmnipotentService.class.getName());
-    }
 }
