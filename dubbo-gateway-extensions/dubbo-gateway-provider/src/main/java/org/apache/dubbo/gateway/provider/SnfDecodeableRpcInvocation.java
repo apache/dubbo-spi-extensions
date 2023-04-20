@@ -47,6 +47,7 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.$INVOKE_OMN;
 import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_GENERIC_PARAMETER_TYPES;
 import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_GROUP_KEY;
+import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES_DESC;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
 
@@ -97,7 +98,21 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
             if (desc.length() > 0) {
                 pts = drawPts(path, version, desc, pts);
                 if (pts == DubboCodec.EMPTY_CLASS_ARRAY) {
-                    if (!RpcUtils.isGenericCall(desc, getMethodName()) && !RpcUtils.isEcho(desc, getMethodName())) {
+                    // Service not found
+                    pts = ReflectUtils.desc2classArray(desc);
+                }
+                args = drawArgs(in, pts);
+            }
+            setParameterTypes(pts);
+            setAttachment(ORIGIN_GENERIC_PARAMETER_TYPES, pts);
+
+            Map<String, Object> map = in.readAttachments();
+            if (CollectionUtils.isNotEmptyMap(map)) {
+                if (map.containsKey(ORIGIN_PARAMETER_TYPES_DESC)) {
+                    String originParameterTypesDesc = map.get(ORIGIN_PARAMETER_TYPES_DESC).toString();
+                    Class<?>[] retryPts = drawPts(path, version, desc, DubboCodec.EMPTY_CLASS_ARRAY);
+                    boolean snf = (retryPts == DubboCodec.EMPTY_CLASS_ARRAY) && !RpcUtils.isGenericCall(originParameterTypesDesc, getMethodName()) && !RpcUtils.isEcho(originParameterTypesDesc, getMethodName());
+                    if (snf) {
                         setAttachment(OmnipotentCommonConstants.ORIGIN_PATH_KEY, getAttachment(PATH_KEY));
                         // Replace serviceName in req with omn
                         setAttachment(PATH_KEY, DEFAULT_OMNIPOTENT_SERVICE);
@@ -113,15 +128,9 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
                         setMethodName($INVOKE_OMN);
                         setParameterTypes(new Class<?>[]{Invocation.class});
                     }
-                    pts = ReflectUtils.desc2classArray(desc);
                 }
-                args = drawArgs(in, pts);
-            }
-            setParameterTypes(pts);
-            setAttachment(ORIGIN_GENERIC_PARAMETER_TYPES, pts);
 
-            Map<String, Object> map = in.readAttachments();
-            if (CollectionUtils.isNotEmptyMap(map)) {
+
                 if (isGenericOmnCall(getMethodName(), path)) {
                     // Omn needs to use the default path, version and group,
                     // and the original value starts with origin to save the variable
@@ -148,7 +157,7 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
         return this;
     }
 
-    public static boolean isGenericOmnCall(String method,String serviceName) {
+    public static boolean isGenericOmnCall(String method, String serviceName) {
         return $INVOKE_OMN.equals(method) && serviceName.equals(OmnipotentService.class.getName());
     }
 }

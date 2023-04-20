@@ -24,6 +24,8 @@ public interface OmnipotentCommonConstants {
 
     String ORIGIN_GENERIC_PARAMETER_TYPES = "originGenericParameterTypes";
 
+    String ORIGIN_PARAMETER_TYPES_DESC = "originParameterTypesDesc";
+
     String $INVOKE_OMN = "$invokeOmn";
 
     String ORIGIN_PATH_KEY = "originPath";

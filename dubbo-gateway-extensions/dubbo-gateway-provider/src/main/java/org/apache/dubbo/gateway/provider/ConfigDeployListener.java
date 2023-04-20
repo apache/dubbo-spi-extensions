@@ -26,7 +26,7 @@ public class ConfigDeployListener implements ApplicationDeployListener {
 
     @Override
     public void onInitialize(ApplicationModel scopeModel) {
-        ApplicationModel.defaultModel().getCurrentConfig().getParameters().put(BYTE_ACCESSOR_KEY, "snf");
+        System.setProperty(BYTE_ACCESSOR_KEY, "snf");
     }
 
     @Override

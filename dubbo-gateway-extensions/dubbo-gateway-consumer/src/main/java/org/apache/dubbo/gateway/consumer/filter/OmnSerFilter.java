@@ -95,6 +95,7 @@ public class OmnSerFilter implements Filter, Filter.Listener {
         }
         Class<?>[] parameterTypes = invocation.getParameterTypes();
         invocation.setObjectAttachment("originParameterType", getDesc(parameterTypes));
+        invocation.setObjectAttachment("originParameterTypesDesc", ((RpcInvocation) invocation).getParameterTypesDesc());
 
         Arrays.fill(parameterTypes, JavaBeanDescriptor.class);
 
