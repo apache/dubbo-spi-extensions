@@ -29,7 +29,6 @@ import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.transport.CodecSupport;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.model.FrameworkModel;
-import org.apache.dubbo.rpc.protocol.PermittedSerializationKeeper;
 import org.apache.dubbo.rpc.protocol.dubbo.DecodeableRpcInvocation;
 import org.apache.dubbo.rpc.protocol.dubbo.DubboCodec;
 import org.apache.dubbo.rpc.support.RpcUtils;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import static org.apache.dubbo.common.BaseServiceMetadata.keyWithoutGroup;
 import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_VERSION;
 import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
@@ -51,7 +49,6 @@ import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN
 import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_GROUP_KEY;
 import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES_DESC;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
-import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
 
 public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
 
