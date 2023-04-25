@@ -27,12 +27,23 @@ import org.apache.dubbo.rpc.Filter;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
+import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.GATEWAY_MODE;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.ORIGIN_GENERIC_PARAMETER_TYPES;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES_DESC;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.SPECIFY_ADDRESS;
 
 
 @Activate(group = CommonConstants.CONSUMER)
@@ -45,8 +56,9 @@ public class OmnSerFilter implements Filter, Filter.Listener {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
 
-        Object address = invocation.get(name);
+        Object address = invocation.get(SPECIFY_ADDRESS);
         if (address != null) {
+            RpcContext.getClientAttachment().setAttachment(GATEWAY_MODE, "omn");
             convertParameterTypeToJavaBeanDescriptor(invocation);
         }
         return invoker.invoke(invocation);
@@ -73,14 +85,50 @@ public class OmnSerFilter implements Filter, Filter.Listener {
     }
 
 
-    private void generalizeJbdParameter(Object resData) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void generalizeJbdParameter(Object pojo) {
+        if (pojo instanceof Collection) {
+
+            Collection collection = (Collection) pojo;
+            List list = new ArrayList();
+            for (Object obj : collection) {
+                if (obj instanceof JavaBeanDescriptor) {
+                    list.add(JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) obj));
+                } else {
+                    list.add(obj);
+                }
+            }
+            collection.clear();
+            collection.addAll(list);
+        }
+
+        if (pojo instanceof Map) {
+
+            Map map = (Map) pojo;
+            Map newMap = new HashMap();
+            for (Object key : map.keySet()) {
+
+                Object value = map.get(key);
+                if (key instanceof JavaBeanDescriptor) {
+                    key = JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) key);
+                }
+                if (value instanceof JavaBeanDescriptor) {
+                    value = JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) value);
+                }
+                newMap.put(key, value);
+
+            }
+            map.clear();
+            map.putAll(newMap);
+        }
+
         // public field
-        for (Field field : resData.getClass().getDeclaredFields()) {
+        for (Field field : pojo.getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);
-                Object fieldValue = field.get(resData);
+                Object fieldValue = field.get(pojo);
                 if (fieldValue instanceof JavaBeanDescriptor) {
-                    field.set(resData, JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) fieldValue));
+                    field.set(pojo, JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) fieldValue));
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
@@ -94,19 +142,22 @@ public class OmnSerFilter implements Filter, Filter.Listener {
             return;
         }
         Class<?>[] parameterTypes = invocation.getParameterTypes();
-        invocation.setObjectAttachment("originParameterType", getDesc(parameterTypes));
-        invocation.setObjectAttachment("originParameterTypesDesc", ((RpcInvocation) invocation).getParameterTypesDesc());
+        boolean reqFirst = Arrays.stream(parameterTypes).noneMatch(param -> param == JavaBeanDescriptor.class);
+        if (reqFirst) {
+            invocation.setObjectAttachment(ORIGIN_GENERIC_PARAMETER_TYPES, getDesc(parameterTypes));
+            invocation.setObjectAttachment(ORIGIN_PARAMETER_TYPES_DESC, ((RpcInvocation) invocation).getParameterTypesDesc());
+            Arrays.fill(parameterTypes, JavaBeanDescriptor.class);
 
-        Arrays.fill(parameterTypes, JavaBeanDescriptor.class);
+            Object[] arguments = invocation.getArguments();
+            for (int i = 0; i < arguments.length; i++) {
+                JavaBeanDescriptor jbdArg = JavaBeanSerializeUtil.serialize(arguments[i]);
+                arguments[i] = jbdArg;
+            }
 
-        Object[] arguments = invocation.getArguments();
-        for (int i = 0; i < arguments.length; i++) {
-            JavaBeanDescriptor jbdArg = JavaBeanSerializeUtil.serialize(arguments[i]);
-            arguments[i] = jbdArg;
+            ((RpcInvocation) invocation).setParameterTypesDesc(ReflectUtils.getDesc(parameterTypes));
+            ((RpcInvocation) invocation).setCompatibleParamSignatures(Stream.of(parameterTypes).map(Class::getName).toArray(String[]::new));
         }
 
-        ((RpcInvocation) invocation).setParameterTypesDesc(ReflectUtils.getDesc(parameterTypes));
-        ((RpcInvocation) invocation).setCompatibleParamSignatures(Stream.of(parameterTypes).map(Class::getName).toArray(String[]::new));
     }
 
     private static String[] getDesc(Class<?>[] parameterTypes) {

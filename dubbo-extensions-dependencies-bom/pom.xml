@@ -89,7 +89,7 @@
     </issueManagement>
 
     <properties>
-        <revision>1.0.4-SNAPSHOT</revision>
+        <revision>1.0.5-SNAPSHOT</revision>
         <dubbo.version>3.1.2</dubbo.version>
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring-boot.version>2.4.1</spring-boot.version>

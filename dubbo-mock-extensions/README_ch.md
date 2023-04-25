@@ -9,8 +9,9 @@
 - 引入依赖
 
 ```xml
+
 <dependency>
-    <groupId>org.apache.dubbo.extensions</groupId>
+    <groupId>org.apache.dubbo.gatewayorg.apache.dubbo.gateway</groupId>
     <artifactId>dubbo-mock-admin</artifactId>
     <version>3.0.0</version>
 </dependency>

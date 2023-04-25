@@ -21,7 +21,7 @@ import org.apache.dubbo.common.beanutil.JavaBeanDescriptor;
 import org.apache.dubbo.common.beanutil.JavaBeanSerializeUtil;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.gateway.provider.OmnipotentCommonConstants;
+import org.apache.dubbo.gateway.common.OmnipotentCommonConstants;
 import org.apache.dubbo.gateway.provider.OmnipotentService;
 import org.apache.dubbo.rpc.Filter;
 import org.apache.dubbo.rpc.Invocation;
@@ -31,6 +31,7 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
@@ -77,10 +78,12 @@ public class OmnipotentFilter implements Filter {
         rpcInvocation.setMethodName(inv.getAttachment(OmnipotentCommonConstants.ORIGIN_METHOD_KEY));
         rpcInvocation.setParameterTypes(parameterTypes);
         rpcInvocation.setArguments(args);
+        rpcInvocation.setParameterTypesDesc(inv.getAttachment(OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES_DESC));
 
         // attachment
         rpcInvocation.setAttachment(PATH_KEY, inv.getAttachment(OmnipotentCommonConstants.ORIGIN_PATH_KEY));
         rpcInvocation.setAttachment(VERSION_KEY, inv.getAttachment(OmnipotentCommonConstants.ORIGIN_VERSION_KEY));
+        rpcInvocation.setAttachment(GROUP_KEY, inv.getAttachment(OmnipotentCommonConstants.ORIGIN_GROUP_KEY));
         ((RpcInvocation) inv).setArguments(new Object[]{rpcInvocation});
 
     }

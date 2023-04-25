@@ -24,6 +24,7 @@ import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.gateway.common.OmnipotentCommonConstants;
 import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.transport.CodecSupport;
@@ -44,10 +45,10 @@ import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.METHOD_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.$INVOKE_OMN;
-import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_GENERIC_PARAMETER_TYPES;
-import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_GROUP_KEY;
-import static org.apache.dubbo.gateway.provider.OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES_DESC;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.$INVOKE_OMN;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.ORIGIN_GENERIC_PARAMETER_TYPES;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.ORIGIN_GROUP_KEY;
+import static org.apache.dubbo.gateway.common.OmnipotentCommonConstants.ORIGIN_PARAMETER_TYPES_DESC;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 
 public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
@@ -87,7 +88,7 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
             if (desc.length() > 0) {
                 pts = drawPts(path, version, desc, pts);
                 if (pts == DubboCodec.EMPTY_CLASS_ARRAY) {
-                    // Service not found
+                    // Service not found ,pts = JavaBeanDescriptor
                     pts = ReflectUtils.desc2classArray(desc);
                 }
                 args = drawArgs(in, pts);
@@ -140,6 +141,7 @@ public class SnfDecodeableRpcInvocation extends DecodeableRpcInvocation {
                     break;
                 }
             }
+            // isConvert = snf
             if (isConvert) {
                 setParameterTypes(retryPts);
                 pts = retryPts;

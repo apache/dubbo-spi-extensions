@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.gateway.provider;
+package org.apache.dubbo.gateway.common;
 
 public interface OmnipotentCommonConstants {
 
-    //save orgin group when service is omn
+    //save origin group when service is omn
     String ORIGIN_GROUP_KEY = "originGroup";
 
     String ORIGIN_GENERIC_PARAMETER_TYPES = "originGenericParameterTypes";
@@ -33,5 +33,8 @@ public interface OmnipotentCommonConstants {
     String ORIGIN_METHOD_KEY = "originMethod";
 
     String ORIGIN_VERSION_KEY = "originVersion";
+
+    String SPECIFY_ADDRESS = "specifyAddress";
+    String GATEWAY_MODE = "gatewayMode";
 
 }
