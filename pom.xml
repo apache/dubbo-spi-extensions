@@ -95,7 +95,6 @@
         <module>dubbo-serialization-extensions</module>
         <module>dubbo-mock-extensions</module>
         <module>dubbo-gateway-extensions</module>
-        <module>dubbo-gateway-extensions/dubbo-gateway-common</module>
     </modules>
 
     <properties>

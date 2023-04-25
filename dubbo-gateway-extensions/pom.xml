@@ -29,7 +29,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>dubbo-gateway-provider</module>
+        <module>dubbo-gateway-common</module>
+        <module>dubbo-gateway-consumer</module>
         <module>dubbo-gateway-consumer</module>
     </modules>
 
