@@ -9,9 +9,8 @@
 - Add the dependency.
 
 ```xml
-
 <dependency>
-    <groupId>org.apache.dubbo.gatewayorg.apache.dubbo.gateway</groupId>
+    <groupId>org.apache.dubbo.extensions</groupId>
     <artifactId>dubbo-mock-admin</artifactId>
     <version>3.0.0</version>
 </dependency>
