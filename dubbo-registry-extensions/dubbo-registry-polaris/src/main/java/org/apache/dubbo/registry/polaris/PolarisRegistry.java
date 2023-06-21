@@ -199,7 +199,6 @@ public class PolarisRegistry extends FailbackRegistry {
         newMetadata.put(Consts.INSTANCE_KEY_ID, instance.getId());
         newMetadata.put(Consts.INSTANCE_KEY_HEALTHY, Boolean.toString(instance.isHealthy()));
         newMetadata.put(Consts.INSTANCE_KEY_ISOLATED, Boolean.toString(instance.isIsolated()));
-        newMetadata.put(Consts.INSTANCE_KEY_CIRCUIT_BREAKER, ConvertUtils.circuitBreakersToString(instance));
         clearEmptyKeys(newMetadata, new String[]{CommonConstants.VERSION_KEY, CommonConstants.GROUP_KEY});
         return new URL(instance.getProtocol(),
                 instance.getHost(),

@@ -32,8 +32,17 @@ import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 
-@Activate(group = CommonConstants.CONSUMER)
-public class ReportFilter extends PolarisOperatorDelegate implements Filter {
+import com.tencent.polaris.api.utils.StringUtils;
+import com.tencent.polaris.circuitbreak.client.exception.CallAbortedException;
+import com.tencent.polaris.common.exception.PolarisBlockException;
+import org.apache.dubbo.rpc.RpcContext;
+
+@Activate(group = CommonConstants.CONSUMER, order = Integer.MIN_VALUE)
+public class ReportFilter extends PolarisOperatorDelegate implements Filter, Filter.Listener {
+
+    private static final String LABEL_START_TIME = "reporter_filter_start_time";
+
+    private static final String LABEL_REMOTE_HOST = "reporter_remote_host_store";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportFilter.class);
 
@@ -43,48 +52,64 @@ public class ReportFilter extends PolarisOperatorDelegate implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        long startTimeMilli = System.currentTimeMillis();
-        Result result = null;
-        Throwable exception = null;
-        RpcException rpcException = null;
-        try {
-            result = invoker.invoke(invocation);
-        } catch (Throwable e) {
-            exception = e;
-        }
-        if (null != result && result.hasException()) {
-            exception = result.getException();
-        }
-        if (exception instanceof RpcException) {
-            rpcException = (RpcException) exception;
-        }
+        invocation.put(LABEL_START_TIME, System.currentTimeMillis());
+        invocation.put(LABEL_REMOTE_HOST, RpcContext.getContext().getRemoteHost());
+        return invoker.invoke(invocation);
+    }
+
+    @Override
+    public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
         PolarisOperator polarisOperator = getPolarisOperator();
         if (null == polarisOperator) {
-            return result;
+            return;
         }
+        String callerIp = (String) invocation.get(LABEL_REMOTE_HOST);
+        Long startTimeMilli = (Long) invocation.get(LABEL_START_TIME);
         RetStatus retStatus = RetStatus.RetSuccess;
         int code = 0;
-        if (null != exception) {
+        if (appResponse.hasException()) {
             retStatus = RetStatus.RetFail;
-            if (null != rpcException) {
-                code = rpcException.getCode();
-                if (code == RpcException.LIMIT_EXCEEDED_EXCEPTION) {
-                    // we won't consider limit exception as error
-                    retStatus = RetStatus.RetSuccess;
-                }
-            } else {
-                code = -1;
+            code = -1;
+        }
+        URL url = invoker.getUrl();
+        long delay = System.currentTimeMillis() - startTimeMilli;
+        polarisOperator.reportInvokeResult(url.getServiceInterface(), invocation.getMethodName(), url.getHost(),
+            url.getPort(), callerIp, delay, retStatus, code);
+    }
+
+    @Override
+    public void onError(Throwable t, Invoker<?> invoker, Invocation invocation) {
+        PolarisOperator polarisOperator = getPolarisOperator();
+        if (null == polarisOperator) {
+            return;
+        }
+        String callerIp = (String) invocation.get(LABEL_REMOTE_HOST);
+        Long startTimeMilli = (Long) invocation.get(LABEL_START_TIME);
+        RetStatus retStatus = RetStatus.RetFail;
+        int code = -1;
+        if (t instanceof RpcException) {
+            RpcException rpcException = (RpcException) t;
+            code = rpcException.getCode();
+            if (isFlowControl(rpcException)) {
+                retStatus = RetStatus.RetFlowControl;
+            }
+            if (rpcException.isTimeout()) {
+                retStatus = RetStatus.RetTimeout;
+            }
+            if (rpcException.getCause() instanceof CallAbortedException) {
+                retStatus = RetStatus.RetReject;
             }
         }
         URL url = invoker.getUrl();
         long delay = System.currentTimeMillis() - startTimeMilli;
         polarisOperator.reportInvokeResult(url.getServiceInterface(), invocation.getMethodName(), url.getHost(),
-                url.getPort(), delay, retStatus, code);
-        if (null != rpcException) {
-            throw rpcException;
-        } else if (null != exception) {
-            throw new RpcException(exception);
-        }
-        return result;
+            url.getPort(), callerIp, delay, retStatus, code);
+    }
+
+    private boolean isFlowControl(RpcException rpcException) {
+        boolean a = StringUtils.isNotBlank(rpcException.getMessage()) && rpcException.getMessage()
+            .contains(PolarisBlockException.PREFIX);
+        boolean b = rpcException.isLimitExceed();
+        return a || b;
     }
 }

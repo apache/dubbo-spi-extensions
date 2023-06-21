@@ -15,20 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.rpc.cluster.router;
+package org.apache.dubbo.filter.dubbo2;
 
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.constants.CommonConstants;
-import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.rpc.cluster.Router;
-import org.apache.dubbo.rpc.cluster.RouterFactory;
+import com.tencent.polaris.circuitbreak.client.exception.CallAbortedException;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.Result;
 
-@Activate(group = CommonConstants.CONSUMER)
-public class PolarisRouterFactory implements RouterFactory {
+public interface CallAbortCallback {
 
-    @Override
-    public Router getRouter(URL url) {
-        return new PolarisRouter(url);
-    }
+    Result handle(Invoker<?> invoker, Invocation invocation, CallAbortedException ex);
+
 }
-

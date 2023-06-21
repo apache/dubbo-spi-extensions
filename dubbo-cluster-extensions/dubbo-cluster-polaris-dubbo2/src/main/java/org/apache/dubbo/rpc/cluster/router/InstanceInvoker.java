@@ -22,19 +22,21 @@ import com.tencent.polaris.api.pojo.DefaultInstance;
 import com.tencent.polaris.api.pojo.Instance;
 import com.tencent.polaris.api.pojo.StatusDimension;
 import com.tencent.polaris.common.registry.Consts;
-import com.tencent.polaris.common.registry.ConvertUtils;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.Constants;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class InstanceInvoker<T> implements Instance, Invoker<T> {
 
@@ -57,12 +59,24 @@ public class InstanceInvoker<T> implements Instance, Invoker<T> {
         defaultInstance.setIsolated(Boolean.parseBoolean(url.getParameter(Consts.INSTANCE_KEY_ISOLATED)));
         defaultInstance.setVersion(url.getParameter(CommonConstants.VERSION_KEY));
         defaultInstance.setWeight(url.getParameter(Constants.WEIGHT_KEY, 100));
-        String circuitBreakerStr = url.getParameter(Consts.INSTANCE_KEY_CIRCUIT_BREAKER);
-        Map<StatusDimension, CircuitBreakerStatus> statusDimensionCircuitBreakerStatusMap = ConvertUtils
-                .stringToCircuitBreakers(circuitBreakerStr);
-        defaultInstance.getCircuitBreakerStatuses().putAll(statusDimensionCircuitBreakerStatusMap);
-        defaultInstance.setMetadata(url.getParameters());
+        defaultInstance.setMetadata(convertMetadata(url.getParameters()));
+        if (defaultInstance.getMetadata().containsKey(CommonConstants.REMOTE_APPLICATION_KEY)) {
+            defaultInstance.getMetadata().put(CommonConstants.APPLICATION_KEY,
+                defaultInstance.getMetadata().get(CommonConstants.REMOTE_APPLICATION_KEY));
+        }
         LOGGER.info(String.format("[POLARIS] construct instance from invoker, url %s, instance %s", url, defaultInstance));
+    }
+
+    private Map<String, String> convertMetadata(Map<String, String> parameters) {
+        Map<String, String> ret = new HashMap<>();
+        parameters.forEach((key, value) -> {
+            //
+            if (StringUtils.isEquals(key, "remote.application")) {
+                key = "application";
+            }
+            ret.put(key, value);
+        });
+        return ret;
     }
 
     @Override

@@ -10,6 +10,13 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-2019 ]
         jdk: [ 8, 11 ]
+    services:
+      polaris:
+        image: polarismesh/polaris-standalone:latest
+        ports:
+          - 8090:8090
+          - 8091:8091
+          - 8093:8093
     steps:
       - uses: actions/checkout@v2
         with:

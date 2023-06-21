@@ -20,18 +20,15 @@ package org.apache.dubbo.filter.dubbo2;
 import com.tencent.polaris.api.pojo.ServiceEventKey.EventType;
 import com.tencent.polaris.api.pojo.ServiceRule;
 import com.tencent.polaris.api.utils.StringUtils;
-import com.tencent.polaris.client.pb.ModelProto.MatchArgument;
-import com.tencent.polaris.client.pb.RateLimitProto.RateLimit;
 import com.tencent.polaris.common.exception.PolarisBlockException;
+import com.tencent.polaris.common.parser.QueryParser;
 import com.tencent.polaris.common.registry.PolarisOperator;
 import com.tencent.polaris.common.registry.PolarisOperatorDelegate;
-import com.tencent.polaris.common.router.ObjectParser;
 import com.tencent.polaris.common.router.RuleHandler;
 import com.tencent.polaris.ratelimit.api.rpc.Argument;
 import com.tencent.polaris.ratelimit.api.rpc.QuotaResponse;
 import com.tencent.polaris.ratelimit.api.rpc.QuotaResultCode;
-import java.util.HashSet;
-import java.util.Set;
+import com.tencent.polaris.specification.api.v1.traffic.manage.RateLimitProto;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.logger.Logger;
@@ -43,6 +40,12 @@ import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcException;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.Set;
+
 @Activate(group = CommonConstants.PROVIDER)
 public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
 
@@ -50,9 +53,22 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
 
     private final RuleHandler ruleHandler;
 
+    private final QueryParser parser;
+
+    private final RateLimitCallback callback;
+
     public RateLimitFilter() {
         LOGGER.info("[POLARIS] init polaris ratelimit");
-        ruleHandler = new RuleHandler();
+        this.ruleHandler = new RuleHandler();
+        this.parser = QueryParser.load();
+
+        ServiceLoader<RateLimitCallback> loader = ServiceLoader.load(RateLimitCallback.class);
+        RateLimitCallback instance = loader.iterator().next();
+        if (Objects.nonNull(instance)) {
+            this.callback = instance;
+        } else {
+            this.callback = new DefaultRateLimitCallback();
+        }
     }
 
     @Override
@@ -67,11 +83,11 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
         if (null == ruleObject) {
             return invoker.invoke(invocation);
         }
-        RateLimit rateLimit = (RateLimit) ruleObject;
-        Set<MatchArgument> ratelimitLabels = ruleHandler.getRatelimitLabels(rateLimit);
+        RateLimitProto.RateLimit rateLimit = (RateLimitProto.RateLimit) ruleObject;
+        Set<RateLimitProto.MatchArgument> ratelimitLabels = ruleHandler.getRatelimitLabels(rateLimit);
         String method = invocation.getMethodName();
         Set<Argument> arguments = new HashSet<>();
-        for (MatchArgument matchArgument : ratelimitLabels) {
+        for (RateLimitProto.MatchArgument matchArgument : ratelimitLabels) {
             switch (matchArgument.getType()) {
                 case HEADER:
                     String attachmentValue = RpcContext.getContext().getAttachment(matchArgument.getKey());
@@ -80,12 +96,8 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
                     }
                     break;
                 case QUERY:
-                    Object queryValue = ObjectParser
-                            .parseArgumentsByExpression(matchArgument.getKey(), invocation.getArguments());
-                    if (null != queryValue) {
-                        arguments.add(Argument
-                                .buildQuery(matchArgument.getKey(), String.valueOf(queryValue)));
-                    }
+                    Optional<String> queryValue = parser.parse(matchArgument.getKey(), invocation.getArguments());
+                    queryValue.ifPresent(value -> arguments.add(Argument.buildQuery(matchArgument.getKey(), value)));
                     break;
                 default:
                     break;
@@ -95,13 +107,22 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
         try {
             quotaResponse = polarisOperator.getQuota(service, method, arguments);
         } catch (RuntimeException e) {
-            LOGGER.error("[POLARIS] get quota fail", e);
+            LOGGER.error("[POLARIS] get quota fail, {}", e);
         }
         if (null != quotaResponse && quotaResponse.getCode() == QuotaResultCode.QuotaResultLimited) {
-            // throw block exception when ratelimit occurs
-            throw new RpcException(RpcException.LIMIT_EXCEEDED_EXCEPTION, new PolarisBlockException(
-                    String.format("url=%s, info=%s", invoker.getUrl(), quotaResponse.getInfo())));
+            // 请求被限流，则抛出异常
+            return callback.handle(invoker, invocation, new PolarisBlockException(
+                String.format("url=%s, info=%s", invoker.getUrl(), quotaResponse.getInfo())));
         }
         return invoker.invoke(invocation);
+    }
+
+    private static final class DefaultRateLimitCallback implements RateLimitCallback {
+
+        @Override
+        public Result handle(Invoker<?> invoker, Invocation invocation, PolarisBlockException ex) {
+            // 请求被限流，则抛出异常
+            throw new RpcException(RpcException.LIMIT_EXCEEDED_EXCEPTION, ex);
+        }
     }
 }
