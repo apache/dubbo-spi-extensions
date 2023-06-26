@@ -60,21 +60,17 @@ public class InstanceInvoker<T> implements Instance, Invoker<T> {
         defaultInstance.setVersion(url.getParameter(CommonConstants.VERSION_KEY));
         defaultInstance.setWeight(url.getParameter(Constants.WEIGHT_KEY, 100));
         defaultInstance.setMetadata(convertMetadata(url.getParameters()));
-        if (defaultInstance.getMetadata().containsKey(CommonConstants.REMOTE_APPLICATION_KEY)) {
-            defaultInstance.getMetadata().put(CommonConstants.APPLICATION_KEY,
-                defaultInstance.getMetadata().get(CommonConstants.REMOTE_APPLICATION_KEY));
-        }
         LOGGER.info(String.format("[POLARIS] construct instance from invoker, url %s, instance %s", url, defaultInstance));
     }
 
     private Map<String, String> convertMetadata(Map<String, String> parameters) {
         Map<String, String> ret = new HashMap<>();
         parameters.forEach((key, value) -> {
-            //
-            if (StringUtils.isEquals(key, "remote.application")) {
-                key = "application";
-            }
             ret.put(key, value);
+            if (StringUtils.isEquals(key, CommonConstants.REMOTE_APPLICATION_KEY)) {
+                key = "application";
+                ret.put(key, value);
+            }
         });
         return ret;
     }
@@ -213,10 +209,6 @@ public class InstanceInvoker<T> implements Instance, Invoker<T> {
     public int compareTo(Instance o) {
         return defaultInstance.compareTo(o);
     }
-
-    private static final String SEP_CIRCUIT_BREAKER = ",";
-
-    private static final String SEP_CIRCUIT_BREAKER_VALUE = ":";
 
     @Override
     public boolean equals(Object o) {
