@@ -110,7 +110,7 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
             LOGGER.error("[POLARIS] get quota fail, {}", e);
         }
         if (null != quotaResponse && quotaResponse.getCode() == QuotaResultCode.QuotaResultLimited) {
-            // 请求被限流，则抛出异常
+            // throw block exception when ratelimit occurs
             return callback.handle(invoker, invocation, new PolarisBlockException(
                 String.format("url=%s, info=%s", invoker.getUrl(), quotaResponse.getInfo())));
         }
@@ -121,7 +121,7 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
 
         @Override
         public Result handle(Invoker<?> invoker, Invocation invocation, PolarisBlockException ex) {
-            // 请求被限流，则抛出异常
+            // throw block exception when ratelimit occurs
             throw new RpcException(RpcException.LIMIT_EXCEEDED_EXCEPTION, ex);
         }
     }
