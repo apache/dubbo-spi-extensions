@@ -32,8 +32,7 @@ public class PolarisRegistryUtils {
             if (null != existsOperator) {
                 return existsOperator;
             } else {
-                PolarisOperator polarisOperator = new PolarisOperator(
-                    host, port, registryURL.getParameters(), new BaseBootConfigHandler());
+                PolarisOperator polarisOperator = new PolarisOperator(host, port, registryURL.getParameters(), new BaseBootConfigHandler());
                 PolarisOperators.INSTANCE.addPolarisOperator(polarisOperator);
                 return polarisOperator;
             }

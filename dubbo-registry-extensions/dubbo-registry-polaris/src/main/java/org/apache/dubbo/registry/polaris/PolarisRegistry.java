@@ -21,18 +21,8 @@ import com.tencent.polaris.api.listener.ServiceListener;
 import com.tencent.polaris.api.pojo.Instance;
 import com.tencent.polaris.api.utils.StringUtils;
 import com.tencent.polaris.common.registry.Consts;
-import com.tencent.polaris.common.registry.ConvertUtils;
 import com.tencent.polaris.common.registry.PolarisOperator;
 import com.tencent.polaris.common.utils.ExtensionConsts;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.constants.RegistryConstants;
@@ -49,6 +39,16 @@ import org.apache.dubbo.registry.support.FailbackRegistry;
 import org.apache.dubbo.rpc.Filter;
 import org.apache.dubbo.rpc.cluster.Constants;
 import org.apache.dubbo.rpc.cluster.RouterFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PolarisRegistry extends FailbackRegistry {
 
@@ -113,7 +113,7 @@ public class PolarisRegistry extends FailbackRegistry {
             int weight = url.getParameter(Constants.WEIGHT_KEY, Constants.DEFAULT_WEIGHT);
             String version = url.getParameter(CommonConstants.VERSION_KEY, "");
             polarisOperator.register(url.getServiceInterface(), url.getHost(), port, url.getProtocol(), version, weight,
-                    metadata);
+                metadata);
             registeredInstances.add(url);
         } else {
             LOGGER.warn(String.format("[POLARIS] skip register url %s for zero port value", url));
@@ -166,7 +166,7 @@ public class PolarisRegistry extends FailbackRegistry {
 
     private void onInstances(URL url, NotifyListener listener, Instance[] instances) {
         LOGGER.info(String.format("[POLARIS] update instances count: %d, service: %s", null == instances ? 0 : instances.length,
-                url.getServiceInterface()));
+            url.getServiceInterface()));
         List<URL> urls = new ArrayList<>();
         if (null != instances) {
             for (Instance instance : instances) {
@@ -201,10 +201,10 @@ public class PolarisRegistry extends FailbackRegistry {
         newMetadata.put(Consts.INSTANCE_KEY_ISOLATED, Boolean.toString(instance.isIsolated()));
         clearEmptyKeys(newMetadata, new String[]{CommonConstants.VERSION_KEY, CommonConstants.GROUP_KEY});
         return new URL(instance.getProtocol(),
-                instance.getHost(),
-                instance.getPort(),
-                newMetadata.get(CommonConstants.PATH_KEY),
-                newMetadata);
+            instance.getHost(),
+            instance.getPort(),
+            newMetadata.get(CommonConstants.PATH_KEY),
+            newMetadata);
     }
 
     private static void clearEmptyKeys(Map<String, String> parameters, String[] keys) {
