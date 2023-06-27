@@ -17,6 +17,7 @@
 
 package org.apache.dubbo.filter.dubbo2;
 
+import com.tencent.polaris.api.exception.PolarisException;
 import com.tencent.polaris.api.pojo.ServiceEventKey.EventType;
 import com.tencent.polaris.api.pojo.ServiceRule;
 import com.tencent.polaris.api.utils.StringUtils;
@@ -59,6 +60,7 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
 
     public RateLimitFilter() {
         LOGGER.info("[POLARIS] init polaris ratelimit");
+        System.setProperty("dubbo.polaris.query_parser", System.getProperty("dubbo.polaris.query_parser", "JsonPath"));
         this.ruleHandler = new RuleHandler();
         this.parser = QueryParser.load();
 
@@ -106,7 +108,7 @@ public class RateLimitFilter extends PolarisOperatorDelegate implements Filter {
         QuotaResponse quotaResponse = null;
         try {
             quotaResponse = polarisOperator.getQuota(service, method, arguments);
-        } catch (RuntimeException e) {
+        } catch (PolarisException e) {
             LOGGER.error("[POLARIS] get quota fail, {}", e);
         }
         if (null != quotaResponse && quotaResponse.getCode() == QuotaResultCode.QuotaResultLimited) {
