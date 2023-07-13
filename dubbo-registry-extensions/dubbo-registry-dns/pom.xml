@@ -38,7 +38,6 @@
             <artifactId>dubbo</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
@@ -47,7 +46,5 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
-        
-
     </dependencies>
 </project>

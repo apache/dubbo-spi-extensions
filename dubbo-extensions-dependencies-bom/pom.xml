@@ -133,8 +133,7 @@
         <logback_version>1.2.11</logback_version>
         <rs_api_version>2.0</rs_api_version>
         <resteasy_version>3.0.20.Final</resteasy_version>
-        <polaris_adapter_version>0.1.3</polaris_adapter_version>
-
+        <polaris_adapter_version>0.2.1</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
     </properties>
 
