@@ -135,6 +135,7 @@
         <resteasy_version>3.0.20.Final</resteasy_version>
         <polaris_adapter_version>0.2.1</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
+        <byte-buddy.version>1.14.5</byte-buddy.version>
     </properties>
 
     <dependencyManagement>
@@ -488,6 +489,16 @@
                 <groupId>com.tencent.polaris</groupId>
                 <artifactId>polaris-adapter-dubbo</artifactId>
                 <version>${polaris_adapter_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy-agent</artifactId>
+                <version>${byte-buddy.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
