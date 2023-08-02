@@ -24,7 +24,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,10 +33,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class SubnetUtil {
     public static final String TAG_SUBNETS_KEY = "tag.subnets";
 
-    private static Map<String, List<SubnetUtils.SubnetInfo>> cellSubnets = new ConcurrentHashMap<>();
-    protected static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    protected static final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
-    protected static final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
+    private static final Map<String, List<SubnetUtils.SubnetInfo>> cellSubnets = new ConcurrentHashMap<>();
+    private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
+    private static final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
 
     public static boolean isEmpty() {
         try {
@@ -55,7 +54,7 @@ public class SubnetUtil {
         try {
             writeLock.lock();
             Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
-            cellSubnets = new HashMap<>();
+            cellSubnets.clear();
             Map<String, List<String>> tmpPathSubnet = (Map<String, List<String>>) yaml.load(content);
             for (Map.Entry<String, List<String>> entry : tmpPathSubnet.entrySet()) {
                 String path = entry.getKey();

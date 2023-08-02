@@ -17,8 +17,6 @@
 package org.apache.dubbo.tag.subnets.utils;
 
 
-import org.apache.dubbo.tag.subnets.utils.SubnetUtil;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
