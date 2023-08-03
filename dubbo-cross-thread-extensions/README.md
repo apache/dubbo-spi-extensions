@@ -1,7 +1,7 @@
 # Dubbo Cross Thread Extensions
 
 `dubbo-cross-thread-extensions` copy dubbo.tag cross thread lightly . 
-this extension will conflict with skywalking and ttl . 
+it can run with skywalking and ttl . 
 
 ## Integrate example
 ### scan annotation by byte-buddy
@@ -83,5 +83,59 @@ public class SpringBootDemoApplication {
        application.run(args);
     }
 }
+```
+
+## run with wkywalking and ttl
+jvm arguments:
+```
+-javaagent:transmittable-thread-local-2.14.2.jar
+-Dskywalking.agent.application_code=tracecallable-ltf1
+-Dskywalking.agent.service_name=test12
+-Dskywalking.collector.backend_service=172.37.66.195:11800
+-javaagent:skywalking-agent.jar
+```
+example code:
+```
+public class MultiAnnotationWithSwTtl {
+    private static TransmittableThreadLocal<String> context = new TransmittableThreadLocal<>();
+
+    public static void main(String[] args) {
+        Instrumentation instrumentation = ByteBuddyAgent.install();
+        RunnableOrCallableActivation.install(instrumentation);
+        context.set("value-set-in-parent with ttl");
+        RunnableWrapper runnable = RunnableWrapper.of(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("parent thread traceId=" + TraceContext.traceId());
+                RpcContext.getClientAttachment().setAttachment("dubbo.tag", "tagValue");
+                MyRunnable task = new MyRunnable();
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(task);
+            }
+        });
+        runnable.run();
+    }
+
+    @TraceCrossThread // copy traceContext (include traceId)
+    @DubboCrossThread
+    public static class MyRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            System.out.println("dubbo.tag=" +  RpcContext.getClientAttachment().getAttachment("dubbo.tag"));
+            System.out.println("children thread traceId=" + TraceContext.traceId());
+            System.out.println("ttl context.get()="+context.get());
+        }
+
+    }
+}
+
+```
+output:
+```
+parent thread traceId=60cfc24e245d4389b9f40b5b38c33ef6.1.16910355654660001
+dubbo.tag=tagValue
+children thread traceId=60cfc24e245d4389b9f40b5b38c33ef6.1.16910355654660001
+ttl context.get()=value-set-in-parent with ttl
 ```
 
