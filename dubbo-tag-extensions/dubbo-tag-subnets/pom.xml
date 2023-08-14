@@ -27,7 +27,7 @@
     <version>1.0.2-SNAPSHOT</version>
     <artifactId>dubbo-tag-subnets</artifactId>
     <name>${project.artifactId}</name>
-    <description>The SOFARegistry module of Dubbo project</description>
+    <description>The tag subnets module of dubbo project</description>
 
     <dependencies>
         <dependency>
