@@ -96,6 +96,7 @@
         <module>dubbo-mock-extensions</module>
         <module>dubbo-gateway-extensions</module>
         <module>dubbo-cross-thread-extensions</module>
+        <module>dubbo-tag-extensions</module>
     </modules>
 
     <properties>
