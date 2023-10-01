@@ -16,7 +16,9 @@
  */
 package org.apache.dubbo.doc;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 public class DocAutoGen {
