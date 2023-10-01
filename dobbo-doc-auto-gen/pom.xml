@@ -27,7 +27,7 @@
     <version>1.0.1-SNAPSHOT</version>
     <description>Dubbo interface documentation, testing tools</description>
 
-    <artifactId>doc-auto-gen</artifactId>
+    <artifactId>dobbo-doc-auto-gen</artifactId>
     <packaging>jar</packaging>
 
     <name>doc-auto-gen</name>
