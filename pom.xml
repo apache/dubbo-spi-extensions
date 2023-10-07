@@ -97,6 +97,7 @@
         <module>dubbo-gateway-extensions</module>
         <module>dubbo-cross-thread-extensions</module>
         <module>dubbo-tag-extensions</module>
+        <module>dobbo-doc-auto-gen</module>
     </modules>
 
     <properties>
