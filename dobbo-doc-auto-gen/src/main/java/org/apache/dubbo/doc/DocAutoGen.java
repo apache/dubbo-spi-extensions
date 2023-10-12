@@ -58,7 +58,7 @@ public class DocAutoGen {
                 }
 
                 String currentPath = level == 0 ? name : parentPath + "/" + name;
-                System.out.println(blank + "- [" + currentPath + "]" + "(" + name + ")");
+                System.out.println(blank + "- [" + name + "]" + "(" +  currentPath+ ")");
                 visitFile(f, currentPath, level + 1);
             }
         }
