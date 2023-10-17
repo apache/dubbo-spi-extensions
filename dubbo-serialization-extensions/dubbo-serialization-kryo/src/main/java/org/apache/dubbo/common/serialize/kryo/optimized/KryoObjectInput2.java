@@ -146,7 +146,7 @@ public class KryoObjectInput2 implements ObjectInput, Cleanable {
     }
 
     @Override
-    public Object readEvent() throws IOException, ClassNotFoundException {
+    public String readEvent() throws IOException, ClassNotFoundException {
         try {
             return kryo.readObjectOrNull(input, String.class);
         } catch (KryoException e) {

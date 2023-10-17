@@ -124,7 +124,7 @@ public class GenericProtobufObjectInput implements ObjectInput {
     }
 
     @Override
-    public Object readEvent() throws IOException {
+    public String readEvent() throws IOException {
         String eventData = readUTF();
         if (eventData.equals(MOCK_HEARTBEAT_EVENT)) {
             eventData = HEARTBEAT_EVENT;
