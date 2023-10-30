@@ -17,13 +17,22 @@
 
 package org.apache.dubbo.gateway.provider;
 
+import org.apache.dubbo.common.io.UnsafeByteArrayInputStream;
+import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.exchange.Request;
+import org.apache.dubbo.remoting.exchange.Response;
+import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.protocol.dubbo.ByteAccessor;
 import org.apache.dubbo.rpc.protocol.dubbo.DecodeableRpcInvocation;
+import org.apache.dubbo.rpc.protocol.dubbo.DecodeableRpcResult;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
+
+import static org.apache.dubbo.common.constants.CommonConstants.BYTE_ACCESSOR_KEY;
 
 /**
  * Customize byte parsing so that execution can continue when the service does not exist
@@ -34,13 +43,39 @@ public class SnfByteAccessor implements ByteAccessor {
 
     private final FrameworkModel frameworkModel;
 
+    private final ByteAccessor customByteAccessor;
+
     public SnfByteAccessor(FrameworkModel frameworkModel) {
         this.frameworkModel = frameworkModel;
+        customByteAccessor = Optional.ofNullable(System.getProperty(BYTE_ACCESSOR_KEY))
+            .filter(StringUtils::isNotBlank)
+            .map(key -> frameworkModel.getExtensionLoader(ByteAccessor.class).getExtension(key))
+            .orElse(null);
     }
 
     @Override
     public DecodeableRpcInvocation getRpcInvocation(Channel channel, Request req, InputStream is, byte proto) {
 
         return new SnfDecodeableRpcInvocation(frameworkModel, channel, req, is, proto);
+    }
+
+    @Override
+    public DecodeableRpcResult getRpcResult(Channel channel, Response res, InputStream is, Invocation invocation, byte proto) {
+        try {
+            return customByteAccessor.getRpcResult(channel, res,
+                new UnsafeByteArrayInputStream(readMessageData(is)),
+                invocation, proto);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private byte[] readMessageData(InputStream is) throws IOException {
+        if (is.available() > 0) {
+            byte[] result = new byte[is.available()];
+            is.read(result);
+            return result;
+        }
+        return new byte[]{};
     }
 }
