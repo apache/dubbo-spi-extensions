@@ -31,8 +31,6 @@ import java.io.Writer;
 
 /**
  * Jackson object output implementation
- *
- * @author aofall
  */
 public class JacksonObjectOutput implements ObjectOutput {
 

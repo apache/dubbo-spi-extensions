@@ -33,8 +33,6 @@ import static org.mockito.Mockito.mock;
 
 /**
  * {@link JacksonSerialization} Unit Test
- *
- * @author aofall
  */
 public class JacksonSerializationTest {
 

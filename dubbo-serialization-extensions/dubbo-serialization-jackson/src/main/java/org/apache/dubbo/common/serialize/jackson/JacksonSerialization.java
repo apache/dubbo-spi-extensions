@@ -31,8 +31,6 @@ import java.io.OutputStream;
  * <pre>
  *     e.g. &lt;dubbo:protocol serialization="jackson" /&gt;
  * </pre>
- *
- * @author aofall
  */
 public class JacksonSerialization implements Serialization {
 

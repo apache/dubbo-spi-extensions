@@ -31,8 +31,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * {@link JacksonObjectOutput} Unit Test
- *
- * @author aofall
  */
 public class JacksonObjectOutputTest {
 

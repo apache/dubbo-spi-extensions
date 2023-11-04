@@ -38,8 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * {@link JacksonObjectInput} Unit Test
- *
- * @author aofall
  */
 public class JacksonObjectInputTest {
 

@@ -34,8 +34,6 @@ import java.lang.reflect.Type;
 
 /**
  * Jackson object input implementation
- *
- * @author aofall
  */
 public class JacksonObjectInput implements ObjectInput {
 
