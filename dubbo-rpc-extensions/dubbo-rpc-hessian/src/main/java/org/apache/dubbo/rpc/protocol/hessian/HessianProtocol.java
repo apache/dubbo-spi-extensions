@@ -16,6 +16,12 @@
  */
 package org.apache.dubbo.rpc.protocol.hessian;
 
+import com.caucho.hessian.HessianException;
+import com.caucho.hessian.client.HessianConnectionException;
+import com.caucho.hessian.client.HessianConnectionFactory;
+import com.caucho.hessian.client.HessianProxyFactory;
+import com.caucho.hessian.io.HessianMethodSerializationException;
+import com.caucho.hessian.server.HessianSkeleton;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.remoting.RemotingServer;
 import org.apache.dubbo.remoting.http.HttpBinder;
@@ -26,14 +32,6 @@ import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.protocol.AbstractProxyProtocol;
 import org.apache.dubbo.rpc.service.GenericService;
 import org.apache.dubbo.rpc.support.ProtocolUtils;
-import org.apache.dubbo.serialize.hessian.dubbo.Hessian2FactoryInitializer;
-
-import com.caucho.hessian.HessianException;
-import com.caucho.hessian.client.HessianConnectionException;
-import com.caucho.hessian.client.HessianConnectionFactory;
-import com.caucho.hessian.client.HessianProxyFactory;
-import com.caucho.hessian.io.HessianMethodSerializationException;
-import com.caucho.hessian.server.HessianSkeleton;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -171,11 +169,11 @@ public class HessianProtocol extends AbstractProxyProtocol {
         }
     }
 
-    private class HessianHandler implements HttpHandler {
+    private class HessianHandler implements HttpHandler<HttpServletRequest, HttpServletResponse> {
 
         @Override
         public void handle(HttpServletRequest request, HttpServletResponse response)
-                throws IOException, ServletException {
+                throws IOException {
             String uri = request.getRequestURI();
             HessianSkeleton skeleton = skeletonMap.get(uri);
             if (!"POST".equalsIgnoreCase(request.getMethod())) {
@@ -196,7 +194,11 @@ public class HessianProtocol extends AbstractProxyProtocol {
                 try {
                     skeleton.invoke(request.getInputStream(), response.getOutputStream(), Hessian2FactoryInitializer.getInstance().getSerializerFactory());
                 } catch (Throwable e) {
-                    throw new ServletException(e);
+                    try {
+                        throw new ServletException(e);
+                    } catch (ServletException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         }

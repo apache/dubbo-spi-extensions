@@ -165,7 +165,7 @@ public class RocketMQInvoker<T> extends AbstractInvoker<T> {
         Object countdown = RpcContext.getContext().get().get(CommonConstants.TIME_COUNTDOWN_KEY);
         int timeout = 1000;
         if (countdown == null) {
-            timeout = (int) RpcUtils.getTimeout(getUrl(), methodName, RpcContext.getContext(), this.timeout);
+            timeout = (int) RpcUtils.getTimeout(getUrl(), methodName, RpcContext.getContext(), invocation,this.timeout);
             if (getUrl().getParameter(CommonConstants.ENABLE_TIMEOUT_COUNTDOWN_KEY, false)) {
                 invocation.setObjectAttachment(CommonConstants.TIMEOUT_ATTACHMENT_KEY, timeout); // pass timeout to remote server
             }

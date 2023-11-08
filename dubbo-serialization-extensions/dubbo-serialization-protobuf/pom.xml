@@ -33,10 +33,14 @@ limitations under the License.
         <dubbo.compiler.version>0.0.1-SNAPSHOT</dubbo.compiler.version>
     </properties>
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.dubbo</groupId>-->
+<!--            <artifactId>dubbo-serialization-api</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-serialization-api</artifactId>
-            <optional>true</optional>
+            <artifactId>dubbo</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>

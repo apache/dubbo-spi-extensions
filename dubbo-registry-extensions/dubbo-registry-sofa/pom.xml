@@ -40,7 +40,10 @@
             <artifactId>dubbo-registry-api</artifactId>
             <optional>true</optional>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>

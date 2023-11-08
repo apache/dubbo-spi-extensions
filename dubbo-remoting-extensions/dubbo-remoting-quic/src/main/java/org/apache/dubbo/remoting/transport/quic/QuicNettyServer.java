@@ -49,6 +49,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.apache.dubbo.config.Constants.SERVER_THREAD_POOL_NAME;
+
 
 /**
  * NettyServer.
@@ -170,6 +172,11 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
+    }
+
+    @Override
+    protected int getChannelsSize() {
+        return channels.size();
     }
 
     @Override

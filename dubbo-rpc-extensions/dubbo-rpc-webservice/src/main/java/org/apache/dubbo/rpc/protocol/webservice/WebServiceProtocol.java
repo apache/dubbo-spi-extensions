@@ -167,12 +167,12 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
         return super.getErrorCode(e);
     }
 
-    private class WebServiceHandler implements HttpHandler {
+    private class WebServiceHandler implements HttpHandler<HttpServletRequest, HttpServletResponse> {
 
         private volatile ServletController servletController;
 
         @Override
-        public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
             if (servletController == null) {
                 HttpServlet httpServlet = DispatcherServlet.getInstance();
                 if (httpServlet == null) {
@@ -192,7 +192,11 @@ public class WebServiceProtocol extends AbstractProxyProtocol {
                 }
             }
             RpcContext.getContext().setRemoteAddress(request.getRemoteAddr(), request.getRemotePort());
-            servletController.invoke(request, response);
+            try {
+                servletController.invoke(request, response);
+            } catch (ServletException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
