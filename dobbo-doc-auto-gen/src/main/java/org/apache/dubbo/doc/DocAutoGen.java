@@ -28,11 +28,24 @@ public class DocAutoGen {
         int level = 0;
         String parentPath = "";
         System.setOut(new PrintStream(filePath + "/" + "README.md"));
-        System.out.println("# dubbo-spi-extensions");
-        System.out.println("[![Build Status](https://travis-ci.org/apache/dubbo-spi-extensions.svg?branch=master)](https://travis-ci.org/apache/dubbo-spi-extensions)\n" +
+        String title = "# dubbo-spi-extensions";
+        System.out.println(title);
+        String x = "[![Build Status](https://travis-ci.org/apache/dubbo-spi-extensions.svg?branch=master)](https://travis-ci.org/apache/dubbo-spi-extensions)\n" +
             "[![codecov](https://codecov.io/gh/apache/dubbo-spi-extensions/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/dubbo-spi-extensions)\n" +
             "[![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo/dubbo-spi-extensions.svg)](https://search.maven.org/search?q=g:org.apache.dubbo%20AND%20a:dubbo-spi-extensions)\n" +
-            "[![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]");
+            "[![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]";
+        System.out.println(x);
+        System.out.println();
+        String description = "The purpose of dubbo-spi-extensions is to provide open, community-driven, reusable components to build microservice programs with different needs. These components extend the core of the Apache Dubbo project, but they are separated and decoupled.";
+        System.out.println(description);
+
+        System.out.println();
+        String usage = "Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. ";
+        System.out.println(usage);
+        System.out.println();
+        String asFollow = "The available extensions are as follows:";
+        System.out.println(asFollow);
+        System.out.println();
         visitFile(file, parentPath, level);
     }
 
@@ -58,7 +71,7 @@ public class DocAutoGen {
                 }
 
                 String currentPath = level == 0 ? name : parentPath + "/" + name;
-                System.out.println(blank + "- [" + name + "]" + "(" +  currentPath+ ")");
+                System.out.println(blank + "- [" + name + "]" + "(" + currentPath + ")");
                 visitFile(f, currentPath, level + 1);
             }
         }

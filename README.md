@@ -3,6 +3,13 @@
 [![codecov](https://codecov.io/gh/apache/dubbo-spi-extensions/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/dubbo-spi-extensions)
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo/dubbo-spi-extensions.svg)](https://search.maven.org/search?q=g:org.apache.dubbo%20AND%20a:dubbo-spi-extensions)
 [![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]
+
+The purpose of dubbo-spi-extensions is to provide open, community-driven, reusable components to build microservice programs with different needs. These components extend the core of the Apache Dubbo project, but they are separated and decoupled.
+
+Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. 
+
+The available extensions are as follows:
+
 - [dubbo-api-docs](dubbo-api-docs)
   - [dubbo-api-docs-annotations](dubbo-api-docs/dubbo-api-docs-annotations)
   - [dubbo-api-docs-core](dubbo-api-docs/dubbo-api-docs-core)
@@ -66,7 +73,9 @@
   - [dubbo-serialization-avro](dubbo-serialization-extensions/dubbo-serialization-avro)
   - [dubbo-serialization-fastjson](dubbo-serialization-extensions/dubbo-serialization-fastjson)
   - [dubbo-serialization-fst](dubbo-serialization-extensions/dubbo-serialization-fst)
+  - [dubbo-serialization-fury](dubbo-serialization-extensions/dubbo-serialization-fury)
   - [dubbo-serialization-gson](dubbo-serialization-extensions/dubbo-serialization-gson)
+  - [dubbo-serialization-jackson](dubbo-serialization-extensions/dubbo-serialization-jackson)
   - [dubbo-serialization-kryo](dubbo-serialization-extensions/dubbo-serialization-kryo)
   - [dubbo-serialization-msgpack](dubbo-serialization-extensions/dubbo-serialization-msgpack)
   - [dubbo-serialization-native-hession](dubbo-serialization-extensions/dubbo-serialization-native-hession)
