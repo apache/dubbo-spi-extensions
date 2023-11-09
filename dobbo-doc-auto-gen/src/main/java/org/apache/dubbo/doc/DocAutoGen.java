@@ -46,7 +46,21 @@ public class DocAutoGen {
         String asFollow = "The available extensions are as follows:";
         System.out.println(asFollow);
         System.out.println();
+
         visitFile(file, parentPath, level);
+        System.out.println();
+        String contributorTitle = "## Contribution\n";
+        String thanks = "Thanks to everyone who has contributed!\n";
+        String contributorImg =
+            "<a href=\"https://github.com/apache/dubbo-spi-extensions/graphs/contributors\">\n" +
+                "  <img src=\"https://contributors-img.web.app/image?repo=apache/dubbo-spi-extensions\" />\n" +
+                "</a>\n" ;
+        System.out.println(contributorTitle);
+        System.out.println();
+        System.out.println(thanks);
+        System.out.println();
+        System.out.println(contributorImg);
+        System.out.println();
     }
 
     private static void visitFile(File file, String parentPath, int level) {
