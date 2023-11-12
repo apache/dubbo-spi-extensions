@@ -17,15 +17,16 @@
 package org.apache.dubbo.apidocs.examples;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Profile;
 
 /**
  * example dubbo provider service application.
  */
 @SpringBootApplication
+@Profile("dev")
 @EnableDubbo(scanBasePackages = {"org.apache.dubbo.apidocs.examples.api"})
 public class ExampleApplication {
 
@@ -35,5 +36,4 @@ public class ExampleApplication {
             .web(WebApplicationType.NONE)
             .run(args);
     }
-
 }
