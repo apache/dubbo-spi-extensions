@@ -33,6 +33,8 @@ dubbo:
     name: dubbo
   application:
     name: dubbo-api-docs-example-provider
+    qos-enable: true
+    qos-port: 22222
   metadata-report:
     address: zookeeper://127.0.0.1:2181
   #    group: DEFAULT_GROUP
