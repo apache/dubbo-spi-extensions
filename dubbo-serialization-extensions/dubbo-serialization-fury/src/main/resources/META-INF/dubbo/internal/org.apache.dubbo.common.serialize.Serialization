@@ -1,0 +1,2 @@
+fury=org.apache.dubbo.common.serialize.fury.dubbo.FurySerialization
+fury-compatible=org.apache.dubbo.common.serialize.fury.dubbo.FuryCompatibleSerialization

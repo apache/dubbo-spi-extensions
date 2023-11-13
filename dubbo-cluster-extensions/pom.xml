@@ -27,10 +27,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-cluster-extensions</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
+
     <modules>
         <module>dubbo-cluster-broadcast-1</module>
+        <module>dubbo-cluster-loadbalance-peakewma</module>
+        <module>dubbo-cluster-specify-address-dubbo3</module>
+        <module>dubbo-cluster-specify-address-dubbo2</module>
+        <module>dubbo-cluster-specify-address-common</module>
+        <module>dubbo-cluster-polaris-dubbo2</module>
     </modules>
-
 
 </project>

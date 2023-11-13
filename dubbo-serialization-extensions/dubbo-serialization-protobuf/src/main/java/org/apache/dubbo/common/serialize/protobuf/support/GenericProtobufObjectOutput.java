@@ -16,9 +16,6 @@
  */
 package org.apache.dubbo.common.serialize.protobuf.support;
 
-import org.apache.dubbo.common.serialize.ObjectOutput;
-import org.apache.dubbo.common.serialize.protobuf.support.wrapper.MapValue;
-
 import com.google.protobuf.BoolValue;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.BytesValue;
@@ -29,9 +26,11 @@ import com.google.protobuf.Int64Value;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.StringValue;
 
+import org.apache.dubbo.common.serialize.ObjectOutput;
+import org.apache.dubbo.common.serialize.protobuf.support.wrapper.MapValue;
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.dubbo.common.constants.CommonConstants.HEARTBEAT_EVENT;
@@ -108,7 +107,7 @@ public class GenericProtobufObjectOutput implements ObjectOutput {
          */
         if (obj == null) {
             throw new IllegalStateException("This serialization only supports google protobuf objects, " +
-                    "please use com.google.protobuf.Empty instead if you want to transmit null values.");
+                "please use com.google.protobuf.Empty instead if you want to transmit null values.");
             // obj = ProtobufUtils.convertNullToEmpty();
         }
         if (!ProtobufUtils.isSupported(obj.getClass())) {
@@ -141,11 +140,8 @@ public class GenericProtobufObjectOutput implements ObjectOutput {
         if (attachments == null) {
             return;
         }
-
-        Map<String, String> stringAttachments = new HashMap<>();
-        attachments.forEach((k, v) -> stringAttachments.put(k, (String) v));
-
-        ProtobufUtils.serialize(MapValue.Map.newBuilder().putAllAttachments(stringAttachments).build(), os);
+        MapValue.Map map = ProtobufAttachmentUtils.wrap(attachments);
+        ProtobufUtils.serialize(map, os);
         os.flush();
     }
 

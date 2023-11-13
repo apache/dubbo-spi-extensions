@@ -17,8 +17,6 @@
 package org.apache.dubbo.rpc.protocol.http;
 
 import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.service.GenericException;
-import org.apache.dubbo.rpc.service.GenericService;
 
 public class HttpServiceImpl implements HttpService {
     private boolean called;
@@ -50,7 +48,7 @@ public class HttpServiceImpl implements HttpService {
 //        return "Hello, " + args[0];
 //    }
 
-    static class MyException extends RuntimeException{
+    static class MyException extends RuntimeException {
 
         private static final long serialVersionUID = -3051041116483629056L;
 

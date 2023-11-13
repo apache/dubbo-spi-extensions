@@ -18,6 +18,7 @@ package org.apache.dubbo.common.serialize.fst;
 
 import org.apache.dubbo.common.serialize.model.AnimalEnum;
 import org.apache.dubbo.common.serialize.model.person.FullAddress;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.dubbo.extensions.examples.apidocs</groupId>
         <artifactId>dubbo-api-docs-examples</artifactId>
-        <version>${revision}</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

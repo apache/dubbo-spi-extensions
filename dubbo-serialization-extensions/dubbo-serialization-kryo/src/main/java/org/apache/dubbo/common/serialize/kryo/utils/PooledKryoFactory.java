@@ -17,24 +17,16 @@
 package org.apache.dubbo.common.serialize.kryo.utils;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.pool.KryoPool;
 
 public class PooledKryoFactory extends AbstractKryoFactory {
 
-    private KryoPool pool;
-
-    public PooledKryoFactory() {
-        // Build pool with SoftReferences enabled (optional)
-        pool = new KryoPool.Builder(this).softReferences().build();
-    }
-
     @Override
     public Kryo getKryo() {
-        return pool.borrow();
+        return this.obtain();
     }
 
     @Override
     public void returnKryo(Kryo kryo) {
-        pool.release(kryo);
+        this.free(kryo);
     }
 }

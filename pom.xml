@@ -14,7 +14,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -93,10 +94,14 @@
         <module>dubbo-rpc-extensions</module>
         <module>dubbo-serialization-extensions</module>
         <module>dubbo-mock-extensions</module>
+        <module>dubbo-gateway-extensions</module>
+        <module>dubbo-cross-thread-extensions</module>
+        <module>dubbo-tag-extensions</module>
+        <module>dobbo-doc-auto-gen</module>
     </modules>
 
     <properties>
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>1.0.5-SNAPSHOT</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <hazelcast_version>3.11.1</hazelcast_version>
@@ -131,6 +136,7 @@
         <checkstyle_unix.skip>true</checkstyle_unix.skip>
         <rat.skip>true</rat.skip>
         <jacoco.skip>false</jacoco.skip>
+        <maven_flatten_version>1.2.5</maven_flatten_version>
     </properties>
 
     <dependencyManagement>
@@ -138,9 +144,22 @@
             <dependency>
                 <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-extensions-dependencies-bom</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito_version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -176,6 +195,18 @@
             <artifactId>cglib-nodep</artifactId>
             <version>${cglib_version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito_version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -523,13 +554,15 @@
                                 <id>checkstyle-validation</id>
                                 <phase>validate</phase>
                                 <configuration>
-                                    <configLocation>codestyle/checkstyle.xml</configLocation>
-                                    <suppressionsLocation>codestyle/checkstyle-suppressions.xml</suppressionsLocation>
+                                    <configLocation>./codestyle/checkstyle.xml</configLocation>
+                                    <suppressionsLocation>./codestyle/checkstyle-suppressions.xml</suppressionsLocation>
                                     <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle.skip}</skip>
                                     <excludes>
+                                        **/istio/v1/auth/Ca.java,
+                                        **/istio/v1/auth/IstioCertificateServiceGrpc.java,
                                         **/generated/**/*,
                                         **/target/**/*,
                                     </excludes>
@@ -542,7 +575,7 @@
                                 <id>checkstyle-unix-validation</id>
                                 <phase>validate</phase>
                                 <configuration>
-                                    <configLocation>codestyle/checkstyle_unix.xml</configLocation>
+                                    <configLocation>./codestyle/checkstyle_unix.xml</configLocation>
                                     <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failOnViolation>true</failOnViolation>
@@ -613,7 +646,6 @@
                                     <goal>aggregate</goal>
                                 </goals>
                                 <configuration>
-                                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                                     <additionalDependencies>
                                         <additionalDependency>
                                             <groupId>org.apache.logging.log4j</groupId>
@@ -681,7 +713,9 @@
                                     <failOnMissing>false</failOnMissing>
                                     <licenseMerges>
                                         <licenseMerge>Apache License, Version 2.0|The Apache Software License, Version
-                                            2.0|ASF 2.0|Apache 2|Apache-2.0|Apache 2.0 License|Apache 2.0|Apache License v2.0|Apache License 2.0|The Apache License, Version 2.0|The Apache Software License, Version 2.0
+                                            2.0|ASF 2.0|Apache 2|Apache-2.0|Apache 2.0 License|Apache 2.0|Apache License
+                                            v2.0|Apache License 2.0|The Apache License, Version 2.0|The Apache Software
+                                            License, Version 2.0
                                         </licenseMerge>
                                         <licenseMerge>The MIT License|MIT License</licenseMerge>
                                         <licenseMerge>The 3-Clause BSD License|New BSD License|3-Clause BSD
@@ -695,5 +729,23 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>jdk9-compile</id>
+            <activation>
+                <jdk>[1.9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
+
+
 </project>

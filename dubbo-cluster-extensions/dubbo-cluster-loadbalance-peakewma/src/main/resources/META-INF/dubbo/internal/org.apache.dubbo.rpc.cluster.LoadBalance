@@ -1,0 +1,1 @@
+peakewma=org.apache.dubbo.rpc.cluster.loadbalance.PeakEwmaLoadBalance

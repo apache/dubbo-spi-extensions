@@ -39,8 +39,8 @@ public class ProtobufWrappedException extends RuntimeException {
 
         if (throwableProto.getStackTraceCount() > 0) {
             setStackTrace(throwableProto.getStackTraceList().stream()
-                    .map(ProtobufWrappedException::toStackTraceElement)
-                    .toArray(StackTraceElement[]::new));
+                .map(ProtobufWrappedException::toStackTraceElement)
+                .toArray(StackTraceElement[]::new));
         }
 
         if (throwableProto.hasCause()) {
@@ -58,10 +58,10 @@ public class ProtobufWrappedException extends RuntimeException {
 
     private static StackTraceElement toStackTraceElement(ThrowablePB.StackTraceElementProto proto) {
         return new StackTraceElement(
-                proto.getClassName(),
-                proto.getMethodName(),
-                Strings.emptyToNull(proto.getFileName()),
-                proto.getLineNumber());
+            proto.getClassName(),
+            proto.getMethodName(),
+            Strings.emptyToNull(proto.getFileName()),
+            proto.getLineNumber());
     }
 
 }

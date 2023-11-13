@@ -18,6 +18,7 @@ package org.apache.dubbo.common.serialize.avro;
 
 
 import org.apache.dubbo.common.serialize.model.Person;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

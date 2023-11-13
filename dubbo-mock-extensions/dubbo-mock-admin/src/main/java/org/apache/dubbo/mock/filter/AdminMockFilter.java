@@ -47,6 +47,7 @@ import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
+import org.apache.dubbo.rpc.model.ScopeModelUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,9 +72,11 @@ public class AdminMockFilter implements ClusterFilter {
 
     private static final String ENABLE_MOCK_KEY = "enable.dubbo.admin.mock";
 
-    private final TypeHandler typeHandler = new CommonTypeHandler();;
+    private final TypeHandler typeHandler = new CommonTypeHandler();
+    ;
 
-    private static final boolean ENABLE_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty(ENABLE_MOCK_KEY, Boolean.FALSE.toString()));;
+    private static final boolean ENABLE_ADMIN_MOCK = Boolean.parseBoolean(System.getProperty(ENABLE_MOCK_KEY, Boolean.FALSE.toString()));
+    ;
 
     private static final ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
 
@@ -109,7 +112,6 @@ public class AdminMockFilter implements ClusterFilter {
             ReferenceConfigBase.appendRuntimeParameters(map);
             map.put(INTERFACE_KEY, MockService.class.getName());
             map.put(SIDE_KEY, CONSUMER_SIDE);
-            AbstractConfig.appendParameters(map, mockServiceConfig.getMetrics());
             AbstractConfig.appendParameters(map, mockServiceConfig.getApplication());
             AbstractConfig.appendParameters(map, mockServiceConfig.getModule());
             AbstractConfig.appendParameters(map, mockServiceConfig);
@@ -117,7 +119,8 @@ public class AdminMockFilter implements ClusterFilter {
             // create the proxy MockService
             Invoker<MockService> invoker = protocol.refer(MockService.class, url);
             mockService = proxyFactory.getProxy(invoker);
-            ShutdownHookCallbacks.INSTANCE.addCallback(invoker::destroy);
+            ScopeModelUtil.getApplicationModel(mockServiceConfig.getScopeModel()).getBeanFactory().getBean(ShutdownHookCallbacks.class)
+                .addCallback(invoker::destroy);
             return mockService;
         }
     }
@@ -142,7 +145,7 @@ public class AdminMockFilter implements ClusterFilter {
             log.warn("[Admin Mock] cloud not find MockService, will ignore this mock.");
             return invoker.invoke(invocation);
         }
-        
+
         // parse the result from MockService, build the real method's return value.
         MockContext mockContext = MockContext.newMockContext()
             .serviceName(interfaceName).methodName(methodName).arguments(params).build();

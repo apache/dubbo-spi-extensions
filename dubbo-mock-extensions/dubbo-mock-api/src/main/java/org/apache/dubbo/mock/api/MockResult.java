@@ -23,33 +23,33 @@ import java.io.Serializable;
  * The Mock result which configured in Dubbo Admin.
  */
 public class MockResult implements Serializable {
-    
+
     /**
      * if has mock rule or enable the mock rule.
      */
     private boolean enable;
-    
+
     /**
      * the mock result.
      */
     private String content;
-    
+
     public boolean getEnable() {
         return enable;
     }
-    
+
     public void setEnable(boolean enable) {
         this.enable = enable;
     }
-    
+
     public String getContent() {
         return content;
     }
-    
+
     public void setContent(String content) {
         this.content = content;
     }
-    
+
     @Override
     public String toString() {
         return "MockResult{" + "enable=" + enable + ", content='" + content + '\'' + '}';

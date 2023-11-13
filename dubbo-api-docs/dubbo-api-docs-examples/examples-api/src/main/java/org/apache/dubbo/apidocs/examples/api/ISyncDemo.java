@@ -33,6 +33,7 @@ public interface ISyncDemo {
 
     /**
      * request and response parameters are beans.
+     *
      * @param param1
      * @param param2
      * @return org.apache.dubbo.apidocs.examples.responses.DemoRespBean1
@@ -41,23 +42,26 @@ public interface ISyncDemo {
 
     /**
      * request and response parameters are Strings
+     *
+     * @return java.lang.String
      * @param: param1
      * @param: param2
-     * @return java.lang.String
      */
     String demoApi2(String param1, String param2);
 
     /**
      * Without Dubbo doc annotation, no document will be generated
-     * @param: param1
+     *
      * @return java.lang.String
+     * @param: param1
      */
     String demoApi3(String param1);
 
     /**
      * Nonparametric method with Dubbo doc annotation
-     * @param:
+     *
      * @return java.lang.String
+     * @param:
      */
     String demoApi4();
 
@@ -93,6 +97,7 @@ public interface ISyncDemo {
 
     /**
      * Simple test.
+     *
      * @param param1
      * @param param2
      * @return org.apache.dubbo.apidocs.examples.params.DemoParamBean3

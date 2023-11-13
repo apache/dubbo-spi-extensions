@@ -16,14 +16,14 @@
  */
 package org.apache.dubbo.common.serialize.kryo.utils;
 
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
+import com.esotericsoftware.kryo.util.Pool;
 import org.apache.dubbo.common.serialize.kryo.CompatibleKryo;
 import org.apache.dubbo.common.serialize.support.SerializableClassRegistry;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.pool.KryoFactory;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
+import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 import de.javakaffee.kryoserializers.BitSetSerializer;
 import de.javakaffee.kryoserializers.GregorianCalendarSerializer;
@@ -57,7 +57,7 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-public abstract class AbstractKryoFactory implements KryoFactory {
+public abstract class AbstractKryoFactory extends Pool<Kryo> {
 
     private final Set<Class> registrations = new LinkedHashSet<Class>();
 
@@ -66,13 +66,13 @@ public abstract class AbstractKryoFactory implements KryoFactory {
     private volatile boolean kryoCreated;
 
     public AbstractKryoFactory() {
-
+        super(true, true);
     }
 
     /**
      * only supposed to be called at startup time
-     *
-     *  later may consider adding support for custom serializer, custom id, etc
+     * <p>
+     * later may consider adding support for custom serializer, custom id, etc
      */
     public void registerClass(Class clazz) {
 
@@ -90,8 +90,7 @@ public abstract class AbstractKryoFactory implements KryoFactory {
 
         Kryo kryo = new CompatibleKryo();
 
-        // TODO
-//        kryo.setReferences(false);
+        kryo.setReferences(true);
         kryo.setRegistrationRequired(registrationRequired);
 
         kryo.addDefaultSerializer(Throwable.class, new JavaSerializer());

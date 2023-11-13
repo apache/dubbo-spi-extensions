@@ -1,0 +1,1 @@
+polaris_router=org.apache.dubbo.rpc.cluster.router.PolarisRouterFactory

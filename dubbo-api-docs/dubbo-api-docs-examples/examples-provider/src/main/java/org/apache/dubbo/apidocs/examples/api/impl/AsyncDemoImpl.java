@@ -42,8 +42,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class AsyncDemoImpl implements IAsyncDemo {
 
     public static final ScheduledExecutorService EXECUTOR = new ScheduledThreadPoolExecutor(
-            Runtime.getRuntime().availableProcessors() * 40 * 3,
-            new BasicThreadFactory.Builder().namingPattern("dubbo-async-executor-pool-%d").daemon(true).build());
+        Runtime.getRuntime().availableProcessors() * 40 * 3,
+        new BasicThreadFactory.Builder().namingPattern("dubbo-async-executor-pool-%d").daemon(true).build());
 
     @ApiDoc("request and response parameters are beans")
     @Override

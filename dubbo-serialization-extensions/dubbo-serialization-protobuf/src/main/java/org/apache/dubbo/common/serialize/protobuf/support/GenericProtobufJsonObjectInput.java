@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.dubbo.common.constants.CommonConstants.HEARTBEAT_EVENT;
@@ -145,16 +144,12 @@ public class GenericProtobufJsonObjectInput implements ObjectInput {
     @Override
     public Map<String, Object> readAttachments() throws IOException, ClassNotFoundException {
         String json = readLine();
-        Map<String, String> attachments = ProtobufUtils.deserializeJson(json, MapValue.Map.class).getAttachmentsMap();
-        Map<String, Object> genericAttachments = new HashMap<>();
-        attachments.forEach((k, v) -> {
-            genericAttachments.put(k, v);
-        });
-        return genericAttachments;
+        MapValue.Map map = ProtobufUtils.deserializeJson(json, MapValue.Map.class, ProtobufAttachmentUtils.getTypeRegistry());
+        return ProtobufAttachmentUtils.unwrap(map);
     }
 
     @Override
-    public Object readEvent() throws IOException, ClassNotFoundException {
+    public String readEvent() throws IOException, ClassNotFoundException {
         String eventData = readUTF();
         if (eventData.equals(MOCK_HEARTBEAT_EVENT)) {
             eventData = HEARTBEAT_EVENT;

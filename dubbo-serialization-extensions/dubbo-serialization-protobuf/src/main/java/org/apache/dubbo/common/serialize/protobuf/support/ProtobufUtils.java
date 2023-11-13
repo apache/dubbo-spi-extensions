@@ -72,8 +72,29 @@ public class ProtobufUtils {
         return (T) builder.build();
     }
 
+    static <T> T deserializeJson(String json, Class<T> requestClass, JsonFormat.TypeRegistry typeRegistry) throws InvalidProtocolBufferException {
+        Builder builder;
+        try {
+            builder = getMessageBuilder(requestClass);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Get google protobuf message builder from " + requestClass.getName() + "failed", e);
+        }
+        JsonFormat.parser()
+            .usingTypeRegistry(typeRegistry)
+            .merge(json, builder);
+        return (T) builder.build();
+    }
+
     static String serializeJson(Object value) throws InvalidProtocolBufferException {
-        Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
+        Printer printer = JsonFormat.printer()
+            .omittingInsignificantWhitespace();
+        return printer.print((MessageOrBuilder) value);
+    }
+
+    static String serializeJson(Object value, JsonFormat.TypeRegistry typeRegistry) throws InvalidProtocolBufferException {
+        Printer printer = JsonFormat.printer()
+            .usingTypeRegistry(typeRegistry)
+            .omittingInsignificantWhitespace();
         return printer.print((MessageOrBuilder) value);
     }
 
@@ -86,10 +107,10 @@ public class ProtobufUtils {
     /* Protobuf */
 
     private static ConcurrentMap<Class<? extends MessageLite>, MessageMarshaller> marshallers =
-            new ConcurrentHashMap<>();
+        new ConcurrentHashMap<>();
 
     private static volatile ExtensionRegistryLite globalRegistry =
-            ExtensionRegistryLite.getEmptyRegistry();
+        ExtensionRegistryLite.getEmptyRegistry();
 
     static {
         // Built-in types need to be registered in advance
@@ -119,7 +140,7 @@ public class ProtobufUtils {
         MessageMarshaller<?> marshaller = marshallers.get(requestClass);
         if (marshaller == null) {
             throw new IllegalStateException(String.format("Protobuf classes should be registered in advance before " +
-                    "do serialization, class name: %s", requestClass.getName()));
+                "do serialization, class name: %s", requestClass.getName()));
         }
         return (T) marshaller.parse(is);
     }
@@ -153,10 +174,10 @@ public class ProtobufUtils {
 
     private static StackTraceElementProto toStackTraceElement(StackTraceElement element) {
         final StackTraceElementProto.Builder builder =
-                StackTraceElementProto.newBuilder()
-                        .setClassName(element.getClassName())
-                        .setMethodName(element.getMethodName())
-                        .setLineNumber(element.getLineNumber());
+            StackTraceElementProto.newBuilder()
+                .setClassName(element.getClassName())
+                .setMethodName(element.getMethodName())
+                .setLineNumber(element.getLineNumber());
         if (element.getFileName() != null) {
             builder.setFileName(element.getFileName());
         }

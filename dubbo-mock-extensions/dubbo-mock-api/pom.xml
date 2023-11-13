@@ -20,7 +20,7 @@
     <parent>
         <artifactId>dubbo-mock-extensions</artifactId>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <version>${revision}</version>
+        <version>3.0.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

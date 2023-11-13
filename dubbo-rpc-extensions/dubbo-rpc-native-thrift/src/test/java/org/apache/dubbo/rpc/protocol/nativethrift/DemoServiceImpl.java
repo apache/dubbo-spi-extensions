@@ -18,6 +18,7 @@ package org.apache.dubbo.rpc.protocol.nativethrift;
 
 
 import org.apache.dubbo.rpc.RpcContext;
+
 import org.apache.thrift.TException;
 
 public class DemoServiceImpl implements DemoService.Iface {
