@@ -1185,6 +1185,8 @@ public abstract class AbstractSerializationTest {
         });
     }
 
+    // ================ final field test ================
+
     @Test
     public void test_URL_mutable_withType() throws Exception {
         URL data = URL.valueOf("dubbo://admin:hello1234@10.20.130.230:20880/context/path?version=1.0.0&application=morgan&noValue");
@@ -1208,4 +1210,3 @@ public abstract class AbstractSerializationTest {
         }
     }
 }
-
