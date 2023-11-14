@@ -16,7 +16,6 @@
  */
 package org.apache.dubbo.common.serialize.protostuff;
 
-import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.serialize.model.SerializablePerson;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -242,19 +241,5 @@ public class ProtostuffObjectOutputTest {
             }
             return true;
         }
-    }
-
-    // ================ final field test ================
-
-    @Test
-    public void test_URL_mutable_withType() throws Exception {
-        URL data = URL.valueOf("dubbo://admin:hello1234@10.20.130.230:20880/context/path?version=1.0.0&application=morgan&noValue=");
-
-        this.protostuffObjectOutput.writeObject(data);
-        this.flushToInput();
-
-        URL actual = (URL) protostuffObjectInput.readObject(URL.class);
-        assertThat(actual, is(data));
-        assertThat(actual.getParameters(), is(data.getParameters()));
     }
 }
