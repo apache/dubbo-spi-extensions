@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.apidocs.examples;
+package org.apache.dubbo.rpc.cluster.support;
 
-import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Profile;
+import org.junit.jupiter.api.Test;
 
-/**
- * example dubbo provider service application.
- */
+class BroadcastCluster1InvokerTest {
 
-@SpringBootApplication
-@Profile("dev")
-@EnableDubbo(scanBasePackages = {"org.apache.dubbo.apidocs.examples.api"})
-public class ExampleApplication {
+    @Test
+    void doInvoke() {
+        //todo
 
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(ExampleApplication.class)
-            // Non web applications
-            .run(args);
     }
 }

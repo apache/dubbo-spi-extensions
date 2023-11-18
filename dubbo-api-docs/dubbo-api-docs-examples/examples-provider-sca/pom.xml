@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.apache.dubbo.extensions.examples.apidocs</groupId>
         <artifactId>dubbo-api-docs-examples</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>3.2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.apache.dubbo.extensions.examples.apidocs</groupId>
             <artifactId>examples-api</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
