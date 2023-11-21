@@ -33,7 +33,7 @@ import org.mockito.Mockito;
 
 import java.util.Collections;
 
-public class UserSpecifiedAddressRouterTest {
+class UserSpecifiedAddressRouterTest {
     private ApplicationModel applicationModel;
     private URL consumerUrl;
 
@@ -53,12 +53,12 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
-    public void test() {
+    void test() {
         Assertions.assertTrue(new UserSpecifiedAddressRouter<>(URL.valueOf("").setScopeModel(applicationModel.newModule())).supportContinueRoute());
     }
 
     @Test
-    public void testNotify() {
+    void testNotify() {
         UserSpecifiedAddressRouter<Object> userSpecifiedAddressRouter = new UserSpecifiedAddressRouter<>(consumerUrl);
         Assertions.assertEquals(BitList.emptyList(), userSpecifiedAddressRouter.getInvokers());
         Assertions.assertNull(userSpecifiedAddressRouter.getAddress2Invoker());
@@ -88,7 +88,7 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
-    public void testGetInvokerByURL() {
+    void testGetInvokerByURL() {
         UserSpecifiedAddressRouter<Object> userSpecifiedAddressRouter = new UserSpecifiedAddressRouter<>(consumerUrl);
 
         Assertions.assertEquals(BitList.emptyList(),
@@ -195,7 +195,7 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
-    public void testGetInvokerByIp() {
+    void testGetInvokerByIp() {
         UserSpecifiedAddressRouter<Object> userSpecifiedAddressRouter = new UserSpecifiedAddressRouter<>(consumerUrl);
 
         Assertions.assertEquals(BitList.emptyList(),
@@ -247,7 +247,7 @@ public class UserSpecifiedAddressRouterTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testRemovalTask() throws InterruptedException {
+    void testRemovalTask() throws InterruptedException {
         UserSpecifiedAddressRouter.EXPIRE_TIME = 10;
         UserSpecifiedAddressRouter<Object> userSpecifiedAddressRouter = new UserSpecifiedAddressRouter<>(consumerUrl);
 

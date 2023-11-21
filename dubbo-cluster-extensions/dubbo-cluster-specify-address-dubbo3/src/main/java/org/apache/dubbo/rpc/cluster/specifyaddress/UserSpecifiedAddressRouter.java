@@ -46,20 +46,16 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
-    private final static Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
     // protected for ut purpose
     protected static int EXPIRE_TIME = 10 * 60 * 1000;
-    private final static String USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY = "userSpecifiedServiceAddressBuilder";
-
+    private static final String USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY = "userSpecifiedServiceAddressBuilder";
     private volatile BitList<Invoker<T>> invokers = BitList.emptyList();
     private volatile Map<String, Invoker<T>> ip2Invoker;
     private volatile Map<String, Invoker<T>> address2Invoker;
-
     private final Lock cacheLock = new ReentrantLock();
     private final Map<URL, InvokerCache<Invoker<T>>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
-
     private final UserSpecifiedServiceAddressBuilder userSpecifiedServiceAddressBuilder;
-
     private final Protocol protocol;
     private final ScheduledExecutorService scheduledExecutorService;
     private final AtomicBoolean launchRemovalTask = new AtomicBoolean(false);
@@ -213,14 +209,11 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         Invoker<T> targetInvoker;
         if (port != 0) {
             targetInvoker = address2Invoker.get(ip + ":" + port);
-            if (targetInvoker != null) {
-                return targetInvoker;
-            }
         } else {
             targetInvoker = ip2Invoker.get(ip);
-            if (targetInvoker != null) {
-                return targetInvoker;
-            }
+        }
+        if (targetInvoker != null) {
+            return targetInvoker;
         }
 
         if (!address.isNeedToCreate()) {
@@ -314,16 +307,17 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         public void run() {
             cacheLock.lock();
             try {
-                if (newInvokerCache.size() > 0) {
-                    Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
-                        if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
-                            iterator.remove();
-                            entry.getValue().getInvoker().destroy();
-                        } else {
-                            break;
-                        }
+                if (CollectionUtils.isEmptyMap(newInvokerCache)) {
+                    return;
+                }
+                Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
+                    if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
+                        iterator.remove();
+                        entry.getValue().getInvoker().destroy();
+                    } else {
+                        break;
                     }
                 }
             } finally {

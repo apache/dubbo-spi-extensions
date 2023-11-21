@@ -29,16 +29,13 @@ import org.apache.dubbo.rpc.cluster.filter.ClusterFilter;
 @Activate(group = {"consumer"})
 public class AddressSpecifyClusterFilter implements ClusterFilter {
 
-
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-
         Address current = UserSpecifiedAddressUtil.getAddress();
         if (current != null) {
             invocation.put(Address.name, current);
         }
         return invoker.invoke(invocation);
     }
-
 
 }
