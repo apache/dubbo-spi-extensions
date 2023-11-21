@@ -39,7 +39,7 @@ import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedServiceAddressBuilder {
-    public final static String NAME = "default";
+    public static final String NAME = "default";
 
     private final ExtensionLoader<Protocol> protocolExtensionLoader;
 
@@ -49,41 +49,27 @@ public class DefaultUserSpecifiedServiceAddressBuilder implements UserSpecifiedS
 
     @Override
     public <T> URL buildAddress(List<Invoker<T>> invokers, Address address, Invocation invocation, URL consumerUrl) {
-
-        boolean useFixed = false;
-        URL template = null;
-        if (!invokers.isEmpty()) {
-            template = invokers.iterator().next().getUrl();
-            if (template instanceof InstanceAddressURL) {
-                useFixed = true;
-            } else {
-                if (template.getUrlAddress() == null) {
-                    PathURLAddress urlAddress = new PathURLAddress(template.getProtocol(), template.getUsername(), template.getPassword(), template.getPath(), address.getIp(), address.getPort());
-                    template = new ServiceConfigURL(urlAddress, template.getUrlParam(), template.getAttributes());
-                } else {
-                    template = template.setHost(address.getIp());
-                    if (address.getPort() != 0) {
-                        template = template.setPort(address.getPort());
-                    }
-                }
-            }
-
-        } else {
-            useFixed = true;
-        }
-
-        if (useFixed) {
+        URL template;
+        if (invokers.isEmpty() || (template = invokers.get(0).getUrl()) instanceof InstanceAddressURL) {
             String ip = address.getIp();
             int port = address.getPort();
             String protocol = consumerUrl.getParameter(PROTOCOL_KEY, DUBBO);
             if (port == 0) {
                 port = protocolExtensionLoader.getExtension(protocol).getDefaultPort();
             }
-            template = new DubboServiceAddressURL(
-                    new PathURLAddress(protocol, null, null, consumerUrl.getPath(), ip, port),
-                    consumerUrl.getUrlParam(), consumerUrl, null);
+            return new DubboServiceAddressURL(
+                new PathURLAddress(protocol, null, null, consumerUrl.getPath(), ip, port),
+                consumerUrl.getUrlParam(), consumerUrl, null);
         }
-
+        if (template.getUrlAddress() == null) {
+            PathURLAddress urlAddress = new PathURLAddress(template.getProtocol(), template.getUsername(),
+                    template.getPassword(), template.getPath(), address.getIp(), address.getPort());
+            return new ServiceConfigURL(urlAddress, template.getUrlParam(), template.getAttributes());
+        }
+        template = template.setHost(address.getIp());
+        if (address.getPort() != 0) {
+            template = template.setPort(address.getPort());
+        }
         return template;
     }
 
