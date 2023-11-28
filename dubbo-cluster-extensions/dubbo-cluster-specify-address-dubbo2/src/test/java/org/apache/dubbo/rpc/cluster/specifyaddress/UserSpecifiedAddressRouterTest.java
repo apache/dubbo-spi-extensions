@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserSpecifiedAddressRouterTest {
+class UserSpecifiedAddressRouterTest {
     private ApplicationModel applicationModel;
     private URL consumerUrl;
 
@@ -43,7 +43,7 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
-    public void testNotify() {
+    void testNotify() {
         UserSpecifiedAddressRouter userSpecifiedAddressRouter = new UserSpecifiedAddressRouter(consumerUrl);
         Assertions.assertEquals(Collections.emptyList(), userSpecifiedAddressRouter.getInvokers());
         Assertions.assertNull(userSpecifiedAddressRouter.getAddress2Invoker());
@@ -75,7 +75,7 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
-    public void testGetInvokerByURL() {
+    void testGetInvokerByURL() {
         UserSpecifiedAddressRouter userSpecifiedAddressRouter = new UserSpecifiedAddressRouter(consumerUrl);
 
         Assertions.assertEquals(Collections.emptyList(),
@@ -138,7 +138,7 @@ public class UserSpecifiedAddressRouterTest {
     }
 
     @Test
-    public void testGetInvokerByIp() {
+    void testGetInvokerByIp() {
         UserSpecifiedAddressRouter userSpecifiedAddressRouter = new UserSpecifiedAddressRouter(consumerUrl);
 
         Assertions.assertEquals(Collections.emptyList(),

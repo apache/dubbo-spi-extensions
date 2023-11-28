@@ -28,9 +28,9 @@ import org.mockito.Mockito;
 
 import java.util.Collections;
 
-public class DefaultUserSpecifiedServiceAddressBuilderTest {
+class DefaultUserSpecifiedServiceAddressBuilderTest {
     @Test
-    public void testBuild() {
+    void testBuild() {
         ApplicationModel applicationModel = ApplicationModel.defaultModel();
 
         DefaultUserSpecifiedServiceAddressBuilder defaultUserSpecifiedServiceAddressBuilder = new DefaultUserSpecifiedServiceAddressBuilder(applicationModel);
@@ -79,7 +79,7 @@ public class DefaultUserSpecifiedServiceAddressBuilderTest {
     }
 
     @Test
-    public void testReBuild() {
+    void testReBuild() {
         ApplicationModel applicationModel = ApplicationModel.defaultModel();
 
         DefaultUserSpecifiedServiceAddressBuilder defaultUserSpecifiedServiceAddressBuilder = new DefaultUserSpecifiedServiceAddressBuilder(applicationModel);
