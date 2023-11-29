@@ -19,7 +19,7 @@ package org.apache.dubbo.rpc.cluster.specifyaddress;
 import org.apache.dubbo.common.threadlocal.InternalThreadLocal;
 
 public class UserSpecifiedAddressUtil {
-    private final static InternalThreadLocal<Address> ADDRESS = new InternalThreadLocal<>();
+    private static final InternalThreadLocal<Address> ADDRESS = new InternalThreadLocal<>();
 
     /**
      * Set specified address to next invoke

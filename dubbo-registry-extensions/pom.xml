@@ -27,6 +27,14 @@
     <artifactId>dubbo-registry-extensions</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <dubbo3.version>3.2.9</dubbo3.version>
+    </properties>
+
     <modules>
         <module>dubbo-registry-dns</module>
         <module>dubbo-registry-consul</module>
@@ -36,4 +44,5 @@
         <module>dubbo-registry-nameservice</module>
         <module>dubbo-registry-polaris</module>
     </modules>
+
 </project>

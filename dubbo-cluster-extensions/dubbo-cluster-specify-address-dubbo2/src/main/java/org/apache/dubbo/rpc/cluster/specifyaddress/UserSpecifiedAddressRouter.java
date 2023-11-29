@@ -52,21 +52,16 @@ import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
 
 
 public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
-    private final static Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
     // protected for ut purpose
     protected static int EXPIRE_TIME = 10 * 60 * 1000;
-
     private volatile List<Invoker<T>> invokers = Collections.emptyList();
     private volatile Map<String, Invoker<T>> ip2Invoker;
     private volatile Map<String, Invoker<T>> address2Invoker;
     private final Protocol protocol;
-
     private final Lock cacheLock = new ReentrantLock();
-
     private final ScheduledExecutorService scheduledExecutorService;
     private final AtomicBoolean launchRemovalTask = new AtomicBoolean(false);
-
-
     private final Map<URL, InvokerCache<Invoker<T>>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
 
     public UserSpecifiedAddressRouter(URL referenceUrl) {
@@ -318,16 +313,17 @@ public class UserSpecifiedAddressRouter<T> extends AbstractRouter {
         public void run() {
             cacheLock.lock();
             try {
-                if (newInvokerCache.size() > 0) {
-                    Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
-                        if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
-                            iterator.remove();
-                            entry.getValue().getInvoker().destroy();
-                        } else {
-                            break;
-                        }
+                if (CollectionUtils.isEmptyMap(newInvokerCache)) {
+                    return;
+                }
+                Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
+                    if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
+                        iterator.remove();
+                        entry.getValue().getInvoker().destroy();
+                    } else {
+                        break;
                     }
                 }
             } finally {

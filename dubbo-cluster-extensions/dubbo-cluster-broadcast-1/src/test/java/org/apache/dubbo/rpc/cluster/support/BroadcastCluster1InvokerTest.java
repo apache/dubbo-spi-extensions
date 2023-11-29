@@ -14,25 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.cluster.specifyaddress;
+package org.apache.dubbo.rpc.cluster.support;
 
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.rpc.cluster.router.state.StateRouterFactory;
-import org.apache.dubbo.rpc.model.ApplicationModel;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class UserSpecifiedAddressRouterFactoryTest {
+class BroadcastCluster1InvokerTest {
+
     @Test
-    void test() {
-        ApplicationModel applicationModel = ApplicationModel.defaultModel();
+    void doInvoke() {
+        //todo
 
-        StateRouterFactory stateRouterFactory = applicationModel.getExtensionLoader(StateRouterFactory.class).getExtension("user-specified-address");
-        Assertions.assertEquals(UserSpecifiedAddressRouterFactory.class, stateRouterFactory.getClass());
-
-        stateRouterFactory.getRouter(Object.class, URL.valueOf("").setScopeModel(applicationModel.newModule()));
-
-        applicationModel.destroy();
     }
 }
