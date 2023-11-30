@@ -76,6 +76,7 @@ public class JEtcdClientTest {
     public void test_watch_when_create_path() throws InterruptedException {
 
         String path = "/dubbo/com.alibaba.dubbo.demo.DemoService/providers";
+
         String child = "/dubbo/com.alibaba.dubbo.demo.DemoService/providers/demoService1";
 
         final CountDownLatch notNotified = new CountDownLatch(1);
@@ -89,6 +90,7 @@ public class JEtcdClientTest {
         client.addChildListener(path, childListener);
 
         client.createEphemeral(child);
+
         Assertions.assertTrue(notNotified.await(10, TimeUnit.SECONDS));
 
         client.removeChildListener(path, childListener);
@@ -151,8 +153,8 @@ public class JEtcdClientTest {
 
                 }
             });
-            WatchCreateRequest.Builder builder = WatchCreateRequest.newBuilder()
-                    .setKey(ByteString.copyFrom(path, UTF_8));
+
+            WatchCreateRequest.Builder builder = WatchCreateRequest.newBuilder().setKey(ByteString.copyFrom(path, UTF_8));
 
             observer.onNext(WatchRequest.newBuilder().setCreateRequest(builder).build());
 
@@ -171,6 +173,7 @@ public class JEtcdClientTest {
         CountDownLatch updateLatch = new CountDownLatch(1);
         CountDownLatch cancelLatch = new CountDownLatch(1);
         final AtomicLong watchID = new AtomicLong(-1L);
+
         try (Client client = Client.builder().endpoints(endpoint).build()) {
             ManagedChannel channel = getChannel(client);
             StreamObserver<WatchRequest> observer = WatchGrpc.newStub(channel).watch(new StreamObserver<WatchResponse>() {
@@ -232,6 +235,7 @@ public class JEtcdClientTest {
     public void test_watch_when_create_wrong_path() throws InterruptedException {
 
         String path = "/dubbo/com.alibaba.dubbo.demo.DemoService/providers";
+
         String child = "/dubbo/com.alibaba.dubbo.demo.DemoService/routers/demoService1";
 
         final CountDownLatch notNotified = new CountDownLatch(1);
@@ -248,7 +252,9 @@ public class JEtcdClientTest {
         Assertions.assertFalse(notNotified.await(1, TimeUnit.SECONDS));
 
         client.removeChildListener(path, childListener);
+
         client.delete(child);
+
     }
 
     @Test
@@ -309,6 +315,7 @@ public class JEtcdClientTest {
     public void test_watch_on_unrecoverable_connection() throws InterruptedException {
 
         String path = "/dubbo/com.alibaba.dubbo.demo.DemoService/providers";
+
         JEtcdClient.EtcdWatcher watcher = null;
         try {
             ChildListener childListener = (parent, children) -> {
@@ -320,7 +327,7 @@ public class JEtcdClientTest {
 
             watcher.watchRequest.onNext(watcher.nextRequest());
         } catch (Exception e) {
-            Assertions.assertTrue(e.getMessage().contains("call was cancelled"));
+            Assertions.assertTrue(e.getMessage().contains("calls are allowed"));
         }
     }
 
@@ -387,8 +394,7 @@ public class JEtcdClientTest {
     @BeforeEach
     public void setUp() {
         // timeout in 15 seconds.
-        URL url = URL.valueOf("etcd3://127.0.0.1:2379/com.alibaba.dubbo.registry.RegistryService")
-                .addParameter(SESSION_TIMEOUT_KEY, 15000);
+        URL url = URL.valueOf("etcd3://127.0.0.1:2379/com.alibaba.dubbo.registry.RegistryService").addParameter(SESSION_TIMEOUT_KEY, 15000);
 
         client = new JEtcdClient(url);
     }

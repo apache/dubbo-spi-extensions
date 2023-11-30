@@ -16,12 +16,10 @@
  */
 
 package org.apache.dubbo.configcenter.support.etcd;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.config.configcenter.ConfigChangedEvent;
 import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
 import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
-
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.launcher.EtcdCluster;
@@ -30,7 +28,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -51,48 +48,55 @@ public class EtcdDynamicConfigurationTest {
 
     public EtcdCluster etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 3, false);
 
+   //public EtcdCluster etcdCluster= new Etcd.Builder().withClusterName(getClass().getSimpleName()).withNodes(3).withSsl(false).build();
+
     private static Client client;
 
-    @Test
-    public void testGetConfig() {
 
-        put("/dubbo/config/org.apache.dubbo.etcd.testService/configurators", "hello");
+    @Test
+    public void testGetConfig()  {
+        put("/dubbo/config/dubbo/org.apache.dubbo.etcd.testService/configurators", "hello");
         put("/dubbo/config/test/dubbo.properties", "aaa=bbb");
-        Assert.assertEquals("hello", config.getConfig("org.apache.dubbo.etcd.testService.configurators", DynamicConfiguration.DEFAULT_GROUP));
+        Assert.assertEquals("hello", config.getConfig("org.apache.dubbo.etcd.testService/configurators", DynamicConfiguration.DEFAULT_GROUP));
         Assert.assertEquals("aaa=bbb", config.getConfig("dubbo.properties", "test"));
     }
 
+
     @Test
-    public void testAddListener() throws Exception {
+    public void testAddListener1() throws Exception {
+
         CountDownLatch latch = new CountDownLatch(4);
         TestListener listener1 = new TestListener(latch);
         TestListener listener2 = new TestListener(latch);
         TestListener listener3 = new TestListener(latch);
         TestListener listener4 = new TestListener(latch);
-        config.addListener("AService.configurators", listener1);
-        config.addListener("AService.configurators", listener2);
-        config.addListener("testapp.tagrouters", listener3);
-        config.addListener("testapp.tagrouters", listener4);
 
-        put("/dubbo/config/AService/configurators", "new value1");
-        Thread.sleep(200);
-        put("/dubbo/config/testapp/tagrouters", "new value2");
-        Thread.sleep(200);
-        put("/dubbo/config/testapp", "new value3");
+        config.addListener("AService/configurators", listener1);
+        config.addListener("AService/configurators", listener2);
+        config.addListener("testapp/tagrouters", listener3);
+        config.addListener("testapp/tagrouters", listener4);
 
+        //全路径
+        put("/dubbo/config/dubbo/AService/configurators", "new value1");
+        Thread.sleep(200);
+
+        put("/dubbo/config/dubbo/testapp/tagrouters", "new value2");
         Thread.sleep(1000);
 
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
-        Assert.assertEquals(1, listener1.getCount("/dubbo/config/AService/configurators"));
-        Assert.assertEquals(1, listener2.getCount("/dubbo/config/AService/configurators"));
-        Assert.assertEquals(1, listener3.getCount("/dubbo/config/testapp/tagrouters"));
-        Assert.assertEquals(1, listener4.getCount("/dubbo/config/testapp/tagrouters"));
+        Assert.assertEquals(1, listener1.getCount("AService/configurators"));
+        Assert.assertEquals(1, listener2.getCount("AService/configurators"));
+        Assert.assertEquals(1, listener3.getCount("testapp/tagrouters"));
+        Assert.assertEquals(1, listener4.getCount("testapp/tagrouters"));
 
         Assert.assertEquals("new value1", listener1.getValue());
         Assert.assertEquals("new value1", listener2.getValue());
         Assert.assertEquals("new value2", listener3.getValue());
         Assert.assertEquals("new value2", listener4.getValue());
+
     }
+
+
 
     private class TestListener implements ConfigurationListener {
         private CountDownLatch latch;
@@ -128,6 +132,7 @@ public class EtcdDynamicConfigurationTest {
         }
     }
 
+    //这里会涉及到docker拉取镜像很慢
     @Before
     public void setUp() {
 
@@ -137,18 +142,19 @@ public class EtcdDynamicConfigurationTest {
 
         List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
 
-        String ipAddress = clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort();
+        String ipAddress =clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort(); //"127.0.0.1:2379";
+
         String urlForDubbo = "etcd3://" + ipAddress + "/org.apache.dubbo.etcd.testService";
 
         // timeout in 15 seconds.
-        URL url = URL.valueOf(urlForDubbo)
-                .addParameter(SESSION_TIMEOUT_KEY, 15000);
+        URL url = URL.valueOf(urlForDubbo).addParameter(SESSION_TIMEOUT_KEY, 15000);
         config = new EtcdDynamicConfiguration(url);
     }
 
     @After
     public void tearDown() {
         etcdCluster.close();
+        client.close();
     }
 
 }

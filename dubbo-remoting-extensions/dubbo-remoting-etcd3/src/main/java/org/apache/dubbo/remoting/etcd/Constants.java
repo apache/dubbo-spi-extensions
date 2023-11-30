@@ -17,12 +17,10 @@
 
 package org.apache.dubbo.remoting.etcd;
 
-import static org.apache.dubbo.remoting.Constants.DEFAULT_IO_THREADS;
-
 public interface Constants {
     String ETCD3_NOTIFY_MAXTHREADS_KEYS = "etcd3.notify.maxthreads";
 
-    int DEFAULT_ETCD3_NOTIFY_THREADS = DEFAULT_IO_THREADS;
+    int DEFAULT_ETCD3_NOTIFY_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 32);
 
     String DEFAULT_ETCD3_NOTIFY_QUEUES_KEY = "etcd3.notify.queues";
 
