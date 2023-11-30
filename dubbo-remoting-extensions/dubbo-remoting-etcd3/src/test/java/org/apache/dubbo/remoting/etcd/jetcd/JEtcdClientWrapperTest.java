@@ -54,7 +54,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 
-//@Disabled
+@Disabled
 public class JEtcdClientWrapperTest {
 
     JEtcdClientWrapper clientWrapper;

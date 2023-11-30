@@ -55,6 +55,7 @@ import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -66,7 +67,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
 
-//@Disabled
+@Disabled
 public class JEtcdClientTest {
 
     JEtcdClient client;

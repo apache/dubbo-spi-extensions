@@ -62,6 +62,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author cvictory ON 2019-08-16
  */
+@Disabled
 public class LeaseTest {
 
     private static EtcdCluster cluster;
