@@ -32,6 +32,7 @@
     <description>The test serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>true</skip_maven_deploy>
+        <dubbo.version>3.2.7</dubbo.version>
     </properties>
 
     <dependencies>
@@ -84,6 +85,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>gson</artifactId>

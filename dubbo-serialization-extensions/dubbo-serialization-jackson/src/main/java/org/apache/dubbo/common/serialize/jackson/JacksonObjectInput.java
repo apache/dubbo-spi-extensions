@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.dubbo.common.serialize.DefaultJsonDataInput;
 import org.apache.dubbo.common.serialize.ObjectInput;
 
 import java.io.BufferedReader;
@@ -35,7 +36,7 @@ import java.lang.reflect.Type;
 /**
  * Jackson object input implementation
  */
-public class JacksonObjectInput implements ObjectInput {
+public class JacksonObjectInput implements DefaultJsonDataInput {
 
     private final ObjectMapper MAPPER;
 
@@ -56,58 +57,25 @@ public class JacksonObjectInput implements ObjectInput {
     }
 
     @Override
-    public Object readObject() throws IOException, ClassNotFoundException {
-        return read(Object.class);
+    public Object readObject() throws IOException {
+        return readObject(Object.class);
     }
 
     @Override
-    public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
-        return read(cls);
+    public <T> T readObject(Class<T> cls) throws IOException {
+        String json = readLine();
+        return MAPPER.readValue(json, cls);
     }
 
     @Override
     public <T> T readObject(Class<T> cls, Type type) throws IOException, ClassNotFoundException {
-        return read(type);
-    }
-
-    @Override
-    public boolean readBool() throws IOException {
-        return read(boolean.class);
-    }
-
-    @Override
-    public byte readByte() throws IOException {
-        return read(byte.class);
-    }
-
-    @Override
-    public short readShort() throws IOException {
-        return read(short.class);
-    }
-
-    @Override
-    public int readInt() throws IOException {
-        return read(int.class);
-    }
-
-    @Override
-    public long readLong() throws IOException {
-        return read(long.class);
-    }
-
-    @Override
-    public float readFloat() throws IOException {
-        return read(float.class);
-    }
-
-    @Override
-    public double readDouble() throws IOException {
-        return read(double.class);
-    }
-
-    @Override
-    public String readUTF() throws IOException {
-        return read(String.class);
+        String json = readLine();
+        return MAPPER.readValue(json, new TypeReference<T>() {
+            @Override
+            public Type getType() {
+                return type;
+            }
+        });
     }
 
     @Override
@@ -121,21 +89,6 @@ public class JacksonObjectInput implements ObjectInput {
             throw new EOFException();
         }
         return line;
-    }
-
-    private <T> T read(Class<T> cls) throws IOException {
-        String json = readLine();
-        return MAPPER.readValue(json, cls);
-    }
-
-    private <T> T read(Type type) throws IOException {
-        String json = readLine();
-        return MAPPER.readValue(json, new TypeReference<T>() {
-            @Override
-            public Type getType() {
-                return type;
-            }
-        });
     }
 
 }

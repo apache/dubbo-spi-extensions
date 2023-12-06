@@ -30,12 +30,20 @@
     <description>The fst serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
+        <dubbo.version>3.2.7</dubbo.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
             <optional>true</optional>
+            <version>${dubbo.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-common</artifactId>
+            <optional>true</optional>
+            <version>${dubbo.version}</version>
         </dependency>
         <dependency>
             <groupId>de.ruedigermoeller</groupId>

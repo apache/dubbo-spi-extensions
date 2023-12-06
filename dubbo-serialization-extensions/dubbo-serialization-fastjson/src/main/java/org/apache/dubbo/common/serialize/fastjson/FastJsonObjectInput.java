@@ -16,9 +16,12 @@
  */
 package org.apache.dubbo.common.serialize.fastjson;
 
-import org.apache.dubbo.common.serialize.ObjectInput;
+import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.parser.ParserConfig;
+import org.apache.dubbo.common.serialize.DefaultJsonDataInput;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.dubbo.common.utils.ClassUtils;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -31,12 +34,15 @@ import java.lang.reflect.Type;
 /**
  * FastJson object input implementation
  */
-public class FastJsonObjectInput implements ObjectInput {
+public class FastJsonObjectInput implements DefaultJsonDataInput {
 
     private final BufferedReader reader;
 
+    private InputStream is;
+
     public FastJsonObjectInput(InputStream in) {
         this(new InputStreamReader(in));
+        this.is = in;
     }
 
     public FastJsonObjectInput(Reader reader) {
@@ -44,66 +50,34 @@ public class FastJsonObjectInput implements ObjectInput {
     }
 
     @Override
-    public boolean readBool() throws IOException {
-        return read(boolean.class);
-    }
-
-    @Override
-    public byte readByte() throws IOException {
-        return read(byte.class);
-    }
-
-    @Override
-    public short readShort() throws IOException {
-        return read(short.class);
-    }
-
-    @Override
-    public int readInt() throws IOException {
-        return read(int.class);
-    }
-
-    @Override
-    public long readLong() throws IOException {
-        return read(long.class);
-    }
-
-    @Override
-    public float readFloat() throws IOException {
-        return read(float.class);
-    }
-
-    @Override
-    public double readDouble() throws IOException {
-        return read(double.class);
-    }
-
-    @Override
-    public String readUTF() throws IOException {
-        return read(String.class);
-    }
-
-    @Override
-    public byte[] readBytes() throws IOException {
-        return readLine().getBytes();
-    }
-
-    @Override
-    public Object readObject() throws IOException, ClassNotFoundException {
-        String json = readLine();
-        return JSON.parse(json);
-    }
-
-    @Override
-    public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
-        return read(cls);
+    public <T> T readObject(Class<T> cls) throws IOException {
+        return readObject(cls, null);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T readObject(Class<T> cls, Type type) throws IOException, ClassNotFoundException {
-        String json = readLine();
-        return (T) JSON.parseObject(json, type);
+    public <T> T readObject(Class<T> cls, Type type) throws IOException {
+        int length = readLength();
+        byte[] bytes = new byte[length];
+        int read = is.read(bytes, 0, length);
+        if (read != length) {
+            throw new IllegalArgumentException(
+                    "deserialize failed. expected read length: " + length + " but actual read: " + read);
+        }
+        ParserConfig parserConfig = new ParserConfig();
+        parserConfig.setAutoTypeSupport(true);
+
+        Object result = JSON.parseObject(new String(bytes), cls,
+                parserConfig,
+                Feature.SupportNonPublicField,
+                Feature.SupportAutoType
+        );
+        if (result != null && cls != null && !ClassUtils.isMatch(result.getClass(), cls)) {
+            throw new IllegalArgumentException(
+                    "deserialize failed. expected class: " + cls + " but actual class: " + result.getClass());
+        }
+        return (T) result;
+
     }
 
     private String readLine() throws IOException, EOFException {
@@ -114,8 +88,29 @@ public class FastJsonObjectInput implements ObjectInput {
         return line;
     }
 
-    private <T> T read(Class<T> cls) throws IOException {
-        String json = readLine();
-        return JSON.parseObject(json, cls);
+    @Override
+    public byte[] readBytes() throws IOException {
+        int length = is.read();
+        byte[] bytes = new byte[length];
+        int read = is.read(bytes, 0, length);
+        if (read != length) {
+            throw new IllegalArgumentException(
+                    "deserialize failed. expected read length: " + length + " but actual read: " + read);
+        }
+        return bytes;
+    }
+
+    private int readLength() throws IOException {
+        byte[] bytes = new byte[Integer.BYTES];
+        int read = is.read(bytes, 0, Integer.BYTES);
+        if (read != Integer.BYTES) {
+            throw new IllegalArgumentException(
+                    "deserialize failed. expected read length: " + Integer.BYTES + " but actual read: " + read);
+        }
+        int value = 0;
+        for (byte b : bytes) {
+            value = (value << 8) + (b & 0xFF);
+        }
+        return value;
     }
 }

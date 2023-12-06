@@ -23,40 +23,25 @@ limitations under the License.
         <artifactId>dubbo-serialization-extensions</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>dubbo-serialization-fastjson</artifactId>
+
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <version>1.0.2-SNAPSHOT</version>
-    <description>The fastjson serialization module of dubbo project</description>
+    <artifactId>dubbo-serialization-common</artifactId>
+
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <dubbo.version>3.2.7</dubbo.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-common</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
-            <version>${dubbo.version}</version>
+            <version>3.2.7</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
+            <version>3.2.7</version>
         </dependency>
     </dependencies>
 </project>

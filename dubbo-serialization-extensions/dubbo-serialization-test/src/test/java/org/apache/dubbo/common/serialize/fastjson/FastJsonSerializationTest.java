@@ -20,12 +20,11 @@ import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -37,6 +36,19 @@ public class FastJsonSerializationTest {
     @BeforeEach
     public void setUp() {
         this.fastJsonSerialization = new FastJsonSerialization();
+    }
+
+    @Test
+    public void testReadString() throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ObjectOutput objectOutput = fastJsonSerialization.serialize(null, outputStream);
+        objectOutput.writeObject("hello");
+        objectOutput.flushBuffer();
+
+        byte[] bytes = outputStream.toByteArray();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        ObjectInput objectInput = fastJsonSerialization.deserialize(null, inputStream);
+        Assertions.assertEquals("hello", objectInput.readUTF());
     }
 
     @Test

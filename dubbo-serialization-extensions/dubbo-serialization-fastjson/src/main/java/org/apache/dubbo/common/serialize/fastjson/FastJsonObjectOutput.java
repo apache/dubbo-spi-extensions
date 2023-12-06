@@ -16,98 +16,73 @@
  */
 package org.apache.dubbo.common.serialize.fastjson;
 
-import org.apache.dubbo.common.serialize.ObjectOutput;
-
-import com.alibaba.fastjson.serializer.JSONSerializer;
-import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.alibaba.fastjson.JSON;
+import org.apache.dubbo.common.serialize.DefaultJsonDataOutput;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 /**
  * FastJson object output implementation
  */
-public class FastJsonObjectOutput implements ObjectOutput {
+public class FastJsonObjectOutput implements DefaultJsonDataOutput {
 
-    private final PrintWriter writer;
+
+    private OutputStream os;
 
     public FastJsonObjectOutput(OutputStream out) {
         this(new OutputStreamWriter(out));
+        this.os = out;
     }
 
     public FastJsonObjectOutput(Writer writer) {
-        this.writer = new PrintWriter(writer);
-    }
-
-    @Override
-    public void writeBool(boolean v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeByte(byte v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeShort(short v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeInt(int v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeLong(long v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeFloat(float v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeDouble(double v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeUTF(String v) throws IOException {
-        writeObject(v);
+        //this.writer = new PrintWriter(writer);
     }
 
     @Override
     public void writeBytes(byte[] b) throws IOException {
-        writer.println(new String(b));
+        os.write(b.length);
+        os.write(b);
     }
 
     @Override
     public void writeBytes(byte[] b, int off, int len) throws IOException {
-        writer.println(new String(b, off, len));
+        os.write(len);
+        os.write(b, off, len);
     }
 
     @Override
     public void writeObject(Object obj) throws IOException {
-        SerializeWriter out = new SerializeWriter();
-        JSONSerializer serializer = new JSONSerializer(out);
-        serializer.config(SerializerFeature.WriteEnumUsingToString, true);
-        serializer.write(obj);
-        out.writeTo(writer);
-        out.close(); // for reuse SerializeWriter buf
-        writer.println();
-        writer.flush();
+        byte[] bytes = JSON.toJSONBytes(obj,
+                SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteClassName,
+                SerializerFeature.NotWriteDefaultValue,
+                SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteClassName,
+                SerializerFeature.WriteNullNumberAsZero,
+                SerializerFeature.WriteNullBooleanAsFalse
+        );
+        writeLength(bytes.length);
+        os.write(bytes);
+        os.flush();
+    }
+
+    private void writeLength(int value) throws IOException {
+        byte[] bytes = new byte[Integer.BYTES];
+        int length = bytes.length;
+        for (int i = 0; i < length; i++) {
+            bytes[length - i - 1] = (byte) (value & 0xFF);
+            value >>= 8;
+        }
+        os.write(bytes);
     }
 
     @Override
     public void flushBuffer() throws IOException {
-        writer.flush();
+        os.flush();
     }
 
 }
