@@ -36,17 +36,10 @@ import java.lang.reflect.Type;
  */
 public class FastJsonObjectInput implements DefaultJsonDataInput {
 
-    private final BufferedReader reader;
-
     private InputStream is;
 
     public FastJsonObjectInput(InputStream in) {
-        this(new InputStreamReader(in));
         this.is = in;
-    }
-
-    public FastJsonObjectInput(Reader reader) {
-        this.reader = new BufferedReader(reader);
     }
 
     @Override
@@ -78,14 +71,6 @@ public class FastJsonObjectInput implements DefaultJsonDataInput {
         }
         return (T) result;
 
-    }
-
-    private String readLine() throws IOException, EOFException {
-        String line = reader.readLine();
-        if (line == null || line.trim().length() == 0) {
-            throw new EOFException();
-        }
-        return line;
     }
 
     @Override
