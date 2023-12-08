@@ -34,12 +34,7 @@ public class FastJsonObjectOutput implements DefaultJsonDataOutput {
     private OutputStream os;
 
     public FastJsonObjectOutput(OutputStream out) {
-        this(new OutputStreamWriter(out));
         this.os = out;
-    }
-
-    public FastJsonObjectOutput(Writer writer) {
-        //this.writer = new PrintWriter(writer);
     }
 
     @Override
