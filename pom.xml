@@ -98,6 +98,8 @@
         <module>dubbo-cross-thread-extensions</module>
         <module>dubbo-tag-extensions</module>
         <module>dobbo-doc-auto-gen</module>
+        <module>dubbo-xds</module>
+        <module>dubbo-kubernetes</module>
     </modules>
 
     <properties>
