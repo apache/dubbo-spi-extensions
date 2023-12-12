@@ -124,8 +124,8 @@ public class ConsulServiceDiscoveryTest {
         serviceInstance2.getMetadata().put("test", "test");
         serviceInstance2.getMetadata().put("test123", "test");
         consulServiceDiscovery.doRegister(serviceInstance2);
-
         Thread.sleep(3000);
+
         Mockito.verify(serviceInstancesChangedListener1, Mockito.atLeast(2)).onEvent(eventArgumentCaptor.capture());
         serviceInstances = eventArgumentCaptor.getValue().getServiceInstances();
         assertEquals(2, serviceInstances.size());
