@@ -22,6 +22,7 @@ limitations under the License.
         <groupId>org.apache.dubbo.extensions</groupId>
         <artifactId>dubbo-serialization-extensions</artifactId>
         <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dubbo-serialization-fastjson</artifactId>
     <packaging>jar</packaging>
