@@ -8,6 +8,10 @@ The purpose of dubbo-spi-extensions is to provide open, community-driven, reusab
 
 Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. 
 
+For version release notes, please refer to the documentation:
+- [Release](https://cn.dubbo.apache.org/zh-cn/download/spi-extensions/)
+- [Reference](https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/spi/overview/)
+
 The available extensions are as follows:
 
 - [dubbo-api-docs](dubbo-api-docs)
