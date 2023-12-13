@@ -23,12 +23,8 @@ import org.apache.dubbo.common.serialize.DefaultJsonDataInput;
 import com.alibaba.fastjson.JSON;
 import org.apache.dubbo.common.utils.ClassUtils;
 
-import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Type;
 
 /**
