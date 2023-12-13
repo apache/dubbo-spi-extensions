@@ -8,6 +8,10 @@ The purpose of dubbo-spi-extensions is to provide open, community-driven, reusab
 
 Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. 
 
+For version release notes, please refer to the documentation:
+- [Release](https://cn.dubbo.apache.org/zh-cn/download/spi-extensions/)
+- [Reference](https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/spi/overview/)
+
 The available extensions are as follows:
 
 - [dubbo-api-docs](dubbo-api-docs)
@@ -39,6 +43,7 @@ The available extensions are as follows:
   - [dubbo-gateway-common](dubbo-gateway-extensions/dubbo-gateway-common)
   - [dubbo-gateway-consumer](dubbo-gateway-extensions/dubbo-gateway-consumer)
   - [dubbo-gateway-provider](dubbo-gateway-extensions/dubbo-gateway-provider)
+- [dubbo-kubernetes](dubbo-kubernetes)
 - [dubbo-metadata-report-extensions](dubbo-metadata-report-extensions)
   - [dubbo-metadata-report-consul](dubbo-metadata-report-extensions/dubbo-metadata-report-consul)
   - [dubbo-metadata-report-etcd](dubbo-metadata-report-extensions/dubbo-metadata-report-etcd)
@@ -84,6 +89,7 @@ The available extensions are as follows:
   - [dubbo-serialization-test](dubbo-serialization-extensions/dubbo-serialization-test)
 - [dubbo-tag-extensions](dubbo-tag-extensions)
   - [dubbo-tag-subnets](dubbo-tag-extensions/dubbo-tag-subnets)
+- [dubbo-xds](dubbo-xds)
 
 ## Contribution
 
