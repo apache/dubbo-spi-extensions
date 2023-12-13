@@ -18,7 +18,6 @@
 package org.apache.dubbo.common.serialize.gson;
 
 import org.apache.dubbo.common.serialize.DefaultJsonDataInput;
-import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.utils.PojoUtils;
 
 import com.google.gson.Gson;

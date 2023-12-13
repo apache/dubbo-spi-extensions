@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.dubbo.common.serialize.DefaultJsonDataInput;
-import org.apache.dubbo.common.serialize.ObjectInput;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
