@@ -2,10 +2,6 @@ package org.apache.dubbo.common.serialize.fastjson;
 
 import java.util.Objects;
 
-/**
- * @author liuzhifei
- * @since 1.0
- */
 public class TrustedNotSerializable {
     private double data;
 
