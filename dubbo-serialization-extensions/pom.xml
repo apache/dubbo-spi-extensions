@@ -28,6 +28,9 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <artifactId>dubbo-serialization-extensions</artifactId>
+    <properties>
+        <dubbo.version>3.2.7</dubbo.version>
+    </properties>
 
     <modules>
         <module>dubbo-serialization-protostuff</module>
@@ -42,5 +45,6 @@
         <module>dubbo-serialization-native-hession</module>
         <module>dubbo-serialization-jackson</module>
         <module>dubbo-serialization-test</module>
+        <module>dubbo-serialization-common</module>
     </modules>
 </project>
