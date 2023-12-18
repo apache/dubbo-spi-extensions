@@ -95,7 +95,7 @@
         <spring-boot.version>2.4.1</spring-boot.version>
 
         <!-- Fabric8 for Kubernetes -->
-        <fabric8_kubernetes_version>5.3.2</fabric8_kubernetes_version>
+        <fabric8_kubernetes_version>6.9.2</fabric8_kubernetes_version>
         <hessian_version>4.0.51</hessian_version>
         <httpclient_version>4.5.13</httpclient_version>
         <jsonrpc_version>1.2.0</jsonrpc_version>
@@ -140,6 +140,9 @@
         <byte-buddy.version>1.14.5</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
         <snakeyaml_version>2.0</snakeyaml_version>
+        <protobuf-java_version>3.25.1</protobuf-java_version>
+        <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
+        <envoy_api_version>0.1.35</envoy_api_version>
     </properties>
 
     <dependencyManagement>
@@ -538,6 +541,36 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf-java_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java-util</artifactId>
+                <version>${protobuf-java_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bouncycastle-bcprov_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk15on</artifactId>
+                <version>${bouncycastle-bcprov_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-ext-jdk15on</artifactId>
+                <version>${bouncycastle-bcprov_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.envoyproxy.controlplane</groupId>
+                <artifactId>api</artifactId>
+                <version>${envoy_api_version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.dubbo.common.serialize.ObjectOutput;
+import org.apache.dubbo.common.serialize.DefaultJsonDataOutput;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -32,7 +32,7 @@ import java.io.Writer;
 /**
  * Jackson object output implementation
  */
-public class JacksonObjectOutput implements ObjectOutput {
+public class JacksonObjectOutput implements DefaultJsonDataOutput {
 
     private final ObjectMapper MAPPER;
 
@@ -58,46 +58,6 @@ public class JacksonObjectOutput implements ObjectOutput {
         WRITER.write(jsonChars, 0, jsonChars.length);
         WRITER.println();
         WRITER.flush();
-    }
-
-    @Override
-    public void writeBool(boolean v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeByte(byte v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeShort(short v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeInt(int v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeLong(long v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeFloat(float v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeDouble(double v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeUTF(String v) throws IOException {
-        writeObject(v);
     }
 
     @Override
