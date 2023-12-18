@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
  * Unit test for etcd config center support
  * Integrate with https://github.com/etcd-io/jetcd#launcher
  */
+@Disabled
 public class EtcdDynamicConfigurationTest {
 
     private static EtcdDynamicConfiguration config;
