@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.fastjson;
+package org.apache.dubbo.common.serialize.jackson;
 
-import org.apache.dubbo.common.serialize.model.media.Image;
-
+import org.apache.dubbo.common.serialize.jackson.Image;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,113 +29,117 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class FastJsonObjectOutputTest {
-    private FastJsonObjectOutput fastJsonObjectOutput;
-    private FastJsonObjectInput fastJsonObjectInput;
+/**
+ * {@link JacksonObjectOutput} Unit Test
+ */
+public class JacksonObjectOutputTest {
+
+    private JacksonObjectOutput jacksonObjectOutput;
+    private JacksonObjectInput jacksonObjectInput;
     private ByteArrayOutputStream byteArrayOutputStream;
     private ByteArrayInputStream byteArrayInputStream;
 
     @BeforeEach
     public void setUp() throws Exception {
         this.byteArrayOutputStream = new ByteArrayOutputStream();
-        this.fastJsonObjectOutput = new FastJsonObjectOutput(byteArrayOutputStream);
+        this.jacksonObjectOutput = new JacksonObjectOutput(byteArrayOutputStream);
     }
 
     @Test
     public void testWriteBool() throws IOException {
-        this.fastJsonObjectOutput.writeBool(true);
+        this.jacksonObjectOutput.writeBool(true);
         this.flushToInput();
 
-        assertThat(fastJsonObjectInput.readBool(), is(true));
+        assertThat(jacksonObjectInput.readBool(), is(true));
     }
 
     @Test
     public void testWriteShort() throws IOException {
-        this.fastJsonObjectOutput.writeShort((short) 2);
+        this.jacksonObjectOutput.writeShort((short) 2);
         this.flushToInput();
 
-        assertThat(fastJsonObjectInput.readShort(), is((short) 2));
+        assertThat(jacksonObjectInput.readShort(), is((short) 2));
     }
 
     @Test
     public void testWriteInt() throws IOException {
-        this.fastJsonObjectOutput.writeInt(1);
+        this.jacksonObjectOutput.writeInt(1);
         this.flushToInput();
 
-        assertThat(fastJsonObjectInput.readInt(), is(1));
+        assertThat(jacksonObjectInput.readInt(), is(1));
     }
 
     @Test
     public void testWriteLong() throws IOException {
-        this.fastJsonObjectOutput.writeLong(1000L);
+        this.jacksonObjectOutput.writeLong(1000L);
         this.flushToInput();
 
-        assertThat(fastJsonObjectInput.readLong(), is(1000L));
+        assertThat(jacksonObjectInput.readLong(), is(1000L));
     }
 
     @Test
     public void testWriteUTF() throws IOException {
-        this.fastJsonObjectOutput.writeUTF("Pace Hasîtî 和平 Мир");
+        this.jacksonObjectOutput.writeUTF("Pace Hasîtî 和平 Мир");
         this.flushToInput();
 
-        assertThat(fastJsonObjectInput.readUTF(), is("Pace Hasîtî 和平 Мир"));
+        assertThat(jacksonObjectInput.readUTF(), is("Pace Hasîtî 和平 Мир"));
     }
 
 
     @Test
     public void testWriteFloat() throws IOException {
-        this.fastJsonObjectOutput.writeFloat(1.88f);
+        this.jacksonObjectOutput.writeFloat(1.88f);
         this.flushToInput();
 
-        assertThat(this.fastJsonObjectInput.readFloat(), is(1.88f));
+        assertThat(this.jacksonObjectInput.readFloat(), is(1.88f));
     }
 
     @Test
     public void testWriteDouble() throws IOException {
-        this.fastJsonObjectOutput.writeDouble(1.66d);
+        this.jacksonObjectOutput.writeDouble(1.66d);
         this.flushToInput();
 
-        assertThat(this.fastJsonObjectInput.readDouble(), is(1.66d));
+        assertThat(this.jacksonObjectInput.readDouble(), is(1.66d));
     }
 
     @Test
     public void testWriteBytes() throws IOException {
-        this.fastJsonObjectOutput.writeBytes("hello".getBytes());
+        this.jacksonObjectOutput.writeBytes("hello".getBytes());
         this.flushToInput();
 
-        assertThat(this.fastJsonObjectInput.readBytes(), is("hello".getBytes()));
+        assertThat(this.jacksonObjectInput.readBytes(), is("hello".getBytes()));
     }
 
     @Test
     public void testWriteBytesWithSubLength() throws IOException {
-        this.fastJsonObjectOutput.writeBytes("hello".getBytes(), 2, 2);
+        this.jacksonObjectOutput.writeBytes("hello".getBytes(), 2, 2);
         this.flushToInput();
 
-        assertThat(this.fastJsonObjectInput.readBytes(), is("ll".getBytes()));
+        assertThat(this.jacksonObjectInput.readBytes(), is("ll".getBytes()));
     }
 
     @Test
     public void testWriteByte() throws IOException {
-        this.fastJsonObjectOutput.writeByte((byte) 123);
+        this.jacksonObjectOutput.writeByte((byte) 123);
         this.flushToInput();
 
-        assertThat(this.fastJsonObjectInput.readByte(), is((byte) 123));
+        assertThat(this.jacksonObjectInput.readByte(), is((byte) 123));
     }
 
     @Test
     public void testWriteObject() throws IOException, ClassNotFoundException {
         Image image = new Image("http://dubbo.apache.org/img/dubbo_white.png", "logo", 300, 480, Image.Size.SMALL);
-        this.fastJsonObjectOutput.writeObject(image);
+        this.jacksonObjectOutput.writeObject(image);
         this.flushToInput();
 
-        Image readObjectForImage = fastJsonObjectInput.readObject(Image.class);
+        Image readObjectForImage = jacksonObjectInput.readObject(Image.class);
         assertThat(readObjectForImage, not(nullValue()));
         assertThat(readObjectForImage, is(image));
     }
 
     private void flushToInput() throws IOException {
-        this.fastJsonObjectOutput.flushBuffer();
+        this.jacksonObjectOutput.flushBuffer();
         this.byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        this.fastJsonObjectInput = new FastJsonObjectInput(byteArrayInputStream);
+        this.jacksonObjectInput = new JacksonObjectInput(byteArrayInputStream);
     }
 }

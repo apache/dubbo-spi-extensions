@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.fastjson;
+package org.apache.dubbo.common.serialize.jackson;
 
-import org.apache.dubbo.common.serialize.model.Organization;
-import org.apache.dubbo.common.serialize.model.Person;
-
-import com.alibaba.fastjson.JSONObject;
+import org.apache.dubbo.common.serialize.jackson.Organization;
+import org.apache.dubbo.common.serialize.jackson.Person;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +28,7 @@ import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -37,90 +36,94 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FastJsonObjectInputTest {
-    private FastJsonObjectInput fastJsonObjectInput;
+/**
+ * {@link JacksonObjectInput} Unit Test
+ */
+public class JacksonObjectInputTest {
+
+    private JacksonObjectInput jacksonObjectInput;
 
     @Test
     public void testReadBool() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new ByteArrayInputStream("true".getBytes()));
-        boolean result = fastJsonObjectInput.readBool();
+        jacksonObjectInput = new JacksonObjectInput(new ByteArrayInputStream("true".getBytes()));
+        boolean result = jacksonObjectInput.readBool();
 
         assertThat(result, is(true));
 
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("false"));
-        result = fastJsonObjectInput.readBool();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("false"));
+        result = jacksonObjectInput.readBool();
 
         assertThat(result, is(false));
     }
 
     @Test
     public void testReadByte() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new ByteArrayInputStream("123".getBytes()));
-        Byte result = fastJsonObjectInput.readByte();
+        jacksonObjectInput = new JacksonObjectInput(new ByteArrayInputStream("123".getBytes()));
+        Byte result = jacksonObjectInput.readByte();
 
         assertThat(result, is(Byte.parseByte("123")));
     }
 
     @Test
     public void testReadBytes() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new ByteArrayInputStream("123456".getBytes()));
-        byte[] result = fastJsonObjectInput.readBytes();
+        jacksonObjectInput = new JacksonObjectInput(new ByteArrayInputStream("123456".getBytes()));
+        byte[] result = jacksonObjectInput.readBytes();
 
         assertThat(result, is("123456".getBytes()));
     }
 
     @Test
     public void testReadShort() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("1"));
-        short result = fastJsonObjectInput.readShort();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("1"));
+        short result = jacksonObjectInput.readShort();
 
         assertThat(result, is((short) 1));
     }
 
     @Test
     public void testReadInt() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("1"));
-        Integer result = fastJsonObjectInput.readInt();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("1"));
+        Integer result = jacksonObjectInput.readInt();
 
         assertThat(result, is(1));
     }
 
     @Test
     public void testReadDouble() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("1.88"));
-        Double result = fastJsonObjectInput.readDouble();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("1.88"));
+        Double result = jacksonObjectInput.readDouble();
 
         assertThat(result, is(1.88d));
     }
 
     @Test
     public void testReadLong() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("10"));
-        Long result = fastJsonObjectInput.readLong();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("10"));
+        Long result = jacksonObjectInput.readLong();
 
         assertThat(result, is(10L));
     }
 
     @Test
     public void testReadFloat() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("1.66"));
-        Float result = fastJsonObjectInput.readFloat();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("1.66"));
+        Float result = jacksonObjectInput.readFloat();
 
         assertThat(result, is(1.66F));
     }
 
     @Test
     public void testReadUTF() throws IOException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("\"wording\""));
-        String result = fastJsonObjectInput.readUTF();
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("\"wording\""));
+        String result = jacksonObjectInput.readUTF();
 
         assertThat(result, is("wording"));
     }
 
     @Test
     public void testReadObject() throws IOException, ClassNotFoundException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("{ \"name\":\"John\", \"age\":30 }"));
-        Person result = fastJsonObjectInput.readObject(Person.class);
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("{ \"name\":\"John\", \"age\":30 }"));
+        Person result = jacksonObjectInput.readObject(Person.class);
 
         assertThat(result, not(nullValue()));
         assertThat(result.getName(), is("John"));
@@ -130,40 +133,40 @@ public class FastJsonObjectInputTest {
     @Test
     public void testEmptyLine() throws IOException, ClassNotFoundException {
         Assertions.assertThrows(EOFException.class, () -> {
-            fastJsonObjectInput = new FastJsonObjectInput(new StringReader(""));
+            jacksonObjectInput = new JacksonObjectInput(new StringReader(""));
 
-            fastJsonObjectInput.readObject();
+            jacksonObjectInput.readObject();
         });
     }
 
     @Test
     public void testEmptySpace() throws IOException, ClassNotFoundException {
         Assertions.assertThrows(EOFException.class, () -> {
-            fastJsonObjectInput = new FastJsonObjectInput(new StringReader("  "));
+            jacksonObjectInput = new JacksonObjectInput(new StringReader("  "));
 
-            fastJsonObjectInput.readObject();
+            jacksonObjectInput.readObject();
         });
     }
 
     @Test
-    public void testReadObjectWithoutClass() throws IOException, ClassNotFoundException {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("{ \"name\":\"John\", \"age\":30 }"));
+    public void testReadObjectWithoutClass() throws IOException, ClassNotFoundException, NoSuchFieldException {
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("{ \"name\":\"John\", \"age\":30 }"));
 
-        JSONObject readObject = (JSONObject) fastJsonObjectInput.readObject();
+        Map map = jacksonObjectInput.readObject(Map.class);
 
-        assertThat(readObject, not(nullValue()));
-        assertThat(readObject.getString("name"), is("John"));
-        assertThat(readObject.getInteger("age"), is(30));
+        assertThat(map, not(nullValue()));
+        assertThat(map.get("name"), is("John"));
+        assertThat(map.get("age"), is(30));
     }
 
 
     @Test
     public void testReadObjectWithTowType() throws Exception {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("[{\"name\":\"John\",\"age\":30},{\"name\":\"Born\",\"age\":24}]"));
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("[{\"name\":\"John\",\"age\":30},{\"name\":\"Born\",\"age\":24}]"));
 
         Method methodReturnType = getClass().getMethod("towLayer");
         Type type = methodReturnType.getGenericReturnType();
-        List<Person> o = fastJsonObjectInput.readObject(List.class, type);
+        List<Person> o = jacksonObjectInput.readObject(List.class, type);
 
         assertTrue(o instanceof List);
         assertTrue(o.get(0) instanceof Person);
@@ -174,11 +177,11 @@ public class FastJsonObjectInputTest {
 
     @Test
     public void testReadObjectWithThreeType() throws Exception {
-        fastJsonObjectInput = new FastJsonObjectInput(new StringReader("{\"data\":[{\"name\":\"John\",\"age\":30},{\"name\":\"Born\",\"age\":24}]}"));
+        jacksonObjectInput = new JacksonObjectInput(new StringReader("{\"data\":[{\"name\":\"John\",\"age\":30},{\"name\":\"Born\",\"age\":24}]}"));
 
         Method methodReturnType = getClass().getMethod("threeLayer");
         Type type = methodReturnType.getGenericReturnType();
-        Organization<List<Person>> o = fastJsonObjectInput.readObject(Organization.class, type);
+        Organization<List<Person>> o = jacksonObjectInput.readObject(Organization.class, type);
 
         assertTrue(o instanceof Organization);
         assertTrue(o.getData() instanceof List);
@@ -195,4 +198,5 @@ public class FastJsonObjectInputTest {
     public Organization<List<Person>> threeLayer() {
         return null;
     }
+
 }
