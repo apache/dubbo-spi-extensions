@@ -17,7 +17,7 @@
 
 package org.apache.dubbo.common.serialize.gson;
 
-import org.apache.dubbo.common.serialize.ObjectOutput;
+import org.apache.dubbo.common.serialize.DefaultJsonDataOutput;
 
 import com.google.gson.Gson;
 
@@ -28,7 +28,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 
-public class GsonJsonObjectOutput implements ObjectOutput {
+public class GsonJsonObjectOutput implements DefaultJsonDataOutput {
 
     private final PrintWriter writer;
     private Gson gson = null;
@@ -40,46 +40,6 @@ public class GsonJsonObjectOutput implements ObjectOutput {
     public GsonJsonObjectOutput(Writer writer) {
         this.gson = new Gson();
         this.writer = new PrintWriter(writer);
-    }
-
-    @Override
-    public void writeBool(boolean v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeByte(byte v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeShort(short v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeInt(int v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeLong(long v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeFloat(float v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeDouble(double v) throws IOException {
-        writeObject(v);
-    }
-
-    @Override
-    public void writeUTF(String v) throws IOException {
-        writeObject(v);
     }
 
     @Override
@@ -101,9 +61,8 @@ public class GsonJsonObjectOutput implements ObjectOutput {
         json = null;
     }
 
-
     @Override
-    public void writeThrowable(Object obj) throws IOException {
+    public void writeThrowable(Throwable obj) throws IOException {
         String clazz = obj.getClass().getName();
         ExceptionWrapper bo = new ExceptionWrapper(obj, clazz);
         this.writeObject(bo);
