@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
  */
 public class FstObjectInput implements ObjectInput {
 
-    private FSTObjectInput input;
+    private final FSTObjectInput input;
 
     public FstObjectInput(InputStream inputStream) {
         input = FstFactory.getDefaultFactory().getObjectInput(inputStream);

@@ -34,7 +34,7 @@ import java.lang.reflect.Type;
 public class KryoObjectInput implements ObjectInput, Cleanable {
 
     private Kryo kryo;
-    private Input input;
+    private final Input input;
 
     public KryoObjectInput(InputStream inputStream) {
         input = new Input(inputStream);

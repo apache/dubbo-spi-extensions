@@ -30,7 +30,7 @@ import java.util.Arrays;
 
 public class AvroObjectOutput implements ObjectOutput {
     private static EncoderFactory encoderFactory = EncoderFactory.get();
-    private BinaryEncoder encoder;
+    private final BinaryEncoder encoder;
 
     public AvroObjectOutput(OutputStream out) {
         encoder = encoderFactory.binaryEncoder(out, null);

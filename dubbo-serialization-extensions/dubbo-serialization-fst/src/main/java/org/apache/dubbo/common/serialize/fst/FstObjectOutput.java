@@ -28,7 +28,7 @@ import java.io.OutputStream;
  */
 public class FstObjectOutput implements ObjectOutput {
 
-    private FSTObjectOutput output;
+    private final FSTObjectOutput output;
 
     public FstObjectOutput(OutputStream outputStream) {
         output = FstFactory.getDefaultFactory().getObjectOutput(outputStream);
