@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.fastjson;
+package org.apache.dubbo.common.serialize.jackson;
 
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
-
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,33 +31,38 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
-public class FastJsonSerializationTest {
-    private FastJsonSerialization fastJsonSerialization;
+/**
+ * {@link JacksonSerialization} Unit Test
+ */
+public class JacksonSerializationTest {
+
+    private JacksonSerialization jacksonSerialization;
 
     @BeforeEach
     public void setUp() {
-        this.fastJsonSerialization = new FastJsonSerialization();
-    }
-
-    @Test
-    public void testContentType() {
-        assertThat(fastJsonSerialization.getContentType(), is("text/json"));
+        this.jacksonSerialization = new JacksonSerialization();
     }
 
     @Test
     public void testContentTypeId() {
-        assertThat(fastJsonSerialization.getContentTypeId(), is((byte) 6));
+        MatcherAssert.assertThat(jacksonSerialization.getContentTypeId(), is((byte) 18));
+    }
+
+    @Test
+    public void testContentType() {
+        MatcherAssert.assertThat(jacksonSerialization.getContentType(), is("application/json"));
     }
 
     @Test
     public void testObjectOutput() throws IOException {
-        ObjectOutput objectOutput = fastJsonSerialization.serialize(null, mock(OutputStream.class));
-        assertThat(objectOutput, Matchers.<ObjectOutput>instanceOf(FastJsonObjectOutput.class));
+        ObjectOutput objectOutput = jacksonSerialization.serialize(null, mock(OutputStream.class));
+        assertThat(objectOutput, Matchers.instanceOf(JacksonObjectOutput.class));
     }
 
     @Test
     public void testObjectInput() throws IOException {
-        ObjectInput objectInput = fastJsonSerialization.deserialize(null, mock(InputStream.class));
-        assertThat(objectInput, Matchers.<ObjectInput>instanceOf(FastJsonObjectInput.class));
+        ObjectInput objectInput = jacksonSerialization.deserialize(null, mock(InputStream.class));
+        assertThat(objectInput, Matchers.instanceOf(JacksonObjectInput.class));
     }
+
 }
