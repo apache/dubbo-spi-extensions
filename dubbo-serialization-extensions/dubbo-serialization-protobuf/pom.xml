@@ -31,19 +31,19 @@ limitations under the License.
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
         <dubbo.compiler.version>0.0.1-SNAPSHOT</dubbo.compiler.version>
-        <dubbo.version>2.7.23</dubbo.version>
+        <dubbo.version>3.2.7</dubbo.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
-            <version>2.7.23</version>
+            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
-            <version>2.7.23</version>
+            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

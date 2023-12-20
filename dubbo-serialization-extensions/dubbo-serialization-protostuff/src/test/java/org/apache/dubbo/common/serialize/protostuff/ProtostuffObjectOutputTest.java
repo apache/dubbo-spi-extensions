@@ -17,7 +17,6 @@
 package org.apache.dubbo.common.serialize.protostuff;
 
 import org.apache.dubbo.common.serialize.model.SerializablePerson;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
