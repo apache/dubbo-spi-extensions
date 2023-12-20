@@ -36,25 +36,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-protostuff</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <artifactId>gson</artifactId>
             <groupId>com.google.code.gson</groupId>
             <version>2.8.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-protobuf</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>gson</artifactId>
-                    <groupId>com.google.code.gson</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
