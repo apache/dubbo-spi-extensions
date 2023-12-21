@@ -29,7 +29,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-remoting-quic</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
 
 
     <dependencies>
@@ -38,15 +38,20 @@
             <groupId>io.netty.incubator</groupId>
             <artifactId>netty-incubator-codec-quic</artifactId>
             <version>0.0.14.Final</version>
-            <classifier>${os.detected.classifier}</classifier>
         </dependency>
 
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-remoting-api</artifactId>
             <optional>true</optional>
+            <version>3.2.7</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>3.2.7</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
