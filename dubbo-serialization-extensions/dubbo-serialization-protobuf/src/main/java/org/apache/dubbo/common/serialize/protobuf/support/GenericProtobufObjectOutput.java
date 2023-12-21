@@ -131,11 +131,11 @@ public class GenericProtobufObjectOutput implements ObjectOutput {
     @Override
     public void writeThrowable(Throwable obj) throws IOException {
         if (!(obj instanceof MessageLite)) {
-            ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto((Throwable) obj);
+            ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto(obj);
             ProtobufUtils.serialize(throwableProto, os);
-            return;
+        } else {
+            ProtobufUtils.serialize(obj, os);
         }
-        ProtobufUtils.serialize(obj, os);
         os.flush();
     }
 

@@ -121,9 +121,9 @@ public class GenericProtobufJsonObjectOutput implements ObjectOutput {
         if (!ProtobufUtils.isSupported(th.getClass())) {
             ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto(th);
             writer.write(ProtobufUtils.serializeJson(throwableProto));
-            return;
+        } else {
+            writer.write(ProtobufUtils.serializeJson(th));
         }
-        writer.write(ProtobufUtils.serializeJson(th));
         writer.println();
         writer.flush();
     }
