@@ -35,7 +35,7 @@ import org.mockito.Mockito;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-public class SeataTransactionPropagationProviderFilterTest {
+class SeataTransactionPropagationProviderFilterTest {
     private final AtomicReference<Function<Invocation, Result>> invokeFunction = new AtomicReference<>();
 
     private Invoker invoker = new Invoker() {
@@ -65,9 +65,8 @@ public class SeataTransactionPropagationProviderFilterTest {
         }
     };
 
-
     @Test
-    public void test() {
+    void test() {
         ApplicationModel applicationModel = FrameworkModel.defaultModel().newApplication();
         ModuleModel moduleModel = applicationModel.newModule();
 
