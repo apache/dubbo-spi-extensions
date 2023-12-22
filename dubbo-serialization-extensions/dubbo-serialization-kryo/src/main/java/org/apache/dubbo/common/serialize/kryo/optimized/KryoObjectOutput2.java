@@ -31,7 +31,7 @@ import java.io.OutputStream;
  */
 public class KryoObjectOutput2 implements ObjectOutput, Cleanable {
 
-    private Output output;
+    private final Output output;
     private Kryo kryo;
 
     public KryoObjectOutput2(OutputStream outputStream) {
@@ -105,7 +105,7 @@ public class KryoObjectOutput2 implements ObjectOutput, Cleanable {
     }
 
     @Override
-    public void writeThrowable(Object v) throws IOException {
+    public void writeThrowable(Throwable v) throws IOException {
         kryo.writeClassAndObject(output, v);
     }
 
