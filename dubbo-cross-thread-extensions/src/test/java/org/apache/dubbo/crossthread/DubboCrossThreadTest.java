@@ -16,6 +16,12 @@
  */
 package org.apache.dubbo.crossthread;
 
+import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.crossthread.interceptor.RunnableOrCallableActivation;
+import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.crossthread.toolkit.CallableWrapper;
+import org.apache.dubbo.crossthread.toolkit.RunnableWrapper;
+
 import java.lang.instrument.Instrumentation;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -27,28 +33,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
-import org.apache.dubbo.common.constants.CommonConstants;
-import org.apache.dubbo.crossthread.interceptor.RunnableOrCallableActivation;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.crossthread.toolkit.CallableWrapper;
-import org.apache.dubbo.crossthread.toolkit.RunnableWrapper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DubboCrossThreadTest {
+class DubboCrossThreadTest {
     @Test
-    public void crossThreadCallableTest() throws ExecutionException, InterruptedException, TimeoutException {
+    void crossThreadCallableTest() throws ExecutionException, InterruptedException, TimeoutException {
         Instrumentation instrumentation = ByteBuddyAgent.install();
         RunnableOrCallableActivation.install(instrumentation);
         String tag = "beta";
         RpcContext.getClientAttachment().setAttachment(CommonConstants.TAG_KEY, tag);
-        Callable<String> callable = CallableWrapper.of(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return RpcContext.getClientAttachment().getAttachment(CommonConstants.TAG_KEY);
-            }
-        });
+        Callable<String> callable = CallableWrapper.of(() -> RpcContext.getClientAttachment().getAttachment(CommonConstants.TAG_KEY));
         ExecutorService threadPool = Executors.newSingleThreadExecutor();
         Future<String> submit = threadPool.submit(callable);
         assertEquals(tag, submit.get(1, TimeUnit.SECONDS));
@@ -58,19 +54,16 @@ public class DubboCrossThreadTest {
     private volatile String tagCrossThread = null;
 
     @Test
-    public void crossThreadRunnableTest() throws ExecutionException, InterruptedException {
+    void crossThreadRunnableTest() throws InterruptedException {
         Instrumentation instrumentation = ByteBuddyAgent.install();
         RunnableOrCallableActivation.install(instrumentation);
         String tag = "beta";
         RpcContext.getClientAttachment().setAttachment(CommonConstants.TAG_KEY, tag);
         final CountDownLatch latch = new CountDownLatch(1);
-        Runnable runnable = RunnableWrapper.of(new Runnable() {
-            @Override
-            public void run() {
-                String tag = RpcContext.getClientAttachment().getAttachment(CommonConstants.TAG_KEY);
-                tagCrossThread = tag;
-                latch.countDown();
-            }
+        Runnable runnable = RunnableWrapper.of(() -> {
+            String tag1 = RpcContext.getClientAttachment().getAttachment(CommonConstants.TAG_KEY);
+            tagCrossThread = tag1;
+            latch.countDown();
         });
         ExecutorService threadPool = Executors.newSingleThreadExecutor();
         threadPool.submit(runnable);

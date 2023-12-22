@@ -37,15 +37,19 @@ import io.seata.core.model.BranchType;
 public class SeataTransactionPropagationProviderFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeataTransactionPropagationProviderFilter.class);
 
+    private static final String LOWER_KEY_XID = RootContext.KEY_XID.toLowerCase();
+
+    private static final String LOWER_KEY_BRANCH_TYPE = RootContext.KEY_BRANCH_TYPE.toLowerCase();
+
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         String rpcXid = invocation.getAttachment(RootContext.KEY_XID);
         if (rpcXid == null) {
-            rpcXid = invocation.getAttachment(RootContext.KEY_XID.toLowerCase());
+            rpcXid = invocation.getAttachment(LOWER_KEY_XID);
         }
         String rpcBranchType = invocation.getAttachment(RootContext.KEY_BRANCH_TYPE);
         if (rpcBranchType == null) {
-            rpcBranchType = invocation.getAttachment(RootContext.KEY_BRANCH_TYPE.toLowerCase());
+            rpcBranchType = invocation.getAttachment(LOWER_KEY_BRANCH_TYPE);
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Server side xid in RpcContext[" + rpcXid + "]");
