@@ -30,6 +30,7 @@ import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.router.RouterSnapshotNode;
 import org.apache.dubbo.rpc.cluster.router.state.AbstractStateRouter;
 import org.apache.dubbo.rpc.cluster.router.state.BitList;
+import org.apache.dubbo.rpc.cluster.specifyaddress.common.InvokerCache;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,20 +46,16 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
-    private final static Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserSpecifiedAddressRouter.class);
     // protected for ut purpose
     protected static int EXPIRE_TIME = 10 * 60 * 1000;
-    private final static String USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY = "userSpecifiedServiceAddressBuilder";
-
+    private static final String USER_SPECIFIED_SERVICE_ADDRESS_BUILDER_KEY = "userSpecifiedServiceAddressBuilder";
     private volatile BitList<Invoker<T>> invokers = BitList.emptyList();
     private volatile Map<String, Invoker<T>> ip2Invoker;
     private volatile Map<String, Invoker<T>> address2Invoker;
-
     private final Lock cacheLock = new ReentrantLock();
-    private final Map<URL, InvokerCache<T>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
-
+    private final Map<URL, InvokerCache<Invoker<T>>> newInvokerCache = new LinkedHashMap<>(16, 0.75f, true);
     private final UserSpecifiedServiceAddressBuilder userSpecifiedServiceAddressBuilder;
-
     private final Protocol protocol;
     private final ScheduledExecutorService scheduledExecutorService;
     private final AtomicBoolean launchRemovalTask = new AtomicBoolean(false);
@@ -83,18 +80,21 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected BitList<Invoker<T>> doRoute(BitList<Invoker<T>> invokers, URL url, Invocation invocation,
                                           boolean needToPrintMessage, Holder<RouterSnapshotNode<T>> nodeHolder,
                                           Holder<String> messageHolder) throws RpcException {
-        Address address = UserSpecifiedAddressUtil.getAddress();
+        Object addressObj = invocation.get(Address.name);
 
         // 1. check if set address in ThreadLocal
-        if (address == null) {
+        if (addressObj == null) {
             if (needToPrintMessage) {
                 messageHolder.set("No address specified, continue.");
             }
             return continueRoute(invokers, url, invocation, needToPrintMessage, nodeHolder);
         }
+
+        Address address = (Address) addressObj;
 
         BitList<Invoker<T>> result = new BitList<>(invokers, true);
 
@@ -110,7 +110,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
 
         // 3. check if set ip and port
         if (StringUtils.isNotEmpty(address.getIp())) {
-            Invoker<T> invoker = getInvokerByIp(address, invocation);
+            Invoker<T> invoker = getInvokerByIp(address);
             if (invoker != null) {
                 result.add(invoker);
                 if (needToPrintMessage) {
@@ -172,7 +172,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
     private Invoker<T> getOrBuildInvokerCache(URL url) {
         logger.info("Unable to find a proper invoker from directory. Try to create new invoker. New URL: " + url);
 
-        InvokerCache<T> cache;
+        InvokerCache<Invoker<T>> cache;
         cacheLock.lock();
         try {
             cache = newInvokerCache.get(url);
@@ -200,7 +200,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         return cache.getInvoker();
     }
 
-    public Invoker<T> getInvokerByIp(Address address, Invocation invocation) {
+    public Invoker<T> getInvokerByIp(Address address) {
         tryLoadSpecifiedMap();
 
         String ip = address.getIp();
@@ -209,18 +209,15 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         Invoker<T> targetInvoker;
         if (port != 0) {
             targetInvoker = address2Invoker.get(ip + ":" + port);
-            if (targetInvoker != null) {
-                return targetInvoker;
-            }
         } else {
             targetInvoker = ip2Invoker.get(ip);
-            if (targetInvoker != null) {
-                return targetInvoker;
-            }
+        }
+        if (targetInvoker != null) {
+            return targetInvoker;
         }
 
         if (!address.isNeedToCreate()) {
-            throwException(invocation, address);
+            throwException(address);
         }
 
         return null;
@@ -234,7 +231,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         return (Invoker<T>) protocol.refer(getUrl().getServiceModel().getServiceInterfaceClass(), url);
     }
 
-    private void throwException(Invocation invocation, Address address) {
+    private void throwException(Address address) {
         throw new RpcException("user specified server address : [" + address + "] is not a valid provider for service: ["
             + getUrl().getServiceKey() + "]");
     }
@@ -275,7 +272,7 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
 
     // For ut only
     @Deprecated
-    protected Map<URL, InvokerCache<T>> getNewInvokerCache() {
+    protected Map<URL, InvokerCache<Invoker<T>>> getNewInvokerCache() {
         return newInvokerCache;
     }
 
@@ -310,16 +307,17 @@ public class UserSpecifiedAddressRouter<T> extends AbstractStateRouter<T> {
         public void run() {
             cacheLock.lock();
             try {
-                if (newInvokerCache.size() > 0) {
-                    Iterator<Map.Entry<URL, InvokerCache<T>>> iterator = newInvokerCache.entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry<URL, InvokerCache<T>> entry = iterator.next();
-                        if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
-                            iterator.remove();
-                            entry.getValue().getInvoker().destroy();
-                        } else {
-                            break;
-                        }
+                if (CollectionUtils.isEmptyMap(newInvokerCache)) {
+                    return;
+                }
+                Iterator<Map.Entry<URL, InvokerCache<Invoker<T>>>> iterator = newInvokerCache.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<URL, InvokerCache<Invoker<T>>> entry = iterator.next();
+                    if (System.currentTimeMillis() - entry.getValue().getLastAccess() > EXPIRE_TIME) {
+                        iterator.remove();
+                        entry.getValue().getInvoker().destroy();
+                    } else {
+                        break;
                     }
                 }
             } finally {

@@ -1,0 +1,1 @@
+polaris_ratelimit=org.apache.dubbo.filter.dubbo2.RateLimitFilter

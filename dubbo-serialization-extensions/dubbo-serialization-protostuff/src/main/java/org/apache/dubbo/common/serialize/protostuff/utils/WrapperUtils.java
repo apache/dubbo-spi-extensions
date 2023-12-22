@@ -21,6 +21,7 @@ import org.apache.dubbo.common.serialize.protostuff.Wrapper;
 import org.apache.dubbo.common.serialize.protostuff.delegate.SqlDateDelegate;
 import org.apache.dubbo.common.serialize.protostuff.delegate.TimeDelegate;
 import org.apache.dubbo.common.serialize.protostuff.delegate.TimestampDelegate;
+import org.apache.dubbo.common.serialize.protostuff.delegate.ServiceConfigURLDelegate;
 
 import io.protostuff.runtime.DefaultIdStrategy;
 import io.protostuff.runtime.RuntimeEnv;
@@ -56,6 +57,7 @@ public class WrapperUtils {
         if (RuntimeEnv.ID_STRATEGY instanceof DefaultIdStrategy) {
             ((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY).registerDelegate(new TimeDelegate());
             ((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY).registerDelegate(new TimestampDelegate());
+            ((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY).registerDelegate(new ServiceConfigURLDelegate());
             ((DefaultIdStrategy) RuntimeEnv.ID_STRATEGY).registerDelegate(new SqlDateDelegate());
         }
 
@@ -87,6 +89,7 @@ public class WrapperUtils {
         WRAPPER_SET.add(Time.class);
         WRAPPER_SET.add(Timestamp.class);
         WRAPPER_SET.add(java.sql.Date.class);
+        WRAPPER_SET.add(org.apache.dubbo.common.url.component.ServiceConfigURL.class);
 
         WRAPPER_SET.add(Wrapper.class);
 

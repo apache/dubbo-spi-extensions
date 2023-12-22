@@ -23,9 +23,9 @@ import org.apache.dubbo.rpc.cluster.RouterFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UserSpecifiedAddressRouterFactoryTest {
+class UserSpecifiedAddressRouterFactoryTest {
     @Test
-    public void test() {
+    void test() {
 
         RouterFactory stateRouterFactory = ExtensionLoader.getExtensionLoader(RouterFactory.class).getExtension("user-specified-address");
         Assertions.assertEquals(UserSpecifiedAddressRouterFactory.class, stateRouterFactory.getClass());

@@ -17,7 +17,7 @@
 
 package org.apache.dubbo.common.serialize.gson;
 
-import org.apache.dubbo.common.serialize.ObjectInput;
+import org.apache.dubbo.common.serialize.DefaultJsonDataInput;
 import org.apache.dubbo.common.utils.PojoUtils;
 
 import com.google.gson.Gson;
@@ -30,7 +30,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 
-public class GsonJsonObjectInput implements ObjectInput {
+public class GsonJsonObjectInput implements DefaultJsonDataInput {
     private final BufferedReader reader;
     private Gson gson;
 
@@ -89,14 +89,14 @@ public class GsonJsonObjectInput implements ObjectInput {
     }
 
     @Override
-    public Object readObject() throws IOException, ClassNotFoundException {
-        String json = readLine();
-        return gson.fromJson(json, Object.class);
+    public Object readObject() throws IOException {
+        return readObject(Object.class);
     }
 
     @Override
-    public <T> T readObject(Class<T> cls) throws IOException, ClassNotFoundException {
-        return read(cls);
+    public <T> T readObject(Class<T> cls) throws IOException {
+        String json = readLine();
+        return gson.fromJson(json, cls);
     }
 
     @Override

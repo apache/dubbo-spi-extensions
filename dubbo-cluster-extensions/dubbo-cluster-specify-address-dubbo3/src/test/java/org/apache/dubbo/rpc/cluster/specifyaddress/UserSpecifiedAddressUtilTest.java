@@ -19,15 +19,13 @@ package org.apache.dubbo.rpc.cluster.specifyaddress;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UserSpecifiedAddressUtilTest {
+class UserSpecifiedAddressUtilTest {
     @Test
-    public void test() {
+    void test() {
         Assertions.assertNull(UserSpecifiedAddressUtil.getAddress());
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.1", 0));
         Assertions.assertEquals(new Address("127.0.0.1", 0), UserSpecifiedAddressUtil.getAddress());
-        Assertions.assertNull(UserSpecifiedAddressUtil.getAddress());
         UserSpecifiedAddressUtil.setAddress(new Address("127.0.0.1", 12345));
         Assertions.assertNotEquals(new Address("127.0.0.1", 0), UserSpecifiedAddressUtil.getAddress());
-        Assertions.assertNull(UserSpecifiedAddressUtil.getAddress());
     }
 }

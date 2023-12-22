@@ -25,6 +25,7 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    <version>1.0.1-SNAPSHOT</version>
     <artifactId>dubbo-rpc-rocketmq</artifactId>
     <name>dubbo-rpc-rocketmq</name>
     <properties>
