@@ -39,6 +39,7 @@
         <module>dubbo-rpc-hessian</module>
         <module>dubbo-rpc-memcached</module>
         <module>dubbo-rpc-redis</module>
+        <module>dubbo-rpc-rocketmq</module>
     </modules>
 
 </project>

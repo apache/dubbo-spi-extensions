@@ -40,6 +40,7 @@ import org.apache.dubbo.config.annotation.Service;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -90,14 +91,7 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private ApplicationConfig application;
 
-    @Autowired
-    private RegistryConfig registry;
-
-    @Autowired
-    private ProtocolConfig protocol;
 
     @Autowired(required = false)
     private ProviderConfig providerConfig;
@@ -524,9 +518,13 @@ public class DubboApiDocsAnnotationScanner implements ApplicationListener<Applic
      */
     private <I, T> void exportDubboService(Class<I> serviceClass, T serviceImplInstance, boolean async) {
         ServiceConfig<T> service = new ServiceConfig<>();
+        ApplicationConfig application = FrameworkModel.defaultModel().defaultApplication().getCurrentConfig();
         service.setApplication(application);
-        service.setRegistry(registry);
-        service.setProtocol(protocol);
+        List<RegistryConfig> registrys = FrameworkModel.defaultModel().defaultApplication().getApplicationConfigManager().getDefaultRegistries();
+        Collection<ProtocolConfig> protocols = FrameworkModel.defaultModel().defaultApplication().getApplicationConfigManager().getProtocols();
+
+        service.setRegistry(registrys.get(0));
+        service.setProtocol(protocols.iterator().next());
         service.setInterface(serviceClass);
         service.setRef(serviceImplInstance);
         service.setAsync(async);

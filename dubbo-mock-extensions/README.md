@@ -9,11 +9,11 @@
 - Add the dependency.
 
 ```xml
-<denpendency>
+<dependency>
     <groupId>org.apache.dubbo.extensions</groupId>
     <artifactId>dubbo-mock-admin</artifactId>
-    <version>last</version>
-</denpendency>
+    <version>3.0.0</version>
+</dependency>
 ```
 
 - enable the mock flag. Add the ``` -Denable.dubbo.admin.mock=true ``` into your JVM parameter to enable this function.

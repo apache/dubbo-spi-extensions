@@ -28,16 +28,18 @@
 
     <artifactId>dubbo-filter-seata</artifactId>
     <name>${project.artifactId}</name>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-core</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

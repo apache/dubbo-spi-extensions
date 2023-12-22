@@ -111,7 +111,7 @@ public class ConsulDynamicConfiguration extends TreePathDynamicConfiguration {
     }
 
     @Override
-    protected void doAddListener(String pathKey, ConfigurationListener listener) {
+    protected void doAddListener(String pathKey, ConfigurationListener listener, String key, String group) {
         logger.info("register listener " + listener.getClass() + " for config with key: " + pathKey);
         ConsulListener watcher = watchers.computeIfAbsent(pathKey, k -> new ConsulListener(pathKey));
         watcher.addListener(listener);

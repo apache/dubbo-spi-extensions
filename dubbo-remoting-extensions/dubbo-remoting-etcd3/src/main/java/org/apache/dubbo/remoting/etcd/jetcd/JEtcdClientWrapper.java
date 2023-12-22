@@ -522,6 +522,7 @@ public class JEtcdClientWrapper {
             }
 
             try {
+
                 this.future = reconnectNotify.scheduleWithFixedDelay(() -> {
                     boolean connected = isConnected();
                     if (connectState != connected) {

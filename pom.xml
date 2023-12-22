@@ -94,12 +94,19 @@
         <module>dubbo-rpc-extensions</module>
         <module>dubbo-serialization-extensions</module>
         <module>dubbo-mock-extensions</module>
+        <module>dubbo-gateway-extensions</module>
+        <module>dubbo-cross-thread-extensions</module>
+        <module>dubbo-tag-extensions</module>
+        <module>dobbo-doc-auto-gen</module>
+        <module>dubbo-xds</module>
+        <module>dubbo-kubernetes</module>
     </modules>
 
     <properties>
-        <revision>1.0.3-SNAPSHOT</revision>
+        <revision>1.0.5-SNAPSHOT</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
+        <awaitility_version>4.2.0</awaitility_version>
         <hazelcast_version>3.11.1</hazelcast_version>
         <hamcrest_version>2.2</hamcrest_version>
         <hibernate_validator_version>5.2.4.Final</hibernate_validator_version>
@@ -178,6 +185,12 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
             <version>${hamcrest_version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility_version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -557,9 +570,12 @@
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle.skip}</skip>
                                     <excludes>
-                                        **/istio/v1/auth/Ca.java,
-                                        **/istio/v1/auth/IstioCertificateServiceGrpc.java,
+                                        **/istio/v1/auth/**/*,
+                                        **/com/google/rpc/*,
                                         **/generated/**/*,
+                                        **/generated-sources/**/*,
+                                        **/grpc/health/**/*,
+                                        **/grpc/reflection/**/*,
                                         **/target/**/*,
                                     </excludes>
                                 </configuration>

@@ -149,7 +149,7 @@ public class GenericProtobufJsonObjectInput implements ObjectInput {
     }
 
     @Override
-    public Object readEvent() throws IOException, ClassNotFoundException {
+    public String readEvent() throws IOException, ClassNotFoundException {
         String eventData = readUTF();
         if (eventData.equals(MOCK_HEARTBEAT_EVENT)) {
             eventData = HEARTBEAT_EVENT;

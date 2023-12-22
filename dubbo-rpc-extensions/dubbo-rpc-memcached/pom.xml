@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-rpc-memcached</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>The memcached rpc module of dubbo project</description>
@@ -35,6 +35,7 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-rpc-api</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.googlecode.xmemcached</groupId>

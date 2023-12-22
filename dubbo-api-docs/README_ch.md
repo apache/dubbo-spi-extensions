@@ -9,7 +9,7 @@ dubbo 接口文档、测试工具,根据注解生成文档,并提供测试功能
 ## 相关项目
 
 * [dubbo-spi-extensions](https://github.com/apache/dubbo-spi-extensions)
-  [\分支: 2.7.x\dubbo-api-docs](https://github.com/apache/dubbo-spi-extensions/tree/2.7.x/dubbo-api-docs):
+  [\分支: 3.2.0\dubbo-api-docs](https://github.com/apache/dubbo-spi-extensions/tree/3.2.0/dubbo-api-docs):
   Dubbo-Api-Docs 相关注解,解析注解
 * [dubbo-admin](https://github.com/KeRan213539/dubbo-admin): Dubbo-Api-Docs 文档展示,测试功能
 
@@ -22,7 +22,7 @@ dubbo 接口文档、测试工具,根据注解生成文档,并提供测试功能
         * 为避免增加生产环境中的资源占用, 建议单独创建一个配制类用于启用Dubbo Api Docs, 并配合 @Profile("dev") 注解使用
         * 当然, Dubbo Api Docs 仅在项目启动时多消耗了点CPU资源, 并使用了一点点内存用于缓存, 将来会考虑将缓存中的内容放到元数据中心.
 
-### 当前版本: 2.7.8.3
+### 当前版本: 3.2.0
 
 ```
 <dependency>

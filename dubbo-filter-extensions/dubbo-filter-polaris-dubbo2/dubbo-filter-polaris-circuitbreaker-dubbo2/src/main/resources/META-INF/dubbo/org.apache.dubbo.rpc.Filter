@@ -1,0 +1,1 @@
+polaris_circuitbreaker=org.apache.dubbo.filter.dubbo2.CircuitBreakerFilter

@@ -27,7 +27,7 @@ import org.apache.dubbo.rpc.RpcException;
 
 import java.util.Map;
 
-@Activate(group = CommonConstants.PROVIDER, order = Integer.MIN_VALUE + 10000)
+@Activate(group = CommonConstants.PROVIDER, order = Integer.MIN_VALUE, before = "context")
 public class HessianProtocolFilter implements Filter {
     private final static InternalThreadLocal<Map<String, String>> attachments = new InternalThreadLocal<>();
 
