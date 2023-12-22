@@ -32,7 +32,7 @@ public class MsgpackObjectInput implements ObjectInput {
 
     private final InputStream in;
 
-    private ObjectMapper om;
+    private final ObjectMapper om;
 
     public MsgpackObjectInput(InputStream in) {
         this.in = in;

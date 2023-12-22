@@ -28,10 +28,12 @@ import com.google.protobuf.StringValue;
 
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.protobuf.support.wrapper.MapValue;
+import org.apache.dubbo.common.serialize.protobuf.support.wrapper.ThrowablePB;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.apache.dubbo.common.constants.CommonConstants.HEARTBEAT_EVENT;
 import static org.apache.dubbo.common.constants.CommonConstants.MOCK_HEARTBEAT_EVENT;
@@ -119,19 +121,21 @@ public class GenericProtobufObjectOutput implements ObjectOutput {
     }
 
     @Override
-    public void writeEvent(Object data) throws IOException {
-        if (data == HEARTBEAT_EVENT) {
+    public void writeEvent(String data) throws IOException {
+        if (Objects.equals(data, HEARTBEAT_EVENT)) {
             data = MOCK_HEARTBEAT_EVENT;
         }
-        writeUTF((String) data);
+        writeUTF(data);
     }
 
     @Override
-    public void writeThrowable(Object obj) throws IOException {
-        if (obj instanceof Throwable && !(obj instanceof MessageLite)) {
-            obj = ProtobufUtils.convertToThrowableProto((Throwable) obj);
+    public void writeThrowable(Throwable obj) throws IOException {
+        if (!(obj instanceof MessageLite)) {
+            ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto(obj);
+            ProtobufUtils.serialize(throwableProto, os);
+        } else {
+            ProtobufUtils.serialize(obj, os);
         }
-        ProtobufUtils.serialize(obj, os);
         os.flush();
     }
 

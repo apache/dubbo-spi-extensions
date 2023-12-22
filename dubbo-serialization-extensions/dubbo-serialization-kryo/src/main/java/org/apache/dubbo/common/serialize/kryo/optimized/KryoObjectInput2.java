@@ -36,7 +36,7 @@ import java.util.Map;
 public class KryoObjectInput2 implements ObjectInput, Cleanable {
 
     private Kryo kryo;
-    private Input input;
+    private final Input input;
 
     public KryoObjectInput2(InputStream inputStream) {
         input = new Input(inputStream);
