@@ -85,7 +85,7 @@ public class SpringBootDemoApplication {
 }
 ```
 
-## run with wkywalking and ttl
+## run with skywalking and ttl
 jvm arguments:
 ```
 -javaagent:transmittable-thread-local-2.14.2.jar
