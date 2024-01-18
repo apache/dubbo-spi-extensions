@@ -34,9 +34,9 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-cluster</artifactId>
-            <version>3.2.7</version>
             <optional>true</optional>
         </dependency>
+
     </dependencies>
 
 </project>
