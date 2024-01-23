@@ -19,6 +19,9 @@ package org.apache.dubbo.rpc.cluster.router.xds;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.Holder;
 import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.registry.xds.resource.XdsCluster;
+import org.apache.dubbo.registry.xds.resource.XdsVirtualHost;
+import org.apache.dubbo.registry.xds.util.PilotExchanger;
 import org.apache.dubbo.registry.xds.util.protocol.message.Endpoint;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
@@ -39,6 +42,7 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,6 +111,35 @@ public class XdsRouteTest {
     }
 
     @Test
+    public void testXdsRouterInitial() {
+
+        URL url = URL.valueOf("xds://localhost:15010/?secure=plaintext");
+
+        PilotExchanger.initialize(url);
+
+        XdsRouterDemo xdsRouterDemo = new XdsRouterDemo<>(url);
+
+        BitList<Invoker> invokers = new BitList<>(Arrays.asList(createInvoker("dubbo-samples-xds-provider", "10.1.0.177:50051"),
+            createInvoker("dubbo-samples-xds-provider", "10.1.0.174:50051"),
+            createInvoker("dubbo-samples-xds-provider", "10.1.0.181:50051")));
+
+        Invocation invocation = Mockito.mock(Invocation.class);
+        Invoker invoker = Mockito.mock(Invoker.class);
+        URL url1 = URL.valueOf("consumer://0.0.0.0:15010/DemoService?providedBy=dubbo-samples-xds-provider");
+        when(invoker.getUrl()).thenReturn(url1);
+        when(invocation.getInvoker()).thenReturn(invoker);
+
+        while(true) {
+            Map<String, XdsVirtualHost> xdsVirtualHostMap = PilotExchanger.getXdsVirtualHostMap();
+            Map<String, XdsCluster> xdsClusterMap = PilotExchanger.getXdsClusterMap();
+            if (!xdsVirtualHostMap.isEmpty() && !xdsClusterMap.isEmpty()) {
+                xdsRouterDemo.route(invokers, url, invocation, false, null);
+            }
+            Thread.yield();
+        }
+    }
+
+    @Test
     public void testRuleChange() {
         XdsRouter<Object> xdsRouter = new XdsRouter<>(url, rdsRouteRuleManager, edsEndpointManager, true);
         String appName = "app1";
@@ -140,6 +173,7 @@ public class XdsRouteTest {
                 .build();
         hostListener.parseVirtualHost(virtualHost2);
         assertEquals(xdsRouter.getXdsRouteRuleMap().get(appName).size(), 1);
+
         verify(edsEndpointManager, times(1)).subscribeEds(cluster2, xdsRouter);
         verify(edsEndpointManager, times(1)).unSubscribeEds(cluster1, xdsRouter);
     }

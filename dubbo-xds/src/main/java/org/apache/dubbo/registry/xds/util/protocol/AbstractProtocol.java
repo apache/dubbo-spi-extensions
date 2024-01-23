@@ -153,28 +153,28 @@ public abstract class AbstractProtocol<T, S extends DeltaResource<T>> implements
             logger.info("Send xDS Observe request to remote. Resource count: " + resourceNamesToObserve.size()
                     + ". Resource Type: " + getTypeUrl());
 
-            try {
-                Map<String, T> result = future.get();
-
-                try {
-                    writeLock.lock();
-                    consumerObserveMap.get(consumerObserveResourceNames).removeIf(o -> o.equals(futureConsumer));
-                } finally {
-                    writeLock.unlock();
-                }
-
-                return result;
-            } catch (InterruptedException e) {
-                logger.error(
-                        INTERNAL_INTERRUPTED,
-                        "",
-                        "",
-                        "InterruptedException occur when request control panel. error=",
-                        e);
-                Thread.currentThread().interrupt();
-            } catch (Exception e) {
-                logger.error(PROTOCOL_FAILED_REQUEST, "", "", "Error occur when request control panel. error=", e);
-            }
+            // try {
+            //     Map<String, T> result = future.get();
+            //
+            //     try {
+            //         writeLock.lock();
+            //         consumerObserveMap.get(consumerObserveResourceNames).removeIf(o -> o.equals(futureConsumer));
+            //     } finally {
+            //         writeLock.unlock();
+            //     }
+            //
+            //     return result;
+            // } catch (InterruptedException e) {
+            //     logger.error(
+            //             INTERNAL_INTERRUPTED,
+            //             "",
+            //             "",
+            //             "InterruptedException occur when request control panel. error=",
+            //             e);
+            //     Thread.currentThread().interrupt();
+            // } catch (Exception e) {
+            //     logger.error(PROTOCOL_FAILED_REQUEST, "", "", "Error occur when request control panel. error=", e);
+            // }
         } finally {
             resourceLock.unlock();
         }
@@ -222,6 +222,10 @@ public abstract class AbstractProtocol<T, S extends DeltaResource<T>> implements
 
     protected abstract Map<String, T> decodeDiscoveryResponse(DiscoveryResponse response);
 
+    /**
+     * 当服务端发送消息后进行接收处理
+     * @param discoveryResponse
+     */
     @Override
     public final void process(DiscoveryResponse discoveryResponse) {
         Map<String, T> newResult = decodeDiscoveryResponse(discoveryResponse);

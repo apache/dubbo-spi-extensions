@@ -77,6 +77,8 @@ public class AdsObserver {
 
         @Override
         public void onNext(DiscoveryResponse discoveryResponse) {
+            // 当 server 回复时，调用不同类型的协议监听器进行解析
+            System.out.println("Receive message from server");
             XdsListener xdsListener = adsObserver.listeners.get(discoveryResponse.getTypeUrl());
             xdsListener.process(discoveryResponse);
             adsObserver.requestObserver.onNext(buildAck(discoveryResponse));
@@ -136,5 +138,9 @@ public class AdsObserver {
             logger.error(REGISTRY_ERROR_REQUEST_XDS, "", "", "Recover failed for xDS connection. Will retry.", e);
         }
         triggerReConnectTask();
+    }
+
+    public void destroy() {
+        this.xdsChannel.destroy();
     }
 }

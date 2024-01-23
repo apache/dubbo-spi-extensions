@@ -25,6 +25,7 @@ import org.apache.dubbo.registry.xds.util.protocol.message.ListenerResult;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.config.listener.v3.Filter;
 import io.envoyproxy.envoy.config.listener.v3.Listener;
@@ -42,8 +43,8 @@ import java.util.stream.Collectors;
 
 import static org.apache.dubbo.common.constants.LoggerCodeConstants.REGISTRY_ERROR_RESPONSE_XDS;
 
-public class LdsProtocol extends AbstractProtocol<ListenerResult, DeltaListener> {
-    private static final ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(LdsProtocol.class);
+public class CdsProtocol extends AbstractProtocol<ListenerResult, DeltaListener> {
+    private static final ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(CdsProtocol.class);
 
     public void setUpdateCallback(Consumer<Set<String>> updateCallback) {
         this.updateCallback = updateCallback;
@@ -51,49 +52,38 @@ public class LdsProtocol extends AbstractProtocol<ListenerResult, DeltaListener>
 
     private Consumer<Set<String>> updateCallback;
 
-    public LdsProtocol(AdsObserver adsObserver, Node node, int checkInterval) {
+    public CdsProtocol(AdsObserver adsObserver, Node node, int checkInterval) {
         super(adsObserver, node, checkInterval);
     }
 
     @Override
     public String getTypeUrl() {
-        return "type.googleapis.com/envoy.config.listener.v3.Listener";
+        return "type.googleapis.com/envoy.config.cluster.v3.Cluster";
     }
 
-    public Map<String, ListenerResult> getListeners() {
-        return getResource(null);
+    public void getClusters() {
+        getResource(null);
     }
 
     @Override
     protected Map<String, ListenerResult> decodeDiscoveryResponse(DiscoveryResponse response) {
         if (getTypeUrl().equals(response.getTypeUrl())) {
             Set<String> set = response.getResourcesList().stream()
-                    .map(LdsProtocol::unpackListener)
+                    .map(CdsProtocol::unpackCluster)
                     .filter(Objects::nonNull)
-                    .flatMap(e -> decodeResourceToListener(e).stream())
+                    .map(Cluster::getName)
                     .collect(Collectors.toSet());
             updateCallback.accept(set);
-            Map<String, ListenerResult> listenerDecodeResult = new ConcurrentHashMap<>();
-            listenerDecodeResult.put(emptyResourceName, new ListenerResult(set));
-            return listenerDecodeResult;
+            // Map<String, ListenerResult> listenerDecodeResult = new ConcurrentHashMap<>();
+            // listenerDecodeResult.put(emptyResourceName, new ListenerResult(set));
+            // return listenerDecodeResult;
         }
         return new HashMap<>();
     }
 
-    private Set<String> decodeResourceToListener(Listener resource) {
-        return resource.getFilterChainsList().stream()
-                .flatMap(e -> e.getFiltersList().stream())
-                .map(Filter::getTypedConfig)
-                .map(LdsProtocol::unpackHttpConnectionManager)
-                .filter(Objects::nonNull)
-                .map(HttpConnectionManager::getRds)
-                .map(Rds::getRouteConfigName)
-                .collect(Collectors.toSet());
-    }
-
-    private static Listener unpackListener(Any any) {
+    private static Cluster unpackCluster(Any any) {
         try {
-            return any.unpack(Listener.class);
+            return any.unpack(Cluster.class);
         } catch (InvalidProtocolBufferException e) {
             logger.error(REGISTRY_ERROR_RESPONSE_XDS, "", "", "Error occur when decode xDS response.", e);
             return null;

@@ -20,7 +20,12 @@ import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.threadpool.manager.FrameworkExecutorRepository;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
+import org.apache.dubbo.registry.xds.resource.XdsCluster;
+import org.apache.dubbo.registry.xds.resource.XdsClusterWeight;
+import org.apache.dubbo.registry.xds.resource.XdsRouteConfiguration;
+import org.apache.dubbo.registry.xds.resource.XdsVirtualHost;
 import org.apache.dubbo.registry.xds.util.protocol.AbstractProtocol;
+import org.apache.dubbo.registry.xds.util.protocol.impl.CdsProtocol;
 import org.apache.dubbo.registry.xds.util.protocol.impl.EdsProtocol;
 import org.apache.dubbo.registry.xds.util.protocol.impl.LdsProtocol;
 import org.apache.dubbo.registry.xds.util.protocol.impl.RdsProtocol;
@@ -45,7 +50,9 @@ import java.util.stream.Collectors;
 
 public class PilotExchanger {
 
-    protected final XdsChannel xdsChannel;
+    // protected final XdsChannel xdsChannel;
+
+    protected final AdsObserver adsObserver;
 
     protected final LdsProtocol ldsProtocol;
 
@@ -53,9 +60,13 @@ public class PilotExchanger {
 
     protected final EdsProtocol edsProtocol;
 
-    protected Map<String, ListenerResult> listenerResult;
+    protected final CdsProtocol cdsProtocol;
+
+    private Map<String, ListenerResult> listenerResult;
 
     protected Map<String, RouteResult> routeResult;
+
+    protected Map<String, EndpointResult> endpointResult;
 
     private final AtomicBoolean isRdsObserve = new AtomicBoolean(false);
     private final Set<String> domainObserveRequest = new ConcurrentHashSet<String>();
@@ -68,39 +79,91 @@ public class PilotExchanger {
 
     private final ApplicationModel applicationModel;
 
+    private static Map<String, XdsVirtualHost> xdsVirtualHostMap = new ConcurrentHashMap<>();
+
+    private static Map<String, XdsCluster> xdsClusterMap = new ConcurrentHashMap<>();
+
     protected PilotExchanger(URL url) {
-        xdsChannel = new XdsChannel(url);
+        // xdsChannel = new XdsChannel(url);
         int pollingTimeout = url.getParameter("pollingTimeout", 10);
         this.applicationModel = url.getOrDefaultApplicationModel();
-        AdsObserver adsObserver = new AdsObserver(url, NodeBuilder.build());
-        this.ldsProtocol = new LdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout);
-        this.rdsProtocol = new RdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout);
-        this.edsProtocol = new EdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout);
+        adsObserver = new AdsObserver(url, NodeBuilder.build());
 
-        this.listenerResult = ldsProtocol.getListeners();
-        this.routeResult = rdsProtocol.getResource(
-                listenerResult.values().iterator().next().getRouteConfigNames());
-        Set<String> ldsResourcesName = new HashSet<>();
-        ldsResourcesName.add(AbstractProtocol.emptyResourceName);
-        // Observer RDS update
-        if (CollectionUtils.isNotEmpty(listenerResult.values().iterator().next().getRouteConfigNames())) {
-            createRouteObserve();
-            isRdsObserve.set(true);
-        }
-        // Observe LDS updated
-        ldsProtocol.observeResource(
-                ldsResourcesName,
-                (newListener) -> {
-                    // update local cache
-                    if (!newListener.equals(listenerResult)) {
-                        this.listenerResult = newListener;
-                        // update RDS observation
-                        if (isRdsObserve.get()) {
-                            createRouteObserve();
-                        }
-                    }
-                },
-                false);
+        // rds 资源回调函数，将 RdsProtocol 的资源存放起来
+        Consumer<List<XdsRouteConfiguration>> rdsCallback = (xdsRouteConfigurations) -> {
+            System.out.println(xdsRouteConfigurations);
+            xdsRouteConfigurations.forEach(xdsRouteConfiguration -> {
+                xdsRouteConfiguration.getVirtualHosts().forEach((serviceName, xdsVirtualHost) -> {
+                    this.xdsVirtualHostMap.put(serviceName, xdsVirtualHost);
+                });
+            });
+        };
+
+        // eds 资源回调函数
+        Consumer<List<XdsCluster>> edsCallback = (xdsClusters) -> {
+            System.out.println(xdsClusters);
+            xdsClusters.forEach(xdsCluster -> {
+                this.xdsClusterMap.put(xdsCluster.getName(), xdsCluster);
+            });
+        };
+
+        this.ldsProtocol = new LdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout);
+        this.rdsProtocol = new RdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout, rdsCallback);
+        this.edsProtocol = new EdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout, edsCallback);
+        this.cdsProtocol = new CdsProtocol(adsObserver, NodeBuilder.build(), pollingTimeout);
+
+        // lds 回调函数，在回调函数中监听所有的 rds 资源
+        Consumer<Set<String>> ldsCallback = (routes) -> {
+            rdsProtocol.getResource(routes);
+        };
+
+        ldsProtocol.setUpdateCallback(ldsCallback);
+
+        ldsProtocol.getListeners();
+
+        // cds 回调函数，在回调函数中监听所有的 eds 资源
+        Consumer<Set<String>> cdsCallback = (clusters) -> {
+            edsProtocol.getResource(clusters);
+        };
+
+        cdsProtocol.setUpdateCallback(cdsCallback);
+
+        cdsProtocol.getClusters();
+
+        // while(this.listenerResult.size() == 0) {
+        //     Thread.yield();
+        // }
+        // this.routeResult = rdsProtocol.getResource(listenerResult.values().iterator().next().getRouteConfigNames());
+
+        // Set<String> ldsResourcesName = new HashSet<>();
+        // ldsResourcesName.add(AbstractProtocol.emptyResourceName);
+        // // Observer RDS update
+        // if (CollectionUtils.isNotEmpty(listenerResult.values().iterator().next().getRouteConfigNames())) {
+        //     createRouteObserve();
+        //     isRdsObserve.set(true);
+        // }
+        // // Observe LDS updated
+        // ldsProtocol.observeResource(
+        //         ldsResourcesName,
+        //         (newListener) -> {
+        //             // update local cache
+        //             if (!newListener.equals(listenerResult)) {
+        //                 this.listenerResult = newListener;
+        //                 // update RDS observation
+        //                 if (isRdsObserve.get()) {
+        //                     createRouteObserve();
+        //                 }
+        //             }
+        //         },
+        //         false);
+    }
+
+    public static Map<String, XdsVirtualHost> getXdsVirtualHostMap() {
+        return xdsVirtualHostMap;
+    }
+
+    public static Map<String, XdsCluster> getXdsClusterMap() {
+        return xdsClusterMap;
     }
 
     private void createRouteObserve() {
@@ -156,7 +219,8 @@ public class PilotExchanger {
     }
 
     public void destroy() {
-        xdsChannel.destroy();
+        // xdsChannel.destroy();
+        this.adsObserver.destroy();
     }
 
     public Set<String> getServices() {

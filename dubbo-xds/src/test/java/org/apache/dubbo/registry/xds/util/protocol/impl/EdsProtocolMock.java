@@ -16,8 +16,10 @@
  */
 package org.apache.dubbo.registry.xds.util.protocol.impl;
 
+import org.apache.dubbo.registry.xds.resource.XdsCluster;
 import org.apache.dubbo.registry.xds.util.AdsObserver;
 import org.apache.dubbo.registry.xds.util.protocol.message.EndpointResult;
+import org.apache.dubbo.registry.xds.util.protocol.message.ListenerResult;
 
 import io.envoyproxy.envoy.config.core.v3.Node;
 
@@ -28,8 +30,8 @@ import java.util.function.Consumer;
 
 public class EdsProtocolMock extends EdsProtocol {
 
-    public EdsProtocolMock(AdsObserver adsObserver, Node node, int checkInterval) {
-        super(adsObserver, node, checkInterval);
+    public EdsProtocolMock(AdsObserver adsObserver, Node node, int checkInterval, Consumer<List<XdsCluster>> updateCallback) {
+        super(adsObserver, node, checkInterval, updateCallback);
     }
 
     public Map<String, EndpointResult> getResourcesMap() {

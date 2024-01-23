@@ -18,6 +18,8 @@ package org.apache.dubbo.registry.xds.util.protocol.impl;
 
 import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.registry.xds.resource.XdsCluster;
+import org.apache.dubbo.registry.xds.resource.XdsEndpoint;
 import org.apache.dubbo.registry.xds.util.AdsObserver;
 import org.apache.dubbo.registry.xds.util.protocol.AbstractProtocol;
 import org.apache.dubbo.registry.xds.util.protocol.delta.DeltaEndpoint;
@@ -26,6 +28,7 @@ import org.apache.dubbo.registry.xds.util.protocol.message.EndpointResult;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.envoyproxy.envoy.config.cluster.v3.Cluster;
 import io.envoyproxy.envoy.config.core.v3.HealthStatus;
 import io.envoyproxy.envoy.config.core.v3.Node;
 import io.envoyproxy.envoy.config.core.v3.SocketAddress;
@@ -34,9 +37,11 @@ import io.envoyproxy.envoy.config.endpoint.v3.LbEndpoint;
 import io.envoyproxy.envoy.service.discovery.v3.DiscoveryResponse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.apache.dubbo.common.constants.LoggerCodeConstants.REGISTRY_ERROR_RESPONSE_XDS;
@@ -45,8 +50,15 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
 
     private static final ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(EdsProtocol.class);
 
-    public EdsProtocol(AdsObserver adsObserver, Node node, int checkInterval) {
+    public void setUpdateCallback(Consumer<List<XdsCluster>> updateCallback) {
+        this.updateCallback = updateCallback;
+    }
+
+    private Consumer<List<XdsCluster>> updateCallback;
+
+    public EdsProtocol(AdsObserver adsObserver, Node node, int checkInterval, Consumer<List<XdsCluster>> updateCallback) {
         super(adsObserver, node, checkInterval);
+        this.updateCallback = updateCallback;
     }
 
     @Override
@@ -56,6 +68,9 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
 
     @Override
     protected Map<String, EndpointResult> decodeDiscoveryResponse(DiscoveryResponse response) {
+        List<XdsCluster> clusters = parse(response);
+        updateCallback.accept(clusters);
+
         if (getTypeUrl().equals(response.getTypeUrl())) {
             return response.getResourcesList().stream()
                     .map(EdsProtocol::unpackClusterLoadAssignment)
@@ -64,6 +79,41 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
                             ClusterLoadAssignment::getClusterName, this::decodeResourceToEndpoint));
         }
         return new HashMap<>();
+    }
+
+    public List<XdsCluster> parse(DiscoveryResponse response) {
+        if (!getTypeUrl().equals(response.getTypeUrl())) {
+            return null;
+        }
+
+        return response.getResourcesList().stream()
+            .map(EdsProtocol::unpackClusterLoadAssignment)
+            .filter(Objects::nonNull)
+            .map(this::parseCluster)
+            .collect(Collectors.toList());
+    }
+
+    public XdsCluster parseCluster(ClusterLoadAssignment cluster) {
+        XdsCluster xdsCluster = new XdsCluster();
+
+        xdsCluster.setName(cluster.getClusterName());
+
+        List<XdsEndpoint> xdsEndpoints = cluster.getEndpointsList().stream()
+            .flatMap(e -> e.getLbEndpointsList().stream())
+            .map(LbEndpoint::getEndpoint)
+            .map(this::parseEndpoint)
+            .collect(Collectors.toList());
+
+        xdsCluster.setXdsEndpoints(xdsEndpoints);
+
+        return xdsCluster;
+    }
+
+    public XdsEndpoint parseEndpoint(io.envoyproxy.envoy.config.endpoint.v3.Endpoint endpoint) {
+        XdsEndpoint xdsEndpoint = new XdsEndpoint();
+        xdsEndpoint.setAddress(endpoint.getAddress().getSocketAddress().getAddress());
+        xdsEndpoint.setPortValue(endpoint.getAddress().getSocketAddress().getPortValue());
+        return xdsEndpoint;
     }
 
     private EndpointResult decodeResourceToEndpoint(ClusterLoadAssignment resource) {
@@ -89,6 +139,15 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
     private static ClusterLoadAssignment unpackClusterLoadAssignment(Any any) {
         try {
             return any.unpack(ClusterLoadAssignment.class);
+        } catch (InvalidProtocolBufferException e) {
+            logger.error(REGISTRY_ERROR_RESPONSE_XDS, "", "", "Error occur when decode xDS response.", e);
+            return null;
+        }
+    }
+
+    private static Cluster unpackCluster(Any any) {
+        try {
+            return any.unpack(Cluster.class);
         } catch (InvalidProtocolBufferException e) {
             logger.error(REGISTRY_ERROR_RESPONSE_XDS, "", "", "Error occur when decode xDS response.", e);
             return null;
