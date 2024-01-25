@@ -33,7 +33,7 @@
         <junit.version>4.13.1</junit.version>
         <spring.version>4.3.30.RELEASE</spring.version>
         <dubbo.extensions.version>1.0.5-SNAPSHOT</dubbo.extensions.version>
-        <dubbo.serialization.version>1.0.2-SNAPSHOT</dubbo.serialization.version>
+        <dubbo.serialization.version>3.2.0-SNAPSHOT</dubbo.serialization.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     </properties>
 
