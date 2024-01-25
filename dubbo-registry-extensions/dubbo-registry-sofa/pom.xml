@@ -40,12 +40,12 @@
             <artifactId>dubbo-registry-api</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
             <optional>true</optional>
         </dependency>
+
 
         <dependency>
             <groupId>com.alipay.sofa</groupId>

@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.rpc.cluster.support;
 
+import com.alibaba.fastjson2.JSON;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.threadlocal.NamedInternalThreadFactory;
@@ -28,7 +29,6 @@ import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.Directory;
 import org.apache.dubbo.rpc.cluster.LoadBalance;
 
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +148,7 @@ public class BroadcastCluster1Invoker<T> extends AbstractClusterInvoker<T> {
         AppResponse result = new AppResponse(invocation) {
             @Override
             public Result whenCompleteWithContext(BiConsumer<Result, Throwable> fn) {
-                RpcContext.getServerContext().setAttachment(BROADCAST_RESULTS_KEY, new Gson().toJson(resultList));
+                RpcContext.getServerContext().setAttachment(BROADCAST_RESULTS_KEY, JSON.toJSONString(resultList));
                 return new AppResponse();
             }
         };
@@ -160,7 +160,7 @@ public class BroadcastCluster1Invoker<T> extends AbstractClusterInvoker<T> {
         return new AppResponse(invocation) {
             @Override
             public Result whenCompleteWithContext(BiConsumer<Result, Throwable> fn) {
-                RpcContext.getServerContext().setAttachment(BROADCAST_RESULTS_KEY, new Gson().toJson(resultList));
+                RpcContext.getServerContext().setAttachment(BROADCAST_RESULTS_KEY, JSON.toJSONString(resultList));
                 AppResponse res = new AppResponse();
                 res.setValue(value);
                 return res;
