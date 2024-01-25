@@ -83,6 +83,9 @@ public class SofaRegistry extends FailbackRegistry {
         if (logger.isInfoEnabled()) {
             logger.info("Build sofa registry by url:" + url);
         }
+        if (url.isAnyHost()) {
+            throw new IllegalStateException("registry address == null");
+        }
         this.registryClient = buildClient(url);
         this.waitAddressTimeout = Integer.parseInt(System.getProperty(ADDRESS_WAIT_TIME_KEY, "5000"));
     }
