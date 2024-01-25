@@ -43,6 +43,11 @@ public class DocAutoGen {
         String usage = "Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. ";
         System.out.println(usage);
         System.out.println();
+        System.out.println("For version release notes, please refer to the documentation:");
+        System.out.println("- [Release](https://cn.dubbo.apache.org/zh-cn/download/spi-extensions/)");
+        System.out.println("- [Reference](https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/spi/overview/)");
+        System.out.println();
+
         String asFollow = "The available extensions are as follows:";
         System.out.println(asFollow);
         System.out.println();

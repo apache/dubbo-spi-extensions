@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AvroObjectInput implements ObjectInput {
-    private static DecoderFactory decoderFactory = DecoderFactory.get();
-    private BinaryDecoder decoder;
+    private static final DecoderFactory decoderFactory = DecoderFactory.get();
+    private final BinaryDecoder decoder;
 
     public AvroObjectInput(InputStream in) {
         decoder = decoderFactory.binaryDecoder(in, null);

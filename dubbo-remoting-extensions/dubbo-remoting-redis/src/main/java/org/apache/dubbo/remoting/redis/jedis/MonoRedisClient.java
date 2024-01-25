@@ -35,14 +35,12 @@ import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
 public class MonoRedisClient extends AbstractRedisClient implements RedisClient {
     private static final Logger logger = LoggerFactory.getLogger(MonoRedisClient.class);
 
-    private static final String START_CURSOR = "0";
-
-    private JedisPool jedisPool;
+    private final JedisPool jedisPool;
 
     public MonoRedisClient(URL url) {
         super(url);
         jedisPool = new JedisPool(getConfig(), url.getHost(), url.getPort(),
-                url.getParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT), url.getPassword());
+                url.getParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT), url.getPassword(), url.getParameter("db.index", 0));
     }
 
     @Override

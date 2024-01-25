@@ -29,9 +29,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class SeataTransactionPropagationConsumerFilterTest {
+class SeataTransactionPropagationConsumerFilterTest {
     @Test
-    public void test() {
+    void test() {
         ApplicationModel applicationModel = FrameworkModel.defaultModel().newApplication();
         ModuleModel moduleModel = applicationModel.newModule();
 

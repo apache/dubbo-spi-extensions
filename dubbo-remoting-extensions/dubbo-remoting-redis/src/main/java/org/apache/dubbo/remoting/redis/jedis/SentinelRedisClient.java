@@ -32,10 +32,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_TIMEOUT;
+import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
+
 public class SentinelRedisClient extends AbstractRedisClient implements RedisClient {
     private static final Logger logger = LoggerFactory.getLogger(SentinelRedisClient.class);
 
-    private JedisSentinelPool sentinelPool;
+    private final JedisSentinelPool sentinelPool;
 
     public SentinelRedisClient(URL url) {
         super(url);
@@ -47,7 +50,8 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
         }
         Set<String> sentinels = new HashSet<>(Arrays.asList(backupAddresses));
         sentinels.add(address);
-        sentinelPool = new JedisSentinelPool(masterName, sentinels, getConfig(), url.getPassword());
+        sentinelPool = new JedisSentinelPool(masterName, sentinels, getConfig(), url.getParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT), url.getPassword(),
+            url.getParameter("db.index", 0));
     }
 
     @Override

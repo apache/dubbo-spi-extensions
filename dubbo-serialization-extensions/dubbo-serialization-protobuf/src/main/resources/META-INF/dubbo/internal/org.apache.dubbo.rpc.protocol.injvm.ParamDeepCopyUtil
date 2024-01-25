@@ -1,0 +1,1 @@
+protobufDeepUtil=org.apache.dubbo.common.serialize.protobuf.support.ProtobufParamDeepCopyUtil
