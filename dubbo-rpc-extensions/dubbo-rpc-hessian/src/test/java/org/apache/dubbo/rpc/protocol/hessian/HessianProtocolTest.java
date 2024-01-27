@@ -34,8 +34,8 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.cluster.Cluster;
 import org.apache.dubbo.rpc.cluster.directory.StaticDirectory;
+import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.service.GenericService;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -45,13 +45,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 
+import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * HessianProtocolTest
  */
 public class HessianProtocolTest {
-    
+
     @AfterEach
     public void after() {
         ExtensionLoader.getExtensionLoader(Protocol.class).getExtension("hessian").destroy();
@@ -162,7 +163,7 @@ public class HessianProtocolTest {
         invoker.destroy();
         exporter.unexport();
     }
-    
+
     @Test
     public void testOverload() {
         HessianServiceImpl server = new HessianServiceImpl();
@@ -181,7 +182,7 @@ public class HessianProtocolTest {
         invoker.destroy();
         exporter.unexport();
     }
-    
+
     @Test
     public void testHttpClient() {
         HessianServiceImpl server = new HessianServiceImpl();
@@ -199,7 +200,7 @@ public class HessianProtocolTest {
         invoker.destroy();
         exporter.unexport();
     }
-    
+
     @Test
     public void testTimeOut() {
         HessianServiceImpl server = new HessianServiceImpl();
@@ -219,9 +220,9 @@ public class HessianProtocolTest {
             invoker.destroy();
             exporter.unexport();
         }
-        
+
     }
-    
+
     @Test
     public void testCustomException() {
         HessianServiceImpl server = new HessianServiceImpl();
@@ -236,20 +237,23 @@ public class HessianProtocolTest {
             client.customException();
             fail();
         } catch (HessianServiceImpl.MyException expected) {
-        
+
         }
         invoker.destroy();
         exporter.unexport();
     }
-    
-    
+
+
     @Test
     public void testRemoteApplicationName() {
         HessianServiceImpl server = new HessianServiceImpl();
         ProxyFactory proxyFactory = ExtensionLoader.getExtensionLoader(ProxyFactory.class).getAdaptiveExtension();
         Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();
         int port = NetUtils.getAvailablePort();
-        URL url = URL.valueOf("hessian://127.0.0.1:" + port + "/" + HessianService.class.getName() + "?version=1.0.0&hessian.overload.method=true").addParameter("application", "consumer");
+        String url1 = "hessian://127.0.0.1:" + port + "/" + HessianService.class.getName() + "?version=1.0.0&hessian.overload.method=true&"
+            + INTERFACE_KEY + "=org.apache.dubbo.rpc.protocol.hessian.HessianService";
+        URL url = URL.valueOf(url1, FrameworkModel.defaultModel().defaultApplication().getDefaultModule()).addParameter("application", "consumer");
+
         Exporter<HessianService> exporter = protocol.export(proxyFactory.getInvoker(server, HessianService.class, url));
         Invoker<HessianService> invoker = protocol.refer(HessianService.class, url);
         Cluster cluster = ExtensionLoader.getExtensionLoader(Cluster.class).getAdaptiveExtension();
