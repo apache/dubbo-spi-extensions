@@ -18,15 +18,7 @@
 package org.apache.dubbo.rpc.rocketmq.codec;
 
 
-import static org.apache.dubbo.common.BaseServiceMetadata.keyWithoutGroup;
-import static org.apache.dubbo.common.URL.buildKey;
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
-import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
-import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
-
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.serialize.Cleanable;
@@ -40,6 +32,7 @@ import org.apache.dubbo.remoting.Codec;
 import org.apache.dubbo.remoting.Decodeable;
 import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.transport.CodecSupport;
+import org.apache.dubbo.remoting.utils.UrlUtils;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.FrameworkModel;
@@ -48,6 +41,7 @@ import org.apache.dubbo.rpc.model.MethodDescriptor;
 import org.apache.dubbo.rpc.model.ModuleModel;
 import org.apache.dubbo.rpc.model.ProviderModel;
 import org.apache.dubbo.rpc.model.ServiceDescriptor;
+import org.apache.dubbo.rpc.protocol.tri.TripleConstant;
 import org.apache.dubbo.rpc.support.RpcUtils;
 
 import java.io.IOException;
@@ -55,6 +49,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.dubbo.common.BaseServiceMetadata.keyWithoutGroup;
+import static org.apache.dubbo.common.URL.buildKey;
+import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
+import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
 
 @SuppressWarnings({"deprecation", "serial"})
 public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Decodeable {
@@ -104,8 +107,9 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
     @Override
     public Object decode(Channel channel, InputStream input) throws IOException {
-        ObjectInput in = CodecSupport.getSerialization(channel.getUrl(), serializationType)
-            .deserialize(channel.getUrl(), input);
+        URL url = channel.getUrl();
+        ObjectInput in = CodecSupport.getSerialization(url)
+            .deserialize(url, input);
         this.put(SERIALIZATION_ID_KEY, serializationType);
 
         String dubboVersion = in.readUTF();
@@ -124,9 +128,6 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
         ClassLoader originClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            if (Boolean.parseBoolean(System.getProperty(SERIALIZATION_SECURITY_CHECK_KEY, "true"))) {
-                CodecSupport.checkSerialization(frameworkModel.getServiceRepository(), path, version, serializationType);
-            }
             Object[] args = RocketMQCodec.EMPTY_OBJECT_ARRAY;
             Class<?>[] pts = RocketMQCodec.EMPTY_CLASS_ARRAY;
             if (desc.length() > 0) {
@@ -221,6 +222,12 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
             }
         }
         return this;
+    }
+    private static String convertHessianFromWrapper(String serializeType) {
+        if (TripleConstant.HESSIAN4.equals(serializeType)) {
+            return TripleConstant.HESSIAN2;
+        }
+        return serializeType;
     }
 
 }
