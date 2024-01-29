@@ -31,12 +31,7 @@
     <packaging>jar</packaging>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.dubbo</groupId>-->
-<!--            <artifactId>dubbo-cluster</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--            <version>3.2.7</version>-->
-<!--        </dependency>-->
+
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>

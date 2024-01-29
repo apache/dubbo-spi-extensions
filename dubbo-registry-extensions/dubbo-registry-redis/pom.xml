@@ -35,7 +35,6 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-api</artifactId>
-            <version>${dubbo3.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
