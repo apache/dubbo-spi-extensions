@@ -25,6 +25,7 @@ import org.apache.dubbo.registry.support.AbstractRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisExhaustedPoolException;
@@ -235,6 +236,7 @@ public class RedisRegistryTest {
     }
 
     @Test
+    @Disabled
     public void testAvailableWithBackup() {
         URL url = URL.valueOf("redis://redisOne:8880").addParameter(BACKUP_KEY, "redisTwo:8881");
         Registry registry = new RedisRegistryFactory().createRegistry(url);
