@@ -16,17 +16,18 @@
  */
 package org.apache.dubbo.common.serialize.protobuf.support;
 
-import static org.apache.dubbo.common.constants.LoggerCodeConstants.PROTOCOL_ERROR_DESERIALIZE;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.rpc.protocol.injvm.DefaultParamDeepCopyUtil;
 import org.apache.dubbo.rpc.protocol.injvm.ParamDeepCopyUtil;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
+
+import static org.apache.dubbo.common.constants.LoggerCodeConstants.PROTOCOL_ERROR_DESERIALIZE;
 
 public class ProtobufParamDeepCopyUtil implements ParamDeepCopyUtil {
     private static final ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(DefaultParamDeepCopyUtil.class);
@@ -38,9 +39,15 @@ public class ProtobufParamDeepCopyUtil implements ParamDeepCopyUtil {
     }
 
     @Override
+    public <T> T copy(URL url, Object src, Class<T> targetClass, Type type) {
+
+        return copy(url, src, targetClass);
+    }
+
+    @Override
     public <T> T copy(URL url, Object src, Class<T> targetClass) {
         boolean isProtobufTypeSupported = ProtobufUtils.isSupported(targetClass);
-        if(isProtobufTypeSupported){
+        if (isProtobufTypeSupported) {
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                 ProtobufUtils.serialize(src, outputStream);
 
@@ -63,4 +70,6 @@ public class ProtobufParamDeepCopyUtil implements ParamDeepCopyUtil {
         }
         return delegate.copy(url, src, targetClass);
     }
+
+
 }
