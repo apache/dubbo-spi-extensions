@@ -143,6 +143,7 @@
         <protobuf-java_version>3.25.1</protobuf-java_version>
         <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
         <envoy_api_version>0.1.35</envoy_api_version>
+        <wasmtime_java.version>0.19.0</wasmtime_java.version>
     </properties>
 
     <dependencyManagement>
@@ -571,6 +572,11 @@
                 <groupId>io.envoyproxy.controlplane</groupId>
                 <artifactId>api</artifactId>
                 <version>${envoy_api_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.kawamuray.wasmtime</groupId>
+                <artifactId>wasmtime-java</artifactId>
+                <version>${wasmtime_java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

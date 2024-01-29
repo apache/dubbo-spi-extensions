@@ -44,3 +44,6 @@ compiler/.gradle/*
 
 # test
 /test/jobs/
+
+# rust ignore
+*.lock
