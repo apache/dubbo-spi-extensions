@@ -103,7 +103,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
+        <revision>3.2.0-SNAPSHOT</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <awaitility_version>4.2.0</awaitility_version>

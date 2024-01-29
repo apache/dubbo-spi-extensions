@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dubbo-cluster-loadbalance-peakewma</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -40,7 +40,6 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
-            <version>3.2.7</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

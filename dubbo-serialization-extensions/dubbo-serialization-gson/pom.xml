@@ -35,13 +35,11 @@ Licensed to the Apache Software Foundation (ASF) under one or more
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
-            <version>3.2.7</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
-            <version>3.2.7</version>
             <optional>true</optional>
         </dependency>
         <dependency>
