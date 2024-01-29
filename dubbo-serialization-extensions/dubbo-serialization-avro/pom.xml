@@ -26,7 +26,7 @@
     <artifactId>dubbo-serialization-avro</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <description>The avro serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-test</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
