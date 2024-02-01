@@ -365,6 +365,7 @@
                         <exclude>Jenkinsfile</exclude>
                         <exclude>**/codestyle/*</exclude>
                         <exclude>**/resources/META-INF/**</exclude>
+                        <exclude>**/resources/security/**</exclude>
                         <exclude>.github/**</exclude>
                         <exclude>compiler/**</exclude>
                         <exclude>**/generated/**</exclude>
