@@ -29,6 +29,7 @@ import io.github.kawamuray.wasmtime.Store;
 import io.github.kawamuray.wasmtime.WasmFunctions;
 import io.github.kawamuray.wasmtime.WasmValType;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +54,10 @@ public abstract class AbstractWasmLoadBalance extends AbstractLoadBalance {
 
     protected Map<String, Func> initWasmCallJavaFunc(final Store<Void> store) {
         return null;
+    }
+
+    protected ByteBuffer getBuffer() {
+        return wasmLoader.getBuffer();
     }
 
     @Override
