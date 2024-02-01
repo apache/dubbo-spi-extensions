@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.dubbo.wasm.rpc;
 
 import org.apache.dubbo.rpc.AppResponse;
@@ -35,6 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * see dubbo-wasm/dubbo-wasm-rpc-api/src/test/rust-filter/README.md
+ */
 public class AbstractWasmFilterTest {
 
     @Test
