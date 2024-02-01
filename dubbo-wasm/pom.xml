@@ -33,6 +33,7 @@
     <modules>
         <module>dubbo-wasm-api</module>
         <module>dubbo-wasm-rpc-api</module>
+        <module>dubbo-wasm-cluster-api</module>
     </modules>
 
     <dependencyManagement>
