@@ -67,7 +67,7 @@
                                     <groupId>org.apache.dubbo.extensions</groupId>
                                     <artifactId>dubbo-wasm-test</artifactId>
                                     <version>${revision}</version>
-                                    <include>rust_extensions.wasm</include>
+                                    <includes>**/*.wasm</includes>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
