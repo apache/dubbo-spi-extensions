@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.wasm.rpc;
+package org.apache.dubbo.wasm.rpc.protocol;
 
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.Invocation;
-import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
+import org.apache.dubbo.rpc.RpcInvocation;
+import org.apache.dubbo.wasm.rpc.protocol.AbstractWasmInvoker;
 import org.apache.dubbo.wasm.test.TestHelper;
 
 import io.github.kawamuray.wasmtime.Func;
@@ -36,16 +38,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * see dubbo-wasm/dubbo-wasm-test/src/main/rust-extensions/README.md
  */
-public class AbstractWasmFilterTest {
+public class AbstractWasmInvokerTest {
 
     @Test
     void test() {
-        try (RustFilter filter = new RustFilter()) {
-            filter.invoke(null, null);
-        }
+        RustInvoker invoker = new RustInvoker();
+        invoker.invoke(new RpcInvocation());
+        invoker.destroy();
+        invoker.destroyAll();
     }
 
-    static class RustFilter extends AbstractWasmFilter {
+    static class RustInvoker extends AbstractWasmInvoker<Object> {
+
+        public RustInvoker() {
+            super(Object.class, URL.valueOf("dubbo://127.0.0.1:12345?timeout=1234&default.timeout=5678"));
+        }
 
         @Override
         protected String buildWasmName(Class<?> clazz) {
@@ -58,15 +65,15 @@ public class AbstractWasmFilterTest {
         }
 
         @Override
-        protected Result doInvoke(Invoker<?> invoker, Invocation invocation, Long argumentId) {
-            final String result = TestHelper.getResult(argumentId);
+        protected Result doInvoke(Invocation invocation, Long argumentId) {
+            String result = TestHelper.getResult(argumentId);
             assertEquals("rust result", result);
             return new AppResponse();
         }
 
         @Override
-        protected Long getArgumentId(Invoker<?> invoker, Invocation invocation) {
-            return 0L;
+        protected Long getArgumentId(Invocation invocation) {
+            return 4L;
         }
     }
 }

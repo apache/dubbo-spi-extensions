@@ -14,14 +14,14 @@ We use [wasmtime-java](https://github.com/kawamuray/wasmtime-java) to run WASI i
 * dubbo-wasm-cluster-api: Provide the WASM version of the dubbo-cluster module SPIs
 * dubbo-wasm-common-api(todo): Provide the WASM version of the dubbo-common module SPIs
 * dubbo-wasm-metrics-api(todo): Provide the WASM version of the dubbo-metrics module SPIs
-* dubbo-wasm-registry-api(todo): Provide the WASM version of the dubbo-registry-api module SPIs
+* dubbo-wasm-registry-api: Provide the WASM version of the dubbo-registry-api module SPIs
 * dubbo-wasm-remoting-api(todo): Provide the WASM version of the dubbo-remoting-api module SPIs
 * dubbo-wasm-rpc-api: Provide the WASM version of the dubbo-rpc-api module SPIs
 * dubbo-wasm-serialization-api(todo): Provide the WASM version of the dubbo-serialization-api module SPIs
 
 ## Note
 
-Due to the strict requirements of WASM on parameter types and for simplicity reasons, types other than `java.lang.Long` are not used as parameters or return value.
+Due to the strict requirements of WASM on parameter types and for simplicity reasons, types other than `java.lang.Long`/`java.lang.Integerr` are not used as parameters or return value.
 
 ## How to use
 
@@ -98,15 +98,17 @@ Due to the class `x.y.z.RustLoadBalance.java`，the final wasm file name should 
 
 ## Communicate with Java
 
-### Pass args to Rust
+Below is an example of using rust.
 
-#### 1.Export method to Rust
+### Pass args to another language
+
+#### 1.Export method to another language
 
 ```java
 public class RustLoadBalance extends AbstractWasmLoadBalance {
     //......
     @Override
-    protected Map<String, Func> initWasmCallJavaFunc(Store<Void> store) {
+    protected Map<String, Func> initWasmCallJavaFunc(Store<Void> store, Supplier<ByteBuffer> supplier) {
         Map<String, Func> funcMap = new HashMap<>();
         //......
         funcMap.put("get_args", WasmFunctions.wrap(store, WasmValType.I64, WasmValType.I64, WasmValType.I32, WasmValType.I32, 
@@ -114,7 +116,7 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
                 String config = "hello from java " + argId;
                 System.out.println("java side->" + config);
                 assertEquals("hello from java 0", config);
-                ByteBuffer buf = super.getBuffer();
+                ByteBuffer buf = supplier.get();
                 for (int i = 0; i < len && i < config.length(); i++) {
                     buf.put(addr.intValue() + i, (byte) config.charAt(i));
                 }
@@ -126,7 +128,7 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
 }
 ```
 
-#### 2.Import method in Rust
+#### 2.Import method in another language
 
 ```rust
 #[link(wasm_import_module = "dubbo")]
@@ -135,7 +137,7 @@ extern "C" {
 }
 ```
 
-#### 3.Get args in Rust
+#### 3.Get args in another language
 
 ```rust
 #[no_mangle]
@@ -154,7 +156,9 @@ pub unsafe extern "C" fn doSelect(arg_id: i64) -> i32 {
 
 ### Pass result to Java
 
-#### 1.Export method to Rust
+Below is an example of using rust.
+
+#### 1.Export method to another language
 
 ```java
 public class RustLoadBalance extends AbstractWasmLoadBalance {
@@ -163,12 +167,12 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
     private static final Map<Long, String> RESULTS = new ConcurrentHashMap<>();
     
     @Override
-    protected Map<String, Func> initWasmCallJavaFunc(Store<Void> store) {
+    protected Map<String, Func> initWasmCallJavaFunc(Store<Void> store, Supplier<ByteBuffer> supplier) {
         Map<String, Func> funcMap = new HashMap<>();
         //......
         funcMap.put("put_result", WasmFunctions.wrap(store, WasmValType.I64, WasmValType.I64, WasmValType.I32, WasmValType.I32,
             (argId, addr, len) -> {
-                ByteBuffer buf = super.getBuffer();
+                ByteBuffer buf = supplier.get();
                 byte[] bytes = new byte[len];
                 for (int i = 0; i < len; i++) {
                     bytes[i] = buf.get(addr.intValue() + i);
@@ -185,7 +189,7 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
 }
 ```
 
-#### 2.Import method in Rust
+#### 2.Import method in another language
 
 ```rust
 #[link(wasm_import_module = "dubbo")]
@@ -194,7 +198,7 @@ extern "C" {
 }
 ```
 
-#### 3.Pass result in Rust
+#### 3.Pass result in another language
 
 ```rust
 #[no_mangle]

@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.wasm.rpc;
+package org.apache.dubbo.wasm.cluster.router;
 
-import org.apache.dubbo.rpc.AppResponse;
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
-import org.apache.dubbo.rpc.Result;
+import org.apache.dubbo.rpc.cluster.router.RouterResult;
+import org.apache.dubbo.wasm.cluster.router.AbstractWasmRouter;
 import org.apache.dubbo.wasm.test.TestHelper;
 
 import io.github.kawamuray.wasmtime.Func;
 import io.github.kawamuray.wasmtime.Store;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -36,16 +39,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * see dubbo-wasm/dubbo-wasm-test/src/main/rust-extensions/README.md
  */
-public class AbstractWasmFilterTest {
+public class AbstractWasmRouterTest {
 
     @Test
     void test() {
-        try (RustFilter filter = new RustFilter()) {
-            filter.invoke(null, null);
-        }
+        RustRouter router = new RustRouter();
+        RouterResult<Invoker<Object>> result = router.route(null, null, null, false);
+        Assertions.assertNull(result.getResult());
     }
 
-    static class RustFilter extends AbstractWasmFilter {
+    static class RustRouter extends AbstractWasmRouter {
 
         @Override
         protected String buildWasmName(Class<?> clazz) {
@@ -58,15 +61,15 @@ public class AbstractWasmFilterTest {
         }
 
         @Override
-        protected Result doInvoke(Invoker<?> invoker, Invocation invocation, Long argumentId) {
+        protected <T> RouterResult<Invoker<T>> doRoute(List<Invoker<T>> invokers, URL url, Invocation invocation, boolean needToPrintMessage, Long argumentId) {
             final String result = TestHelper.getResult(argumentId);
             assertEquals("rust result", result);
-            return new AppResponse();
+            return new RouterResult<>(invokers);
         }
 
         @Override
-        protected Long getArgumentId(Invoker<?> invoker, Invocation invocation) {
-            return 0L;
+        protected <T> Long getArgumentId(List<Invoker<T>> invokers, URL url, Invocation invocation, boolean needToPrintMessage) {
+            return 2L;
         }
     }
 }

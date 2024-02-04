@@ -34,6 +34,8 @@
         <module>dubbo-wasm-api</module>
         <module>dubbo-wasm-rpc-api</module>
         <module>dubbo-wasm-cluster-api</module>
+        <module>dubbo-wasm-registry-api</module>
+        <module>dubbo-wasm-test</module>
     </modules>
 
     <dependencyManagement>
@@ -43,6 +45,12 @@
                 <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-wasm-api</artifactId>
                 <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-wasm-test</artifactId>
+                <version>${revision}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
