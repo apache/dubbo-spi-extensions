@@ -50,31 +50,13 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.dubbo.extensions</groupId>
-                                    <artifactId>dubbo-wasm-test</artifactId>
-                                    <version>${revision}</version>
-                                    <includes>**/*.wasm</includes>
-                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <resources>
+            <resource>
+                <directory>../dubbo-wasm-test/src/main/resources</directory>
+                <includes>
+                    <include>rust_extensions.wasm</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 </project>
