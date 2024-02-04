@@ -50,7 +50,6 @@
                 <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-wasm-test</artifactId>
                 <version>${revision}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
