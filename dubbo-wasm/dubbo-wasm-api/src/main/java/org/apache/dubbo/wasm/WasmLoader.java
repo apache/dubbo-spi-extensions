@@ -39,7 +39,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * The WasmLoader aims to load wasm file and provide the wasm function to java,
@@ -48,17 +51,17 @@ import java.util.function.Function;
  * @see <a href="https://github.com/apache/shenyu/pull/5412">WasmLoader</a>
  */
 public class WasmLoader implements AutoCloseable {
-    
+
     private static final String IMPORT_WASM_MODULE_NAME = "dubbo";
-    
+
     private static final String MEMORY_METHOD_NAME = "memory";
 
     private final AtomicBoolean closed = new AtomicBoolean(false);
-    
+
     private final String wasmName;
-    
+
     private final WasiCtx wasiCtx = new WasiCtxBuilder().inheritStdout().inheritStderr().build();
-    
+
     /**
      * the WASM store.
      *
@@ -66,31 +69,43 @@ public class WasmLoader implements AutoCloseable {
      * @see io.github.kawamuray.wasmtime.WasmFunctions#func
      */
     private final Store<Void> store = Store.withoutData(wasiCtx);
-    
+
     private final Linker linker = new Linker(store.engine());
-    
+
     /**
      * wasmCallJavaFuncName -> wasmCallJavaFunc.
      */
     private final Map<String, Func> wasmCallJavaFuncMap = new HashMap<>();
-    
+
     private final Module module;
-    
-    private final Memory memRef;
-    
+
+    private final AtomicReference<Memory> memRef = new AtomicReference<>();
+
     public WasmLoader() {
-        this(null, null);
+        this(null, null, null);
     }
-    
+
     /**
      * This constructor is designed for classes that cannot extend WasmLoader.
      *
      * @see io.github.kawamuray.wasmtime.WasmFunctions#wrap
      */
-    public WasmLoader(final Class<?> wasmClass, final Function<Store<Void>, Map<String, Func>> initializer) {
-        final Class<?> clazz = wasmClass != null ? wasmClass : this.getClass();
-        this.wasmName = clazz.getName() + ".wasm";
+    public WasmLoader(final Class<?> wasmClass,
+                      final Function<Class<?>, String> nameInitializer,
+                      final BiFunction<Store<Void>, Supplier<ByteBuffer>, Map<String, Func>> initializer) {
+        final Class<?> clazz = Objects.nonNull(wasmClass) ? wasmClass : this.getClass();
+        String wasmName = null;
         try {
+            if (Objects.nonNull(initializer)) {
+                wasmName = nameInitializer.apply(clazz);
+            }
+            if (Objects.isNull(wasmName) || wasmName.isEmpty()) {
+                wasmName = buildWasmName(clazz);
+            }
+            if (Objects.isNull(wasmName) || wasmName.isEmpty()) {
+                throw new DubboWasmInitException("Illegal WASM file name");
+            }
+            this.wasmName = wasmName.endsWith(".wasm") ? wasmName : wasmName + ".wasm";
             // locate `.wasm` lib.
             URL resource = clazz.getClassLoader().getResource(wasmName);
             if (Objects.isNull(resource)) {
@@ -100,12 +115,12 @@ public class WasmLoader implements AutoCloseable {
             byte[] wasmBytes = Files.readAllBytes(Paths.get(resource.toURI()));
             // Instantiates the WebAssembly module.
             if (Objects.nonNull(initializer)) {
-                Map<String, Func> wasmFunctionMap = initializer.apply(store);
+                Map<String, Func> wasmFunctionMap = initializer.apply(store, this::getBuffer);
                 if (Objects.nonNull(wasmFunctionMap) && !wasmFunctionMap.isEmpty()) {
                     wasmCallJavaFuncMap.putAll(wasmFunctionMap);
                 }
             }
-            Map<String, Func> wasmFunctionMap = initWasmCallJavaFunc(store);
+            Map<String, Func> wasmFunctionMap = initWasmCallJavaFunc(store, this::getBuffer);
             if (Objects.nonNull(wasmFunctionMap) && !wasmFunctionMap.isEmpty()) {
                 wasmCallJavaFuncMap.putAll(wasmFunctionMap);
             }
@@ -114,7 +129,7 @@ public class WasmLoader implements AutoCloseable {
             // maybe need define many functions
             if (!wasmCallJavaFuncMap.isEmpty()) {
                 wasmCallJavaFuncMap.forEach((funcName, wasmCallJavaFunc) ->
-                        linker.define(store, IMPORT_WASM_MODULE_NAME, funcName, Extern.fromFunc(wasmCallJavaFunc)));
+                    linker.define(store, IMPORT_WASM_MODULE_NAME, funcName, Extern.fromFunc(wasmCallJavaFunc)));
             }
             linker.module(store, "", module);
             // Let the `wasmCallJavaFunc` function to refer this as a placeholder of Memory because
@@ -123,17 +138,25 @@ public class WasmLoader implements AutoCloseable {
             if (!extern.isPresent()) {
                 throw new DubboWasmInitException(MEMORY_METHOD_NAME + " function not find in wasm file: " + wasmName);
             }
-            this.memRef = extern.get().memory();
+            this.memRef.set(extern.get().memory());
             Runtime.getRuntime().addShutdownHook(new Thread(this::close));
         } catch (URISyntaxException | IOException e) {
             throw new DubboWasmInitException(e);
         }
     }
-    
-    protected Map<String, Func> initWasmCallJavaFunc(final Store<Void> store) {
+
+    private ByteBuffer getBuffer() {
+        return memRef.get().buffer(store);
+    }
+
+    protected String buildWasmName(final Class<?> clazz) {
+        return clazz.getName() + ".wasm";
+    }
+
+    protected Map<String, Func> initWasmCallJavaFunc(final Store<Void> store, Supplier<ByteBuffer> supplier) {
         return null;
     }
-    
+
     /**
      * get the WASI function.
      *
@@ -143,7 +166,7 @@ public class WasmLoader implements AutoCloseable {
     public Optional<Extern> getWasmExtern(final String wasiFuncName) {
         return linker.get(store, "", wasiFuncName);
     }
-    
+
     /**
      * get the wasm file name.
      *
@@ -152,7 +175,7 @@ public class WasmLoader implements AutoCloseable {
     public String getWasmName() {
         return wasmName;
     }
-    
+
     /**
      * use this when call WASI.
      *
@@ -161,16 +184,7 @@ public class WasmLoader implements AutoCloseable {
     public Store<Void> getStore() {
         return store;
     }
-    
-    /**
-     * use this in wasmCallJavaFunc.
-     *
-     * @return the ByteBuffer
-     */
-    public ByteBuffer getBuffer() {
-        return memRef.buffer(store);
-    }
-    
+
     @Override
     public void close() {
         if (this.closed.compareAndSet(false, true)) {

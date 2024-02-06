@@ -25,22 +25,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dubbo-wasm-cluster-api</artifactId>
+    <artifactId>dubbo-wasm-test</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-cluster</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-wasm-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-wasm-test</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -49,14 +39,5 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>../dubbo-wasm-test/src/main/resources</directory>
-                <includes>
-                    <include>rust_extensions.wasm</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
+
 </project>

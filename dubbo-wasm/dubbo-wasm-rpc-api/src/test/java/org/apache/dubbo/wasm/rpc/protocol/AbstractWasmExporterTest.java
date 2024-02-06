@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.wasm.rpc;
+package org.apache.dubbo.wasm.rpc.protocol;
 
-import org.apache.dubbo.rpc.AppResponse;
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
+import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.wasm.rpc.protocol.AbstractWasmExporter;
 import org.apache.dubbo.wasm.test.TestHelper;
 
 import io.github.kawamuray.wasmtime.Func;
@@ -31,21 +33,22 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 /**
  * see dubbo-wasm/dubbo-wasm-test/src/main/rust-extensions/README.md
  */
-public class AbstractWasmFilterTest {
+public class AbstractWasmExporterTest {
 
     @Test
     void test() {
-        try (RustFilter filter = new RustFilter()) {
-            filter.invoke(null, null);
-        }
+        RustExporter exporter = new RustExporter();
+        exporter.afterUnExport();
     }
 
-    static class RustFilter extends AbstractWasmFilter {
+    static class RustExporter extends AbstractWasmExporter<Object> {
+
+        public RustExporter() {
+            super(new MyInvoker());
+        }
 
         @Override
         protected String buildWasmName(Class<?> clazz) {
@@ -56,17 +59,32 @@ public class AbstractWasmFilterTest {
         protected Map<String, Func> initWasmCallJavaFunc(Store<Void> store, Supplier<ByteBuffer> supplier) {
             return TestHelper.initWasmCallJavaFunc(store, supplier);
         }
+    }
+
+    static class MyInvoker implements Invoker<Object> {
 
         @Override
-        protected Result doInvoke(Invoker<?> invoker, Invocation invocation, Long argumentId) {
-            final String result = TestHelper.getResult(argumentId);
-            assertEquals("rust result", result);
-            return new AppResponse();
+        public URL getUrl() {
+            return URL.valueOf("dubbo://127.0.0.1:12345?timeout=1234&default.timeout=5678");
         }
 
         @Override
-        protected Long getArgumentId(Invoker<?> invoker, Invocation invocation) {
-            return 0L;
+        public boolean isAvailable() {
+            return false;
+        }
+
+        @Override
+        public void destroy() {
+        }
+
+        @Override
+        public Class<Object> getInterface() {
+            return Object.class;
+        }
+
+        @Override
+        public Result invoke(Invocation invocation) throws RpcException {
+            return null;
         }
     }
 }
