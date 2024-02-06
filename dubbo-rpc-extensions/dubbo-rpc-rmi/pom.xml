@@ -29,21 +29,17 @@
     <description>The rmi rpc module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <dubbo.version>3.2.9</dubbo.version>
-
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-rpc-api</artifactId>
             <optional>true</optional>
-            <version>${dubbo.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-cluster</artifactId>
             <optional>true</optional>
-            <version>${dubbo.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

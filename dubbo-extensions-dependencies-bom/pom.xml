@@ -89,8 +89,8 @@
     </issueManagement>
 
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
-        <dubbo.version>3.1.2</dubbo.version>
+        <revision>3.2.0-SNAPSHOT</revision>
+        <dubbo.version>3.2.9</dubbo.version>
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring-boot.version>2.4.1</spring-boot.version>
 
@@ -161,7 +161,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-core-spi</artifactId>
@@ -571,6 +577,16 @@
                 <groupId>io.envoyproxy.controlplane</groupId>
                 <artifactId>api</artifactId>
                 <version>${envoy_api_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-api-docs-annotations</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-api-docs-core</artifactId>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
