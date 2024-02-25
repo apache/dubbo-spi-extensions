@@ -164,3 +164,69 @@ pub unsafe extern "C" fn removeServiceInstancesChangedListener(arg_id: i64) {
     eprintln!("rust side-> removeServiceInstancesChangedListener");
     impls(arg_id);
 }
+
+/// 8
+
+#[no_mangle]
+pub unsafe extern "C" fn getInternalProperty(arg_id: i64) {
+    eprintln!("rust side-> getInternalProperty");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doPublishConfig(arg_id: i64) -> i32 {
+    eprintln!("rust side-> doPublishConfig");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doGetConfig(arg_id: i64) {
+    eprintln!("rust side-> doPublishConfig");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doRemoveConfig(arg_id: i64) -> i32 {
+    eprintln!("rust side-> doRemoveConfig");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doGetConfigKeys(arg_id: i64) -> i32 {
+    eprintln!("rust side-> doGetConfigKeys");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doGetConfigKeyItem(arg_id: i64, index:i32) {
+    eprintln!("rust side-> doGetConfigKeyItem {index}");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doAddListener(arg_id: i64) {
+    eprintln!("rust side-> doAddListener");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doRemoveListener(arg_id: i64) {
+    eprintln!("rust side-> doRemoveListener");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn doClose(arg_id: i64) {
+    eprintln!("rust side-> doClose");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn publishConfigCas(arg_id: i64) -> i32 {
+    eprintln!("rust side-> publishConfigCas");
+    impls(arg_id);
+    1
+}
