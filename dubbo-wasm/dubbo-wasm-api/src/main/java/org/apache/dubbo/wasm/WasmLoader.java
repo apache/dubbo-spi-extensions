@@ -96,7 +96,7 @@ public class WasmLoader implements AutoCloseable {
         final Class<?> clazz = Objects.nonNull(wasmClass) ? wasmClass : this.getClass();
         String wasmName = null;
         try {
-            if (Objects.nonNull(initializer)) {
+            if (Objects.nonNull(nameInitializer)) {
                 wasmName = nameInitializer.apply(clazz);
             }
             if (Objects.isNull(wasmName) || wasmName.isEmpty()) {

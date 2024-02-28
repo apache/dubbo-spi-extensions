@@ -12,12 +12,11 @@ We use [wasmtime-java](https://github.com/kawamuray/wasmtime-java) to run WASI i
 
 * dubbo-wasm-api: Responsible for defining basic exceptions and providing runtime for executing WASM bytecode (Dubbo API)
 * dubbo-wasm-cluster-api: Provide the WASM version of the dubbo-cluster module SPIs
-* dubbo-wasm-common-api(todo): Provide the WASM version of the dubbo-common module SPIs
+* dubbo-wasm-common-api: Provide the WASM version of the dubbo-common module SPIs
 * dubbo-wasm-metrics-api(todo): Provide the WASM version of the dubbo-metrics module SPIs
 * dubbo-wasm-registry-api: Provide the WASM version of the dubbo-registry-api module SPIs
 * dubbo-wasm-remoting-api(todo): Provide the WASM version of the dubbo-remoting-api module SPIs
 * dubbo-wasm-rpc-api: Provide the WASM version of the dubbo-rpc-api module SPIs
-* dubbo-wasm-serialization-api(todo): Provide the WASM version of the dubbo-serialization-api module SPIs
 
 ## Note
 
