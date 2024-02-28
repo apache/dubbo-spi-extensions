@@ -27,7 +27,7 @@ limitations under the License.
     <artifactId>dubbo-serialization-kryo</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <description>The kryo serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
@@ -47,7 +47,7 @@ limitations under the License.
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-test</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>3.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
