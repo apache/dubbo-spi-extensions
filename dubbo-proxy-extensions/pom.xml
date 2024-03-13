@@ -14,11 +14,6 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
     <modules>
         <module>dubbo-proxy-bytebuddy</module>
     </modules>
