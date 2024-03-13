@@ -66,8 +66,8 @@ public class AbstractWasmChannelTest {
 
         @Override
         protected Map<String, Func> initWasmCallJavaFunc(Store<Void> store, Supplier<ByteBuffer> supplier) {
-            Map<String, Func> funcs = super.initWasmCallJavaFunc(store, supplier);
-            funcs.putAll(TestHelper.initWasmCallJavaFunc(store, supplier));
+            Map<String, Func> funcs = TestHelper.initWasmCallJavaFunc(store, supplier);
+            funcs.putAll(super.initWasmCallJavaFunc(store, supplier));
             return funcs;
         }
 
