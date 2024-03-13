@@ -20,6 +20,10 @@ extern "C" {
     fn get_args(arg_id: i64, addr: i64, len: i32) -> i32;
 
     fn put_result(arg_id: i64, addr: i64, len: i32) -> i32;
+
+    fn setRemoteAddressHost(arg_id: i64, addr: i64, len: i32) -> i32;
+
+    fn setLocalAddressHost(arg_id: i64, addr: i64, len: i32) -> i32;
 }
 
 pub unsafe extern "C" fn impls(arg_id: i64) {
@@ -229,4 +233,87 @@ pub unsafe extern "C" fn publishConfigCas(arg_id: i64) -> i32 {
     eprintln!("rust side-> publishConfigCas");
     impls(arg_id);
     1
+}
+
+/// 9
+
+#[no_mangle]
+pub unsafe extern "C" fn send(arg_id: i64) {
+    eprintln!("rust side-> send");
+    impls(arg_id);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn getRemoteAddressHost()->i64 {
+    eprintln!("rust side-> getRemoteAddressHost");
+    impls(9);
+    let rust_result = "localhost".as_bytes();
+    let result_ptr = rust_result.as_ptr() as i64;
+    _ = setRemoteAddressHost(9, result_ptr, rust_result.len() as i32);
+    9
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn getRemoteAddressPort()->i32 {
+    eprintln!("rust side-> getRemoteAddressPort");
+    impls(9);
+    9999
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn isConnected()->i32 {
+    eprintln!("rust side-> isConnected");
+    impls(9);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn hasAttribute(arg_id: i64) -> i32 {
+    eprintln!("rust side-> hasAttribute");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn getAttribute(arg_id: i64) -> i32 {
+    eprintln!("rust side-> getAttribute");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn setAttribute(arg_id: i64) -> i32 {
+    eprintln!("rust side-> setAttribute");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn removeAttribute(arg_id: i64) -> i32 {
+    eprintln!("rust side-> removeAttribute");
+    impls(arg_id);
+    1
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn getLocalAddressHost()->i64 {
+    eprintln!("rust side-> getLocalAddressHost");
+    impls(9);
+    let rust_result = "localhost".as_bytes();
+    let result_ptr = rust_result.as_ptr() as i64;
+    _ = setLocalAddressHost(9, result_ptr, rust_result.len() as i32);
+    9
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn getLocalAddressPort()->i32 {
+    eprintln!("rust side-> getLocalAddressPort");
+    impls(9);
+    9999
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn closeChannel() {
+    eprintln!("rust side-> closeChannel");
+    impls(9);
 }
