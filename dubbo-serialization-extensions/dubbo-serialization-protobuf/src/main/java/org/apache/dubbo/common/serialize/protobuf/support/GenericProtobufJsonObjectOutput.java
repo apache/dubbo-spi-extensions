@@ -27,12 +27,14 @@ import com.google.protobuf.FloatValue;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
+import org.apache.dubbo.common.serialize.protobuf.support.wrapper.ThrowablePB;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.apache.dubbo.common.constants.CommonConstants.HEARTBEAT_EVENT;
 import static org.apache.dubbo.common.constants.CommonConstants.MOCK_HEARTBEAT_EVENT;
@@ -108,28 +110,29 @@ public class GenericProtobufJsonObjectOutput implements ObjectOutput {
         if (!ProtobufUtils.isSupported(obj.getClass())) {
             throw new IllegalArgumentException("This serialization only support google protobuf object, the object class is: " + obj.getClass().getName());
         }
-
         writer.write(ProtobufUtils.serializeJson(obj));
         writer.println();
         writer.flush();
     }
 
     @Override
-    public void writeThrowable(Object th) throws IOException {
-        if (th instanceof Throwable && !ProtobufUtils.isSupported(th.getClass())) {
-            th = ProtobufUtils.convertToThrowableProto((Throwable) th);
+    public void writeThrowable(Throwable th) throws IOException {
+        if (th != null && !ProtobufUtils.isSupported(th.getClass())) {
+            ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto((Throwable) th);
+            writer.write(ProtobufUtils.serializeJson(throwableProto));
+        } else {
+            writer.write(ProtobufUtils.serializeJson(th));
         }
-        writer.write(ProtobufUtils.serializeJson(th));
         writer.println();
         writer.flush();
     }
 
     @Override
-    public void writeEvent(Object data) throws IOException {
-        if (data == HEARTBEAT_EVENT) {
+    public void writeEvent(String data) throws IOException {
+        if (Objects.equals(data, HEARTBEAT_EVENT)) {
             data = MOCK_HEARTBEAT_EVENT;
         }
-        writeUTF((String) data);
+        writeUTF(data);
     }
 
     /**

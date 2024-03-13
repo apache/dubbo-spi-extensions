@@ -105,7 +105,7 @@ public class KryoObjectOutput2 implements ObjectOutput, Cleanable {
     }
 
     @Override
-    public void writeThrowable(Object v) throws IOException {
+    public void writeThrowable(Throwable v) throws IOException {
         kryo.writeClassAndObject(output, v);
     }
 

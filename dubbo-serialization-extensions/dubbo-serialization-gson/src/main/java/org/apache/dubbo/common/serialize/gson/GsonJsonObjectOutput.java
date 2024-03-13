@@ -31,7 +31,7 @@ import java.io.Writer;
 public class GsonJsonObjectOutput implements ObjectOutput {
 
     private final PrintWriter writer;
-    private Gson gson = null;
+    private Gson gson;
 
     public GsonJsonObjectOutput(OutputStream out) {
         this(new OutputStreamWriter(out));
@@ -103,7 +103,7 @@ public class GsonJsonObjectOutput implements ObjectOutput {
 
 
     @Override
-    public void writeThrowable(Object obj) throws IOException {
+    public void writeThrowable(Throwable obj) throws IOException {
         String clazz = obj.getClass().getName();
         ExceptionWrapper bo = new ExceptionWrapper(obj, clazz);
         this.writeObject(bo);
