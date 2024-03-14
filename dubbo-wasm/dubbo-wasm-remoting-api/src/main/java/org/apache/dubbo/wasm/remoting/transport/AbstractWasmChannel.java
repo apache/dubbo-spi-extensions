@@ -17,7 +17,11 @@
 
 package org.apache.dubbo.wasm.remoting.transport;
 
-import io.github.kawamuray.wasmtime.*;
+import io.github.kawamuray.wasmtime.Extern;
+import io.github.kawamuray.wasmtime.Func;
+import io.github.kawamuray.wasmtime.Store;
+import io.github.kawamuray.wasmtime.WasmFunctions;
+import io.github.kawamuray.wasmtime.WasmValType;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
