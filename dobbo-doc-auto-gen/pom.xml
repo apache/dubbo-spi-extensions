@@ -24,7 +24,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <version>1.0.1-SNAPSHOT</version>
+    <version>3.2.0</version>
     <description>Dubbo interface documentation, testing tools</description>
 
     <artifactId>dobbo-doc-auto-gen</artifactId>

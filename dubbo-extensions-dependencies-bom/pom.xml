@@ -89,8 +89,8 @@
     </issueManagement>
 
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
-        <dubbo.version>3.1.2</dubbo.version>
+        <revision>3.2.0</revision>
+        <dubbo.version>3.2.9</dubbo.version>
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring-boot.version>2.4.1</spring-boot.version>
 
@@ -137,13 +137,12 @@
         <resteasy_version>3.0.20.Final</resteasy_version>
         <polaris_adapter_version>0.2.1</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
-        <byte-buddy.version>1.14.12</byte-buddy.version>
+        <byte-buddy.version>1.14.5</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
         <snakeyaml_version>2.0</snakeyaml_version>
         <protobuf-java_version>3.25.1</protobuf-java_version>
         <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
         <envoy_api_version>0.1.35</envoy_api_version>
-        <wasmtime_java.version>0.19.0</wasmtime_java.version>
     </properties>
 
     <dependencyManagement>
@@ -162,7 +161,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-core-spi</artifactId>
@@ -574,9 +579,14 @@
                 <version>${envoy_api_version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.kawamuray.wasmtime</groupId>
-                <artifactId>wasmtime-java</artifactId>
-                <version>${wasmtime_java.version}</version>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-api-docs-annotations</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-api-docs-core</artifactId>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

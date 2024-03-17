@@ -27,28 +27,25 @@ limitations under the License.
     <artifactId>dubbo-serialization-fastjson</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>3.2.0</version>
     <description>The fastjson serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <dubbo.version>3.2.7</dubbo.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-common</artifactId>
-            <version>${version}</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
-            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
-            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
