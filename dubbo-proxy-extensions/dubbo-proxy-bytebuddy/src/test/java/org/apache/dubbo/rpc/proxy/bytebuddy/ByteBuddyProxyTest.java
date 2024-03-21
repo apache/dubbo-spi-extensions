@@ -22,8 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Proxy;
-
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import org.junit.jupiter.api.Assertions;
 import static org.mockito.ArgumentMatchers.any;
 
 class ByteBuddyProxyTest {
@@ -33,8 +32,8 @@ class ByteBuddyProxyTest {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         InvokerInvocationHandler handler = Mockito.mock(InvokerInvocationHandler.class);
         Object proxy = ByteBuddyProxy.newInstance(cl, new Class<?>[] {RemoteService.class}, handler);
-        assertInstanceOf(RemoteService.class, proxy);
-        assertInstanceOf(Proxy.class, proxy);
+        Assertions.assertTrue(proxy instanceof RemoteService);
+        Assertions.assertTrue(proxy instanceof Proxy);
         RemoteService remoteService = (RemoteService) proxy;
         remoteService.getThreadName();
         remoteService.sayHello("test");
