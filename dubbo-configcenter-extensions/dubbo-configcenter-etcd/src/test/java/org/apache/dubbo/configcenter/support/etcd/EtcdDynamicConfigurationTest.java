@@ -47,7 +47,7 @@ import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
  * Unit test for etcd config center support
  * Integrate with https://github.com/etcd-io/jetcd#launcher
  */
-@Disabled
+
 public class EtcdDynamicConfigurationTest {
 
     private static EtcdDynamicConfiguration config;
