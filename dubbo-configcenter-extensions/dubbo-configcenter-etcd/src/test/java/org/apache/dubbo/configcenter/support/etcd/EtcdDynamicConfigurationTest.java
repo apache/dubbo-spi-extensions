@@ -60,7 +60,7 @@ public class EtcdDynamicConfigurationTest {
 
     public EtcdCluster etcdCluster;
 
-    //这里会涉及到docker拉取镜像很慢
+    // This will involve Docker pulling the image very slowly
     @Before
     public void setUp() {
         try {
