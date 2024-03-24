@@ -1,40 +1,41 @@
 # dubbo WASM api
 
-[中文](./README_zh.md)
+[English](./README.md)
 
-At present, Dubbo's SPI extensions can only be written in Java language, the dubbo-wasm module aims to overcome this limitation.
+目前，Dubbo的SPI扩展只能使用Java语言编写，dubbo-wasm模块旨在克服这一限制。
 
-WASM(WebAssembly) bytecode is designed to be encoded in a size- and load-time-efficient binary format. WASM aims to leverage the common hardware features available on various platforms to execute in browsers at machine code speed.
+WASM（WebAssembly）字节码设计为以大小和高效加载时间的二进制格式编码。WASM旨在利用各种平台上可用的通用硬件特性，在浏览器中以机器码速度执行。
 
-WASI(WebAssembly System Interface) provide a portable interface for applications that run within a constrained sandbox environment, which allows WASM to run in non browser environments such as Linux. It's portable and secure.
+WASI（WebAssembly系统接口）为在受限沙箱环境中运行的应用程序提供了一个可移植接口，这使得WASM可以在非浏览器环境（如Linux）中运行。它具有可移植性和安全性。
 
-We use [wasmtime-java](https://github.com/kawamuray/wasmtime-java) to run WASI in Java, as long as the language can be compiled into WASM bytecode, it can be used to write SPI extensions for dubbo.
+我们使用 [wasmtime-java](https://github.com/kawamuray/wasmtime-java) 在Java中运行WASI，只要语言可以编译成WASM字节码，就可以用于编写dubbo的SPI扩展。
 
-## Module structure
+## 模块结构
 
-* dubbo-wasm-api: Responsible for defining basic exceptions and providing runtime for executing WASM bytecode (Dubbo API)
-* dubbo-wasm-cluster-api: Provide the WASM version of the dubbo-cluster module SPIs
-* dubbo-wasm-common-api: Provide the WASM version of the dubbo-common module SPIs
-* dubbo-wasm-metrics-api(todo): Provide the WASM version of the dubbo-metrics module SPIs
-* dubbo-wasm-registry-api: Provide the WASM version of the dubbo-registry-api module SPIs
-* dubbo-wasm-remoting-api(todo): Provide the WASM version of the dubbo-remoting-api module SPIs
-* dubbo-wasm-rpc-api: Provide the WASM version of the dubbo-rpc-api module SPIs
+* dubbo-wasm-api：负责定义基本异常并提供执行WASM字节码的运行时（Dubbo API）
+* dubbo-wasm-cluster-api：提供dubbo-cluster模块SPI的WASM版本
+* dubbo-wasm-common-api：提供dubbo-common模块SPI的WASM版本
+* dubbo-wasm-metrics-api（待办）：提供dubbo-metrics模块SPI的WASM版本
+* dubbo-wasm-registry-api：提供dubbo-registry-api模块SPI的WASM版本
+* dubbo-wasm-remoting-api（待办）：提供dubbo-remoting-api模块SPI的WASM版本
+* dubbo-wasm-rpc-api：提供dubbo-rpc-api模块SPI的WASM版本
 
-## Note
+## 注意事项
 
-Due to the strict requirements of WASM on parameter types and for simplicity reasons, types other than `java.lang.Long`/`java.lang.Integer` are not used as parameters or return value.
+由于WASM对参数类型有严格要求，并且为了简单起见，除了 `java.lang.Long/java.lang.Integer` 之外的类型不用作参数或返回值。
 
-## How to use
+## 如何使用
 
-Below is an example of implementing `org.apache.dubbo.rpc.cluster.LoadBalance` SPI in rust.
+以下是在rust中实现 `org.apache.dubbo.rpc.cluster.LoadBalance` SPI的示例。
 
-### 1.Create subproject in another language
+
+### 1.用其他语言创建子项目
 
 ```shell
 cargo new --lib your_subproject_name
 ```
 
-### 2.Add methods to lib.rs
+### 2.在lib.rs中添加方法
 
 ```rust
 // Adding `#[no_mangle]` to prevent the Rust compiler from modifying method names is mandatory
@@ -44,7 +45,8 @@ pub unsafe extern "C" fn doSelect(_arg_id: i64) -> i32 {
 }
 ```
 
-### 3.Add `[lib]` to `Cargo.toml` and change `crate-type` to `["cdylib"]`. Ultimately, your `Cargo.toml` should look like
+###  3.在 `Cargo.toml` 中添加 `[lib]` 并将 `crate-type` 更改为 `["cdylib"]`。最终，你的 `Cargo.toml` 应如下所示：
+
 
 ```toml
 [package]
@@ -59,15 +61,15 @@ edition = "2021"
 crate-type = ["cdylib"]
 ```
 
-### 4.Generate the wasm file
+### 4.生成 wasm 文件
 
 ```shell
 cargo build --target wasm32-wasi --release
 ```
 
-You will see `{your_subproject_name}/target/wasm32-wasi/release/{your_subproject_name}.wasm`.
+你可以看到 `{your_subproject_name}/target/wasm32-wasi/release/{your_subproject_name}.wasm`.
 
-### 5.Add dependency to `pom.xml`
+### 5.添加依赖到 `pom.xml`
 
 ```xml
 <dependency>
@@ -77,7 +79,7 @@ You will see `{your_subproject_name}/target/wasm32-wasi/release/{your_subproject
 </dependency>
 ```
 
-### 6.Add `x.y.z.RustLoadBalance.java`
+### 6.添加 `x.y.z.RustLoadBalance.java`
 
 ```java
 package x.y.z;
@@ -87,23 +89,23 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
 }
 ```
 
-### 7.Add `resources/META-INF/dubbo/org.apache.dubbo.rpc.cluster.LoadBalance`
+### 7.添加 `resources/META-INF/dubbo/org.apache.dubbo.rpc.cluster.LoadBalance`
 
 ```text
 rust=x.y.z.RustLoadBalance
 ```
 
-### 8.Rename the WASM file
+### 8.重命名 WASM 文件
 
-Due to the class `x.y.z.RustLoadBalance.java`，the final wasm file name should be `x.y.z.RustLoadBalance.wasm`, finally, put the wasm file in the `resources` folder of your module.
+由于类 `x.y.z.RustLoadBalance.java`，最终的wasm文件名应该是 `x.y.z.RustLoadBalance.wasm`，最后将 wasm 文件放在你模块的 `resources` 文件夹中。
 
-## Communicate with Java
+## 与Java通信
 
-Below is an example of using rust.
+以下是使用rust的示例。
 
-### Pass args to another language
+### 将参数传递给另一种语言
 
-#### 1.Export method to another language
+#### 1.将方法导出到另一种语言
 
 ```java
 public class RustLoadBalance extends AbstractWasmLoadBalance {
@@ -129,7 +131,7 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
 }
 ```
 
-#### 2.Import method in another language
+#### 2.在另一种语言中导入方法
 
 ```rust
 #[link(wasm_import_module = "dubbo")]
@@ -138,7 +140,7 @@ extern "C" {
 }
 ```
 
-#### 3.Get args in another language
+#### 3.在另一种语言中获取参数
 
 ```rust
 #[no_mangle]
@@ -155,11 +157,11 @@ pub unsafe extern "C" fn doSelect(arg_id: i64) -> i32 {
 }
 ```
 
-### Pass result to Java
+### 将结果传递给Java
 
-Below is an example of using rust.
+以下是使用rust的示例。
 
-#### 1.Export method to another language
+#### 1.将方法导出到另一种语言
 
 ```java
 public class RustLoadBalance extends AbstractWasmLoadBalance {
@@ -190,7 +192,7 @@ public class RustLoadBalance extends AbstractWasmLoadBalance {
 }
 ```
 
-#### 2.Import method in another language
+#### 2.在另一种语言中导入方法
 
 ```rust
 #[link(wasm_import_module = "dubbo")]
@@ -199,7 +201,7 @@ extern "C" {
 }
 ```
 
-#### 3.Pass result in another language
+#### 3.在另一种语言中传递结果
 
 ```rust
 #[no_mangle]
@@ -212,7 +214,7 @@ pub unsafe extern "C" fn doSelect(arg_id: i64) -> i32 {
 }
 ```
 
-#### 4.Get result in Java
+#### 4.在Java中获取结果
 
 ```java
 public class RustLoadBalance extends AbstractWasmLoadBalance {
