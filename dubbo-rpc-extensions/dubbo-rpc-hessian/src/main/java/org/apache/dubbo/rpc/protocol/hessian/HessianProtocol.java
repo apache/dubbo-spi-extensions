@@ -171,11 +171,11 @@ public class HessianProtocol extends AbstractProxyProtocol {
         }
     }
 
-    private class HessianHandler implements HttpHandler {
+    private class HessianHandler implements HttpHandler<HttpServletRequest, HttpServletResponse> {
 
         @Override
         public void handle(HttpServletRequest request, HttpServletResponse response)
-                throws IOException, ServletException {
+            throws IOException {
             String uri = request.getRequestURI();
             HessianSkeleton skeleton = skeletonMap.get(uri);
             if (!"POST".equalsIgnoreCase(request.getMethod())) {
@@ -196,7 +196,7 @@ public class HessianProtocol extends AbstractProxyProtocol {
                 try {
                     skeleton.invoke(request.getInputStream(), response.getOutputStream(), Hessian2FactoryInitializer.getInstance().getSerializerFactory());
                 } catch (Throwable e) {
-                    throw new ServletException(e);
+                    throw new RuntimeException(new ServletException(e));
                 }
             }
         }

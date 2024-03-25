@@ -98,7 +98,7 @@ public abstract class AbstractWasmInvoker<T> extends AbstractInvoker<T> {
         super.destroy();
     }
 
-    @Override
+
     public void destroyAll() {
         wasmLoader.getWasmExtern(DESTROY_ALL_METHOD_NAME).ifPresent(destroyAll ->
             WasmFunctions.consumer(wasmLoader.getStore(), destroyAll.func()).accept());

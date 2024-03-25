@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>The thrift rpc module of dubbo project</description>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>3.2.0</version>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>

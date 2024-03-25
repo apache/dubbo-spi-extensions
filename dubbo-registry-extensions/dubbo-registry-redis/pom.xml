@@ -23,7 +23,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.0.2-SNAPSHOT</version>
+    <version>3.2.0</version>
     <artifactId>dubbo-registry-redis</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
@@ -35,13 +35,12 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-api</artifactId>
-            <version>${dubbo3.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-remoting-redis</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>

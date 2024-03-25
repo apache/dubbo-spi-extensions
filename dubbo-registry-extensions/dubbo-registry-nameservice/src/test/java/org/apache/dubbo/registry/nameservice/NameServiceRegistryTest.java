@@ -136,16 +136,16 @@ public class NameServiceRegistryTest {
     @Test
     public void runnableTest() throws Exception {
         PowerMockito.doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] arguments = invocation.getArguments();
-                Assert.assertNotNull(arguments[0]);
-                Assert.assertEquals(arguments[1], 10000L);
-                Assert.assertEquals(arguments[2], 30000L);
-                Assert.assertEquals(arguments[3], TimeUnit.MILLISECONDS);
-                return null;
-            }
-        }).when(scheduledExecutorService)
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    Object[] arguments = invocation.getArguments();
+                    Assert.assertNotNull(arguments[0]);
+                    Assert.assertEquals(arguments[1], 10000L);
+                    Assert.assertEquals(arguments[2], 30000L);
+                    Assert.assertEquals(arguments[3], TimeUnit.MILLISECONDS);
+                    return null;
+                }
+            }).when(scheduledExecutorService)
             .scheduleAtFixedRate(Mockito.any(Runnable.class)
                 , Mockito.any(Long.class)
                 , Mockito.any(Long.class)
@@ -159,7 +159,7 @@ public class NameServiceRegistryTest {
 
         Map<URL, Object> consumerRegistryInfoWrapperMap = ReflectUtils.getFieldValue(nameServiceRegistry, "consumerRegistryInfoWrapperMap");
 
-        Constructor<?> constructor = registryInfoWrapper.getConstructor(new Class<?>[] {NameServiceRegistry.class});
+        Constructor<?> constructor = registryInfoWrapper.getConstructor(new Class<?>[]{NameServiceRegistry.class});
         constructor.setAccessible(true);
         Object wrapper = constructor.newInstance(nameServiceRegistry);
         NotifyListener notifyListener = PowerMockito.mock(NotifyListener.class);

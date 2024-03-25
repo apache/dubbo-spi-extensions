@@ -57,7 +57,7 @@ public class PolarisRouter extends AbstractRouter {
         LOGGER.info(String.format("[POLARIS] init service router, url is %s, parameters are %s", url,
             url.getParameters()));
         System.setProperty("dubbo.polaris.query_parser", System.getProperty("dubbo.polaris.query_parser", "JsonPath"));
-        this.priority = url.getParameter(Constants.PRIORITY_KEY, 0);
+        setPriority(url.getParameter(Constants.PRIORITY_KEY, 0));
         this.routeRuleHandler = new RuleHandler();
         this.polarisOperator = PolarisOperators.INSTANCE.getPolarisOperator(url.getHost(), url.getPort());
         this.parser = QueryParser.load();

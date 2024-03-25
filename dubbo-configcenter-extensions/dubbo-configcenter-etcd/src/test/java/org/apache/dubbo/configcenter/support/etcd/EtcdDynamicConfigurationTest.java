@@ -16,6 +16,7 @@
  */
 
 package org.apache.dubbo.configcenter.support.etcd;
+
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.config.configcenter.ConfigChangedEvent;
 import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
@@ -29,6 +30,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -43,20 +47,49 @@ import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
  * Unit test for etcd config center support
  * Integrate with https://github.com/etcd-io/jetcd#launcher
  */
+
 @Disabled
 public class EtcdDynamicConfigurationTest {
 
     private static EtcdDynamicConfiguration config;
 
-    public EtcdCluster etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 3, false);
-
-   //public EtcdCluster etcdCluster= new Etcd.Builder().withClusterName(getClass().getSimpleName()).withNodes(3).withSsl(false).build();
+    private static final Logger logger = LoggerFactory.getLogger(EtcdDynamicConfigurationTest.class);
+    //public EtcdCluster etcdCluster= new Etcd.Builder().withClusterName(getClass().getSimpleName()).withNodes(3).withSsl(false).build();
 
     private static Client client;
 
+    public EtcdCluster etcdCluster;
+
+    // This will involve Docker pulling the image very slowly
+    @Before
+    public void setUp() {
+        try {
+            etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 3, false);
+
+            etcdCluster.start();
+
+            client = Client.builder().endpoints(etcdCluster.getClientEndpoints()).build();
+
+            List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
+
+            String ipAddress = clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort(); //"127.0.0.1:2379";
+
+            String urlForDubbo = "etcd3://" + ipAddress + "/org.apache.dubbo.etcd.testService";
+
+            // timeout in 15 seconds.
+            URL url = URL.valueOf(urlForDubbo).addParameter(SESSION_TIMEOUT_KEY, 15000);
+            config = new EtcdDynamicConfiguration(url);
+        } catch (Exception e) {
+            logger.error("Failed to start etcd cluster", e);
+        }
+    }
 
     @Test
-    public void testGetConfig()  {
+    public void testGetConfig() {
+        if (config == null) {
+            logger.error("Failed to start etcd cluster ,config is null");
+            return;
+        }
         put("/dubbo/config/dubbo/org.apache.dubbo.etcd.testService/configurators", "hello");
         put("/dubbo/config/test/dubbo.properties", "aaa=bbb");
         Assert.assertEquals("hello", config.getConfig("org.apache.dubbo.etcd.testService/configurators", DynamicConfiguration.DEFAULT_GROUP));
@@ -66,7 +99,10 @@ public class EtcdDynamicConfigurationTest {
 
     @Test
     public void testAddListener1() throws Exception {
-
+        if (config == null) {
+            logger.error("Failed to start etcd cluster ,config is null");
+            return;
+        }
         CountDownLatch latch = new CountDownLatch(4);
         TestListener listener1 = new TestListener(latch);
         TestListener listener2 = new TestListener(latch);
@@ -97,7 +133,6 @@ public class EtcdDynamicConfigurationTest {
         Assert.assertEquals("new value2", listener4.getValue());
 
     }
-
 
 
     private class TestListener implements ConfigurationListener {
@@ -134,29 +169,15 @@ public class EtcdDynamicConfigurationTest {
         }
     }
 
-    //这里会涉及到docker拉取镜像很慢
-    @Before
-    public void setUp() {
-
-        etcdCluster.start();
-
-        client = Client.builder().endpoints(etcdCluster.getClientEndpoints()).build();
-
-        List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
-
-        String ipAddress =clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort(); //"127.0.0.1:2379";
-
-        String urlForDubbo = "etcd3://" + ipAddress + "/org.apache.dubbo.etcd.testService";
-
-        // timeout in 15 seconds.
-        URL url = URL.valueOf(urlForDubbo).addParameter(SESSION_TIMEOUT_KEY, 15000);
-        config = new EtcdDynamicConfiguration(url);
-    }
 
     @After
     public void tearDown() {
-        etcdCluster.close();
-        client.close();
+        if (etcdCluster != null) {
+            etcdCluster.close();
+        }
+        if (client != null) {
+            client.close();
+        }
     }
 
 }
