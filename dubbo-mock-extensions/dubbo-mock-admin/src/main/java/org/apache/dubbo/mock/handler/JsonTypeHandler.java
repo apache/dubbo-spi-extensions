@@ -17,9 +17,9 @@
 
 package org.apache.dubbo.mock.handler;
 
+import com.alibaba.fastjson2.JSON;
 import org.apache.dubbo.mock.exception.HandleFailException;
 
-import com.google.gson.Gson;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,14 +27,12 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
- * handle the Json data. mainly work with {@link Gson}.
+ * handle the Json data. mainly work with {@link JSON}.
  */
 public class JsonTypeHandler implements TypeHandler<Object> {
 
-    private Gson gson;
 
     public JsonTypeHandler() {
-        gson = new Gson();
     }
 
     @Override
@@ -56,10 +54,10 @@ public class JsonTypeHandler implements TypeHandler<Object> {
                 // for generic type parse
                 Type genericReturnType = method.getGenericReturnType();
                 if (genericReturnType instanceof ParameterizedType) {
-                    return gson.fromJson(resultContext.getData(), genericReturnType);
+                    return JSON.parseObject(resultContext.getData(), genericReturnType);
                 }
             }
-            return gson.fromJson(resultContext.getData(), targetType);
+            return JSON.parseObject(resultContext.getData(), targetType);
         } catch (Exception e) {
             throw new HandleFailException(e);
         }

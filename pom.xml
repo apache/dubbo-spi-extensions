@@ -105,7 +105,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
+        <revision>3.2.0</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.9.3</junit_jupiter_version>
         <awaitility_version>4.2.0</awaitility_version>
@@ -374,6 +374,7 @@
                         <exclude>Jenkinsfile</exclude>
                         <exclude>**/codestyle/*</exclude>
                         <exclude>**/resources/META-INF/**</exclude>
+                        <exclude>**/resources/security/**</exclude>
                         <exclude>.github/**</exclude>
                         <exclude>compiler/**</exclude>
                         <exclude>**/generated/**</exclude>

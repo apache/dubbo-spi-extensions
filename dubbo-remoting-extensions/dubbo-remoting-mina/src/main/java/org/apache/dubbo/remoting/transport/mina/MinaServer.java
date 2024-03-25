@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 
 import static org.apache.dubbo.common.constants.CommonConstants.IO_THREADS_KEY;
+import static org.apache.dubbo.config.Constants.SERVER_THREAD_POOL_NAME;
 import static org.apache.dubbo.remoting.Constants.DEFAULT_IO_THREADS;
 
 /**
@@ -79,6 +80,11 @@ public class MinaServer extends AbstractServer {
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
+    }
+
+    @Override
+    protected int getChannelsSize() {
+        return getChannels().size();
     }
 
     @Override

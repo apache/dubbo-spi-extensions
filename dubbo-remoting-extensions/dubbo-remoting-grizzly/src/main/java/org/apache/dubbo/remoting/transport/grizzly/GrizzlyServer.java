@@ -42,6 +42,7 @@ import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_THREADPO
 import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_THREADS;
 import static org.apache.dubbo.common.constants.CommonConstants.THREADPOOL_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.THREADS_KEY;
+import static org.apache.dubbo.config.Constants.SERVER_THREAD_POOL_NAME;
 
 /**
  * GrizzlyServer
@@ -97,6 +98,11 @@ public class GrizzlyServer extends AbstractServer {
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
+    }
+
+    @Override
+    protected int getChannelsSize() {
+        return channels.size();
     }
 
     @Override

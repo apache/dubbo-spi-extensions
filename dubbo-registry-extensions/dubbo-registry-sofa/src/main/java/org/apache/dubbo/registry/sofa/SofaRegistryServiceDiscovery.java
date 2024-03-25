@@ -16,15 +16,6 @@
  */
 package org.apache.dubbo.registry.sofa;
 
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.registry.client.AbstractServiceDiscovery;
-import org.apache.dubbo.registry.client.DefaultServiceInstance;
-import org.apache.dubbo.registry.client.ServiceInstance;
-import org.apache.dubbo.registry.client.event.ServiceInstancesChangedEvent;
-import org.apache.dubbo.registry.client.event.listener.ServiceInstancesChangedListener;
-import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import com.alipay.sofa.registry.client.api.Publisher;
 import com.alipay.sofa.registry.client.api.RegistryClientConfig;
@@ -36,7 +27,16 @@ import com.alipay.sofa.registry.client.api.registration.SubscriberRegistration;
 import com.alipay.sofa.registry.client.provider.DefaultRegistryClient;
 import com.alipay.sofa.registry.client.provider.DefaultRegistryClientConfigBuilder;
 import com.alipay.sofa.registry.core.model.ScopeEnum;
-import com.google.gson.Gson;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.JsonUtils;
+import org.apache.dubbo.registry.client.AbstractServiceDiscovery;
+import org.apache.dubbo.registry.client.DefaultServiceInstance;
+import org.apache.dubbo.registry.client.ServiceInstance;
+import org.apache.dubbo.registry.client.event.ServiceInstancesChangedEvent;
+import org.apache.dubbo.registry.client.event.listener.ServiceInstancesChangedListener;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,6 @@ public class SofaRegistryServiceDiscovery extends AbstractServiceDiscovery {
     private final Map<String, SofaRegistryListener> sofaRegistryListenerMap = new ConcurrentHashMap<>();
 
 
-    private Gson gson = new Gson();
 
     public SofaRegistryServiceDiscovery(ApplicationModel applicationModel, URL registryURL) {
         super(applicationModel, registryURL);
@@ -105,11 +104,11 @@ public class SofaRegistryServiceDiscovery extends AbstractServiceDiscovery {
         if (null == publisher) {
             PublisherRegistration registration = new PublisherRegistration(serviceInstance.getServiceName());
             registration.setGroup(DEFAULT_GROUP);
-            publisher = registryClient.register(registration, gson.toJson(sofaRegistryInstance));
+            publisher = registryClient.register(registration, JsonUtils.toJson(sofaRegistryInstance));
 
             publishers.put(serviceInstance.getServiceName(), publisher);
         } else {
-            publisher.republish(gson.toJson(sofaRegistryInstance));
+            publisher.republish(JsonUtils.toJson(sofaRegistryInstance));
         }
     }
 
@@ -202,7 +201,7 @@ public class SofaRegistryServiceDiscovery extends AbstractServiceDiscovery {
                 List<ServiceInstance> newServiceInstances = new ArrayList<>(datas.size());
 
                 for (String serviceData : datas) {
-                    SofaRegistryInstance sri = gson.fromJson(serviceData, SofaRegistryInstance.class);
+                    SofaRegistryInstance sri = JsonUtils.toJavaObject(serviceData, SofaRegistryInstance.class);
 
                     DefaultServiceInstance serviceInstance = new DefaultServiceInstance(dataId, sri.getHost(), sri.getPort(), applicationModel);
                     serviceInstance.setMetadata(sri.getMetadata());

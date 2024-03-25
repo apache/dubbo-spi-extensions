@@ -20,7 +20,7 @@
     <parent>
         <artifactId>scenarios-dubbo-serialization</artifactId>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>3.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,7 +33,7 @@
         <junit.version>4.13.1</junit.version>
         <spring.version>4.3.30.RELEASE</spring.version>
         <dubbo.compiler.version>0.0.2</dubbo.compiler.version>
-        <dubbo.serialization.version>1.0.2-SNAPSHOT</dubbo.serialization.version>
+        <dubbo.serialization.version>3.2.0</dubbo.serialization.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     </properties>
 
