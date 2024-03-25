@@ -36,6 +36,7 @@
         <module>dubbo-wasm-rpc-api</module>
         <module>dubbo-wasm-cluster-api</module>
         <module>dubbo-wasm-registry-api</module>
+        <module>dubbo-wasm-remoting-api</module>
         <module>dubbo-wasm-test</module>
     </modules>
 

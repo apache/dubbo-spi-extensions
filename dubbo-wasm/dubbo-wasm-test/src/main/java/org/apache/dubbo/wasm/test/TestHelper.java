@@ -59,6 +59,10 @@ public class TestHelper {
                 System.out.println("java side->" + result);
                 return 0;
             }));
+        funcMap.put("setRemoteAddressHost", WasmFunctions.wrap(store, WasmValType.I64, WasmValType.I64, WasmValType.I32, WasmValType.I32,
+            (respId, addr, len) -> 0));
+        funcMap.put("setLocalAddressHost", WasmFunctions.wrap(store, WasmValType.I64, WasmValType.I64, WasmValType.I32, WasmValType.I32,
+            (respId, addr, len) -> 0));
         return funcMap;
     }
 
