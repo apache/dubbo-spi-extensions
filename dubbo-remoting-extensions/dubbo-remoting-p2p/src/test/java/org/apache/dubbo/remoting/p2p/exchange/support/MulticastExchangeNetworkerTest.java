@@ -27,6 +27,7 @@ import org.apache.dubbo.remoting.p2p.Group;
 import org.apache.dubbo.remoting.p2p.Networkers;
 import org.apache.dubbo.remoting.p2p.Peer;
 
+import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -48,7 +49,8 @@ public class MulticastExchangeNetworkerTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         Peer peer1 = multicastExchangeNetworker.lookup(URL.valueOf(groupURL))
-                .join(URL.valueOf("exchange://0.0.0.0:" + NetUtils.getAvailablePort() + "?exchanger=header"), new ExchangeHandlerAdapter() {
+                .join(URL.valueOf("exchange://0.0.0.0:" + NetUtils.getAvailablePort() + "?exchanger=header"),
+                    new ExchangeHandlerAdapter(FrameworkModel.defaultModel()) {
                     @Override
                     public CompletableFuture<Object> reply(ExchangeChannel channel, Object msg) throws RemotingException {
                         countDownLatch.countDown();
