@@ -1,12 +1,13 @@
-# Dubbo Cross Thread Extensions
-[中文](./README_ch.md)
+# Dubbo 跨线程扩展
 
-`dubbo-cross-thread-extensions` copy dubbo.tag cross thread lightly . 
-it can run with skywalking and ttl . 
+[English](./README.md)
 
-## Integrate example
-### scan annotation by byte-buddy
-(you can install with ByteBuddyAgent or use it with `-javaagent=<agentjar>`)
+`dubbo-cross-thread-extensions` 轻量级地复制了 dubbo.tag 的跨线程功能。
+它可以与 SkyWalking 和 TTL 一起运行。
+
+## 集成示例
+### 使用 Byte Buddy 扫描注解
+(您可以使用 ByteBuddyAgent 安装或者使用 `-javaagent=<agentjar>` 进行使用)
 ```
         Instrumentation instrumentation = ByteBuddyAgent.install();
         RunnableOrCallableActivation.install(instrumentation);
@@ -20,7 +21,7 @@ it can run with skywalking and ttl .
         ExecutorService threadPool = Executors.newSingleThreadExecutor();
         Future<String> result = threadPool.submit(callable);
 ```
-### add annotation @DubboCrossThread
+### 添加注解 @DubboCrossThread
 
 ```
 @DubboCrossThread
@@ -31,7 +32,7 @@ public class TargetClass implements Runnable{
     }
 }
 ```
-### wrap Callable or Runnable
+### 包装 Callable 或 Runnable
 ```
 Callable<String> callable = CallableWrapper.of(new Callable<String>() {
     @Override
@@ -48,9 +49,9 @@ Runnable runnable = RunnableWrapper.of(new Runnable() {
     }
 });
 ```
-## Integrate with spring boot
+## 与 Spring Boot 集成
 
-### add a listener
+### 添加一个监听器
 ```
 public class DubboCrossThreadAnnotationListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
     private Logger logger = LoggerFactory.getLogger(DubboCrossThreadAnnotationListener.class);
@@ -72,7 +73,7 @@ public class DubboCrossThreadAnnotationListener implements ApplicationListener<A
 }
 
 ```
-### install ByteBuddyAgent
+### 安装 ByteBuddyAgent
 ```
 @SpringBootApplication
 @ComponentScan(basePackages = "org.apache.your-package")
@@ -86,8 +87,8 @@ public class SpringBootDemoApplication {
 }
 ```
 
-## run with skywalking and ttl
-jvm arguments:
+## 与 SkyWalking 和 TTL 一起运行
+JVM 参数:
 ```
 -javaagent:transmittable-thread-local-2.14.2.jar
 -Dskywalking.agent.application_code=tracecallable-ltf1
@@ -95,7 +96,7 @@ jvm arguments:
 -Dskywalking.collector.backend_service=172.37.66.195:11800
 -javaagent:skywalking-agent.jar
 ```
-example code:
+示例代码:
 ```
 public class MultiAnnotationWithSwTtl {
     private static TransmittableThreadLocal<String> context = new TransmittableThreadLocal<>();
@@ -132,11 +133,12 @@ public class MultiAnnotationWithSwTtl {
 }
 
 ```
-output:
+输出:
 ```
 parent thread traceId=60cfc24e245d4389b9f40b5b38c33ef6.1.16910355654660001
 dubbo.tag=tagValue
 children thread traceId=60cfc24e245d4389b9f40b5b38c33ef6.1.16910355654660001
 ttl context.get()=value-set-in-parent with ttl
 ```
+
 
