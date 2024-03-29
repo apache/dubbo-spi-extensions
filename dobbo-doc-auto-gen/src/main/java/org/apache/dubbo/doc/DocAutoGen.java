@@ -36,6 +36,8 @@ public class DocAutoGen {
             "[![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]";
         System.out.println(x);
         System.out.println();
+        String chineseFile = "[中文](./README_CN.md)\n";
+        System.out.println(chineseFile);
         String description = "The purpose of dubbo-spi-extensions is to provide open, community-driven, reusable components to build microservice programs with different needs. These components extend the core of the Apache Dubbo project, but they are separated and decoupled.";
         System.out.println(description);
 
@@ -68,7 +70,7 @@ public class DocAutoGen {
         System.out.println();
     }
 
-    private static void visitFile(File file, String parentPath, int level) {
+    public static void visitFile(File file, String parentPath, int level) {
         File[] files = file.listFiles();
         // gen code sort by file name
         Arrays.sort(files, (o1, o2) -> {
