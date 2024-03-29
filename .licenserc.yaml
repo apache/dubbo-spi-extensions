@@ -68,6 +68,16 @@ header:
     - '**/vendor/**'
     - '**/src/test/resources/certs/**'
     - '**/src/test/resources/definition/**'
+    # Generate class
+    - 'dubbo-rpc-extensions/dubbo-rpc-native-thrift/src/test/java/org/apache/dubbo/rpc/protocol/nativethrift/DemoService.java'
+    - 'dubbo-rpc-extensions/dubbo-rpc-native-thrift/src/test/java/org/apache/dubbo/rpc/protocol/nativethrift/UserService.java'
+    # other license
+    - 'test/scenarios/scenarios-dubbo-serialization/dubbo-serialization-avro-test/src/main/java/org/apache/dubbo/test/serialization/avro/EmbeddedZooKeeper.java'
+    - 'test/scenarios/scenarios-dubbo-serialization/dubbo-serialization-fastjson-test/src/main/java/org/apache/dubbo/test/serialization/fastjson/EmbeddedZooKeeper.java'
+    - 'test/scenarios/scenarios-dubbo-serialization/dubbo-serialization-fst-test/src/main/java/org/apache/dubbo/test/serialization/fst/EmbeddedZooKeeper.java'
+    - 'test/scenarios/scenarios-dubbo-serialization/dubbo-serialization-gson-test/src/main/java/org/apache/dubbo/test/serialization/gson/EmbeddedZooKeeper.java'
+    - 'test/scenarios/scenarios-dubbo-serialization/dubbo-serialization-kryo-test/src/main/java/org/apache/dubbo/test/serialization/kryo/EmbeddedZooKeeper.java'
+    - 'test/scenarios/scenarios-dubbo-serialization/dubbo-serialization-protostuff-test/src/main/java/org/apache/dubbo/test/serialization/protostuff/EmbeddedZooKeeper.java'
 
   comment: on-failure
 
