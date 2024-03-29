@@ -34,7 +34,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - name: Restore Maven local repository cache
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -67,7 +67,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
@@ -94,7 +94,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
@@ -103,7 +103,7 @@ jobs:
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
       - name: "Dubbo-SPI-Extensions cache"
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository/org/apache/dubbo
           key: ${{ runner.os }}-dubbo-snapshot-${{ github.sha }}-${{ github.run_id }}
@@ -151,7 +151,7 @@ jobs:
     env:
       ZOOKEEPER_VERSION: 3.6.3
     steps:
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache zookeeper binary archive"
         id: "cache-zookeeper"
         with:
@@ -175,7 +175,7 @@ jobs:
           wget -c http://mirror.apache-kr.org/apache/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz
           echo "list the downloaded zookeeper binary archive"
           ls -al ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache secret key"
         id: "cache-secret-cert"
         with:
@@ -211,7 +211,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
@@ -219,7 +219,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache zookeeper binary archive"
         id: "cache-zookeeper"
         with:
@@ -227,7 +227,7 @@ jobs:
           key: zookeeper-${{ runner.os }}-${{ env.ZOOKEEPER_VERSION }}
           restore-keys: |
             zookeeper-${{ runner.os }}-
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache secret key"
         id: "cache-secret-cert"
         with:
@@ -275,7 +275,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
@@ -283,7 +283,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache zookeeper binary archive"
         id: "cache-zookeeper"
         with:
@@ -291,7 +291,7 @@ jobs:
           key: zookeeper-${{ runner.os }}-${{ env.ZOOKEEPER_VERSION }}
           restore-keys: |
             zookeeper-${{ runner.os }}-
-      - uses: actions/cache@v4
+      - uses: actions/cache@v3
         name: "Cache secret key"
         id: "cache-secret-cert"
         with:
@@ -339,7 +339,7 @@ jobs:
 #          distribution: 'zulu'
 #          java-version: 21
 #      - name: Restore Maven local repository cache
-#        uses: actions/cache@v4
+#        uses: actions/cache@v3
 #        with:
 #          path: ~/.m2/repository
 #          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
