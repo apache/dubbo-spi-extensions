@@ -1,6 +1,9 @@
 name: Build and Test For PR
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  schedule:
+    - cron: '0 0/6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -89,6 +92,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: "master"
           path: dubbo-spi-extensions
       - uses: actions/setup-java@v4
         with:

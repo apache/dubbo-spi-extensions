@@ -1,6 +1,9 @@
 name: Build and Test For PR
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  schedule:
+    - cron: '0 0/6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -60,7 +63,7 @@ jobs:
         name: build tools
         with:
           repository: 'apache/dubbo'
-          ref: '3.2'
+          ref: '3.1'
           path: dubbo
       - name: "Set up JDK 21"
         uses: actions/setup-java@v4
@@ -89,6 +92,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: "3.1.0"
           path: dubbo-spi-extensions
       - uses: actions/setup-java@v4
         with:
