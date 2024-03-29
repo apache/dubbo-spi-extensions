@@ -254,7 +254,7 @@ jobs:
       - name: "Upload coverage result"
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-result
+          name: coverage-result-jdk8
           path: "**/target/site/**/jacoco.xml"
   unit-test-jdk11:
     needs: [ check-license, build-source, unit-test-prepare ]
@@ -318,7 +318,7 @@ jobs:
       - name: "Upload coverage result"
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-result
+          name: coverage-result-jdk11
           path: "**/target/site/**/jacoco.xml"
 
 #  error-code-inspecting:
