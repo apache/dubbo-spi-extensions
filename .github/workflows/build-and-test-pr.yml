@@ -19,9 +19,8 @@ env:
 
 jobs:
   # Check ASF License
-  license:
+  check-license:
     name: "Check License"
-    needs: check-format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -47,7 +46,7 @@ jobs:
   # Build from source code
   build-source:
     name: "Build Dubbo-spi-extensions"
-    needs: check-format
+    needs: check-license
     runs-on: ubuntu-latest
     # output dubbo-spi-extensions version to others jobs
     outputs:
@@ -104,7 +103,7 @@ jobs:
   # Download dependencies Prepare for unit test
   unit-test-prepare:
     name: "Preparation for Unit Test"
-    needs: check-format
+    needs: [check-license, build-source]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -153,7 +152,7 @@ jobs:
           echo "--- End Print Rsa Public Key"
   # Start unit test
   unit-test:
-    needs: [check-format, build-source, unit-test-prepare]
+    needs: [check-license, build-source, unit-test-prepare]
     name: "Unit Test On ubuntu-latest"
     runs-on: ubuntu-latest
     strategy:
@@ -219,7 +218,7 @@ jobs:
           path: "**/target/site/**/jacoco.xml"
 
   error-code-inspecting:
-    needs: check-format
+    needs: [check-license]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
