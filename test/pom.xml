@@ -19,21 +19,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.dubbo.extensions</groupId>
+        <artifactId>extensions-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-    <groupId>org.apache.dubbo.extensions</groupId>
     <artifactId>dubbo-extensions-test</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+
     <modules>
         <module>dubbo-test-runner</module>
         <module>dubbo-scenario-builder</module>
+        <module>scenarios</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-extensions-dependencies-bom</artifactId>
+            <version>${revision}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
 
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <dubbo.version>3.1.11</dubbo.version>
     </properties>
 
 </project>
