@@ -81,7 +81,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8,11 ]
+        # use the unsafe only run on the jdk8
+        java: [ 8 ]
         #testjob id list MUST match 'JOB_COUNT' of 'prepare_test'
         job_id: [ 1,2,3 ]
     steps:
