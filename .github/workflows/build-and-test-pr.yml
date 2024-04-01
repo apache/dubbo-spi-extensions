@@ -269,7 +269,7 @@ jobs:
       - name: "Upload coverage result"
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-result-jdk8
+          name: coverage-result-${{ matrix.os }}-jdk${{ matrix.jdk }}
           path: "**/target/site/**/jacoco.xml"
 
 #  error-code-inspecting:
