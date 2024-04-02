@@ -4,6 +4,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo/dubbo-spi-extensions.svg)](https://search.maven.org/search?q=g:org.apache.dubbo%20AND%20a:dubbo-spi-extensions)
 [![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]
 
+[中文](./README_CN.md)
+
 The purpose of dubbo-spi-extensions is to provide open, community-driven, reusable components to build microservice programs with different needs. These components extend the core of the Apache Dubbo project, but they are separated and decoupled.
 
 Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. 
@@ -50,6 +52,8 @@ The available extensions are as follows:
 - [dubbo-mock-extensions](dubbo-mock-extensions)
   - [dubbo-mock-admin](dubbo-mock-extensions/dubbo-mock-admin)
   - [dubbo-mock-api](dubbo-mock-extensions/dubbo-mock-api)
+- [dubbo-proxy-extensions](dubbo-proxy-extensions)
+  - [dubbo-proxy-bytebuddy](dubbo-proxy-extensions/dubbo-proxy-bytebuddy)
 - [dubbo-registry-extensions](dubbo-registry-extensions)
   - [dubbo-registry-consul](dubbo-registry-extensions/dubbo-registry-consul)
   - [dubbo-registry-dns](dubbo-registry-extensions/dubbo-registry-dns)
@@ -76,6 +80,7 @@ The available extensions are as follows:
   - [dubbo-rpc-webservice](dubbo-rpc-extensions/dubbo-rpc-webservice)
 - [dubbo-serialization-extensions](dubbo-serialization-extensions)
   - [dubbo-serialization-avro](dubbo-serialization-extensions/dubbo-serialization-avro)
+  - [dubbo-serialization-common](dubbo-serialization-extensions/dubbo-serialization-common)
   - [dubbo-serialization-fastjson](dubbo-serialization-extensions/dubbo-serialization-fastjson)
   - [dubbo-serialization-fst](dubbo-serialization-extensions/dubbo-serialization-fst)
   - [dubbo-serialization-fury](dubbo-serialization-extensions/dubbo-serialization-fury)
@@ -89,6 +94,14 @@ The available extensions are as follows:
   - [dubbo-serialization-test](dubbo-serialization-extensions/dubbo-serialization-test)
 - [dubbo-tag-extensions](dubbo-tag-extensions)
   - [dubbo-tag-subnets](dubbo-tag-extensions/dubbo-tag-subnets)
+- [dubbo-wasm](dubbo-wasm)
+  - [dubbo-wasm-api](dubbo-wasm/dubbo-wasm-api)
+  - [dubbo-wasm-cluster-api](dubbo-wasm/dubbo-wasm-cluster-api)
+  - [dubbo-wasm-common-api](dubbo-wasm/dubbo-wasm-common-api)
+  - [dubbo-wasm-registry-api](dubbo-wasm/dubbo-wasm-registry-api)
+  - [dubbo-wasm-remoting-api](dubbo-wasm/dubbo-wasm-remoting-api)
+  - [dubbo-wasm-rpc-api](dubbo-wasm/dubbo-wasm-rpc-api)
+  - [dubbo-wasm-test](dubbo-wasm/dubbo-wasm-test)
 - [dubbo-xds](dubbo-xds)
 
 ## Contribution
