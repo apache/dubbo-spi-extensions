@@ -24,8 +24,6 @@ import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.remoting.http.HttpHandler;
 import org.apache.dubbo.remoting.http.HttpServer;
-import org.apache.dubbo.remoting.http.jetty.JettyHttpServer;
-import org.apache.dubbo.remoting.http.jetty.JettyLoggerAdapter;
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.Test;
@@ -47,7 +45,7 @@ class JettyLoggerAdapterTest {
     void testJettyUseDubboLogger() throws Exception {
         int port = NetUtils.getAvailablePort();
         URL url = new ServiceConfigURL(
-            "http", "localhost", port, new String[] {Constants.BIND_PORT_KEY, String.valueOf(port)});
+                "http", "localhost", port, new String[] {Constants.BIND_PORT_KEY, String.valueOf(port)});
         HttpServer httpServer = new JettyHttpServer(url, new HttpHandler<HttpServletRequest, HttpServletResponse>() {
             @Override
             public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -66,7 +64,7 @@ class JettyLoggerAdapterTest {
         Logger successLogger = mock(Logger.class);
         Class<?> clazz = Class.forName("org.apache.dubbo.remoting.http.jetty.JettyLoggerAdapter");
         JettyLoggerAdapter jettyLoggerAdapter =
-            (JettyLoggerAdapter) clazz.getDeclaredConstructor().newInstance();
+                (JettyLoggerAdapter) clazz.getDeclaredConstructor().newInstance();
 
         Field loggerField = clazz.getDeclaredField("logger");
         loggerField.setAccessible(true);
@@ -99,7 +97,7 @@ class JettyLoggerAdapterTest {
     void testNewLogger() {
         JettyLoggerAdapter loggerAdapter = new JettyLoggerAdapter();
         org.eclipse.jetty.util.log.Logger logger =
-            loggerAdapter.newLogger(this.getClass().getName());
+                loggerAdapter.newLogger(this.getClass().getName());
         assertThat(logger.getClass().isAssignableFrom(JettyLoggerAdapter.class), is(true));
     }
 
