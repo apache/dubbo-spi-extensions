@@ -1,0 +1,15 @@
+# JAX-RS's implementations
+jax-rs.query-param = org.apache.dubbo.metadata.extension.rest.api.jaxrs.QueryParamParameterProcessor
+jax-rs.form-param = org.apache.dubbo.metadata.extension.rest.api.jaxrs.FormParamParameterProcessor
+jax-rs.matrix-param = org.apache.dubbo.metadata.extension.rest.api.jaxrs.MatrixParamParameterProcessor
+jax-rs.header-param = org.apache.dubbo.metadata.extension.rest.api.jaxrs.HeaderParamParameterProcessor
+jax-rs.default-value-param = org.apache.dubbo.metadata.extension.rest.api.jaxrs.DefaultValueParameterProcessor
+jax-rs.body = org.apache.dubbo.metadata.extension.rest.api.jaxrs.BodyParameterProcessor
+jax-rs.form-body = org.apache.dubbo.metadata.extension.rest.api.jaxrs.FormBodyParameterProcessor
+jax-rs.path-param = org.apache.dubbo.metadata.extension.rest.api.jaxrs.PathParamParameterProcessor
+
+# Spring Web MVC's implementations
+spring-webmvc.request-param = org.apache.dubbo.metadata.extension.rest.api.springmvc.RequestParamParameterProcessor
+spring-webmvc.request-header = org.apache.dubbo.metadata.extension.rest.api.springmvc.RequestHeaderParameterProcessor
+spring-webmvc.request-body = org.apache.dubbo.metadata.extension.rest.api.springmvc.RequestBodyParameterProcessor
+spring-webmvc.request-path = org.apache.dubbo.metadata.extension.rest.api.springmvc.PathVariableParameterProcessor
