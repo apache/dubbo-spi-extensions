@@ -16,7 +16,7 @@
  */
 package org.apache.dubbo.rpc.protocol.rest.pair;
 
-import org.apache.dubbo.metadata.rest.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
 import org.apache.dubbo.rpc.Invoker;
 
 import java.lang.reflect.Method;

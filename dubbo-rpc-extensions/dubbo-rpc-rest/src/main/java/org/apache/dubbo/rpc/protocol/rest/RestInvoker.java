@@ -18,9 +18,9 @@ package org.apache.dubbo.rpc.protocol.rest;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.metadata.ParameterTypesComparator;
-import org.apache.dubbo.metadata.rest.RestMethodMetadata;
-import org.apache.dubbo.metadata.rest.ServiceRestMetadata;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.ServiceRestMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.remoting.http.RequestTemplate;
 import org.apache.dubbo.remoting.http.RestClient;
 import org.apache.dubbo.remoting.http.RestResult;

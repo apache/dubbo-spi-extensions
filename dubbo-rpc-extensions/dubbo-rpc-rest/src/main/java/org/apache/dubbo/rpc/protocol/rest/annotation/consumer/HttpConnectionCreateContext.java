@@ -17,8 +17,8 @@
 package org.apache.dubbo.rpc.protocol.rest.annotation.consumer;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.metadata.rest.RestMethodMetadata;
-import org.apache.dubbo.metadata.rest.ServiceRestMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.ServiceRestMetadata;
 import org.apache.dubbo.remoting.http.RequestTemplate;
 import org.apache.dubbo.rpc.Invocation;
 

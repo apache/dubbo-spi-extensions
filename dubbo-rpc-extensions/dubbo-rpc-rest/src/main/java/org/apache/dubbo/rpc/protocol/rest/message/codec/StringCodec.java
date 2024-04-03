@@ -18,7 +18,7 @@ package org.apache.dubbo.rpc.protocol.rest.message.codec;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.rpc.protocol.rest.message.HttpMessageCodec;
 
 import java.io.OutputStream;

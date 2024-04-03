@@ -18,8 +18,8 @@ package org.apache.dubbo.rpc.protocol.rest;
 
 import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.metadata.rest.PathMatcher;
-import org.apache.dubbo.metadata.rest.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.PathMatcher;
+import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.protocol.rest.exception.DoublePathCheckException;
 import org.apache.dubbo.rpc.protocol.rest.pair.InvokerAndRestMethodMetadataPair;

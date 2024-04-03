@@ -17,9 +17,9 @@
 package org.apache.dubbo.rpc.protocol.rest.annotation.param.parse.provider;
 
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.metadata.rest.ArgInfo;
-import org.apache.dubbo.metadata.rest.ParamType;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.ArgInfo;
+import org.apache.dubbo.metadata.extension.rest.api.ParamType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.rpc.protocol.rest.RestHeaderEnum;
 import org.apache.dubbo.rpc.protocol.rest.constans.RestConstant;
 import org.apache.dubbo.rpc.protocol.rest.exception.ParamParseException;

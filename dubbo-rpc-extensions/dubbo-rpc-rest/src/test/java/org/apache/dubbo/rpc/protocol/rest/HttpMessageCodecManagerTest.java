@@ -16,7 +16,7 @@
  */
 package org.apache.dubbo.rpc.protocol.rest;
 
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.rpc.protocol.rest.message.HttpMessageCodecManager;
 import org.apache.dubbo.rpc.protocol.rest.message.codec.XMLCodec;
 import org.apache.dubbo.rpc.protocol.rest.pair.MessageCodecResultPair;

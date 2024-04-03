@@ -21,7 +21,7 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.rpc.protocol.rest.deploy.ServiceDeployer;
 import org.apache.dubbo.rpc.protocol.rest.extension.resteasy.filter.DubboContainerResponseContextImpl;
 import org.apache.dubbo.rpc.protocol.rest.extension.resteasy.filter.DubboPreMatchContainerRequestContext;

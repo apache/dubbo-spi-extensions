@@ -18,8 +18,8 @@ package org.apache.dubbo.rpc.protocol.rest.annotation.metadata;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.extension.ExtensionLoader;
-import org.apache.dubbo.metadata.rest.ServiceRestMetadata;
-import org.apache.dubbo.metadata.rest.ServiceRestMetadataResolver;
+import org.apache.dubbo.metadata.extension.rest.api.ServiceRestMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.ServiceRestMetadataResolver;
 import org.apache.dubbo.rpc.protocol.rest.exception.CodeStyleNotSupportException;
 
 public class MetadataResolver {

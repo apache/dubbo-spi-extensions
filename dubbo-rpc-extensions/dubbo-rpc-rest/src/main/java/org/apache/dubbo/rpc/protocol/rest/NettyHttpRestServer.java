@@ -24,7 +24,7 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.NetUtils;
-import org.apache.dubbo.metadata.rest.ServiceRestMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.ServiceRestMetadata;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.protocol.rest.constans.RestConstant;
 import org.apache.dubbo.rpc.protocol.rest.deploy.ServiceDeployer;

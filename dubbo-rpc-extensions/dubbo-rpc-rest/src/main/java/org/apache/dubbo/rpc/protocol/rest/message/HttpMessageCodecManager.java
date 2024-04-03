@@ -17,7 +17,7 @@
 package org.apache.dubbo.rpc.protocol.rest.message;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.protocol.rest.exception.UnSupportContentTypeException;
 import org.apache.dubbo.rpc.protocol.rest.pair.MessageCodecResultPair;

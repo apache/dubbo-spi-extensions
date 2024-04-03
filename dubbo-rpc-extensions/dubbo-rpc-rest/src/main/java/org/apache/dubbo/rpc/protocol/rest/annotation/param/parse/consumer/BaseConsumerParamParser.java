@@ -18,7 +18,7 @@ package org.apache.dubbo.rpc.protocol.rest.annotation.param.parse.consumer;
 
 import org.apache.dubbo.common.extension.ExtensionScope;
 import org.apache.dubbo.common.extension.SPI;
-import org.apache.dubbo.metadata.rest.ArgInfo;
+import org.apache.dubbo.metadata.extension.rest.api.ArgInfo;
 import org.apache.dubbo.rpc.protocol.rest.annotation.ParamParser;
 
 @SPI(scope = ExtensionScope.FRAMEWORK)

@@ -17,7 +17,7 @@
 package org.apache.dubbo.rpc.protocol.rest;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.metadata.rest.ServiceRestMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.ServiceRestMetadata;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.ProtocolServer;
 

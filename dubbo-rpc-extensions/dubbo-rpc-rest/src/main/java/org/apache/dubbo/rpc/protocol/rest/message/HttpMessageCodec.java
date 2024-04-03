@@ -18,7 +18,7 @@ package org.apache.dubbo.rpc.protocol.rest.message;
 
 import org.apache.dubbo.common.extension.ExtensionScope;
 import org.apache.dubbo.common.extension.SPI;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 
 /**
  *  for http body codec

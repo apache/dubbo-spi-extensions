@@ -21,7 +21,7 @@ import org.apache.dubbo.common.constants.LoggerCodeConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.remoting.http.RequestTemplate;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.protocol.rest.annotation.consumer.HttpConnectionCreateContext;

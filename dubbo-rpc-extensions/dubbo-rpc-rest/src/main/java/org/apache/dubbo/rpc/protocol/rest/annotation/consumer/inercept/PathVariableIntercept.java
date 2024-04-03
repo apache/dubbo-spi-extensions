@@ -17,9 +17,9 @@
 package org.apache.dubbo.rpc.protocol.rest.annotation.consumer.inercept;
 
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.metadata.rest.ArgInfo;
-import org.apache.dubbo.metadata.rest.PathUtil;
-import org.apache.dubbo.metadata.rest.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.ArgInfo;
+import org.apache.dubbo.metadata.extension.rest.api.PathUtil;
+import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
 import org.apache.dubbo.remoting.http.RequestTemplate;
 import org.apache.dubbo.rpc.protocol.rest.annotation.consumer.HttpConnectionCreateContext;
 import org.apache.dubbo.rpc.protocol.rest.annotation.consumer.HttpConnectionPreBuildIntercept;

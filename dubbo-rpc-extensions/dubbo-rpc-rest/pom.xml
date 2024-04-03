@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-metadata-rest</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-rpc-api</artifactId>
             <optional>true</optional>
@@ -105,6 +110,7 @@
             <artifactId>dubbo-serialization-jdk</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--        to use utils -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-metadata-api</artifactId>

@@ -17,7 +17,7 @@
 package org.apache.dubbo.rpc.protocol.rest.annotation.consumer.inercept;
 
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.metadata.rest.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
 import org.apache.dubbo.remoting.http.RequestTemplate;
 import org.apache.dubbo.rpc.protocol.rest.RestHeaderEnum;
 import org.apache.dubbo.rpc.protocol.rest.annotation.consumer.HttpConnectionCreateContext;

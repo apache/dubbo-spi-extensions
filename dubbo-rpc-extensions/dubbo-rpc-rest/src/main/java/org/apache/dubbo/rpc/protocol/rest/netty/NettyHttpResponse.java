@@ -22,7 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.HttpHeaders.Names;
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.metadata.rest.media.MediaType;
+import org.apache.dubbo.metadata.extension.rest.api.media.MediaType;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.rpc.protocol.rest.RestHeaderEnum;
 
