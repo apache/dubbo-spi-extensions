@@ -22,7 +22,11 @@ import org.apache.dubbo.config.annotation.Service;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Service
 public class DubboSwaggerApiListingResource extends BaseApiListingResource implements DubboSwaggerService {

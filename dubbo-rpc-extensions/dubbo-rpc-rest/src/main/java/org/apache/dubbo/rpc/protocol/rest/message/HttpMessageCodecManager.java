@@ -46,7 +46,7 @@ public class HttpMessageCodecManager {
     }
 
     public static MessageCodecResultPair httpMessageEncode(
-            OutputStream outputStream, Object unSerializedBody, URL url, MediaType mediaType, Class<?> bodyType)
+        OutputStream outputStream, Object unSerializedBody, URL url, MediaType mediaType, Class<?> bodyType)
             throws Exception {
 
         if (unSerializedBody == null) {

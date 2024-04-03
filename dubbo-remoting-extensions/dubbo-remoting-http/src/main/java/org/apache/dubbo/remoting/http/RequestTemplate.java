@@ -20,7 +20,12 @@ import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.rpc.Invocation;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RequestTemplate implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -28,10 +28,21 @@ import org.apache.dubbo.rpc.model.ApplicationModel;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.sort;
+import static java.util.Collections.unmodifiableMap;
 import static org.apache.dubbo.common.function.ThrowableFunction.execute;
 import static org.apache.dubbo.common.utils.AnnotationUtils.isAnnotationPresent;
 import static org.apache.dubbo.common.utils.AnnotationUtils.isAnyAnnotationPresent;
@@ -39,7 +50,9 @@ import static org.apache.dubbo.common.utils.ClassUtils.forName;
 import static org.apache.dubbo.common.utils.ClassUtils.getAllInterfaces;
 import static org.apache.dubbo.common.utils.MemberUtils.isPrivate;
 import static org.apache.dubbo.common.utils.MemberUtils.isStatic;
-import static org.apache.dubbo.common.utils.MethodUtils.*;
+import static org.apache.dubbo.common.utils.MethodUtils.overrides;
+import static org.apache.dubbo.common.utils.MethodUtils.excludedDeclaredClass;
+import static org.apache.dubbo.common.utils.MethodUtils.getAllMethods;
 
 /**
  * The abstract {@link ServiceRestMetadataResolver} class to provider some template methods assemble the instance of

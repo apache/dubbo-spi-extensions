@@ -26,7 +26,12 @@ import org.apache.dubbo.remoting.http.RequestTemplate;
 import org.apache.dubbo.rpc.protocol.rest.constans.RestConstant;
 import org.apache.dubbo.rpc.protocol.rest.util.DataParseUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Activate("consumer-form")
 public class FormConsumerParamParser implements BaseConsumerParamParser {

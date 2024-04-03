@@ -17,7 +17,12 @@
 package org.apache.dubbo.metadata.extension.rest.annotation.processing.common;
 
 import javax.annotation.processing.Processor;
-import javax.tools.*;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

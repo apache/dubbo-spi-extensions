@@ -28,7 +28,11 @@ import org.apache.dubbo.rpc.protocol.rest.netty.NettyHttpResponse;
 import org.apache.dubbo.rpc.protocol.rest.request.RequestFacade;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HttpHeaderUtil {
 

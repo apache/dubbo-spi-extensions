@@ -29,7 +29,15 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,7 +50,10 @@ import static org.apache.dubbo.metadata.annotation.processing.builder.MethodDefi
 import static org.apache.dubbo.metadata.annotation.processing.util.LoggerUtils.info;
 import static org.apache.dubbo.metadata.annotation.processing.util.MethodUtils.getOverrideMethod;
 import static org.apache.dubbo.metadata.annotation.processing.util.MethodUtils.getPublicNonStaticMethods;
-import static org.apache.dubbo.metadata.annotation.processing.util.ServiceAnnotationUtils.*;
+import static org.apache.dubbo.metadata.annotation.processing.util.ServiceAnnotationUtils.getAnnotation;
+import static org.apache.dubbo.metadata.annotation.processing.util.ServiceAnnotationUtils.getGroup;
+import static org.apache.dubbo.metadata.annotation.processing.util.ServiceAnnotationUtils.getVersion;
+import static org.apache.dubbo.metadata.annotation.processing.util.ServiceAnnotationUtils.resolveServiceInterfaceName;
 
 /**
  * Abstract {@link ServiceRestMetadataResolver} implementation
@@ -89,8 +100,8 @@ public abstract class AbstractServiceRestMetadataResolver implements ServiceRest
 
             serviceMethods.forEach(serviceMethod -> {
                 resolveRestMethodMetadata(
-                                processingEnv, serviceType, serviceInterfaceType, serviceMethod, serviceRestMetadata)
-                        .ifPresent(serviceRestMetadata.getMeta()::add);
+                    processingEnv, serviceType, serviceInterfaceType, serviceMethod, serviceRestMetadata)
+                    .ifPresent(serviceRestMetadata.getMeta()::add);
             });
 
         } finally {

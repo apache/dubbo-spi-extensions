@@ -18,7 +18,16 @@ package org.apache.dubbo.metadata.extension.rest.annotation.processing.rest;
 
 import org.apache.dubbo.config.annotation.DubboService;
 
-import javax.ws.rs.*;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +59,7 @@ public class StandardRestService implements RestService {
     @Path("headers")
     @GET
     public String headers(
-            @HeaderParam("h") String header, @HeaderParam("h2") String header2, @QueryParam("v") Integer param) {
+        @HeaderParam("h") String header, @HeaderParam("h2") String header2, @QueryParam("v") Integer param) {
         String result = header + " , " + header2 + " , " + param;
         return result;
     }
@@ -59,7 +68,7 @@ public class StandardRestService implements RestService {
     @Path("path-variables/{p1}/{p2}")
     @GET
     public String pathVariables(
-            @PathParam("p1") String path1, @PathParam("p2") String path2, @QueryParam("v") String param) {
+        @PathParam("p1") String path1, @PathParam("p2") String path2, @QueryParam("v") String param) {
         String result = path1 + " , " + path2 + " , " + param;
         return result;
     }

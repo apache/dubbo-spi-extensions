@@ -16,17 +16,19 @@
  */
 package org.apache.dubbo.metadata.extension.rest.api.jaxrs;
 
-import org.apache.dubbo.metadata.extension.rest.api.*;
+
+import java.util.List;
+import java.util.Map;
+
 import org.apache.dubbo.metadata.extension.rest.api.AbstractAnnotatedMethodParameterProcessor;
 import org.apache.dubbo.metadata.extension.rest.api.AnnotatedMethodParameterProcessor;
 import org.apache.dubbo.metadata.extension.rest.api.RequestMetadata;
 import org.apache.dubbo.metadata.extension.rest.api.RestMethodMetadata;
+import org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The {@link AnnotatedMethodParameterProcessor} implementation for JAX-RS's @DefaultValue

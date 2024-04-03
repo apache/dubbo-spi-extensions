@@ -23,7 +23,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @Path("dubbo")
 @Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
@@ -33,6 +38,6 @@ public interface DubboSwaggerService {
     @GET
     @Path("swagger")
     Response getListingJson(
-            @Context Application app, @Context ServletConfig sc, @Context HttpHeaders headers, @Context UriInfo uriInfo)
+        @Context Application app, @Context ServletConfig sc, @Context HttpHeaders headers, @Context UriInfo uriInfo)
             throws JsonProcessingException;
 }

@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.rpc.protocol.rest.annotation;
 
+
 import org.apache.dubbo.metadata.extension.rest.api.ArgInfo;
 
 public interface ParamParser<T> {

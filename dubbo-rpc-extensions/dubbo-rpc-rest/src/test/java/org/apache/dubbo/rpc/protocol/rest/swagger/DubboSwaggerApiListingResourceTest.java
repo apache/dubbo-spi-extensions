@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.protocol.rest.integration.swagger;
+package org.apache.dubbo.rpc.protocol.rest.swagger;
 
 import io.swagger.models.Swagger;
+import org.apache.dubbo.rpc.protocol.rest.integration.swagger.DubboSwaggerApiListingResource;
 import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class DubboSwaggerApiListingResourceTest {
     @Test
     void test() throws Exception {
 
-        DubboSwaggerApiListingResource resource = new DubboSwaggerApiListingResource();
+        org.apache.dubbo.rpc.protocol.rest.integration.swagger.DubboSwaggerApiListingResource resource = new DubboSwaggerApiListingResource();
 
         app = mock(Application.class);
         sc = mock(ServletConfig.class);

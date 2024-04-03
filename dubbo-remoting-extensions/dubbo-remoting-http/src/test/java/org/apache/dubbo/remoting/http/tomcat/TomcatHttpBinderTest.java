@@ -22,7 +22,6 @@ import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.remoting.http.HttpHandler;
 import org.apache.dubbo.remoting.http.HttpServer;
-import org.apache.dubbo.remoting.http.tomcat.TomcatHttpBinder;
 import org.apache.http.client.fluent.Request;
 import org.junit.jupiter.api.Test;
 
