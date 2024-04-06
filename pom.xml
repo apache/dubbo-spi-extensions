@@ -102,6 +102,7 @@
         <module>dubbo-kubernetes</module>
         <module>dubbo-wasm</module>
         <module>dubbo-proxy-extensions</module>
+        <module>dubbo-cluster-extensions/dubbo-cluster-router-mesh</module>
     </modules>
 
     <properties>
