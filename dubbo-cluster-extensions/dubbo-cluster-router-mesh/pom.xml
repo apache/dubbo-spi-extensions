@@ -22,18 +22,17 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>dubbo-cluster-router-mesh</artifactId>
-    <packaging>jar</packaging>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <skip_maven_deploy>false</skip_maven_deploy>
-    </properties>
-
     <dependencies>
-
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-common</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
@@ -50,11 +49,15 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-cluster</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>dubbo-cluster-router-mesh</artifactId>
+    <version>3.2.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <skip_maven_deploy>false</skip_maven_deploy>
+    </properties>
 </project>
