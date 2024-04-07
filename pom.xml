@@ -94,14 +94,13 @@
         <module>dubbo-rpc-extensions</module>
         <module>dubbo-serialization-extensions</module>
         <module>dubbo-mock-extensions</module>
-        <module>dubbo-gateway-extensions</module>
         <module>dubbo-cross-thread-extensions</module>
         <module>dubbo-tag-extensions</module>
         <module>dobbo-doc-auto-gen</module>
     </modules>
 
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
+        <revision>3.1.0</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <hazelcast_version>3.11.1</hazelcast_version>

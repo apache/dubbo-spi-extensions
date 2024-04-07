@@ -1,1 +1,0 @@
-injvm-initial=org.apache.dubbo.gateway.consumer.config.InjvmConfigPostProcessor

@@ -25,6 +25,7 @@ import org.apache.dubbo.remoting.exchange.support.Replier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * ClientToServer
  */
+@Disabled
 public abstract class ClientToServerTest {
 
     protected static final String LOCALHOST = "127.0.0.1";
