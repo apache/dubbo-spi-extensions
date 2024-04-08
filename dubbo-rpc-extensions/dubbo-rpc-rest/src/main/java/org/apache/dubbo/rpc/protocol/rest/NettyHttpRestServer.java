@@ -42,7 +42,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.dubbo.common.constants.CommonConstants.BACKLOG_KEY;
 import static org.apache.dubbo.common.constants.CommonConstants.IO_THREADS_KEY;
-import static org.apache.dubbo.remoting.Constants.*;
+import static org.apache.dubbo.remoting.Constants.BIND_IP_KEY;
+import static org.apache.dubbo.remoting.Constants.BIND_PORT_KEY;
+import static org.apache.dubbo.remoting.Constants.DEFAULT_IO_THREADS;
 
 /**
  * netty http server
