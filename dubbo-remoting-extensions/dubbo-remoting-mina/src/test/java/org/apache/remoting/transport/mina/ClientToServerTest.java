@@ -48,6 +48,7 @@ public abstract class ClientToServerTest {
 
     @BeforeEach
     protected void setUp() throws Exception {
+        System.setProperty("dubbo.application.logger", "jdk");
         int port = NetUtils.getAvailablePort();
         server = newServer(port, handler);
         client = newClient(port);
