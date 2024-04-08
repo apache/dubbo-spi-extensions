@@ -18,7 +18,6 @@ package org.apache.dubbo.metadata.extension.rest.annotation.processing.springmvc
 
 import org.apache.dubbo.metadata.extension.rest.annotation.processing.AbstractServiceRestMetadataResolver;
 import org.apache.dubbo.metadata.extension.rest.annotation.processing.ServiceRestMetadataResolver;
-import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
