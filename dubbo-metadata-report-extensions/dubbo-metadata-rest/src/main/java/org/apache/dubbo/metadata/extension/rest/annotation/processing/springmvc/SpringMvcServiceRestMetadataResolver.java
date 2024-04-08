@@ -18,6 +18,7 @@ package org.apache.dubbo.metadata.extension.rest.annotation.processing.springmvc
 
 import org.apache.dubbo.metadata.extension.rest.annotation.processing.AbstractServiceRestMetadataResolver;
 import org.apache.dubbo.metadata.extension.rest.annotation.processing.ServiceRestMetadataResolver;
+import org.apache.dubbo.rpc.model.ApplicationModel;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
@@ -28,6 +29,7 @@ import javax.lang.model.type.DeclaredType;
 import java.lang.reflect.Array;
 import java.util.Set;
 
+
 import static java.lang.String.valueOf;
 import static java.lang.reflect.Array.getLength;
 import static java.util.stream.Stream.of;
@@ -35,7 +37,11 @@ import static org.apache.dubbo.common.function.Streams.filterFirst;
 import static org.apache.dubbo.common.utils.ArrayUtils.isEmpty;
 import static org.apache.dubbo.common.utils.ArrayUtils.isNotEmpty;
 import static org.apache.dubbo.common.utils.PathUtils.buildPath;
-import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.*;
+import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.findAnnotation;
+import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.findMetaAnnotation;
+import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.getAllAnnotations;
+import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.getAttribute;
+import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.isAnnotationPresent;
 import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.CONTROLLER_ANNOTATION_CLASS_NAME;
 import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS_NAME;
 

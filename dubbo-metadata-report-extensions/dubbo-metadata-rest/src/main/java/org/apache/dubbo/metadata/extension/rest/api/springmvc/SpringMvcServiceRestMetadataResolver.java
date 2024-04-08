@@ -29,12 +29,17 @@ import java.util.Set;
 import static java.lang.String.valueOf;
 import static java.lang.reflect.Array.getLength;
 import static java.util.stream.Stream.of;
-import static org.apache.dubbo.common.utils.AnnotationUtils.*;
+import static org.apache.dubbo.common.utils.AnnotationUtils.findAnnotation;
+import static org.apache.dubbo.common.utils.AnnotationUtils.getAttribute;
+import static org.apache.dubbo.common.utils.AnnotationUtils.isAnnotationPresent;
 import static org.apache.dubbo.common.utils.ArrayUtils.isEmpty;
 import static org.apache.dubbo.common.utils.ArrayUtils.isNotEmpty;
 import static org.apache.dubbo.common.utils.MethodUtils.findMethod;
 import static org.apache.dubbo.common.utils.PathUtils.buildPath;
-import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.*;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.ANNOTATED_ELEMENT_UTILS_CLASS;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.CONTROLLER_ANNOTATION_CLASS;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS_NAME;
 
 /**
  * {@link ServiceRestMetadataResolver}

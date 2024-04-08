@@ -25,9 +25,16 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.apache.dubbo.common.utils.AnnotationUtils.*;
+
+import static org.apache.dubbo.common.utils.AnnotationUtils.findAnnotation;
+import static org.apache.dubbo.common.utils.AnnotationUtils.findMetaAnnotation;
+import static org.apache.dubbo.common.utils.AnnotationUtils.getValue;
+import static org.apache.dubbo.common.utils.AnnotationUtils.isAnnotationPresent;
 import static org.apache.dubbo.common.utils.PathUtils.buildPath;
-import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.JAX_RS.*;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.CONSUMES_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.HTTP_METHOD_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.PATH_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.PRODUCES_ANNOTATION_CLASS_NAME;
 
 /**
  * JAX-RS {@link ServiceRestMetadataResolver} implementation
