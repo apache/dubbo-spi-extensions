@@ -1,4 +1,4 @@
-name: Build and Test For PR
+name: Scheduler Build for master
 
 on:
   schedule:
