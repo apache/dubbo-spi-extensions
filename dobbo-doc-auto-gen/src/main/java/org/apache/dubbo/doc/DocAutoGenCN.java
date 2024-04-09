@@ -19,15 +19,14 @@ package org.apache.dubbo.doc;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Arrays;
 
-public class DocAutoGen {
+public class DocAutoGenCN {
     public static void main(String[] args) throws IOException {
         String filePath = System.getProperty("user.dir");
         File file = new File(filePath);
         int level = 0;
         String parentPath = "";
-        System.setOut(new PrintStream(filePath + "/" + "README.md"));
+        System.setOut(new PrintStream(filePath + "/" + "README_CN.md"));
         String title = "# dubbo-spi-extensions";
         System.out.println(title);
         String x = "[![Build Status](https://travis-ci.org/apache/dubbo-spi-extensions.svg?branch=master)](https://travis-ci.org/apache/dubbo-spi-extensions)\n" +
@@ -36,32 +35,32 @@ public class DocAutoGen {
             "[![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]";
         System.out.println(x);
         System.out.println();
-        String chineseFile = "[中文](./README_CN.md)\n";
+        String chineseFile = "[English](./README.md)\n";
         System.out.println(chineseFile);
-        String description = "The purpose of dubbo-spi-extensions is to provide open, community-driven, reusable components to build microservice programs with different needs. These components extend the core of the Apache Dubbo project, but they are separated and decoupled.";
+        String description = "dubbo-spi-extensions的目的是提供开放的、社区驱动的、可重用的组件，用于构建具有不同需求的微服务程序。这些组件扩展了Apache Dubbo项目的核心，但它们是分离的且解耦的。";
         System.out.println(description);
 
         System.out.println();
-        String usage = "Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. The available extensions are as follows:Developers can flexibly choose the required extension dependencies to develop microservice programs based on their needs. ";
+        String usage = "开发者可以根据自己的需求灵活选择所需的扩展依赖，开发基于微服务的程序。现有的扩展如下：开发者可以根据自己的需求灵活选择所需的扩展依赖，开发基于微服务的程序。";
         System.out.println(usage);
         System.out.println();
-        System.out.println("For version release notes, please refer to the documentation:");
+        System.out.println("有关版本发布说明，请参阅文档：");
         System.out.println("- [Release](https://cn.dubbo.apache.org/zh-cn/download/spi-extensions/)");
         System.out.println("- [Reference](https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/spi/overview/)");
         System.out.println();
 
-        String asFollow = "The available extensions are as follows:";
+        String asFollow = "现有的扩展如下：";
         System.out.println(asFollow);
         System.out.println();
 
-        visitFile(file, parentPath, level);
+        DocAutoGen.visitFile(file, parentPath, level);
         System.out.println();
-        String contributorTitle = "## Contribution\n";
-        String thanks = "Thanks to everyone who has contributed!\n";
+        String contributorTitle = "## 贡献\n";
+        String thanks = "感谢所有为此做出贡献的人！\n";
         String contributorImg =
             "<a href=\"https://github.com/apache/dubbo-spi-extensions/graphs/contributors\">\n" +
                 "  <img src=\"https://contributors-img.web.app/image?repo=apache/dubbo-spi-extensions\" />\n" +
-                "</a>\n" ;
+                "</a>\n";
         System.out.println(contributorTitle);
         System.out.println();
         System.out.println(thanks);
@@ -70,31 +69,4 @@ public class DocAutoGen {
         System.out.println();
     }
 
-    public static void visitFile(File file, String parentPath, int level) {
-        File[] files = file.listFiles();
-        // gen code sort by file name
-        Arrays.sort(files, (o1, o2) -> {
-            if (o1.isDirectory() && o2.isFile()) {
-                return -1;
-            }
-            if (o1.isFile() && o2.isDirectory()) {
-                return 1;
-            }
-            return o1.getName().compareTo(o2.getName());
-        });
-        for (int i = 0; i < files.length; i++) {
-            File f = files[i];
-            String name = f.getName();
-            if (name.startsWith("dubbo-")) {
-                String blank = "";
-                for (int j = 0; j < level; j++) {
-                    blank += "  ";
-                }
-
-                String currentPath = level == 0 ? name : parentPath + "/" + name;
-                System.out.println(blank + "- [" + name + "]" + "(" + currentPath + ")");
-                visitFile(f, currentPath, level + 1);
-            }
-        }
-    }
 }
