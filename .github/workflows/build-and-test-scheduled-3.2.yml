@@ -55,7 +55,12 @@ jobs:
   build-tools:
     name: "Build-tools"
     needs: check-license
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        jdk: [ 8 ]
+      fail-fast: false
     outputs:
       cache-key: ${{ steps.dubbo-build-tools.cache }}
     steps:
