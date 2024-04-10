@@ -52,10 +52,9 @@ jobs:
   build-tools:
     name: "Build-tools"
     needs: check-license
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
         jdk: [ 8 ]
       fail-fast: false
     outputs:
@@ -76,7 +75,7 @@ jobs:
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: build-tools-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -106,6 +105,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
+            build-tools-maven-
+            build-tools-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - name: "Compile Dubbo-SPI-Extensions (Linux)"
@@ -237,6 +238,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
+            build-tools-maven-
+            build-tools-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - uses: actions/cache@v4

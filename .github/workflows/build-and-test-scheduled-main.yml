@@ -37,7 +37,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - name: Restore Maven local repository cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -58,7 +58,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ ubuntu-latest ]
         jdk: [ 8 ]
       fail-fast: false
     outputs:
@@ -75,11 +75,11 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: build-tools-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -104,12 +104,14 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
+            build-tools-maven-
+            build-tools-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - name: "Compile Dubbo-SPI-Extensions (Linux)"
@@ -157,7 +159,7 @@ jobs:
     env:
       ZOOKEEPER_VERSION: 3.6.3
     steps:
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache zookeeper binary archive"
         id: "cache-zookeeper"
         with:
@@ -181,7 +183,7 @@ jobs:
           wget -c http://mirror.apache-kr.org/apache/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz
           echo "list the downloaded zookeeper binary archive"
           ls -al ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache secret key"
         id: "cache-secret-cert"
         with:
@@ -226,6 +228,8 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
+            build-tools-maven-
+            build-tools-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - uses: actions/cache@v4
@@ -284,7 +288,7 @@ jobs:
 #          distribution: 'zulu'
 #          java-version: 21
 #      - name: Restore Maven local repository cache
-#        uses: actions/cache@v3
+#        uses: actions/cache@v4
 #        with:
 #          path: ~/.m2/repository
 #          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
