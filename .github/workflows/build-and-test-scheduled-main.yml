@@ -144,10 +144,11 @@ jobs:
   # Download dependencies Prepare for unit test
   unit-test-prepare:
     name: "Preparation for Unit Test"
-    needs: [check-license, build-source]
-    runs-on: ubuntu-latest
+    needs: [check-license]
+    runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
     env:
       ZOOKEEPER_VERSION: 3.6.3
     steps:
@@ -192,11 +193,14 @@ jobs:
           cat rsa_public.pem
           echo "--- End Print Rsa Public Key"
   # Start unit test
-  unit-test-jdk8:
+  unit-test:
     needs: [check-license, build-source, unit-test-prepare]
-    name: "Unit Test On ubuntu-latest with JDK8"
-    runs-on: ubuntu-latest
+    name: "Unit Test ${{ matrix.os }} with JDK ${{ matrix.jdk }}"
+    runs-on: ${{ matrix.os }}
     strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        jdk: [ 8, 11 ]
       fail-fast: false
     env:
       DISABLE_FILE_SYSTEM_TEST: true
@@ -211,15 +215,15 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
             ${{ runner.os }}-maven-
-      - uses: actions/cache@v3
+            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      - uses: actions/cache@v4
         name: "Cache zookeeper binary archive"
         id: "cache-zookeeper"
         with:
@@ -227,7 +231,7 @@ jobs:
           key: zookeeper-${{ runner.os }}-${{ env.ZOOKEEPER_VERSION }}
           restore-keys: |
             zookeeper-${{ runner.os }}-
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: "Cache secret key"
         id: "cache-secret-cert"
         with:
@@ -250,75 +254,11 @@ jobs:
       - name: "Test with Maven without SonarCloud Scan"
         timeout-minutes: 70
         run: |
-          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Pjacoco -DtrimStackTrace=false -Dmaven.wagon.http.retryHandler.count=5 -DskipTests=false -DskipIntegrationTests=false -Dcheckstyle.skip=false -Dcheckstyle_unix.skip=false -Drat.skip=false -Dmaven.javadoc.skip=true -DembeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper
+          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify -D"maven.wagon.httpconnectionManager.ttlSeconds=120" -Pjacoco -DtrimStackTrace=false -D"maven.wagon.http.retryHandler.count=5" -DskipTests=false -DskipIntegrationTests=false -D"checkstyle.skip=false" -D"checkstyle_unix.skip=false" -D"rat.skip=false" -D"maven.javadoc.skip=true" -D"embeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper"
       - name: "Upload coverage result"
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-result-jdk8
-          path: "**/target/site/**/jacoco.xml"
-  unit-test-jdk11:
-    needs: [ check-license, build-source, unit-test-prepare ]
-    name: "Unit Test On ubuntu-latest with JDK11"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    env:
-      DISABLE_FILE_SYSTEM_TEST: true
-      CURRENT_ROLE: ${{ matrix.case-role }}
-      DUBBO_DEFAULT_SERIALIZATION: fastjson2
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: "Set up JDK ${{ matrix.jdk }}"
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 11
-      - uses: actions/cache@v3
-        name: "Cache local Maven repository"
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-            ${{ runner.os }}-maven-
-      - uses: actions/cache@v3
-        name: "Cache zookeeper binary archive"
-        id: "cache-zookeeper"
-        with:
-          path: ${{ github.workspace }}/.tmp/zookeeper
-          key: zookeeper-${{ runner.os }}-${{ env.ZOOKEEPER_VERSION }}
-          restore-keys: |
-            zookeeper-${{ runner.os }}-
-      - uses: actions/cache@v3
-        name: "Cache secret key"
-        id: "cache-secret-cert"
-        with:
-          path: ${{ github.workspace }}/.tmp/rsa
-          key: secret-rsa-${{ runner.os }}-${{ github.run_id }}
-      #      - name: "Get sonarcloud token"
-      #        if: ${{ github.repository == 'apache/dubbo-spi-extensions' }}
-      #        run: |
-      #          curl "http://dubbo-vm.apache.org:8000/token?workflow_id=${{ github.run_id }}" -o ${{ github.workspace }}/.tmp/encrypted-sonarcloud-token
-      #          openssl rsautl -decrypt -in ${{ github.workspace }}/.tmp/encrypted-sonarcloud-token -out ${{ github.workspace }}/.tmp/decrypted-sonarcloud-token -inkey ${{ github.workspace }}/.tmp/rsa/rsa_private.pem
-      #      - name: "Test with Maven with SonarCloud Scan"
-      #        if: ${{ github.repository == 'apache/dubbo-spi-extensions' }}
-      #        timeout-minutes: 70
-      #        env:
-      #          # Needed to get some information about the pull request, if any
-      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #        run: |
-      #          source ${{ github.workspace }}/.tmp/decrypted-sonarcloud-token
-      #          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pjacoco,jdk15ge-simple,'!jdk15ge',jacoco089 -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_dubbo -DtrimStackTrace=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=5 -DskipTests=false -DskipIntegrationTests=false -Dcheckstyle.skip=false -Dcheckstyle_unix.skip=false -Drat.skip=false -Dmaven.javadoc.skip=true -DembeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper -Dsonar.coverage.jacoco.xmlReportPaths=dubbo-test/dubbo-dependencies-all/target/site/jacoco-aggregate/jacoco.xml -Dsonar.login=${SONAR_TOKEN}
-      - name: "Test with Maven without SonarCloud Scan"
-        timeout-minutes: 70
-        run: |
-          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Pjacoco,jdk15ge-simple,'!jdk15ge',jacoco089 -DtrimStackTrace=false -Dmaven.wagon.http.retryHandler.count=5 -DskipTests=false -DskipIntegrationTests=false -Dcheckstyle.skip=false -Dcheckstyle_unix.skip=false -Drat.skip=false -Dmaven.javadoc.skip=true -DembeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper
-      - name: "Upload coverage result"
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-result-jdk11
+          name: coverage-result-${{ matrix.os }}-${{ matrix.jdk }}
           path: "**/target/site/**/jacoco.xml"
 
 #  error-code-inspecting:

@@ -86,8 +86,11 @@ jobs:
   # Build from source code
   build-source:
     name: "Build Dubbo-SPI-Extensions"
-    needs: [check-license, build-tools]
-    runs-on: ubuntu-latest
+    needs: [check-license]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
     # output dubbo-spi-extensions version to others jobs
     outputs:
       version: ${{ steps.dubbo-spi-extensions-version.outputs.version }}
@@ -269,7 +272,7 @@ jobs:
       - name: "Test with Maven without SonarCloud Scan"
         timeout-minutes: 70
         run: |
-          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Pjacoco -DtrimStackTrace=false -Dmaven.wagon.http.retryHandler.count=5 -DskipTests=false -DskipIntegrationTests=false -Dcheckstyle.skip=false -Dcheckstyle_unix.skip=false -Drat.skip=false -Dmaven.javadoc.skip=true -DembeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper
+          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify -D"maven.wagon.httpconnectionManager.ttlSeconds=120" -Pjacoco -DtrimStackTrace=false -D"maven.wagon.http.retryHandler.count=5" -DskipTests=false -DskipIntegrationTests=false -D"checkstyle.skip=false" -D"checkstyle_unix.skip=false" -D"rat.skip=false" -D"maven.javadoc.skip=true" -D"embeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper"
       - name: "Upload coverage result"
         uses: actions/upload-artifact@v4
         with:
