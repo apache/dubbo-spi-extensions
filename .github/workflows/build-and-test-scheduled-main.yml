@@ -26,9 +26,12 @@ jobs:
     name: "Check License"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: 'master'
       - name: Check License
-        uses: apache/skywalking-eyes@e1a02359b239bd28de3f6d35fdc870250fa513d5
+        uses: apache/skywalking-eyes@v0.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Set up JDK 21"
