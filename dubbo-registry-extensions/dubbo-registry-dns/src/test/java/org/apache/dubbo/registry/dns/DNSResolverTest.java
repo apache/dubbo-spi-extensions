@@ -14,8 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.registry.dns.util;
+package org.apache.dubbo.registry.dns;
 
+import org.apache.dubbo.registry.dns.util.DNSResolver;
+import org.apache.dubbo.registry.dns.util.ResolveResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +26,7 @@ public class DNSResolverTest {
     @Test
     public void testResolve() {
         DNSResolver dnsResolver = new DNSResolver("8.8.8.8", 53, 1);
-        ResolveResult resolve = dnsResolver.resolve("aliyun.com");
-        Assertions.assertTrue(resolve.getHostnameList().size() > 0);
+        ResolveResult resolve = dnsResolver.resolve("dubbo.apache.org");
+        Assertions.assertFalse(resolve.getHostnameList().isEmpty());
     }
 }
