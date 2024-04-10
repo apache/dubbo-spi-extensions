@@ -232,6 +232,11 @@ jobs:
       CURRENT_ROLE: ${{ matrix.case-role }}
       DUBBO_DEFAULT_SERIALIZATION: fastjson2
     steps:
+      - name: Support Windows
+        if: ${{ startsWith( matrix.os, 'windows') }}
+        run: |
+          git config --system core.longpaths true
+          git config --global core.autocrlf input
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
