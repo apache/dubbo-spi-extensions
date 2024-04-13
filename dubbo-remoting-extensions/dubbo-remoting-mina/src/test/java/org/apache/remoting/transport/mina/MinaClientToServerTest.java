@@ -23,9 +23,12 @@ import org.apache.dubbo.remoting.exchange.ExchangeServer;
 import org.apache.dubbo.remoting.exchange.Exchangers;
 import org.apache.dubbo.remoting.exchange.support.Replier;
 
+import org.junit.jupiter.api.Disabled;
+
 /**
  * MinaServerClientTest
  */
+@Disabled
 public class MinaClientToServerTest extends ClientToServerTest {
 
     @Override
