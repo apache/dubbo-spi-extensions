@@ -17,6 +17,7 @@
 
 package org.apache.dubbo.configcenter.support.etcd;
 
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.config.configcenter.ConfigChangedEvent;
 import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
@@ -24,7 +25,6 @@ import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
@@ -64,13 +63,18 @@ public class EtcdDynamicConfigurationTest {
     @Before
     public void setUp() {
         try {
-            etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 3, false);
+            EtcdClusterExtension clusterExtension = EtcdClusterExtension.builder()
+                .withClusterName(getClass().getSimpleName())
+                .withNodes(3)
+                .withSsl(false)
+                .build();
+            etcdCluster = clusterExtension.cluster();
 
             etcdCluster.start();
 
-            client = Client.builder().endpoints(etcdCluster.getClientEndpoints()).build();
+            client = Client.builder().endpoints(etcdCluster.clientEndpoints()).build();
 
-            List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
+            List<URI> clientEndPoints = etcdCluster.clientEndpoints();
 
             String ipAddress = clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort(); //"127.0.0.1:2379";
 
