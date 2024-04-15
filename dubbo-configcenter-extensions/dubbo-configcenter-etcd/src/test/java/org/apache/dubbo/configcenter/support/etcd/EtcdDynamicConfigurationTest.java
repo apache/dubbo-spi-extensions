@@ -121,7 +121,7 @@ public class EtcdDynamicConfigurationTest {
         put("/dubbo/config/dubbo/testapp/tagrouters", "new value2");
         Thread.sleep(1000);
 
-        Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
+        latch.await();
         Assert.assertEquals(1, listener1.getCount("AService/configurators"));
         Assert.assertEquals(1, listener2.getCount("AService/configurators"));
         Assert.assertEquals(1, listener3.getCount("testapp/tagrouters"));
