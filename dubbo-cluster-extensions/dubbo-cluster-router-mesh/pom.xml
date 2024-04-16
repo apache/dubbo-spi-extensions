@@ -29,15 +29,9 @@
     <packaging>jar</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-common</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
