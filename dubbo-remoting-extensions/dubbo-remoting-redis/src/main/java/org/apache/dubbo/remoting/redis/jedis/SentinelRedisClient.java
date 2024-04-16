@@ -58,7 +58,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public Long hset(String key, String field, String value) {
         Jedis jedis = sentinelPool.getResource();
         Long result = jedis.hset(key, field, value);
-        jedis.close();
+        sentinelPool.returnResource(jedis);
         return result;
     }
 
@@ -66,7 +66,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public Long publish(String channel, String message) {
         Jedis jedis = sentinelPool.getResource();
         Long result = jedis.publish(channel, message);
-        jedis.close();
+        sentinelPool.returnResource(jedis);
         return result;
     }
 
@@ -74,7 +74,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public boolean isConnected() {
         Jedis jedis = sentinelPool.getResource();
         boolean result = jedis.isConnected();
-        jedis.close();
+        sentinelPool.returnResource(jedis);
         return result;
     }
 
@@ -87,7 +87,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public Long hdel(String key, String... fields) {
         Jedis jedis = sentinelPool.getResource();
         Long result = jedis.hdel(key, fields);
-        jedis.close();
+        sentinelPool.returnResource(jedis);
         return result;
     }
 
@@ -95,7 +95,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public Set<String> scan(String pattern) {
         Jedis jedis = sentinelPool.getResource();
         Set<String> result = scan(jedis, pattern);
-        jedis.close();
+        sentinelPool.returnResource(jedis);
         return result;
     }
 
@@ -103,7 +103,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public Map<String, String> hgetAll(String key) {
         Jedis jedis = sentinelPool.getResource();
         Map<String, String> result = jedis.hgetAll(key);
-        jedis.close();
+        sentinelPool.returnResource(jedis);
         return result;
     }
 
@@ -111,7 +111,7 @@ public class SentinelRedisClient extends AbstractRedisClient implements RedisCli
     public void psubscribe(JedisPubSub jedisPubSub, String... patterns) {
         Jedis jedis = sentinelPool.getResource();
         jedis.psubscribe(jedisPubSub, patterns);
-        jedis.close();
+        sentinelPool.returnResource(jedis);
     }
 
     @Override

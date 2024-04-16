@@ -55,7 +55,7 @@ public class MonoRedisClient extends AbstractRedisClient implements RedisClient 
     public Long publish(String channel, String message) {
         Jedis jedis = jedisPool.getResource();
         Long result = jedis.publish(channel, message);
-        jedis.close();
+        jedisPool.returnResource(jedis);
         return result;
     }
 
@@ -63,7 +63,7 @@ public class MonoRedisClient extends AbstractRedisClient implements RedisClient 
     public boolean isConnected() {
         Jedis jedis = jedisPool.getResource();
         boolean connected = jedis.isConnected();
-        jedis.close();
+        jedisPool.returnResource(jedis);
         return connected;
     }
 
@@ -76,7 +76,7 @@ public class MonoRedisClient extends AbstractRedisClient implements RedisClient 
     public Long hdel(String key, String... fields) {
         Jedis jedis = jedisPool.getResource();
         Long result = jedis.hdel(key, fields);
-        jedis.close();
+        jedisPool.returnResource(jedis);
         return result;
     }
 
@@ -84,7 +84,7 @@ public class MonoRedisClient extends AbstractRedisClient implements RedisClient 
     public Set<String> scan(String pattern) {
         Jedis jedis = jedisPool.getResource();
         Set<String> result = super.scan(jedis, pattern);
-        jedis.close();
+        jedisPool.returnResource(jedis);
         return result;
     }
 
@@ -92,7 +92,7 @@ public class MonoRedisClient extends AbstractRedisClient implements RedisClient 
     public Map<String, String> hgetAll(String key) {
         Jedis jedis = jedisPool.getResource();
         Map<String, String> result = jedis.hgetAll(key);
-        jedis.close();
+        jedisPool.returnResource(jedis);
         return result;
     }
 
