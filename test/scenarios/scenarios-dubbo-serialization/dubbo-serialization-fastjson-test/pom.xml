@@ -33,7 +33,6 @@
         <junit.version>4.13.1</junit.version>
         <spring.version>5.3.25</spring.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-        <dubbo.version>3.2.10</dubbo.version>
     </properties>
 
 

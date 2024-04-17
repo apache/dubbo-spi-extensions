@@ -23,19 +23,19 @@ jobs:
     name: "Build Extensions"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           path: dubbo-spi-extensions
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           repository: 'apache/dubbo'
           ref: '3.0'
           path: dubbo
       - name: Set up JDK 8
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: 8
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:
           path: ~/.m2/repository
@@ -62,12 +62,12 @@ jobs:
       #'JOB_COUNT' MUST match 'job_id' list of 'testjob'
       JOB_COUNT: 3
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Prepare test list
         run: |
           bash ./test/scripts/prepare-test.sh
       - name: Upload test list
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-list
           path: test/jobs
@@ -86,20 +86,20 @@ jobs:
         #testjob id list MUST match 'JOB_COUNT' of 'prepare_test'
         job_id: [ 1,2,3 ]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Set up JDK ${{matrix.java}}
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
           java-version: ${{matrix.java}}
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-extensions-maven${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-extensions-maven
       - name: Download test list
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: test-list
           path: test/jobs/
@@ -108,9 +108,15 @@ jobs:
           cd test && bash ./build-test-image.sh
       - name: Run tests
         run: cd test && bash ./run-tests.sh
+      - name: Upload log if test failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log-${{matrix.java}}-${{matrix.job_id}}
+          path: "**/test/scenarios/**/logs/*"
       - name: Upload test result
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-result
           path: test/jobs/*-result*
@@ -127,11 +133,11 @@ jobs:
     env:
       JAVA_VER: ${{matrix.java}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Download test result
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: test-result
           path: test/jobs/
-      - name: Merge test result - java ${{matrix.java}}
-        run: ./test/scripts/merge-test-results.sh
+#      - name: Merge test result - java ${{matrix.java}}
+#        run: ./test/scripts/merge-test-results.sh
