@@ -169,7 +169,6 @@ public class EtcdDynamicConfiguration implements DynamicConfiguration {
         @Override
         public void onError(Throwable throwable) {
             logger.error("etcd watcher get an error", throwable);
-            // ignore
         }
 
         @Override

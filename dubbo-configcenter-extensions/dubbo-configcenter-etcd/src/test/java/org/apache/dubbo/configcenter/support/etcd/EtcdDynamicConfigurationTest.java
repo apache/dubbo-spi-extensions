@@ -25,10 +25,10 @@ import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class EtcdDynamicConfigurationTest {
     public EtcdCluster etcdCluster;
 
     // This will involve Docker pulling the image very slowly
-    @Before
+    @BeforeEach
     public void setUp() {
         try {
             EtcdClusterExtension clusterExtension = EtcdClusterExtension.builder()
@@ -174,7 +174,7 @@ public class EtcdDynamicConfigurationTest {
     }
 
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (etcdCluster != null) {
             etcdCluster.close();
