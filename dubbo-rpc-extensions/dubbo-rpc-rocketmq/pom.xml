@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>2.0.9</powermock.version>
-        <rocketmq.version>4.9.2</rocketmq.version>
+        <rocketmq.version>4.9.8</rocketmq.version>
     </properties>
     <dependencies>
         <dependency>
