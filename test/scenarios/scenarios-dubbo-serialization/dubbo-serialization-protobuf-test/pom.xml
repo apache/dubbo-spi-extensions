@@ -170,7 +170,7 @@
                             <id>dubbo</id>
                             <groupId>org.apache.dubbo</groupId>
                             <artifactId>dubbo-compiler</artifactId>
-                            <version>${dubbo.compiler.version}</version>
+                            <version>${dubbo.version}</version>
                             <mainClass>org.apache.dubbo.gen.dubbo.Dubbo3Generator</mainClass>
                         </protocPlugin>
                     </protocPlugins>
