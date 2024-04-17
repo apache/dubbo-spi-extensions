@@ -260,6 +260,12 @@ jobs:
           key: zookeeper-${{ runner.os }}-${{ env.ZOOKEEPER_VERSION }}
           restore-keys: |
             zookeeper-${{ runner.os }}-
+      - name: "Upload surefire-reports if failure"
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports-${{ matrix.os }}-${{ matrix.jdk }}
+          path: "**/target/surefire-reports/**"
       - uses: actions/cache@v4
         name: "Cache secret key"
         id: "cache-secret-cert"
