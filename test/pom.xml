@@ -20,13 +20,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apache.dubbo.extensions</groupId>
+    <parent>
+        <groupId>org.apache.dubbo.extensions</groupId>
+        <artifactId>extensions-parent</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <artifactId>dubbo-extensions-test</artifactId>
     <packaging>pom</packaging>
-    <version>3.2.0</version>
+    <version>${revision}</version>
     <modules>
         <module>dubbo-test-runner</module>
         <module>dubbo-scenario-builder</module>
+        <module>scenarios</module>
     </modules>
 
 

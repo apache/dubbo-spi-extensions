@@ -26,7 +26,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>3.2.0</version>
+    <version>${revision}</version>
 
     <artifactId>dubbo-metadata-report-consul</artifactId>
 
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-configcenter-consul</artifactId>
-            <version>3.2.0</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>com.ecwid.consul</groupId>
