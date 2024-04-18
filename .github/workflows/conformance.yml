@@ -132,8 +132,6 @@ jobs:
       fail-fast: false
       matrix:
         java: [ 8 ]
-        #testjob id list MUST match 'JOB_COUNT' of 'prepare_test'
-        job_id: [ 1,2,3 ]
     env:
       JAVA_VER: ${{matrix.java}}
     steps:
@@ -141,7 +139,12 @@ jobs:
       - name: Download test result
         uses: actions/download-artifact@v4
         with:
-          name: test-result-${{matrix.job_id}}
+          name: test-result-*
           path: test/jobs/
       - name: Merge test result - java ${{matrix.java}}
         run: ./test/scripts/merge-test-results.sh
+      - name: Upload merge test result
+        uses: actions/upload-artifact@v4
+        with:
+          name: merge-test-result-${{matrix.java}}
+          path: test/jobs/*-result*
