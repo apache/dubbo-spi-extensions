@@ -22,6 +22,7 @@ import org.apache.dubbo.remoting.exchange.ExchangeChannel;
 import org.apache.dubbo.remoting.exchange.ExchangeServer;
 import org.apache.dubbo.remoting.exchange.Exchangers;
 import org.apache.dubbo.remoting.exchange.support.Replier;
+import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.Disabled;
 
