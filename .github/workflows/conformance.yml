@@ -139,7 +139,7 @@ jobs:
         with:
           name: Merge-test-result-Java${{matrix.java}}
           separate-directories: true
-          pattern: test-result-
+          pattern: test-result-*
           delete-merged: true
 
 #  test_result:
