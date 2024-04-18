@@ -164,11 +164,11 @@
                     <clearOutputDirectory>false</clearOutputDirectory>
                     <protocPlugins>
                         <protocPlugin>
-                            <id>dubbo</id>
+                            <id>dubbo-triple</id>
                             <groupId>org.apache.dubbo</groupId>
                             <artifactId>dubbo-compiler</artifactId>
                             <version>${dubbo.version}</version>
-                            <mainClass>org.apache.dubbo.gen.dubbo.Dubbo3Generator</mainClass>
+                            <mainClass>org.apache.dubbo.gen.tri.Dubbo3TripleGenerator</mainClass>
                         </protocPlugin>
                     </protocPlugins>
                 </configuration>
