@@ -123,10 +123,9 @@ jobs:
           name: test-result-${{matrix.job_id}}
           path: test/jobs/*-result*
 
-  test_result:
+  merge_test:
     needs: [ testjob ]
-    name: 'Test Result (Java${{matrix.java}})'
-    if: always()
+    name: 'Merge Test Result (Java${{matrix.java}})'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -135,15 +134,35 @@ jobs:
     env:
       JAVA_VER: ${{matrix.java}}
     steps:
-      - uses: actions/checkout@v4
-      - name: Download test result
-        uses: actions/download-artifact@v4
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
         with:
-          path: test/jobs/
-      - name: Merge test result - java ${{matrix.java}}
-        run: ./test/scripts/merge-test-results.sh
-      - name: Upload merge test result
-        uses: actions/upload-artifact@v4
-        with:
-          name: merge-test-result-${{matrix.java}}
-          path: test/jobs/*-result*
+          name: Merge-test-result-Java${{matrix.java}}
+          separate-directories: true
+          pattern: test-result-
+          delete-merged: true
+
+#  test_result:
+#    needs: [ testjob ]
+#    name: 'Test Result (Java${{matrix.java}})'
+#    if: always()
+#    runs-on: ubuntu-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        java: [ 8 ]
+#    env:
+#      JAVA_VER: ${{matrix.java}}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Download test result
+#        uses: actions/download-artifact@v4
+#        with:
+#          path: test/jobs/
+#      - name: Merge test result - java ${{matrix.java}}
+#        run: ./test/scripts/merge-test-results.sh
+#      - name: Upload merge test result
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: merge-test-result-${{matrix.java}}
+#          path: test/jobs/*-result*
