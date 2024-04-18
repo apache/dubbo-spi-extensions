@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
@@ -125,7 +126,7 @@ public class EtcdDynamicConfigurationTest {
         put("/dubbo/config/dubbo/testapp/tagrouters", "new value2");
         Thread.sleep(1000);
 
-        latch.await();
+        Assert.assertTrue(latch.await(1, TimeUnit.MINUTES));
         Assert.assertEquals(1, listener1.getCount("AService/configurators"));
         Assert.assertEquals(1, listener2.getCount("AService/configurators"));
         Assert.assertEquals(1, listener3.getCount("testapp/tagrouters"));
