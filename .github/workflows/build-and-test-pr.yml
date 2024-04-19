@@ -284,12 +284,6 @@ jobs:
         timeout-minutes: 70
         run: |
           ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast clean test verify -D"maven.wagon.httpconnectionManager.ttlSeconds=120" -Pjacoco -DtrimStackTrace=false -D"maven.wagon.http.retryHandler.count=5" -DskipTests=false -DskipIntegrationTests=false -D"checkstyle.skip=false" -D"checkstyle_unix.skip=true" -D"rat.skip=false" -D"maven.javadoc.skip=true" -D"embeddedZookeeperPath=${{ github.workspace }}/.tmp/zookeeper"
-      - name: "Upload rat if failure"
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: rat-reports-${{ matrix.os }}-${{ matrix.jdk }}
-          path: "**/target/rat.txt"
       - name: "Upload surefire-reports if failure"
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
