@@ -387,6 +387,7 @@
                         <exclude>**/generated/**</exclude>
                         <!-- exclude mockito extensions spi files -->
                         <exclude>**/mockito-extensions/*</exclude>
+                        <exclude>**/junit**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
