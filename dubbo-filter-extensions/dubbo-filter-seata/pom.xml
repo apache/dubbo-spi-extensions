@@ -28,7 +28,7 @@
 
     <artifactId>dubbo-filter-seata</artifactId>
     <name>${project.artifactId}</name>
-    <version>3.2.0</version>
+    <version>${revision}</version>
 
     <dependencies>
         <dependency>

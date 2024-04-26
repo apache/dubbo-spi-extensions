@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>dubbo-remoting-http</artifactId>
-    <version>3.2.0</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>The http remoting module of dubbo project</description>
