@@ -81,6 +81,7 @@ public class DNSResolver {
                     // Port
                     int port = buf.readUnsignedShort();
                     recordList.getPort().add(port);
+                    buf.release();
                 }
 
             } catch (InterruptedException e) {

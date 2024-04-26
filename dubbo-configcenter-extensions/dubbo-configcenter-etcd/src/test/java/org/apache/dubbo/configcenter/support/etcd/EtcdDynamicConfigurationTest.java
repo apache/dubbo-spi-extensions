@@ -26,10 +26,10 @@ import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.launcher.EtcdCluster;
 import io.etcd.jetcd.launcher.EtcdClusterFactory;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -128,7 +128,7 @@ public class EtcdDynamicConfigurationTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         etcdCluster.start();
@@ -146,7 +146,7 @@ public class EtcdDynamicConfigurationTest {
         config = new EtcdDynamicConfiguration(url);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         etcdCluster.close();
     }
