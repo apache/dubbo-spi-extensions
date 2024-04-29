@@ -73,7 +73,7 @@ jobs:
         name: build tools
         with:
           repository: 'apache/dubbo'
-          ref: '3.1'
+          ref: '3.0'
           path: dubbo
       - name: "Set up JDK 21"
         uses: actions/setup-java@v4
