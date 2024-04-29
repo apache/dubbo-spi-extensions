@@ -97,7 +97,7 @@ public class MsgpackObjectOutput implements ObjectOutput {
     }
 
     @Override
-    public void writeThrowable(Throwable obj) throws IOException {
+    public void writeThrowable(Object obj) throws IOException {
         writeObject(obj.getClass());
         writeObject(obj);
     }

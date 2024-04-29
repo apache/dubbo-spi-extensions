@@ -116,8 +116,8 @@ public class GenericProtobufJsonObjectOutput implements ObjectOutput {
     }
 
     @Override
-    public void writeThrowable(Throwable th) throws IOException {
-        if (th != null && !ProtobufUtils.isSupported(th.getClass())) {
+    public void writeThrowable(Object th) throws IOException {
+        if (th instanceof Throwable && !ProtobufUtils.isSupported(th.getClass())) {
             ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto((Throwable) th);
             writer.write(ProtobufUtils.serializeJson(throwableProto));
         } else {
@@ -128,11 +128,11 @@ public class GenericProtobufJsonObjectOutput implements ObjectOutput {
     }
 
     @Override
-    public void writeEvent(String data) throws IOException {
+    public void writeEvent(Object data) throws IOException {
         if (Objects.equals(data, HEARTBEAT_EVENT)) {
             data = MOCK_HEARTBEAT_EVENT;
         }
-        writeUTF(data);
+        writeUTF((String) data);
     }
 
     /**

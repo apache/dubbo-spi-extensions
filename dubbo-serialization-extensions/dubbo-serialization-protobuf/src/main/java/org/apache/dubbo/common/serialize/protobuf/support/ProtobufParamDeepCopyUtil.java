@@ -16,20 +16,18 @@
  */
 package org.apache.dubbo.common.serialize.protobuf.support;
 
-import static org.apache.dubbo.common.constants.LoggerCodeConstants.PROTOCOL_ERROR_DESERIALIZE;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
+import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.rpc.protocol.injvm.DefaultParamDeepCopyUtil;
 import org.apache.dubbo.rpc.protocol.injvm.ParamDeepCopyUtil;
 
 public class ProtobufParamDeepCopyUtil implements ParamDeepCopyUtil {
-    private static final ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(DefaultParamDeepCopyUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultParamDeepCopyUtil.class);
 
     private ParamDeepCopyUtil delegate;
 
@@ -48,11 +46,11 @@ public class ProtobufParamDeepCopyUtil implements ParamDeepCopyUtil {
                     T deserialize = ProtobufUtils.deserialize(inputStream, targetClass);
                     return deserialize;
                 } catch (IOException e) {
-                    logger.error(PROTOCOL_ERROR_DESERIALIZE, "", "", "Unable to deep copy parameter to target class.", e);
+                    logger.error("Error code 4-6. Unable to deep copy parameter to target class.", e);
                 }
 
             } catch (Throwable e) {
-                logger.error(PROTOCOL_ERROR_DESERIALIZE, "", "", "Unable to deep copy parameter to target class.", e);
+                logger.error("Error code 4-6. Unable to deep copy parameter to target class.", e);
             }
 
             if (src.getClass().equals(targetClass)) {

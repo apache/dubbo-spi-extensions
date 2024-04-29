@@ -1,4 +1,4 @@
-name: Build and Test Scheduled On 3.1
+name: Build and Test Scheduled On 3.0
 
 on:
   schedule:
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: '3.1.0'
+          ref: '3.0.0'
       - name: Check License
         uses: apache/skywalking-eyes@v0.5.0
         env:
@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "3.1.0"
+          ref: "3.0.0"
           path: dubbo-spi-extensions
       - uses: actions/setup-java@v4
         with:

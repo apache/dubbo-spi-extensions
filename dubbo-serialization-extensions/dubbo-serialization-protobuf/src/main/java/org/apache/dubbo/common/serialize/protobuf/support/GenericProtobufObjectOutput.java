@@ -121,17 +121,17 @@ public class GenericProtobufObjectOutput implements ObjectOutput {
     }
 
     @Override
-    public void writeEvent(String data) throws IOException {
+    public void writeEvent(Object data) throws IOException {
         if (Objects.equals(data, HEARTBEAT_EVENT)) {
             data = MOCK_HEARTBEAT_EVENT;
         }
-        writeUTF(data);
+        writeUTF((String) data);
     }
 
     @Override
-    public void writeThrowable(Throwable obj) throws IOException {
-        if (obj != null && !(obj instanceof MessageLite)) {
-            ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto(obj);
+    public void writeThrowable(Object obj) throws IOException {
+        if (obj instanceof Throwable && !(obj instanceof MessageLite)) {
+            ThrowablePB.ThrowableProto throwableProto = ProtobufUtils.convertToThrowableProto((Throwable) obj);
             ProtobufUtils.serialize(throwableProto, os);
         } else {
             ProtobufUtils.serialize(obj, os);
