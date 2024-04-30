@@ -25,7 +25,7 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <artifactId>dubbo-rpc-rocketmq</artifactId>
     <name>dubbo-rpc-rocketmq</name>
     <properties>
@@ -72,6 +72,11 @@
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-client</artifactId>
             <version>${rocketmq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

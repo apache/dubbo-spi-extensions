@@ -69,7 +69,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
         return 80;
     }
 
-    private class InternalHandler implements HttpHandler {
+    private class InternalHandler implements HttpHandler<HttpServletRequest,HttpServletResponse> {
 
         private boolean cors;
 
@@ -78,8 +78,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
         }
 
         @Override
-        public void handle(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException {
+        public void handle(HttpServletRequest request, HttpServletResponse response) {
             String uri = request.getRequestURI();
             JsonRpcServer skeleton = skeletonMap.get(uri);
             if (cors) {
@@ -95,7 +94,7 @@ public class HttpProtocol extends AbstractProxyProtocol {
                 try {
                     skeleton.handle(request.getInputStream(), response.getOutputStream());
                 } catch (Throwable e) {
-                    throw new ServletException(e);
+                    throw new RuntimeException(new ServletException(e));
                 }
             } else {
                 response.setStatus(500);

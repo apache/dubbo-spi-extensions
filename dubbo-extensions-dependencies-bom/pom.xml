@@ -89,8 +89,8 @@
     </issueManagement>
 
     <properties>
-        <revision>1.0.5-SNAPSHOT</revision>
-        <dubbo.version>3.1.2</dubbo.version>
+        <revision>3.2.1-SNAPSHOT</revision>
+        <dubbo.version>3.2.11</dubbo.version>
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring-boot.version>2.4.1</spring-boot.version>
 
@@ -104,7 +104,7 @@
         <thrift_version>0.12.0</thrift_version>
         <jedis_version>3.7.0</jedis_version>
         <embedded_redis_version>0.10.0</embedded_redis_version>
-        <commons_lang3_version>3.8.1</commons_lang3_version>
+        <commons_lang3_version>3.14.0</commons_lang3_version>
         <jaxb_version>2.2.7</jaxb_version>
         <activation_version>1.2.0</activation_version>
         <cxf_version>3.1.15</cxf_version>
@@ -121,9 +121,9 @@
         <mina_version>1.1.7</mina_version>
         <slf4j_version>1.7.25</slf4j_version>
         <grizzly_version>2.4.4</grizzly_version>
-        <jetcd_version>0.5.7</jetcd_version>
+        <jetcd_version>0.7.7</jetcd_version>
         <grpc.version>1.53.0</grpc.version>
-        <etcd_launcher_version>0.5.7</etcd_launcher_version>
+        <etcd_launcher_version>0.7.7</etcd_launcher_version>
         <netty4_version>4.1.66.Final</netty4_version>
         <consul_process_version>2.2.1</consul_process_version>
         <consul_version>1.4.2</consul_version>
@@ -134,15 +134,18 @@
         <sofa_registry_version>5.2.0</sofa_registry_version>
         <logback_version>1.3.12</logback_version>
         <rs_api_version>2.0</rs_api_version>
-        <resteasy_version>3.0.20.Final</resteasy_version>
+        <resteasy_version>3.15.6.Final</resteasy_version>
+        <codehaus-jackson_version>1.9.13</codehaus-jackson_version>
+        <swagger_version>1.6.14</swagger_version>
         <polaris_adapter_version>0.2.1</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
         <byte-buddy.version>1.14.5</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
-        <snakeyaml_version>2.0</snakeyaml_version>
+        <snakeyaml_version>2.2</snakeyaml_version>
         <protobuf-java_version>3.25.1</protobuf-java_version>
         <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
         <envoy_api_version>0.1.35</envoy_api_version>
+        <mockito_version>5.11.0</mockito_version>
     </properties>
 
     <dependencyManagement>
@@ -161,7 +164,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-core-spi</artifactId>
@@ -205,6 +214,14 @@
                         <artifactId>junit-jupiter-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+
+            <!-- Test lib -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -394,6 +411,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>io.etcd</groupId>
+                <artifactId>jetcd-test</artifactId>
+                <version>${jetcd_version}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-core</artifactId>
                 <version>${grpc.version}</version>
@@ -517,6 +539,54 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <!--            for dubbo-rpc-rest-->
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jdk-http</artifactId>
+                <version>${resteasy_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jackson-provider</artifactId>
+                <version>${resteasy_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${codehaus-jackson_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${codehaus-jackson_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-jaxrs</artifactId>
+                <version>${codehaus-jackson_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-xc</artifactId>
+                <version>${codehaus-jackson_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>${resteasy_version}</version>
+            </dependency>
+            <!-- swagger -->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-jaxrs</artifactId>
+                <version>${swagger_version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.tencent.polaris</groupId>
                 <artifactId>polaris-adapter-dubbo</artifactId>
@@ -571,6 +641,16 @@
                 <groupId>io.envoyproxy.controlplane</groupId>
                 <artifactId>api</artifactId>
                 <version>${envoy_api_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-api-docs-annotations</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-api-docs-core</artifactId>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

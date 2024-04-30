@@ -1,6 +1,6 @@
 # dubbo tag subnets
 
-[中文](./README.md)
+[中文](./README_zh.md)
 
 dubbo-tag-subnets will generate a tag by subnets, then consumer will prefer rpc provider in the same subnets. 
 

@@ -24,7 +24,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>1.0.2-SNAPSHOT</version>
+    <version>${revision}</version>
     <artifactId>dubbo-registry-sofa</artifactId>
     <name>${project.artifactId}</name>
     <description>The SOFARegistry module of Dubbo project</description>
@@ -40,12 +40,12 @@
             <artifactId>dubbo-registry-api</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
             <optional>true</optional>
         </dependency>
+
 
         <dependency>
             <groupId>com.alipay.sofa</groupId>

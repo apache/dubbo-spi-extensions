@@ -56,6 +56,7 @@ import java.util.concurrent.TimeUnit;
 public class QuicNettyServer extends AbstractServer implements RemotingServer {
 
     private static final Logger logger = LoggerFactory.getLogger(QuicNettyServer.class);
+    private static final String SERVER_THREAD_POOL_NAME = "DubboServerHandler";
     /**
      * the cache for alive worker channel.
      * <ip:port, dubbo channel>
@@ -170,6 +171,11 @@ public class QuicNettyServer extends AbstractServer implements RemotingServer {
         } catch (Throwable e) {
             logger.warn(e.getMessage(), e);
         }
+    }
+
+    @Override
+    protected int getChannelsSize() {
+        return channels == null ? 0 : channels.size();
     }
 
     @Override
