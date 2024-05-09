@@ -95,7 +95,7 @@ public class RocketMQCodec extends ExchangeCodec {
                             data = decodeEventData(channel, in, eventPayload);
                         }
                     } else {
-                        DecodeableRpcResult result = new DecodeableRpcResult(channel, res, is, (Invocation) getRequestData(id), proto);
+                        DecodeableRpcResult result = new DecodeableRpcResult(channel, res, is, (Invocation) getRequestData(channel, res, id), proto);
                         result.decode();
                         data = result;
                     }

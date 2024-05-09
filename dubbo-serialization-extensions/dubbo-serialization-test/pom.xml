@@ -36,24 +36,27 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-protostuff</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <artifactId>gson</artifactId>
             <groupId>com.google.code.gson</groupId>
             <version>2.8.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-serialization-protostuff</artifactId>
+            <version>${revision}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-jackson</artifactId>
             <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-protobuf</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${revision}</version>
+            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>gson</artifactId>
@@ -64,22 +67,26 @@
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-kryo</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-avro</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-fastjson</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-fst</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>

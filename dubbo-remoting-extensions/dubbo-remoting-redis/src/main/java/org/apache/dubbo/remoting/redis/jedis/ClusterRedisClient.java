@@ -45,12 +45,15 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
 
     private static final int DEFAULT_MAX_ATTEMPTS = 5;
 
-    private JedisCluster jedisCluster;
+    private final JedisCluster jedisCluster;
     private Pattern COLON_SPLIT_PATTERN = Pattern.compile("\\s*[:]+\\s*");
 
     public ClusterRedisClient(URL url) {
         super(url);
         Set<HostAndPort> nodes = getNodes(url);
+        if (url.hasParameter("db.index")) {
+            logger.warn("Redis Cluster does not support multiple databases, the SELECT command is not allowed. So the setting of db.index will not be effect");
+        }
         jedisCluster = new JedisCluster(nodes, url.getParameter("connection.timeout", DEFAULT_TIMEOUT),
                 url.getParameter("so.timeout", DEFAULT_SO_TIMEOUT), url.getParameter("max.attempts", DEFAULT_MAX_ATTEMPTS),
                 url.getPassword(), getConfig());
@@ -72,7 +75,10 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
         for (JedisPool jedisPool : poolMap.values()) {
             Jedis jedis = jedisPool.getResource();
             if (jedis.isConnected()) {
+                jedisPool.returnResource(jedis);
                 return true;
+            } else {
+                jedisPool.returnResource(jedis);
             }
         }
         return false;
@@ -95,7 +101,7 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
         for (JedisPool jedisPool : nodes.values()) {
             Jedis jedis = jedisPool.getResource();
             result.addAll(scan(jedis, pattern));
-            jedis.close();
+            jedisPool.returnResource(jedis);
         }
         return result;
     }

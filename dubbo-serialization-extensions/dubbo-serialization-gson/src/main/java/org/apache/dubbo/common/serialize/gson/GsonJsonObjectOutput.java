@@ -31,7 +31,7 @@ import java.io.Writer;
 public class GsonJsonObjectOutput implements ObjectOutput {
 
     private final PrintWriter writer;
-    private Gson gson = null;
+    private Gson gson;
 
     public GsonJsonObjectOutput(OutputStream out) {
         this(new OutputStreamWriter(out));
