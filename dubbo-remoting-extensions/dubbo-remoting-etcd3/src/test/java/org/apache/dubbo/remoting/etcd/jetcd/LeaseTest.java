@@ -39,11 +39,12 @@ import io.etcd.jetcd.Client;
 import io.etcd.jetcd.KV;
 import io.etcd.jetcd.Lease;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
+import io.etcd.jetcd.launcher.EtcdClusterImpl;
 import io.etcd.jetcd.lease.LeaseKeepAliveResponse;
 import io.etcd.jetcd.options.PutOption;
 import io.etcd.jetcd.support.CloseableClient;
 import io.etcd.jetcd.support.Observers;
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -51,6 +52,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +68,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Disabled
 public class LeaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(LeaseTest.class);
+
     private static EtcdCluster cluster;
 
     private KV kvClient;
@@ -77,7 +82,16 @@ public class LeaseTest {
 
     @BeforeAll
     public static void beforeClass() {
-        cluster = EtcdClusterFactory.buildCluster("etcd-lease", 3, false);
+        EtcdClusterExtension clusterExtension = EtcdClusterExtension.builder()
+            .withClusterName("etcd-lease")
+            .withNodes(3)
+            .withSsl(false)
+            .build();
+        try {
+            cluster = clusterExtension.cluster();
+        } catch (Exception e) {
+            logger.error("Init etcd cluster failed");
+        }
         cluster.start();
     }
 
@@ -88,7 +102,7 @@ public class LeaseTest {
 
     @BeforeEach
     public void setUp() {
-        client = Client.builder().endpoints(cluster.getClientEndpoints()).build();
+        client = Client.builder().endpoints(cluster.clientEndpoints()).build();
         kvClient = client.getKVClient();
         leaseClient = client.getLeaseClient();
     }
