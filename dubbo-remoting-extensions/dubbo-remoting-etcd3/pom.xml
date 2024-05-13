@@ -27,7 +27,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>3.2.0</version>
+    <version>${revision}</version>
     <artifactId>dubbo-remoting-etcd3</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
@@ -100,6 +100,12 @@
         <dependency>
             <groupId>io.etcd</groupId>
             <artifactId>jetcd-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.etcd</groupId>
+            <artifactId>jetcd-test</artifactId>
             <scope>test</scope>
         </dependency>
 
