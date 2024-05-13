@@ -30,6 +30,6 @@
     <bean id="demoService" class="org.apache.dubbo.test.serialization.protobuf.DemoServiceImpl"/>
 
     <dubbo:service interface="org.apache.dubbo.test.serialization.protobuf.DemoService" ref="demoService"
-                   serialization="protobuf"/>
+                   serialization="protobuf-json"/>
 
 </beans>
