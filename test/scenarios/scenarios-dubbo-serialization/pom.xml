@@ -18,12 +18,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dubbo-scenarios</artifactId>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <version>3.2.0</version>
+        <artifactId>dubbo-scenarios</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>scenarios-dubbo-serialization</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>dubbo-serialization-avro-test</module>
         <module>dubbo-serialization-gson-test</module>
@@ -34,7 +38,6 @@
         <module>dubbo-serialization-protostuff-test</module>
         <module>dubbo-serialization-testcase</module>
     </modules>
-    <artifactId>scenarios-dubbo-serialization</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
