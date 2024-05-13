@@ -17,6 +17,7 @@
 
 package org.apache.dubbo.metadata.store.etcd;
 
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.metadata.definition.ServiceDefinitionBuilder;
@@ -30,7 +31,6 @@ import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,11 @@ public class EtcdMetadataReportTest {
 
     private static final String TEST_SERVICE = "org.apache.dubbo.metadata.store.etcd.EtcdMetadata4TstService";
 
-    private EtcdCluster etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 1, false);
+    private final EtcdCluster etcdCluster = EtcdClusterExtension.builder().withClusterName(getClass().getSimpleName())
+        .withNodes(1)
+        .withSsl(false)
+        .build().cluster();
+
     private Client etcdClientForTest;
     private EtcdMetadataReport etcdMetadataReport;
     private URL registryUrl;
@@ -66,8 +70,8 @@ public class EtcdMetadataReportTest {
     @BeforeEach
     public void setUp() {
         etcdCluster.start();
-        etcdClientForTest = Client.builder().endpoints(etcdCluster.getClientEndpoints()).build();
-        List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
+        etcdClientForTest = Client.builder().endpoints(etcdCluster.clientEndpoints()).build();
+        List<URI> clientEndPoints = etcdCluster.clientEndpoints();
         this.registryUrl = URL.valueOf("etcd://" + clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort());
         etcdMetadataReportFactory = new EtcdMetadataReportFactory();
         this.etcdMetadataReport = (EtcdMetadataReport) etcdMetadataReportFactory.createMetadataReport(registryUrl);
