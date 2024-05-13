@@ -117,7 +117,7 @@
         <kryo_version>5.4.0</kryo_version>
         <kryo_serializers_version>0.45</kryo_serializers_version>
         <msgpack_version>0.8.22</msgpack_version>
-        <protostuff_version>1.5.9</protostuff_version>
+        <protostuff_version>1.8.0</protostuff_version>
         <mina_version>1.1.7</mina_version>
         <slf4j_version>1.7.25</slf4j_version>
         <grizzly_version>2.4.4</grizzly_version>
