@@ -18,16 +18,12 @@ package org.apache.dubbo.crossthread.interceptor;
 
 import org.apache.dubbo.crossthread.toolkit.DubboCrossThread;
 
+import java.lang.instrument.Instrumentation;
+
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.description.modifier.Visibility;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.matcher.ElementMatchers;
-import net.bytebuddy.utility.JavaModule;
-
-import java.lang.instrument.Instrumentation;
-import java.security.ProtectionDomain;
 
 import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
@@ -46,26 +42,19 @@ public class RunnableOrCallableActivation {
             .with(AgentBuilder.TypeStrategy.Default.REBASE)
             .with(AgentBuilder.RedefinitionStrategy.REDEFINITION)
             .type(isAnnotatedWith(DubboCrossThread.class))
-            .transform(new AgentBuilder.Transformer() {
-                @Override
-                public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription,
-                                                        ClassLoader classLoader, JavaModule module,
-                                                        ProtectionDomain protectionDomain) {
-                    return builder
-                        .defineField(FIELD_NAME_DUBBO_TAG, String.class, Visibility.PUBLIC)
-                        .visit(Advice.to(RunnableOrCallableMethodInterceptor.class).on(
-                            ElementMatchers.isMethod().and(
-                                ElementMatchers.named(RUN_METHOD_NAME).and(takesArguments(0))
-                                    .or(ElementMatchers.named(CALL_METHOD_NAME).and(takesArguments(0)))
-                                    .or(ElementMatchers.named(APPLY_METHOD_NAME).and(takesArguments(0)))
-                                    .or(ElementMatchers.named(ACCEPT_METHOD_NAME).and(takesArguments(0)))
-                            )
-                        ))
-                        .visit(Advice.to(RunnableOrCallableConstructInterceptor.class).on(
-                            ElementMatchers.isConstructor()
-                        ));
-                }
-            })
+            .transform((builder, typeDescription, classLoader, module, protectionDomain) -> builder
+                .defineField(FIELD_NAME_DUBBO_TAG, String.class, Visibility.PUBLIC)
+                .visit(Advice.to(RunnableOrCallableMethodInterceptor.class).on(
+                    ElementMatchers.isMethod().and(
+                        ElementMatchers.named(RUN_METHOD_NAME).and(takesArguments(0))
+                            .or(ElementMatchers.named(CALL_METHOD_NAME).and(takesArguments(0)))
+                            .or(ElementMatchers.named(APPLY_METHOD_NAME).and(takesArguments(0)))
+                            .or(ElementMatchers.named(ACCEPT_METHOD_NAME).and(takesArguments(0)))
+                    )
+                ))
+                .visit(Advice.to(RunnableOrCallableConstructInterceptor.class).on(
+                    ElementMatchers.isConstructor()
+                )))
             .installOn(instrumentation);
     }
 }

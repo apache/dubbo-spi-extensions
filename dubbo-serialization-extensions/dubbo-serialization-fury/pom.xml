@@ -27,25 +27,25 @@ limitations under the License.
     </parent>
 
     <artifactId>dubbo-serialization-fury</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <version>${revision}</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dubbo.version>3.2.1</dubbo.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
-            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo</artifactId>
-            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

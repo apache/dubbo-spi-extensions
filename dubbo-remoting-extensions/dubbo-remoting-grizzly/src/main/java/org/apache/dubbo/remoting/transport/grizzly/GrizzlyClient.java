@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_TIMEOUT;
 import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
+import static org.apache.dubbo.config.Constants.CLIENT_THREAD_POOL_NAME;
 
 /**
  * GrizzlyClient

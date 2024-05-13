@@ -1,0 +1,3 @@
+default = org.apache.dubbo.metadata.extension.rest.annotation.processing.DefaultServiceRestMetadataResolver
+jax-rs = org.apache.dubbo.metadata.extension.rest.annotation.processing.jaxrs.JAXRSServiceRestMetadataResolver
+spring-webmvc = org.apache.dubbo.metadata.extension.rest.annotation.processing.springmvc.SpringMvcServiceRestMetadataResolver

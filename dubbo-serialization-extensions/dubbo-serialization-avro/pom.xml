@@ -26,25 +26,28 @@
     <artifactId>dubbo-serialization-avro</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>${revision}</version>
     <description>The avro serialization module of dubbo project</description>
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
-        <dubbo.version>3.2.7</dubbo.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
-            <version>${dubbo.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-common</artifactId>
-            <version>${dubbo.version}</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-serialization-test</artifactId>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>

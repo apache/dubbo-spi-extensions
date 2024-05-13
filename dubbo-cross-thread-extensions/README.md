@@ -1,4 +1,5 @@
 # Dubbo Cross Thread Extensions
+[中文](./README_ch.md)
 
 `dubbo-cross-thread-extensions` copy dubbo.tag cross thread lightly . 
 it can run with skywalking and ttl . 
@@ -85,7 +86,7 @@ public class SpringBootDemoApplication {
 }
 ```
 
-## run with wkywalking and ttl
+## run with skywalking and ttl
 jvm arguments:
 ```
 -javaagent:transmittable-thread-local-2.14.2.jar

@@ -35,20 +35,23 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.mock;
 
-public class FileNetworkerTest {
+class FileNetworkerTest {
+
+    @TempDir
+    Path folder;
 
     @BeforeEach
-    public void setUp(@TempDir Path folder) throws Exception {
+    public void setUp() throws Exception {
         folder.toFile().createNewFile();
     }
 
     @AfterEach
-    public void tearDown(@TempDir Path folder) {
+    public void tearDown() {
         folder.getFileName().toAbsolutePath().toFile().delete();
     }
 
     @Test
-    public void testJoin(@TempDir Path folder) throws RemotingException, InterruptedException {
+    void testJoin() throws RemotingException, InterruptedException {
         final String groupURL = "file:///" + folder.getFileName().toAbsolutePath();
 
         FileNetworker networker = new FileNetworker();

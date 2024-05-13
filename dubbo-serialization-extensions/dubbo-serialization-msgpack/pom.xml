@@ -25,7 +25,7 @@ Licensed to the Apache Software Foundation (ASF) under one or more
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dubbo-serialization-msgpack</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>The Msgpack serialization implement for dubbo</description>
@@ -38,6 +38,12 @@ Licensed to the Apache Software Foundation (ASF) under one or more
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-common</artifactId>
             <optional>true</optional>
         </dependency>
 
