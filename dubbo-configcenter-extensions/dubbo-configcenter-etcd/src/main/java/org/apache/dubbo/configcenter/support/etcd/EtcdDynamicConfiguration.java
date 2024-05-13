@@ -22,6 +22,8 @@ import org.apache.dubbo.common.config.configcenter.ConfigChangeType;
 import org.apache.dubbo.common.config.configcenter.ConfigChangedEvent;
 import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
 import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.etcd.StateListener;
 import org.apache.dubbo.remoting.etcd.jetcd.JEtcdClient;
@@ -48,6 +50,8 @@ import static org.apache.dubbo.common.constants.CommonConstants.PATH_SEPARATOR;
  */
 public class EtcdDynamicConfiguration implements DynamicConfiguration {
 
+    private static final Logger logger = LoggerFactory.getLogger(EtcdDynamicConfiguration.class);
+
     /**
      * The final root path would be: /$NAME_SPACE/config
      */
@@ -71,7 +75,7 @@ public class EtcdDynamicConfiguration implements DynamicConfiguration {
                 try {
                     recover();
                 } catch (Exception e) {
-                    // ignore
+                    logger.error("add etcd watch failed", e);
                 }
             }
         });
@@ -164,7 +168,7 @@ public class EtcdDynamicConfiguration implements DynamicConfiguration {
 
         @Override
         public void onError(Throwable throwable) {
-            // ignore
+            logger.error("etcd watcher get an error", throwable);
         }
 
         @Override
