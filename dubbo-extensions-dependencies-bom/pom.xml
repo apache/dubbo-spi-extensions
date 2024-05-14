@@ -117,7 +117,7 @@
         <kryo_version>5.4.0</kryo_version>
         <kryo_serializers_version>0.45</kryo_serializers_version>
         <msgpack_version>0.8.22</msgpack_version>
-        <protostuff_version>1.5.9</protostuff_version>
+        <protostuff_version>1.8.0</protostuff_version>
         <mina_version>1.1.7</mina_version>
         <slf4j_version>1.7.25</slf4j_version>
         <grizzly_version>2.4.4</grizzly_version>
@@ -142,7 +142,7 @@
         <byte-buddy.version>1.14.5</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
         <snakeyaml_version>2.2</snakeyaml_version>
-        <protobuf-java_version>3.25.1</protobuf-java_version>
+        <protobuf-java_version>3.25.3</protobuf-java_version>
         <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
         <envoy_api_version>0.1.35</envoy_api_version>
         <mockito_version>5.11.0</mockito_version>
