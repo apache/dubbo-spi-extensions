@@ -122,7 +122,7 @@
         <slf4j_version>1.7.25</slf4j_version>
         <grizzly_version>2.4.4</grizzly_version>
         <jetcd_version>0.7.7</jetcd_version>
-        <grpc.version>1.53.0</grpc.version>
+        <grpc.version>1.63.0</grpc.version>
         <etcd_launcher_version>0.7.7</etcd_launcher_version>
         <netty4_version>4.1.66.Final</netty4_version>
         <consul_process_version>2.2.1</consul_process_version>
