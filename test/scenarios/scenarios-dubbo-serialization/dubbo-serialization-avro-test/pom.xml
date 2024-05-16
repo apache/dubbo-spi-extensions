@@ -20,8 +20,7 @@
     <parent>
         <artifactId>scenarios-dubbo-serialization</artifactId>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>3.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dubbo-serialization-avro-test</artifactId>
@@ -32,7 +31,7 @@
         <dubbo.version>3.0.4</dubbo.version>
         <junit.version>4.13.1</junit.version>
         <spring.version>4.3.30.RELEASE</spring.version>
-        <dubbo.serialization.version>${revision}</dubbo.serialization.version>
+        <dubbo.serialization.version>3.2.0</dubbo.serialization.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     </properties>
 
@@ -139,7 +138,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
