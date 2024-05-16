@@ -89,8 +89,8 @@
     </issueManagement>
 
     <properties>
-        <revision>3.2.0</revision>
-        <dubbo.version>3.2.9</dubbo.version>
+        <revision>3.3.0</revision>
+        <dubbo.version>3.3.0-beta.2</dubbo.version>
         <spring.version>5.2.9.RELEASE</spring.version>
         <spring-boot.version>2.4.1</spring-boot.version>
 

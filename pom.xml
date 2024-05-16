@@ -103,7 +103,7 @@
     </modules>
 
     <properties>
-        <revision>3.2.0</revision>
+        <revision>3.3.0</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <awaitility_version>4.2.0</awaitility_version>
@@ -123,12 +123,12 @@
             -Djava.net.preferIPv4Stack=true -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m
         </argline>
 
-        <maven_jar_version>3.2.0</maven_jar_version>
+        <maven_jar_version>3.3.0</maven_jar_version>
         <maven_surefire_version>2.22.2</maven_surefire_version>
         <maven_deploy_version>2.8.2</maven_deploy_version>
         <maven_compiler_version>3.8.1</maven_compiler_version>
         <maven_source_version>3.2.1</maven_source_version>
-        <maven_javadoc_version>3.2.0</maven_javadoc_version>
+        <maven_javadoc_version>3.3.0</maven_javadoc_version>
         <maven_checkstyle_version>3.1.2</maven_checkstyle_version>
         <maven_jacoco_version>0.8.6</maven_jacoco_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
@@ -446,7 +446,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.fusesource.hawtjni</groupId>
