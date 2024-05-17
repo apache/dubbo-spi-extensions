@@ -104,6 +104,7 @@
 
     <properties>
         <revision>3.3.0</revision>
+        <dubbo.version>3.3.0-beta.2</dubbo.version>
         <!-- Test libs -->
         <junit_jupiter_version>5.6.0</junit_jupiter_version>
         <awaitility_version>4.2.0</awaitility_version>
