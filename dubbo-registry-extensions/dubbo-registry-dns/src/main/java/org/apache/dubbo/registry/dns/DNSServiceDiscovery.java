@@ -42,6 +42,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class DNSServiceDiscovery extends ReflectionBasedServiceDiscovery {
+
     private static final Logger logger = LoggerFactory.getLogger(DNSServiceDiscovery.class);
 
     /**
@@ -111,7 +112,13 @@ public class DNSServiceDiscovery extends ReflectionBasedServiceDiscovery {
     public void addServiceInstancesChangedListener(ServiceInstancesChangedListener listener) throws NullPointerException, IllegalArgumentException {
         listener.getServiceNames().forEach(serviceName -> {
             ScheduledFuture<?> scheduledFuture = pollingExecutorService.scheduleAtFixedRate(() -> {
-                    List<ServiceInstance> instances = getInstances(serviceName);
+                    List<ServiceInstance> instances;
+                    try {
+                        instances = getInstances(serviceName);
+                    } catch (Throwable throwable) {
+                        logger.error("Failed to get instances for " + serviceName, throwable);
+                        return;
+                    }
                     instances.sort(Comparator.comparingInt(ServiceInstance::hashCode));
                     notifyListener(serviceName, listener, instances);
                 },
@@ -133,7 +140,7 @@ public class DNSServiceDiscovery extends ReflectionBasedServiceDiscovery {
 
         int port;
 
-        if (resolveResult.getPort().size() > 0) {
+        if (!resolveResult.getPort().isEmpty()) {
             // use first as default
             port = resolveResult.getPort().get(0);
         } else {

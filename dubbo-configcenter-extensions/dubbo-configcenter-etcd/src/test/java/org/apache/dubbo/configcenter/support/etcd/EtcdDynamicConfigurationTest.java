@@ -17,6 +17,7 @@
 
 package org.apache.dubbo.configcenter.support.etcd;
 
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.config.configcenter.ConfigChangedEvent;
 import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
@@ -24,11 +25,10 @@ import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,7 @@ import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
  * Unit test for etcd config center support
  * Integrate with https://github.com/etcd-io/jetcd#launcher
  */
+
 @Disabled
 public class EtcdDynamicConfigurationTest {
 
@@ -59,17 +60,22 @@ public class EtcdDynamicConfigurationTest {
 
     public EtcdCluster etcdCluster;
 
-    //这里会涉及到docker拉取镜像很慢
-    @Before
+    // This will involve Docker pulling the image very slowly
+    @BeforeEach
     public void setUp() {
         try {
-            etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 3, false);
+            EtcdClusterExtension clusterExtension = EtcdClusterExtension.builder()
+                .withClusterName(getClass().getSimpleName())
+                .withNodes(3)
+                .withSsl(false)
+                .build();
+            etcdCluster = clusterExtension.cluster();
 
             etcdCluster.start();
 
-            client = Client.builder().endpoints(etcdCluster.getClientEndpoints()).build();
+            client = Client.builder().endpoints(etcdCluster.clientEndpoints()).build();
 
-            List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
+            List<URI> clientEndPoints = etcdCluster.clientEndpoints();
 
             String ipAddress = clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort(); //"127.0.0.1:2379";
 
@@ -120,7 +126,7 @@ public class EtcdDynamicConfigurationTest {
         put("/dubbo/config/dubbo/testapp/tagrouters", "new value2");
         Thread.sleep(1000);
 
-        Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
+        Assert.assertTrue(latch.await(1, TimeUnit.MINUTES));
         Assert.assertEquals(1, listener1.getCount("AService/configurators"));
         Assert.assertEquals(1, listener2.getCount("AService/configurators"));
         Assert.assertEquals(1, listener3.getCount("testapp/tagrouters"));
@@ -169,7 +175,7 @@ public class EtcdDynamicConfigurationTest {
     }
 
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (etcdCluster != null) {
             etcdCluster.close();

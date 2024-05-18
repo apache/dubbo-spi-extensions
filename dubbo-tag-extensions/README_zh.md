@@ -1,6 +1,6 @@
 # dubbo tag subnets
 
-[中文](./README.md)
+[English](./README.md)
 
 dubbo-tag-subnets 会根据子网生成tag, 然后同子网内的tag相同, 服务调用会优先发生在同子网中.
 

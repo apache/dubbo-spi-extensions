@@ -100,20 +100,23 @@
         <module>dobbo-doc-auto-gen</module>
         <module>dubbo-xds</module>
         <module>dubbo-kubernetes</module>
+        <module>dubbo-wasm</module>
+        <module>dubbo-proxy-extensions</module>
     </modules>
 
     <properties>
-        <revision>3.2.0</revision>
+        <revision>3.2.1-SNAPSHOT</revision>
         <!-- Test libs -->
-        <junit_jupiter_version>5.6.0</junit_jupiter_version>
-        <awaitility_version>4.2.0</awaitility_version>
+        <junit_jupiter_version>5.9.3</junit_jupiter_version>
+        <junit_platform_commons>1.9.3</junit_platform_commons>
+        <awaitility_version>4.2.1</awaitility_version>
         <hazelcast_version>3.11.1</hazelcast_version>
         <hamcrest_version>2.2</hamcrest_version>
         <hibernate_validator_version>5.2.4.Final</hibernate_validator_version>
         <el_api_version>2.2.4</el_api_version>
         <jaxb_api_version>2.2.7</jaxb_api_version>
         <cglib_version>2.2</cglib_version>
-        <mockito_version>3.8.0</mockito_version>
+        <mockito_version>4.11.0</mockito_version>
         <!-- for maven compiler plugin -->
         <java_source_version>1.8</java_source_version>
         <java_target_version>1.8</java_target_version>
@@ -140,6 +143,7 @@
         <rat.skip>true</rat.skip>
         <jacoco.skip>false</jacoco.skip>
         <maven_flatten_version>1.2.5</maven_flatten_version>
+
     </properties>
 
     <dependencyManagement>
@@ -176,6 +180,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
+            <version>${junit_platform_commons}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit_jupiter_version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit_jupiter_version}</version>
@@ -196,6 +212,12 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <version>${mockito_version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
             <version>${mockito_version}</version>
             <scope>test</scope>
         </dependency>
@@ -427,7 +449,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.3.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.ops4j.pax.exam</groupId>
@@ -712,7 +734,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <version>2.0.0</version>
+                        <version>2.4.0</version>
                         <executions>
                             <execution>
                                 <id>license-check</id>

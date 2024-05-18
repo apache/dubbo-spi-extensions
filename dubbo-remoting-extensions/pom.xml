@@ -37,6 +37,7 @@
         <module>dubbo-remoting-mina</module>
         <module>dubbo-remoting-p2p</module>
         <module>dubbo-remoting-redis</module>
+        <module>dubbo-remoting-http</module>
     </modules>
 
 

@@ -75,7 +75,10 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
         for (JedisPool jedisPool : poolMap.values()) {
             Jedis jedis = jedisPool.getResource();
             if (jedis.isConnected()) {
+                jedisPool.returnResource(jedis);
                 return true;
+            } else {
+                jedisPool.returnResource(jedis);
             }
         }
         return false;
@@ -98,7 +101,7 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
         for (JedisPool jedisPool : nodes.values()) {
             Jedis jedis = jedisPool.getResource();
             result.addAll(scan(jedis, pattern));
-            jedis.close();
+            jedisPool.returnResource(jedis);
         }
         return result;
     }

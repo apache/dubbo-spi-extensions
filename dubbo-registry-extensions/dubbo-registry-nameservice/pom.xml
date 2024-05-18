@@ -25,14 +25,14 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <version>3.2.0</version>
+    <version>${revision}</version>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>dubbo-registry-nameservice</artifactId>
 	<name>dubbo-registry-nameservice</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <powermock.version>2.0.9</powermock.version>
-        <rocketmq.version>4.9.3</rocketmq.version>
+        <rocketmq.version>4.9.8</rocketmq.version>
 	</properties>
 	<dependencies>
         <dependency>
