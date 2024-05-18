@@ -26,6 +26,7 @@
     </parent>
 
     <artifactId>examples-api</artifactId>
+    <version>${revision}</version>
 
     <properties>
         <skip_maven_deploy>true</skip_maven_deploy>

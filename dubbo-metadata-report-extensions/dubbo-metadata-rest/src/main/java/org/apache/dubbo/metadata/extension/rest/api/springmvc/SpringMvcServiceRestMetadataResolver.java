@@ -36,10 +36,10 @@ import static org.apache.dubbo.common.utils.ArrayUtils.isEmpty;
 import static org.apache.dubbo.common.utils.ArrayUtils.isNotEmpty;
 import static org.apache.dubbo.common.utils.MethodUtils.findMethod;
 import static org.apache.dubbo.common.utils.PathUtils.buildPath;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.ANNOTATED_ELEMENT_UTILS_CLASS;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.CONTROLLER_ANNOTATION_CLASS;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.ANNOTATED_ELEMENT_UTILS_CLASS;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.CONTROLLER_ANNOTATION_CLASS;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.SPRING_MVC.REQUEST_MAPPING_ANNOTATION_CLASS_NAME;
 
 /**
  * {@link ServiceRestMetadataResolver}
