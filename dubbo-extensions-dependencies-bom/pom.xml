@@ -114,7 +114,7 @@
         <fury_version>0.2.0</fury_version>
         <jackson_version>2.15.3</jackson_version>
         <gson_version>2.10.1</gson_version>
-        <kryo_version>5.4.0</kryo_version>
+        <kryo_version>5.6.0</kryo_version>
         <kryo_serializers_version>0.45</kryo_serializers_version>
         <msgpack_version>0.8.22</msgpack_version>
         <protostuff_version>1.8.0</protostuff_version>
