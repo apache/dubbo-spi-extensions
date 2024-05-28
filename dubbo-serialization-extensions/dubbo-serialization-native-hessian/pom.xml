@@ -24,7 +24,7 @@ limitations under the License.
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>dubbo-serialization-native-hession</artifactId>
+    <artifactId>dubbo-serialization-native-hessian</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
