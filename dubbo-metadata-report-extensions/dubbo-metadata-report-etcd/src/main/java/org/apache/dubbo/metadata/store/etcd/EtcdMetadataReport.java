@@ -126,6 +126,16 @@ public class EtcdMetadataReport extends AbstractMetadataReport {
         return etcdClient.getKVValue(getNodeKey(metadataIdentifier));
     }
 
+    @Override
+    public boolean registerServiceAppMapping(String key, String group, String content, Object ticket) {
+        String appKey = toRootDir() + "mapping-data" + PATH_SEPARATOR + key + PATH_SEPARATOR + group;
+        if (!etcdClient.put(appKey, content)) {
+            logger.error("Failed to put service app mapping to etcd, key(appKey): " + appKey + ", value(appName): " + content);
+            return false;
+        }
+        return true;
+    }
+
     private void storeMetadata(MetadataIdentifier identifier, String v) {
         String key = getNodeKey(identifier);
         if (!etcdClient.put(key, v)) {
