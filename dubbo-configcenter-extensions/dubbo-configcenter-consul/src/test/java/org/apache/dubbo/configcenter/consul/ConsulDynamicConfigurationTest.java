@@ -29,6 +29,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConsulDynamicConfigurationTest {
@@ -48,7 +50,7 @@ public class ConsulDynamicConfigurationTest {
         configCenterUrl = URL.valueOf("consul://127.0.0.1:" + consul.getHttpPort());
 
         configuration = new ConsulDynamicConfiguration(configCenterUrl);
-        client = Consul.builder().withHostAndPort(HostAndPort.fromParts("127.0.0.1", consul.getHttpPort())).build();
+        client = Consul.builder().withHostAndPort(HostAndPort.fromParts("127.0.0.1", consul.getHttpPort())).withReadTimeoutMillis(TimeUnit.SECONDS.toMillis(11)).build();
         kvClient = client.keyValueClient();
     }
 
