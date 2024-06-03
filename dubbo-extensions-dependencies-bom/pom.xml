@@ -123,7 +123,7 @@
         <grizzly_version>2.4.4</grizzly_version>
         <jetcd_version>0.7.7</jetcd_version>
         <grpc.version>1.64.0</grpc.version>
-        <etcd_launcher_version>0.7.7</etcd_launcher_version>
+        <etcd_launcher_version>0.8.2</etcd_launcher_version>
         <netty4_version>4.1.66.Final</netty4_version>
         <consul_process_version>2.2.1</consul_process_version>
         <consul_version>1.4.2</consul_version>
