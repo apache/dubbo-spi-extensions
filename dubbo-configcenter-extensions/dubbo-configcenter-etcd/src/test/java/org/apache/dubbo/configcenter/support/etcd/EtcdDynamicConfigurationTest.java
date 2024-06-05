@@ -17,6 +17,7 @@
 
 package org.apache.dubbo.configcenter.support.etcd;
 
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.config.configcenter.ConfigChangedEvent;
 import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
@@ -25,7 +26,8 @@ import org.apache.dubbo.common.config.configcenter.DynamicConfiguration;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -47,11 +49,44 @@ import static org.apache.dubbo.remoting.etcd.Constants.SESSION_TIMEOUT_KEY;
  */
 public class EtcdDynamicConfigurationTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(EtcdDynamicConfigurationTest.class);
+
     private static EtcdDynamicConfiguration config;
 
-    public EtcdCluster etcdCluster = EtcdClusterFactory.buildCluster(getClass().getSimpleName(), 3, false);
+    public EtcdCluster etcdCluster;
 
     private static Client client;
+
+    @BeforeEach
+    public void setUp() {
+        EtcdClusterExtension clusterExtension = EtcdClusterExtension.builder()
+            .withClusterName(getClass().getSimpleName())
+            .withNodes(3)
+            .withSsl(false)
+            .build();
+        etcdCluster = clusterExtension.cluster();
+
+        etcdCluster.start();
+
+        client = Client.builder().endpoints(etcdCluster.clientEndpoints()).build();
+
+        List<URI> clientEndPoints = etcdCluster.clientEndpoints();
+
+        String ipAddress = clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort();
+        String urlForDubbo = "etcd://" + ipAddress + "/org.apache.dubbo.etcd.testService";
+
+        // timeout in 15 seconds.
+        URL url = URL.valueOf(urlForDubbo)
+            .addParameter(SESSION_TIMEOUT_KEY, 15000);
+        config = new EtcdDynamicConfiguration(url);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (etcdCluster != null) {
+            etcdCluster.close();
+        }
+    }
 
     @Test
     public void testGetConfig() {
@@ -124,31 +159,8 @@ public class EtcdDynamicConfigurationTest {
         try {
             client.getKVClient().put(ByteSequence.from(key, UTF_8), ByteSequence.from(value, UTF_8)).get();
         } catch (Exception e) {
-            System.out.println("Error put value to etcd.");
+            logger.error("Error put value to etcd.");
         }
-    }
-
-    @BeforeEach
-    public void setUp() {
-
-        etcdCluster.start();
-
-        client = Client.builder().endpoints(etcdCluster.getClientEndpoints()).build();
-
-        List<URI> clientEndPoints = etcdCluster.getClientEndpoints();
-
-        String ipAddress = clientEndPoints.get(0).getHost() + ":" + clientEndPoints.get(0).getPort();
-        String urlForDubbo = "etcd3://" + ipAddress + "/org.apache.dubbo.etcd.testService";
-
-        // timeout in 15 seconds.
-        URL url = URL.valueOf(urlForDubbo)
-                .addParameter(SESSION_TIMEOUT_KEY, 15000);
-        config = new EtcdDynamicConfiguration(url);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        etcdCluster.close();
     }
 
 }
