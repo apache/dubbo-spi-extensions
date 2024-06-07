@@ -118,7 +118,7 @@ public class BroadcastCluster1Invoker<T> extends AbstractClusterInvoker<T> {
                     br.setResult(result);
                 }
             } catch (Throwable ex) {
-                RpcException exception = getRpcException(result.getException());
+                RpcException exception = getRpcException(result == null ? ex : result.getException());
                 br.setExceptionMsg(exception.getMessage());
                 br.setException(exception);
                 logger.warn(exception.getMessage(), exception);
