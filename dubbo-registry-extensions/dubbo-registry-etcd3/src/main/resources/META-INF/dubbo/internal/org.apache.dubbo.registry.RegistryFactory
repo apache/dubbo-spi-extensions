@@ -1,1 +1,2 @@
 etcd=org.apache.dubbo.registry.etcd.EtcdRegistryFactory
+etcd3=org.apache.dubbo.registry.etcd.EtcdCompatibleRegistryFactory
