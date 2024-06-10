@@ -95,7 +95,7 @@
         <spring-boot.version>2.7.18</spring-boot.version>
 
         <!-- Fabric8 for Kubernetes -->
-        <fabric8_kubernetes_version>6.12.1</fabric8_kubernetes_version>
+        <fabric8_kubernetes_version>6.13.0</fabric8_kubernetes_version>
         <hessian_version>4.0.51</hessian_version>
         <httpclient_version>4.5.14</httpclient_version>
         <jsonrpc_version>1.2.0</jsonrpc_version>
