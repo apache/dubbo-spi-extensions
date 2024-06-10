@@ -34,7 +34,7 @@
     <description>The etcd3 remoting module of Dubbo project</description>
 
     <properties>
-        <assertj.version>3.13.2</assertj.version>
+        <assertj.version>3.26.0</assertj.version>
         <skipIntegrationTests>true</skipIntegrationTests>
     </properties>
 
