@@ -115,7 +115,7 @@
         <hibernate_validator_version>5.2.4.Final</hibernate_validator_version>
         <el_api_version>2.2.4</el_api_version>
         <jaxb_api_version>2.2.7</jaxb_api_version>
-        <cglib_version>2.2</cglib_version>
+        <cglib_version>2.2.2</cglib_version>
         <mockito_version>4.11.0</mockito_version>
         <!-- for maven compiler plugin -->
         <java_source_version>1.8</java_source_version>
@@ -132,7 +132,7 @@
         <maven_compiler_version>3.13.0</maven_compiler_version>
         <maven_source_version>3.3.1</maven_source_version>
         <maven_javadoc_version>3.7.0</maven_javadoc_version>
-        <maven_checkstyle_version>3.1.2</maven_checkstyle_version>
+        <maven_checkstyle_version>3.4.0</maven_checkstyle_version>
         <maven_jacoco_version>0.8.12</maven_jacoco_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
         <maven_enforce_version>3.5.0</maven_enforce_version>
@@ -483,7 +483,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.5.3</version>
+                    <version>3.6.0</version>
                     <configuration>
                         <createDependencyReducedPom>false</createDependencyReducedPom>
                     </configuration>
