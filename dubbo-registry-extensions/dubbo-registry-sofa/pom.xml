@@ -30,7 +30,7 @@
     <description>The SOFARegistry module of Dubbo project</description>
 
     <properties>
-        <javax.ws.rs.version>2.1</javax.ws.rs.version>
+        <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
         <argline>-Dnetwork_interface_denylist=docker0</argline>
     </properties>
 
