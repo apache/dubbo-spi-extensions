@@ -39,15 +39,15 @@ import io.etcd.jetcd.Client;
 import io.etcd.jetcd.KV;
 import io.etcd.jetcd.Lease;
 import io.etcd.jetcd.launcher.EtcdCluster;
-import io.etcd.jetcd.launcher.EtcdClusterFactory;
 import io.etcd.jetcd.lease.LeaseKeepAliveResponse;
 import io.etcd.jetcd.options.PutOption;
 import io.etcd.jetcd.support.CloseableClient;
 import io.etcd.jetcd.support.Observers;
+import io.etcd.jetcd.test.EtcdClusterExtension;
 import io.grpc.stub.StreamObserver;
-import org.junit.jupiter.api.AfterAll;
+import org.apache.dubbo.common.logger.Logger;
+import org.apache.dubbo.common.logger.LoggerFactory;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -65,6 +65,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Disabled
 public class LeaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(LeaseTest.class);
+
     private static EtcdCluster cluster;
 
     private KV kvClient;
@@ -75,20 +77,31 @@ public class LeaseTest {
     private static final ByteSequence KEY_2 = ByteSequence.from("foo2", Charsets.UTF_8);
     private static final ByteSequence VALUE = ByteSequence.from("bar", Charsets.UTF_8);
 
-    @BeforeAll
-    public static void beforeClass() {
-        cluster = EtcdClusterFactory.buildCluster("etcd-lease", 3, false);
+    @BeforeEach
+    public void beforeClass() {
+        EtcdClusterExtension clusterExtension = EtcdClusterExtension.builder()
+            .withClusterName("etcd-lease")
+            .withNodes(3)
+            .withSsl(false)
+            .build();
+        try {
+            cluster = clusterExtension.cluster();
+        } catch (Exception e) {
+            logger.error("Init etcd cluster failed");
+        }
         cluster.start();
     }
 
-    @AfterAll
-    public static void afterClass() {
-        cluster.close();
+    @AfterEach
+    public void afterClass() {
+        if (cluster != null) {
+            cluster.stop();
+        }
     }
 
     @BeforeEach
     public void setUp() {
-        client = Client.builder().endpoints(cluster.getClientEndpoints()).build();
+        client = Client.builder().endpoints(cluster.clientEndpoints()).build();
         kvClient = client.getKVClient();
         leaseClient = client.getLeaseClient();
     }
