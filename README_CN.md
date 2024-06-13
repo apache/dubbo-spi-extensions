@@ -92,7 +92,7 @@ dubbo-spi-extensions的目的是提供开放的、社区驱动的、可重用的
   - [dubbo-serialization-jackson](dubbo-serialization-extensions/dubbo-serialization-jackson)
   - [dubbo-serialization-kryo](dubbo-serialization-extensions/dubbo-serialization-kryo)
   - [dubbo-serialization-msgpack](dubbo-serialization-extensions/dubbo-serialization-msgpack)
-  - [dubbo-serialization-native-hession](dubbo-serialization-extensions/dubbo-serialization-native-hession)
+  - [dubbo-serialization-native-hessian](dubbo-serialization-extensions/dubbo-serialization-native-hessian)
   - [dubbo-serialization-protobuf](dubbo-serialization-extensions/dubbo-serialization-protobuf)
   - [dubbo-serialization-protostuff](dubbo-serialization-extensions/dubbo-serialization-protostuff)
   - [dubbo-serialization-test](dubbo-serialization-extensions/dubbo-serialization-test)
