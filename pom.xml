@@ -100,7 +100,7 @@
     </modules>
 
     <properties>
-        <revision>3.0.0-SNAPSHOT</revision>
+        <revision>3.0.0</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.9.3</junit_jupiter_version>
         <junit_platform_commons>1.9.3</junit_platform_commons>
