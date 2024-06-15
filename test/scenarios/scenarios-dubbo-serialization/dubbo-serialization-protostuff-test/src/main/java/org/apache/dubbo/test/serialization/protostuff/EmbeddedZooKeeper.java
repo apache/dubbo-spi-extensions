@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.dubbo.test.serialization.jdk;
+package org.apache.dubbo.test.serialization.protostuff;
 
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;

@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.dubbo.test.serialization.jdk;
+package org.apache.dubbo.test.serialization.protostuff;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
