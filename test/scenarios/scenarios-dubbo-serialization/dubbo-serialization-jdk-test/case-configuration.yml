@@ -18,7 +18,7 @@ from: app-builtin-zookeeper.yml
 
 props:
   project_name: dubbo-serialization-jdk-test
-  main_class: org.apache.dubbo.test.serialization.protostuff.JdkProvider
+  main_class: org.apache.dubbo.test.serialization.jdk.JdkProvider
   zookeeper_port: 2181
   dubbo_port: 20880
 

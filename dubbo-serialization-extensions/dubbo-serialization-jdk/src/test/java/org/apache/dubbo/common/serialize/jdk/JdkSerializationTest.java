@@ -16,9 +16,7 @@
  */
 package org.apache.dubbo.common.serialize.jdk;
 
-import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
-import org.apache.dubbo.common.serialize.java.JavaObjectInput;
 import org.apache.dubbo.common.serialize.java.JavaObjectOutput;
 import org.apache.dubbo.common.serialize.java.JavaSerialization;
 
@@ -28,7 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;

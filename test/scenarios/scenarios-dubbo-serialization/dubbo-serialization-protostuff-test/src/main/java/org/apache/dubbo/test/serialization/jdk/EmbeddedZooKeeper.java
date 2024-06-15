@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.test.serialization.protostuff;
+package org.apache.dubbo.test.serialization.jdk;
 
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
