@@ -92,7 +92,7 @@ The available extensions are as follows:
   - [dubbo-serialization-jackson](dubbo-serialization-extensions/dubbo-serialization-jackson)
   - [dubbo-serialization-kryo](dubbo-serialization-extensions/dubbo-serialization-kryo)
   - [dubbo-serialization-msgpack](dubbo-serialization-extensions/dubbo-serialization-msgpack)
-  - [dubbo-serialization-native-hession](dubbo-serialization-extensions/dubbo-serialization-native-hession)
+  - [dubbo-serialization-native-hessian](dubbo-serialization-extensions/dubbo-serialization-native-hessian)
   - [dubbo-serialization-protobuf](dubbo-serialization-extensions/dubbo-serialization-protobuf)
   - [dubbo-serialization-protostuff](dubbo-serialization-extensions/dubbo-serialization-protostuff)
   - [dubbo-serialization-test](dubbo-serialization-extensions/dubbo-serialization-test)
