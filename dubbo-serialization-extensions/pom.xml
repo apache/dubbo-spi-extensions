@@ -44,6 +44,7 @@
         <module>dubbo-serialization-msgpack</module>
         <module>dubbo-serialization-native-hessian</module>
         <module>dubbo-serialization-jackson</module>
+        <module>dubbo-serialization-jdk</module>
         <module>dubbo-serialization-test</module>
         <module>dubbo-serialization-common</module>
     </modules>
