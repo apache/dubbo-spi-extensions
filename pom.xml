@@ -108,7 +108,7 @@
         <revision>3.2.1-SNAPSHOT</revision>
         <!-- Test libs -->
         <junit_jupiter_version>5.10.2</junit_jupiter_version>
-        <junit_platform_commons>1.10.2</junit_platform_commons>
+        <junit_platform_commons>1.10.3</junit_platform_commons>
         <awaitility_version>4.2.1</awaitility_version>
         <hazelcast_version>3.11.1</hazelcast_version>
         <hamcrest_version>2.2</hamcrest_version>
