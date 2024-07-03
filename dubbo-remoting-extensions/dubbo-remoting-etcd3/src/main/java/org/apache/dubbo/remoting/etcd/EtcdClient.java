@@ -188,4 +188,14 @@ public interface EtcdClient {
      */
     boolean putEphemeral(String key, String value);
 
+    /**
+     * Put the key value pair to etcd (cas)
+     *
+     * @param key      the specified key
+     * @param oldValue the old  value
+     * @param newValue the paired value
+     * @return true if put success
+     */
+    boolean putCas(String key, String oldValue, String newValue);
+
 }
