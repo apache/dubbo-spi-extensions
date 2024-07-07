@@ -186,7 +186,7 @@ public class AvroObjectInputOutputTest {
         avroObjectOutput.flushBuffer();
         pos.close();
 
-        //这里会丢失所有信息
+        //All the information is lost here
         Object result = avroObjectInput.readObject();
 
         assertThat(result, not(nullValue()));
