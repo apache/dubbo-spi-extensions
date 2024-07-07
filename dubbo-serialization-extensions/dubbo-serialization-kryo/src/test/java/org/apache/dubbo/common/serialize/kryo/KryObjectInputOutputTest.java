@@ -34,8 +34,8 @@ import static org.hamcrest.core.IsNull.nullValue;
 
 
 public class KryObjectInputOutputTest {
-    private KryoObjectInput KryoObjectInput;
-    private KryoObjectOutput KryoObjectOutput;
+    private KryoObjectInput kryoObjectInput;
+    private KryoObjectOutput kryoObjectOutput;
 
     private PipedOutputStream pos;
     private PipedInputStream pis;
@@ -46,8 +46,8 @@ public class KryObjectInputOutputTest {
         pos = new PipedOutputStream();
         pis.connect(pos);
 
-        KryoObjectOutput = new KryoObjectOutput(pos);
-        KryoObjectInput = new KryoObjectInput(pis);
+        kryoObjectOutput = new KryoObjectOutput(pos);
+        kryoObjectInput = new KryoObjectInput(pis);
     }
 
     @AfterEach
@@ -64,98 +64,98 @@ public class KryObjectInputOutputTest {
 
     @Test
     public void testWriteReadBool() throws IOException, InterruptedException {
-        KryoObjectOutput.writeBool(true);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeBool(true);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        boolean result = KryoObjectInput.readBool();
+        boolean result = kryoObjectInput.readBool();
         assertThat(result, is(true));
     }
 
     @Test
     public void testWriteReadByte() throws IOException {
-        KryoObjectOutput.writeByte((byte) 'a');
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeByte((byte) 'a');
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Byte result = KryoObjectInput.readByte();
+        Byte result = kryoObjectInput.readByte();
 
         assertThat(result, is((byte) 'a'));
     }
 
     @Test
     public void testWriteReadBytes() throws IOException {
-        KryoObjectOutput.writeBytes("123456".getBytes());
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeBytes("123456".getBytes());
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        byte[] result = KryoObjectInput.readBytes();
+        byte[] result = kryoObjectInput.readBytes();
 
         assertThat(result, is("123456".getBytes()));
     }
 
     @Test
     public void testWriteReadShort() throws IOException {
-        KryoObjectOutput.writeShort((short) 1);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeShort((short) 1);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        short result = KryoObjectInput.readShort();
+        short result = kryoObjectInput.readShort();
 
         assertThat(result, is((short) 1));
     }
 
     @Test
     public void testWriteReadInt() throws IOException {
-        KryoObjectOutput.writeInt(1);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeInt(1);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Integer result = KryoObjectInput.readInt();
+        Integer result = kryoObjectInput.readInt();
 
         assertThat(result, is(1));
     }
 
     @Test
     public void testReadDouble() throws IOException {
-        KryoObjectOutput.writeDouble(3.14d);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeDouble(3.14d);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Double result = KryoObjectInput.readDouble();
+        Double result = kryoObjectInput.readDouble();
 
         assertThat(result, is(3.14d));
     }
 
     @Test
     public void testReadLong() throws IOException {
-        KryoObjectOutput.writeLong(10L);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeLong(10L);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Long result = KryoObjectInput.readLong();
+        Long result = kryoObjectInput.readLong();
 
         assertThat(result, is(10L));
     }
 
     @Test
     public void testWriteReadFloat() throws IOException {
-        KryoObjectOutput.writeFloat(1.66f);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeFloat(1.66f);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Float result = KryoObjectInput.readFloat();
+        Float result = kryoObjectInput.readFloat();
 
         assertThat(result, is(1.66F));
     }
 
     @Test
     public void testWriteReadUTF() throws IOException {
-        KryoObjectOutput.writeUTF("wording");
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeUTF("wording");
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        String result = KryoObjectInput.readUTF();
+        String result = kryoObjectInput.readUTF();
 
         assertThat(result, is("wording"));
     }
@@ -166,11 +166,11 @@ public class KryObjectInputOutputTest {
         p.setAge(30);
         p.setName("abc");
 
-        KryoObjectOutput.writeObject(p);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeObject(p);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Person result = KryoObjectInput.readObject(Person.class);
+        Person result = kryoObjectInput.readObject(Person.class);
 
         assertThat(result, not(nullValue()));
         assertThat(result.getName(), is("abc"));
@@ -183,12 +183,12 @@ public class KryObjectInputOutputTest {
         p.setAge(30);
         p.setName("abc");
 
-        KryoObjectOutput.writeObject(p);
-        KryoObjectOutput.flushBuffer();
+        kryoObjectOutput.writeObject(p);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
         //All the information is lost here
-        Object result = KryoObjectInput.readObject();
+        Object result = kryoObjectInput.readObject();
 
         assertThat(result, not(nullValue()));
 //		assertThat(result.getName(), is("abc"));
