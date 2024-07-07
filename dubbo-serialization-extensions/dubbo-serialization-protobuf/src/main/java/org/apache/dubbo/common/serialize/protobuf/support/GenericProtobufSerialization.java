@@ -17,7 +17,6 @@
 package org.apache.dubbo.common.serialize.protobuf.support;
 
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.serialize.Constants;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.Serialization;
