@@ -25,6 +25,8 @@ import org.apache.dubbo.common.serialize.Serialization;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static org.apache.dubbo.common.serialize.Constants.PROTOBUF_SERIALIZATION_ID;
+
 /**
  * <p>
  * Currently, the Dubbo protocol / framework data, such as attachments, event data, etc.,
@@ -43,7 +45,7 @@ public class GenericProtobufSerialization implements Serialization {
 
     @Override
     public byte getContentTypeId() {
-        return Constants.PROTOBUF_SERIALIZATION_ID;
+        return PROTOBUF_SERIALIZATION_ID;
     }
 
     @Override
