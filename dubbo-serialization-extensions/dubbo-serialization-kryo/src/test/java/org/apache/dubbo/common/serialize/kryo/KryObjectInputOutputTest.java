@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.avro;
+package org.apache.dubbo.common.serialize.kryo;
 
 
 import org.apache.dubbo.common.serialize.model.Person;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +33,9 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 
 
-public class AvroObjectInputOutputTest {
-    private AvroObjectInput avroObjectInput;
-    private AvroObjectOutput avroObjectOutput;
+public class KryObjectInputOutputTest {
+    private KryoObjectInput kryoObjectInput;
+    private KryoObjectOutput kryoObjectOutput;
 
     private PipedOutputStream pos;
     private PipedInputStream pis;
@@ -45,8 +46,8 @@ public class AvroObjectInputOutputTest {
         pos = new PipedOutputStream();
         pis.connect(pos);
 
-        avroObjectOutput = new AvroObjectOutput(pos);
-        avroObjectInput = new AvroObjectInput(pis);
+        kryoObjectOutput = new KryoObjectOutput(pos);
+        kryoObjectInput = new KryoObjectInput(pis);
     }
 
     @AfterEach
@@ -63,98 +64,98 @@ public class AvroObjectInputOutputTest {
 
     @Test
     public void testWriteReadBool() throws IOException, InterruptedException {
-        avroObjectOutput.writeBool(true);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeBool(true);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        boolean result = avroObjectInput.readBool();
+        boolean result = kryoObjectInput.readBool();
         assertThat(result, is(true));
     }
 
     @Test
     public void testWriteReadByte() throws IOException {
-        avroObjectOutput.writeByte((byte) 'a');
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeByte((byte) 'a');
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Byte result = avroObjectInput.readByte();
+        Byte result = kryoObjectInput.readByte();
 
         assertThat(result, is((byte) 'a'));
     }
 
     @Test
     public void testWriteReadBytes() throws IOException {
-        avroObjectOutput.writeBytes("123456".getBytes());
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeBytes("123456".getBytes());
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        byte[] result = avroObjectInput.readBytes();
+        byte[] result = kryoObjectInput.readBytes();
 
         assertThat(result, is("123456".getBytes()));
     }
 
     @Test
     public void testWriteReadShort() throws IOException {
-        avroObjectOutput.writeShort((short) 1);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeShort((short) 1);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        short result = avroObjectInput.readShort();
+        short result = kryoObjectInput.readShort();
 
         assertThat(result, is((short) 1));
     }
 
     @Test
     public void testWriteReadInt() throws IOException {
-        avroObjectOutput.writeInt(1);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeInt(1);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Integer result = avroObjectInput.readInt();
+        Integer result = kryoObjectInput.readInt();
 
         assertThat(result, is(1));
     }
 
     @Test
     public void testReadDouble() throws IOException {
-        avroObjectOutput.writeDouble(3.14d);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeDouble(3.14d);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Double result = avroObjectInput.readDouble();
+        Double result = kryoObjectInput.readDouble();
 
         assertThat(result, is(3.14d));
     }
 
     @Test
     public void testReadLong() throws IOException {
-        avroObjectOutput.writeLong(10L);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeLong(10L);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Long result = avroObjectInput.readLong();
+        Long result = kryoObjectInput.readLong();
 
         assertThat(result, is(10L));
     }
 
     @Test
     public void testWriteReadFloat() throws IOException {
-        avroObjectOutput.writeFloat(1.66f);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeFloat(1.66f);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Float result = avroObjectInput.readFloat();
+        Float result = kryoObjectInput.readFloat();
 
         assertThat(result, is(1.66F));
     }
 
     @Test
     public void testWriteReadUTF() throws IOException {
-        avroObjectOutput.writeUTF("wording");
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeUTF("wording");
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        String result = avroObjectInput.readUTF();
+        String result = kryoObjectInput.readUTF();
 
         assertThat(result, is("wording"));
     }
@@ -165,11 +166,11 @@ public class AvroObjectInputOutputTest {
         p.setAge(30);
         p.setName("abc");
 
-        avroObjectOutput.writeObject(p);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeObject(p);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
-        Person result = avroObjectInput.readObject(Person.class);
+        Person result = kryoObjectInput.readObject(Person.class);
 
         assertThat(result, not(nullValue()));
         assertThat(result.getName(), is("abc"));
@@ -182,12 +183,12 @@ public class AvroObjectInputOutputTest {
         p.setAge(30);
         p.setName("abc");
 
-        avroObjectOutput.writeObject(p);
-        avroObjectOutput.flushBuffer();
+        kryoObjectOutput.writeObject(p);
+        kryoObjectOutput.flushBuffer();
         pos.close();
 
         //All the information is lost here
-        Object result = avroObjectInput.readObject();
+        Object result = kryoObjectInput.readObject();
 
         assertThat(result, not(nullValue()));
 //		assertThat(result.getName(), is("abc"));
