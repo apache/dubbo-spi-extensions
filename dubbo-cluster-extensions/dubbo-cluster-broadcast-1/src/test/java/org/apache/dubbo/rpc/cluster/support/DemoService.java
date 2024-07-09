@@ -16,11 +16,11 @@
  */
 package org.apache.dubbo.rpc.cluster.support;
 
-import org.junit.jupiter.api.Test;
+/**
+ * <code>TestService</code>
+ */
+public interface DemoService {
+    String sayHello(String name);
 
-class BroadcastCluster1Test {
-
-    @Test
-    void doJoin() {
-    }
+    int plus(int a, int b);
 }
