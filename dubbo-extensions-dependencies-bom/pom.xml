@@ -663,7 +663,13 @@
                 <version>${maven_flatten_version}</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <flattenMode>bom</flattenMode>
+                    <pomElements>
+                        <dependencyManagement>expand</dependencyManagement>
+                        <properties>remove</properties>
+                        <repositories>remove</repositories>
+                        <profiles>remove</profiles>
+                    </pomElements>
                 </configuration>
                 <executions>
                     <execution>
