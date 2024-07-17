@@ -112,7 +112,7 @@
         <fastjson_version>1.2.83</fastjson_version>
         <fst_version>2.57</fst_version>
         <fury_version>0.4.1</fury_version>
-        <jackson_version>2.17.1</jackson_version>
+        <jackson_version>2.17.2</jackson_version>
         <gson_version>2.11.0</gson_version>
         <kryo_version>5.6.0</kryo_version>
         <kryo_serializers_version>0.45</kryo_serializers_version>
@@ -122,7 +122,7 @@
         <slf4j_version>1.7.36</slf4j_version>
         <grizzly_version>2.4.4</grizzly_version>
         <jetcd_version>0.7.7</jetcd_version>
-        <grpc.version>1.65.0</grpc.version>
+        <grpc.version>1.65.1</grpc.version>
         <etcd_launcher_version>0.7.7</etcd_launcher_version>
         <netty4_version>4.1.111.Final</netty4_version>
         <consul_process_version>2.2.1</consul_process_version>
@@ -139,7 +139,7 @@
         <swagger_version>1.6.14</swagger_version>
         <polaris_adapter_version>0.2.1</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
-        <byte-buddy.version>1.14.17</byte-buddy.version>
+        <byte-buddy.version>1.14.18</byte-buddy.version>
         <commons_net_version>3.11.1</commons_net_version>
         <snakeyaml_version>2.2</snakeyaml_version>
         <protobuf-java_version>3.25.3</protobuf-java_version>
