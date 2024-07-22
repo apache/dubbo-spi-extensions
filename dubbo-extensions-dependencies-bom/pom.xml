@@ -128,7 +128,7 @@
         <consul_process_version>2.2.1</consul_process_version>
         <consul_version>1.4.5</consul_version>
         <consul_client_version>1.5.3</consul_client_version>
-        <test_container_version>1.19.8</test_container_version>
+        <test_container_version>1.20.0</test_container_version>
         <seata_version>1.8.0</seata_version>
         <eureka.version>1.10.18</eureka.version>
         <sofa_registry_version>5.4.3</sofa_registry_version>
