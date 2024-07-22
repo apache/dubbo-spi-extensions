@@ -63,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-native-hession</artifactId>
+            <artifactId>dubbo-serialization-native-hessian</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
