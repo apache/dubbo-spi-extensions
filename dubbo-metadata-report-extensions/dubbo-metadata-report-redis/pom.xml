@@ -23,9 +23,6 @@
   </parent>
 
   <artifactId>dubbo-metadata-report-redis</artifactId>
-  <properties>
-    <jedis.version>5.1.0</jedis.version>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -36,7 +33,6 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
-      <version>${jedis.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.codemonstur</groupId>
