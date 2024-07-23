@@ -104,7 +104,7 @@
         <thrift_version>0.12.0</thrift_version>
         <jedis_version>3.10.0</jedis_version>
         <embedded_redis_version>0.13.0</embedded_redis_version>
-        <commons_lang3_version>3.14.0</commons_lang3_version>
+        <commons_lang3_version>3.15.0</commons_lang3_version>
         <jaxb_version>2.2.7</jaxb_version>
         <activation_version>1.2.0</activation_version>
         <cxf_version>3.1.15</cxf_version>
