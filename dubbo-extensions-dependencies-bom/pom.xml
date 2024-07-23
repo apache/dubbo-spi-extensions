@@ -124,7 +124,7 @@
         <jetcd_version>0.7.7</jetcd_version>
         <grpc.version>1.65.1</grpc.version>
         <etcd_launcher_version>0.7.7</etcd_launcher_version>
-        <netty4_version>4.1.111.Final</netty4_version>
+        <netty4_version>4.1.112.Final</netty4_version>
         <consul_process_version>2.2.1</consul_process_version>
         <consul_version>1.4.5</consul_version>
         <consul_client_version>1.5.3</consul_client_version>
