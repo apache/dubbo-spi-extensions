@@ -61,7 +61,7 @@ import static redis.embedded.RedisServer.newRedisServer;
 class RedisMetadataReportTest {
 
     private static final String REDIS_URL_TEMPLATE = "redis://%slocalhost:%d",
-            REDIS_PASSWORD = "チェリー",
+            REDIS_PASSWORD = "password",
             REDIS_URL_AUTH_SECTION = "username:" + REDIS_PASSWORD + "@";
 
     RedisMetadataReport redisMetadataReport;
