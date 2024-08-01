@@ -142,7 +142,7 @@
         <byte-buddy.version>1.14.18</byte-buddy.version>
         <commons_net_version>3.11.1</commons_net_version>
         <snakeyaml_version>2.2</snakeyaml_version>
-        <protobuf-java_version>3.25.3</protobuf-java_version>
+        <protobuf-java_version>3.25.4</protobuf-java_version>
         <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
         <envoy_api_version>0.1.35</envoy_api_version>
         <mockito_version>5.11.0</mockito_version>
