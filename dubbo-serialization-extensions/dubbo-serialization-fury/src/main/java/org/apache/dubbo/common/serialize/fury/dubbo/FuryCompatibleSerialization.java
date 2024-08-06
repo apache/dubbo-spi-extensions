@@ -17,12 +17,13 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import io.fury.Fury;
-import io.fury.collection.Tuple2;
-import io.fury.config.CompatibleMode;
-import io.fury.memory.MemoryBuffer;
-import io.fury.memory.MemoryUtils;
-import io.fury.util.LoaderBinding;
+
+import org.apache.fury.Fury;
+import org.apache.fury.collection.Tuple2;
+import org.apache.fury.config.CompatibleMode;
+import org.apache.fury.memory.MemoryBuffer;
+import org.apache.fury.memory.MemoryUtils;
+import org.apache.fury.util.LoaderBinding;
 
 /**
  * Fury serialization for dubbo. This integration support type forward/backward compatibility.

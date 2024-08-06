@@ -17,11 +17,12 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import io.fury.Fury;
-import io.fury.memory.MemoryBuffer;
 import java.io.IOException;
 import java.io.OutputStream;
 import org.apache.dubbo.common.serialize.ObjectOutput;
+
+import org.apache.fury.Fury;
+import org.apache.fury.memory.MemoryBuffer;
 
 /**
  * Fury implementation for {@link ObjectOutput}.
@@ -44,37 +45,37 @@ public class FuryObjectOutput implements ObjectOutput {
   }
 
   public void writeBool(boolean v) throws IOException {
-    buffer.unsafePutBoolean(0, v);
+    buffer.putBoolean(0, v);
     output.write(buffer.getHeapMemory(), 0, 1);
   }
 
   public void writeByte(byte v) throws IOException {
-    buffer.unsafePut(0, v);
+    buffer.putByte(0, v);
     output.write(buffer.getHeapMemory(), 0, 1);
   }
 
   public void writeShort(short v) throws IOException {
-    buffer.unsafePutShort(0, v);
+    buffer.putInt16(0, v);
     output.write(buffer.getHeapMemory(), 0, 2);
   }
 
   public void writeInt(int v) throws IOException {
-    buffer.unsafePutInt(0, v);
+    buffer.putInt32(0, v);
     output.write(buffer.getHeapMemory(), 0, 4);
   }
 
   public void writeLong(long v) throws IOException {
-    buffer.unsafePutLong(0, v);
+    buffer.putInt64(0, v);
     output.write(buffer.getHeapMemory(), 0, 8);
   }
 
   public void writeFloat(float v) throws IOException {
-    buffer.unsafePutFloat(0, v);
+    buffer.putFloat32(0, v);
     output.write(buffer.getHeapMemory(), 0, 4);
   }
 
   public void writeDouble(double v) throws IOException {
-    buffer.unsafePutDouble(0, v);
+    buffer.putFloat64(0, v);
     output.write(buffer.getHeapMemory(), 0, 8);
   }
 

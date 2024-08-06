@@ -17,17 +17,18 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import io.fury.Fury;
-import io.fury.exception.InsecureException;
-import io.fury.resolver.AllowListChecker;
-import io.fury.serializer.Serializer;
-import io.fury.serializer.SerializerFactory;
 import java.io.Serializable;
 import java.util.Set;
 import org.apache.dubbo.common.utils.AllowClassNotifyListener;
 import org.apache.dubbo.common.utils.SerializeCheckStatus;
 import org.apache.dubbo.common.utils.SerializeSecurityManager;
 import org.apache.dubbo.rpc.model.FrameworkModel;
+
+import org.apache.fury.Fury;
+import org.apache.fury.exception.InsecureException;
+import org.apache.fury.resolver.AllowListChecker;
+import org.apache.fury.serializer.Serializer;
+import org.apache.fury.serializer.SerializerFactory;
 
 @SuppressWarnings("rawtypes")
 public class FuryCheckerListener implements AllowClassNotifyListener, SerializerFactory {
