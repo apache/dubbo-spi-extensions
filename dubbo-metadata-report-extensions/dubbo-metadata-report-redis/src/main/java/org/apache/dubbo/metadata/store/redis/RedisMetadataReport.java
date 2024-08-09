@@ -481,7 +481,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
             logger.info("sub from redis:" + key + " message:" + msg);
             String applicationNames = getMappingData(buildMappingKey(DEFAULT_MAPPING_GROUP), msg);
             MappingChangedEvent mappingChangedEvent = new MappingChangedEvent(msg, getAppNames(applicationNames));
-            if (!listeners.get(msg).isEmpty()) {
+            if (listeners.get(msg) != null && !listeners.get(msg).isEmpty()) {
                 for (MappingListener mappingListener : listeners.get(msg)) {
                     mappingListener.onEvent(mappingChangedEvent);
                 }
