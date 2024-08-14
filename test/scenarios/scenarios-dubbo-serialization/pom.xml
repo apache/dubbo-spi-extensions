@@ -36,13 +36,15 @@
         <module>dubbo-serialization-kryo-test</module>
         <module>dubbo-serialization-protobuf-test</module>
         <module>dubbo-serialization-protostuff-test</module>
+        <module>dubbo-serialization-jdk-test</module>
         <module>dubbo-serialization-testcase</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <!-- Embedded Zookeeper Server Dependencies -->
+        <metrics.version>4.1.12.1</metrics.version>
     </properties>
-
 
 </project>

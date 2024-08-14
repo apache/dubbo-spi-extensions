@@ -30,6 +30,7 @@
     <artifactId>dubbo-extensions-test</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
+
     <modules>
         <module>dubbo-test-runner</module>
         <module>dubbo-scenario-builder</module>
@@ -40,7 +41,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dubbo.version>3.2.11</dubbo.version>
         <junit.version>4.13.1</junit.version>
         <spring.version>4.3.30.RELEASE</spring.version>
     </properties>

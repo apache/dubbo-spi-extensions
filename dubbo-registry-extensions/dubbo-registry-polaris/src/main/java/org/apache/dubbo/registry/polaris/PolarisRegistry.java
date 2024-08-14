@@ -120,7 +120,7 @@ public class PolarisRegistry extends FailbackRegistry {
         }
     }
 
-    private boolean shouldRegister(URL url) {
+    protected boolean shouldRegister(URL url) {
         return !StringUtils.equals(url.getProtocol(), CommonConstants.CONSUMER);
     }
 
