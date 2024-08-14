@@ -50,7 +50,6 @@ limitations under the License.
             <groupId>org.apache.fury</groupId>
             <artifactId>fury-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-test</artifactId>
