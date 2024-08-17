@@ -15,9 +15,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apache.dubbo.extensions</groupId>
@@ -25,16 +24,17 @@ limitations under the License.
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
-    <artifactId>dubbo-serialization-fury</artifactId>
+    <artifactId>dubbo-serialization-jdk</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
+    <description>The jdk serialization module of dubbo project</description>
     <version>${revision}</version>
 
     <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -43,18 +43,12 @@ limitations under the License.
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
+            <artifactId>dubbo-common</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.apache.fury</groupId>
-            <artifactId>fury-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-test</artifactId>
-            <version>${revision}</version>
-            <scope>test</scope>
+            <groupId>com.alibaba</groupId>
+            <artifactId>hessian-lite</artifactId>
         </dependency>
     </dependencies>
 </project>
