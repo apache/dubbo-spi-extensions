@@ -20,13 +20,13 @@ package org.apache.dubbo.gateway.provider;
 import org.apache.dubbo.common.deploy.ApplicationDeployListener;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 
-import static org.apache.dubbo.common.constants.CommonConstants.BYTE_ACCESSOR_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.SystemProperty.SYSTEM_BYTE_ACCESSOR_KEY;
 
 public class ConfigDeployListener implements ApplicationDeployListener {
 
     @Override
     public void onInitialize(ApplicationModel scopeModel) {
-        System.setProperty(BYTE_ACCESSOR_KEY, "snf");
+        System.setProperty(SYSTEM_BYTE_ACCESSOR_KEY, "snf");
     }
 
     @Override
