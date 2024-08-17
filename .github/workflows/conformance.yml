@@ -51,10 +51,6 @@ jobs:
         run: |
           cd ./dubbo-spi-extensions
           ./mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
-      - name: "Build Scenarios"
-        run: |
-          cd ./dubbo-spi-extensions/test
-          ../mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
 
   prepare_test:
     name: "Prepare Test"
