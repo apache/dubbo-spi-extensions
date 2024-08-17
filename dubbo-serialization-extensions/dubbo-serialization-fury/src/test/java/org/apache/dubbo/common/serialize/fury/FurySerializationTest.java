@@ -36,32 +36,32 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 public class FurySerializationTest {
-    private FurySerialization FurySerialization;
+    private FurySerialization furySerialization;
 
     @BeforeEach
     public void setUp() {
-        this.FurySerialization = new FurySerialization();
+        this.furySerialization = new FurySerialization();
     }
 
     @Test
     public void testContentType() {
-        assertThat(FurySerialization.getContentType(), is("fury/consistent"));
+        assertThat(furySerialization.getContentType(), is("fury/consistent"));
     }
 
     @Test
     public void testContentTypeId() {
-        assertThat(FurySerialization.getContentTypeId(), is(FURY_SERIALIZATION_ID));
+        assertThat(furySerialization.getContentTypeId(), is(FURY_SERIALIZATION_ID));
     }
 
     @Test
     public void testObjectOutput() throws IOException {
-        ObjectOutput objectOutput = FurySerialization.serialize(null, mock(OutputStream.class));
+        ObjectOutput objectOutput = furySerialization.serialize(null, mock(OutputStream.class));
         assertThat(objectOutput, Matchers.<ObjectOutput>instanceOf(FuryObjectOutput.class));
     }
 
     @Test
     public void testObjectInput() throws IOException {
-        ObjectInput objectInput = FurySerialization.deserialize(null, mock(InputStream.class));
+        ObjectInput objectInput = furySerialization.deserialize(null, mock(InputStream.class));
         assertThat(objectInput, Matchers.<ObjectInput>instanceOf(FuryObjectInput.class));
     }
 }

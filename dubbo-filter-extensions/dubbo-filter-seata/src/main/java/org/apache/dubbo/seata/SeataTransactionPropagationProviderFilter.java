@@ -24,6 +24,7 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.Constants;
 
 import io.seata.common.util.StringUtils;
 import io.seata.core.constants.DubboConstants;
@@ -70,23 +71,28 @@ public class SeataTransactionPropagationProviderFilter implements Filter {
             return invoker.invoke(invocation);
         } finally {
             if (bind) {
-                BranchType previousBranchType = RootContext.getBranchType();
-                String unbindXid = RootContext.unbind();
-                if (BranchType.TCC == previousBranchType) {
-                    RootContext.unbindBranchType();
-                }
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(String.format("unbind xid [%s] branchType [%s] from RootContext", unbindXid, previousBranchType));
-                }
-                if (!rpcXid.equalsIgnoreCase(unbindXid)) {
-                    LOGGER.warn(String.format("xid in change during RPC from %s to %s,branchType from %s to %s", rpcXid, unbindXid,
-                        rpcBranchType != null ? rpcBranchType : "AT", previousBranchType));
-                    if (unbindXid != null) {
-                        RootContext.bind(unbindXid);
-                        LOGGER.warn(String.format("bind xid [%s] back to RootContext", unbindXid));
-                        if (BranchType.TCC == previousBranchType) {
-                            RootContext.bindBranchType(BranchType.TCC);
-                            LOGGER.warn(String.format("bind branchType [%s] back to RootContext", previousBranchType));
+                if (Constants.LOCAL_PROTOCOL.equals(invoker.getUrl().getProtocol())) {
+                    LOGGER.info("invoke happens in same jvm, skip unbind xid");
+                } else {
+                    BranchType previousBranchType = RootContext.getBranchType();
+                    String unbindXid = RootContext.unbind();
+                    if (BranchType.TCC == previousBranchType) {
+                        RootContext.unbindBranchType();
+                    }
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(String.format("unbind xid [%s] branchType [%s] from RootContext", unbindXid, previousBranchType));
+                    }
+                    if (!rpcXid.equalsIgnoreCase(unbindXid)) {
+                        LOGGER.warn(String
+                            .format("xid in change during RPC from %s to %s,branchType from %s to %s", rpcXid, unbindXid,
+                                rpcBranchType != null ? rpcBranchType : "AT", previousBranchType));
+                        if (unbindXid != null) {
+                            RootContext.bind(unbindXid);
+                            LOGGER.warn(String.format("bind xid [%s] back to RootContext", unbindXid));
+                            if (BranchType.TCC == previousBranchType) {
+                                RootContext.bindBranchType(BranchType.TCC);
+                                LOGGER.warn(String.format("bind branchType [%s] back to RootContext", previousBranchType));
+                            }
                         }
                     }
                 }

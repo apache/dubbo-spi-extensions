@@ -17,12 +17,14 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import io.fury.Fury;
-import io.fury.memory.MemoryBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import org.apache.dubbo.common.serialize.ObjectInput;
+
+import org.apache.fury.Fury;
+import org.apache.fury.io.FuryInputStream;
+import org.apache.fury.memory.MemoryBuffer;
 
 @SuppressWarnings("unchecked")
 public class FuryObjectInput implements ObjectInput {
@@ -38,7 +40,7 @@ public class FuryObjectInput implements ObjectInput {
 
   @Override
   public Object readObject() {
-    return fury.deserializeJavaObjectAndClass(input);
+    return fury.deserialize(new FuryInputStream(input, buffer.size()));
   }
 
   @Override
@@ -60,37 +62,37 @@ public class FuryObjectInput implements ObjectInput {
   @Override
   public byte readByte() throws IOException {
     readBytes(buffer.getHeapMemory(), 1);
-    return buffer.get(0);
+    return buffer.getByte(0);
   }
 
   @Override
   public short readShort() throws IOException {
     readBytes(buffer.getHeapMemory(), 2);
-    return buffer.getShort(0);
+    return buffer.getInt16(0);
   }
 
   @Override
   public int readInt() throws IOException {
     readBytes(buffer.getHeapMemory(), 4);
-    return buffer.getInt(0);
+    return buffer.getInt32(0);
   }
 
   @Override
   public long readLong() throws IOException {
     readBytes(buffer.getHeapMemory(), 8);
-    return buffer.getLong(0);
+    return buffer.getInt64(0);
   }
 
   @Override
   public float readFloat() throws IOException {
     readBytes(buffer.getHeapMemory(), 4);
-    return buffer.getFloat(0);
+    return buffer.getFloat32(0);
   }
 
   @Override
   public double readDouble() throws IOException {
     readBytes(buffer.getHeapMemory(), 8);
-    return buffer.getDouble(0);
+    return buffer.getFloat64(0);
   }
 
   @Override

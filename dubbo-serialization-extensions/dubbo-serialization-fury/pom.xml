@@ -47,8 +47,14 @@ limitations under the License.
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.furyio</groupId>
+            <groupId>org.apache.fury</groupId>
             <artifactId>fury-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo.extensions</groupId>
+            <artifactId>dubbo-serialization-test</artifactId>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

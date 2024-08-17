@@ -51,27 +51,7 @@ jobs:
         run: |
           cd ./dubbo-spi-extensions
           ./mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
-      - name: "Build Scenarios"
-        run: |
-          cd ./dubbo-spi-extensions/test
-          ../mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
 
-  prepare_test:
-    name: "Prepare Test"
-    runs-on: ubuntu-latest
-    env:
-      #'JOB_COUNT' MUST match 'job_id' list of 'testjob'
-      JOB_COUNT: 3
-    steps:
-      - uses: actions/checkout@v4
-      - name: Prepare test list
-        run: |
-          bash ./test/scripts/prepare-test.sh
-      - name: Upload test list
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-list
-          path: test/jobs
 
   testjob:
     needs: [ prepare_test,build-extensions ]
