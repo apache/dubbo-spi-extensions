@@ -14,13 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.fury;
+package org.apache.dubbo.common.serialize.msgpack;
 
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
-import org.apache.dubbo.common.serialize.fury.dubbo.FuryObjectInput;
-import org.apache.dubbo.common.serialize.fury.dubbo.FuryObjectOutput;
-import org.apache.dubbo.common.serialize.fury.dubbo.FurySerialization;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,38 +27,38 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static org.apache.dubbo.common.serialize.fury.dubbo.FurySerialization.FURY_SERIALIZATION_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
-public class FurySerializationTest {
-    private FurySerialization furySerialization;
+public class MsgpackSerializationTest {
+    private MsgpackSerialization msgpackSerialization;
 
     @BeforeEach
     public void setUp() {
-        this.furySerialization = new FurySerialization();
+        this.msgpackSerialization = new MsgpackSerialization();
     }
 
     @Test
     public void testContentType() {
-        assertThat(furySerialization.getContentType(), is("fury/consistent"));
+        assertThat(msgpackSerialization.getContentType(), is("text/json"));
     }
 
     @Test
     public void testContentTypeId() {
-        assertThat(furySerialization.getContentTypeId(), is(FURY_SERIALIZATION_ID));
+        byte result = 27;
+        assertThat(msgpackSerialization.getContentTypeId(), is(result));
     }
 
     @Test
     public void testObjectOutput() throws IOException {
-        ObjectOutput objectOutput = furySerialization.serialize(null, mock(OutputStream.class));
-        assertThat(objectOutput, Matchers.<ObjectOutput>instanceOf(FuryObjectOutput.class));
+        ObjectOutput objectOutput = msgpackSerialization.serialize(null, mock(OutputStream.class));
+        assertThat(objectOutput, Matchers.<ObjectOutput>instanceOf(MsgpackObjectOutput.class));
     }
 
     @Test
     public void testObjectInput() throws IOException {
-        ObjectInput objectInput = furySerialization.deserialize(null, mock(InputStream.class));
-        assertThat(objectInput, Matchers.<ObjectInput>instanceOf(FuryObjectInput.class));
+        ObjectInput objectInput = msgpackSerialization.deserialize(null, mock(InputStream.class));
+        assertThat(objectInput, Matchers.<ObjectInput>instanceOf(MsgpackObjectInput.class));
     }
 }
