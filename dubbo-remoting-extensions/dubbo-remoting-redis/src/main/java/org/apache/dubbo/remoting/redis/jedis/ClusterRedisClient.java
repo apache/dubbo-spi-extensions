@@ -24,7 +24,11 @@ import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.redis.RedisClient;
 import org.apache.dubbo.remoting.redis.support.AbstractRedisClient;
 
-import redis.clients.jedis.*;
+import redis.clients.jedis.Connection;
+import redis.clients.jedis.ConnectionPool;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
@@ -47,6 +51,7 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
     private static final int DEFAULT_MAX_ATTEMPTS = 5;
 
     private final JedisCluster jedisCluster;
+
     private Pattern COLON_SPLIT_PATTERN = Pattern.compile("\\s*[:]+\\s*");
 
     public ClusterRedisClient(URL url) {
