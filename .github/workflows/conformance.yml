@@ -54,7 +54,7 @@ jobs:
 
 
   testjob:
-    needs: [ prepare_test,build-extensions ]
+    needs: [ build-extensions ]
     name: 'Conformance Test'
     runs-on: ubuntu-latest
     env:
