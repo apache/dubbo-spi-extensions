@@ -40,7 +40,7 @@ public class FuryObjectInput implements ObjectInput {
 
   @Override
   public Object readObject() {
-    return fury.deserialize(new FuryInputStream(input, buffer.size()));
+    return fury.deserializeJavaObjectAndClass(new FuryInputStream(input, buffer.size()));
   }
 
   @Override
