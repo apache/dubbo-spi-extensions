@@ -29,7 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: '3.1.0'
+          ref: '3.1'
       - name: Check License
         uses: apache/skywalking-eyes@v0.5.0
         env:
@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "3.1.0"
+          ref: "3.1"
           path: dubbo-spi-extensions
       - uses: actions/setup-java@v4
         with:
@@ -143,8 +143,6 @@ jobs:
         with:
           name: "checkstyle-file"
           path: ${{ github.workspace }}/checkstyle.zip
-      - name: "Upload coverage to Codecov"
-        uses: codecov/codecov-action@v4
       - name: "Calculate Dubbo-SPI-Extensions Version"
         id: dubbo-spi-extensions-version
         run: |
@@ -301,6 +299,8 @@ jobs:
         with:
           name: coverage-result-${{ matrix.os }}-${{ matrix.jdk }}
           path: "**/target/site/**/jacoco.xml"
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v4
 
 #  error-code-inspecting:
 #    needs: [check-license, build-tools]
