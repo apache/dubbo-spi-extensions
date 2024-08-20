@@ -46,10 +46,10 @@ public class FuryCheckerListener implements AllowClassNotifyListener, Serializer
   @Override
   public void notifyPrefix(Set<String> allowedList, Set<String> disAllowedList) {
     for (String prefix : allowedList) {
-      checker.allowClass(prefix);
+      checker.allowClass(prefix + "*");
     }
     for (String prefix : disAllowedList) {
-      checker.disallowClass(prefix);
+      checker.disallowClass(prefix + "*");
     }
   }
 
@@ -90,4 +90,5 @@ public class FuryCheckerListener implements AllowClassNotifyListener, Serializer
     }
     return null;
   }
+
 }
