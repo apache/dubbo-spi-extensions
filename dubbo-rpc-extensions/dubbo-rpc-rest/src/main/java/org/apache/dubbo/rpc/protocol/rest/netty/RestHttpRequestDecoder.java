@@ -24,7 +24,6 @@ import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.threadpool.manager.ExecutorRepository;
 import org.apache.dubbo.common.utils.ExecutorUtil;
-import org.apache.dubbo.rpc.protocol.rest.RestHeaderEnum;
 import org.apache.dubbo.rpc.protocol.rest.deploy.ServiceDeployer;
 import org.apache.dubbo.rpc.protocol.rest.handler.NettyHttpHandler;
 import org.apache.dubbo.rpc.protocol.rest.request.NettyRequestFacade;
@@ -73,7 +72,6 @@ public class RestHttpRequestDecoder extends MessageToMessageDecoder<io.netty.han
             } finally {
                 // write response
                 try {
-                    nettyHttpResponse.addOutputHeaders(RestHeaderEnum.CONNECTION.getHeader(), "close");
                     nettyHttpResponse.finish();
                 } catch (IOException e) {
                     logger.error(
