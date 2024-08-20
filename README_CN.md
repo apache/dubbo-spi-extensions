@@ -1,8 +1,8 @@
 # dubbo-spi-extensions
-[![Build Status](https://travis-ci.org/apache/dubbo-spi-extensions.svg?branch=master)](https://travis-ci.org/apache/dubbo-spi-extensions)
+[![Build and Test For PR](https://github.com/apache/dubbo-spi-extensions/actions/workflows/build-and-test-pr.yml/badge.svg)](https://github.com/apache/dubbo-spi-extensions/actions/workflows/build-and-test-pr.yml)
 [![codecov](https://codecov.io/gh/apache/dubbo-spi-extensions/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/dubbo-spi-extensions)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo/dubbo-spi-extensions.svg)](https://search.maven.org/search?q=g:org.apache.dubbo%20AND%20a:dubbo-spi-extensions)
-[![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo.extensions/extensions-parent.svg)](https://search.maven.org/search?q=g:org.apache.dubbo.extensions)
+[![License](https://img.shields.io/github/license/apache/dubbo.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 [English](./README.md)
 
