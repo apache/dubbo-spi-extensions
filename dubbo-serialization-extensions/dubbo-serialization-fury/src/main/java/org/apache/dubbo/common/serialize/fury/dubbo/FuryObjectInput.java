@@ -23,6 +23,7 @@ import java.lang.reflect.Type;
 import org.apache.dubbo.common.serialize.ObjectInput;
 
 import org.apache.fury.Fury;
+import org.apache.fury.io.BlockedStreamUtils;
 import org.apache.fury.io.FuryInputStream;
 import org.apache.fury.memory.MemoryBuffer;
 
@@ -40,7 +41,7 @@ public class FuryObjectInput implements ObjectInput {
 
   @Override
   public Object readObject() {
-    return fury.deserializeJavaObjectAndClass(new FuryInputStream(input, buffer.size()));
+    return BlockedStreamUtils.deserialize(fury, input);
   }
 
   @Override

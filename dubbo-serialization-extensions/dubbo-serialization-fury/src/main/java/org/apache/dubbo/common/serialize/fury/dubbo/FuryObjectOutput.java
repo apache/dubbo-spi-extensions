@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 
 import org.apache.fury.Fury;
+import org.apache.fury.io.BlockedStreamUtils;
 import org.apache.fury.memory.MemoryBuffer;
 
 /**
@@ -41,7 +42,7 @@ public class FuryObjectOutput implements ObjectOutput {
   }
 
   public void writeObject(Object obj) {
-    fury.serializeJavaObjectAndClass(output, obj);
+      BlockedStreamUtils.serialize(fury, output, obj);
   }
 
   public void writeBool(boolean v) throws IOException {
