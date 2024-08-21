@@ -17,13 +17,14 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 
 import org.apache.fury.Fury;
 import org.apache.fury.io.BlockedStreamUtils;
 import org.apache.fury.memory.MemoryBuffer;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Fury implementation for {@link ObjectOutput}.
