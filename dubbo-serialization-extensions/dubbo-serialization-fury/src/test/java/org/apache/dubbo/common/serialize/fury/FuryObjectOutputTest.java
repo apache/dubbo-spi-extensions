@@ -167,19 +167,24 @@ public class FuryObjectOutputTest {
         });
     }
 
-
     @Test
-    public void testWriteObject() throws IOException{
+    public void testWriteObject() throws IOException, ClassNotFoundException {
         fury.register(FullAddress.class);
         FullAddress fullAddress = new FullAddress("cId", "pN", "cityId", "Nan Long Street", "51000");
-        Object result = fury.deserialize(fury.serialize(fullAddress));
+        this.furyObjectOutput.writeObject(fullAddress);
+        this.flushToInput();
+
+        FullAddress result = this.furyObjectInput.readObject(FullAddress.class);
         assertThat(result, is(fullAddress));
     }
 
     @Test
-    public void testWriteEnum() throws IOException {
+    public void testWriteEnum() throws IOException, ClassNotFoundException {
         fury.register(AnimalEnum.class);
-        Object animalEnum = fury.deserialize(fury.serialize(AnimalEnum.cat));
+        this.furyObjectOutput.writeObject(AnimalEnum.cat);
+        this.flushToInput();
+
+        AnimalEnum animalEnum = (AnimalEnum) this.furyObjectInput.readObject();
         assertThat(animalEnum, is(AnimalEnum.cat));
     }
 

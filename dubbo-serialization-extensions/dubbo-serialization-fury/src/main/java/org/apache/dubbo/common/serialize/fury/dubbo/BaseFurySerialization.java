@@ -17,10 +17,6 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Optional;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
@@ -31,6 +27,11 @@ import org.apache.fury.Fury;
 import org.apache.fury.collection.Tuple2;
 import org.apache.fury.memory.MemoryBuffer;
 import org.apache.fury.util.LoaderBinding;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Optional;
 
 /**
  * Fury serialization framework integration with dubbo.

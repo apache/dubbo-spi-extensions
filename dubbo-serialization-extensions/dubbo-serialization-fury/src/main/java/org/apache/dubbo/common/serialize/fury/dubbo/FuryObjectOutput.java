@@ -17,12 +17,14 @@
 
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 
 import org.apache.fury.Fury;
+import org.apache.fury.io.BlockedStreamUtils;
 import org.apache.fury.memory.MemoryBuffer;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Fury implementation for {@link ObjectOutput}.
@@ -41,7 +43,7 @@ public class FuryObjectOutput implements ObjectOutput {
   }
 
   public void writeObject(Object obj) {
-    fury.serializeJavaObjectAndClass(output, obj);
+      BlockedStreamUtils.serialize(fury, output, obj);
   }
 
   public void writeBool(boolean v) throws IOException {
