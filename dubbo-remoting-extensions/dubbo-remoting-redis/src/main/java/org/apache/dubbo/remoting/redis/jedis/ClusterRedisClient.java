@@ -19,17 +19,21 @@ package org.apache.dubbo.remoting.redis.jedis;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.redis.RedisClient;
 import org.apache.dubbo.remoting.redis.support.AbstractRedisClient;
 
+import redis.clients.jedis.Connection;
+import redis.clients.jedis.ConnectionPool;
 import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -37,6 +41,7 @@ import java.util.regex.Pattern;
 import static org.apache.dubbo.common.constants.CommonConstants.COMMA_SPLIT_PATTERN;
 
 public class ClusterRedisClient extends AbstractRedisClient implements RedisClient {
+
     private static final Logger logger = LoggerFactory.getLogger(ClusterRedisClient.class);
 
     private static final int DEFAULT_TIMEOUT = 2000;
@@ -46,6 +51,7 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
     private static final int DEFAULT_MAX_ATTEMPTS = 5;
 
     private final JedisCluster jedisCluster;
+
     private Pattern COLON_SPLIT_PATTERN = Pattern.compile("\\s*[:]+\\s*");
 
     public ClusterRedisClient(URL url) {
@@ -56,7 +62,7 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
         }
         jedisCluster = new JedisCluster(nodes, url.getParameter("connection.timeout", DEFAULT_TIMEOUT),
                 url.getParameter("so.timeout", DEFAULT_SO_TIMEOUT), url.getParameter("max.attempts", DEFAULT_MAX_ATTEMPTS),
-                url.getPassword(), getConfig());
+                url.getPassword(), getPoolConfig());
     }
 
     @Override
@@ -71,9 +77,9 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
 
     @Override
     public boolean isConnected() {
-        Map<String, JedisPool> poolMap = jedisCluster.getClusterNodes();
-        for (JedisPool jedisPool : poolMap.values()) {
-            Jedis jedis = jedisPool.getResource();
+        Map<String, ConnectionPool> poolMap = jedisCluster.getClusterNodes();
+        for (ConnectionPool jedisPool : poolMap.values()) {
+            Connection jedis = jedisPool.getResource();
             if (jedis.isConnected()) {
                 jedisPool.returnResource(jedis);
                 return true;
@@ -96,12 +102,22 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
 
     @Override
     public Set<String> scan(String pattern) {
-        Map<String, JedisPool> nodes = jedisCluster.getClusterNodes();
+
+        Map<String, ConnectionPool> nodes = jedisCluster.getClusterNodes();
         Set<String> result = new HashSet<>();
-        for (JedisPool jedisPool : nodes.values()) {
-            Jedis jedis = jedisPool.getResource();
-            result.addAll(scan(jedis, pattern));
-            jedisPool.returnResource(jedis);
+        String cursor = ScanParams.SCAN_POINTER_START;
+        ScanParams params = new ScanParams();
+        params.match(pattern);
+        while (true) {
+            ScanResult<String> scanResult = jedisCluster.scan(cursor, params);
+            List<String> list = scanResult.getResult();
+            if (CollectionUtils.isNotEmpty(list)) {
+                result.addAll(list);
+            }
+            if (ScanParams.SCAN_POINTER_START.equals(scanResult.getCursor())) {
+                break;
+            }
+            cursor = scanResult.getCursor();
         }
         return result;
     }
@@ -131,11 +147,9 @@ public class ClusterRedisClient extends AbstractRedisClient implements RedisClie
         hostAndPorts.add(new HostAndPort(url.getHost(), url.getPort()));
         String backupAddresses = url.getBackupAddress(6379);
         String[] nodes = StringUtils.isEmpty(backupAddresses) ? new String[0] : COMMA_SPLIT_PATTERN.split(backupAddresses);
-        if (nodes.length > 0) {
-            for (String node : nodes) {
-                String[] hostAndPort = COLON_SPLIT_PATTERN.split(node);
-                hostAndPorts.add(new HostAndPort(hostAndPort[0], Integer.valueOf(hostAndPort[1])));
-            }
+        for (String node : nodes) {
+            String[] hostAndPort = COLON_SPLIT_PATTERN.split(node);
+            hostAndPorts.add(new HostAndPort(hostAndPort[0], Integer.parseInt(hostAndPort[1])));
         }
         return hostAndPorts;
     }
