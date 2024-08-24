@@ -1,4 +1,4 @@
-name: Build and Test Scheduled On master
+name: Build and Test Scheduled On 3.0
 
 on:
   schedule:
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: 'master'
+          ref: '3.0.0'
       - name: Check License
         uses: apache/skywalking-eyes@v0.5.0
         env:
@@ -73,7 +73,7 @@ jobs:
         name: build tools
         with:
           repository: 'apache/dubbo'
-          ref: '3.2'
+          ref: '3.0'
           path: dubbo
       - name: "Set up JDK 21"
         uses: actions/setup-java@v4
@@ -103,7 +103,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: "master"
+          ref: "3.0"
           path: dubbo-spi-extensions
       - uses: actions/setup-java@v4
         with:
@@ -151,12 +151,13 @@ jobs:
           echo "dubbo-spi-extensions version: $REVISION"
   # Download dependencies Prepare for unit test
   unit-test-prepare:
-    name: "Preparation for Unit Test"
+    name: "Preparation for Unit Test On ${{ matrix.os }}"
     needs: [check-license]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
+      fail-fast: false
     env:
       ZOOKEEPER_VERSION: 3.6.3
     steps:
@@ -174,6 +175,20 @@ jobs:
         with:
           release: false  # support cache, see https://github.com/msys2/setup-msys2#context
       - name: "Download zookeeper binary archive in Linux OS"
+        if: ${{ startsWith( matrix.os, 'ubuntu') && steps.cache-zookeeper.outputs.cache-hit != 'true' }}
+        run: |
+          mkdir -p ${{ github.workspace }}/.tmp/zookeeper
+          wget -c https://archive.apache.org/dist/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz ||
+          wget -c https://apache.website-solution.net/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz ||
+          wget -c http://apache.stu.edu.tw/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz ||
+          wget -c http://ftp.jaist.ac.jp/pub/apache/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz ||
+          wget -c http://apache.mirror.cdnetworks.com/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz ||
+          wget -c http://mirror.apache-kr.org/apache/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz
+          echo "list the downloaded zookeeper binary archive"
+          ls -al ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz
+      - name: "Download zookeeper binary archive in Windows OS"
+        if: ${{ startsWith( matrix.os, 'windows') && steps.cache-zookeeper.outputs.cache-hit != 'true' }}
+        shell: msys2 {0}
         run: |
           mkdir -p ${{ github.workspace }}/.tmp/zookeeper
           wget -c https://archive.apache.org/dist/zookeeper/zookeeper-${{ env.ZOOKEEPER_VERSION }}/apache-zookeeper-${{ env.ZOOKEEPER_VERSION }}-bin.tar.gz -O ${{ github.workspace }}/.tmp/zookeeper/apache-zookeeper-bin.tar.gz ||

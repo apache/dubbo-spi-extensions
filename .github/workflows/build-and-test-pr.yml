@@ -137,8 +137,6 @@ jobs:
         with:
           name: "checkstyle-file"
           path: ${{ github.workspace }}/checkstyle.zip
-      - name: "Upload coverage to Codecov"
-        uses: codecov/codecov-action@v4
       - name: "Calculate Dubbo-SPI-Extensions Version"
         id: dubbo-spi-extensions-version
         run: |
@@ -295,6 +293,8 @@ jobs:
         with:
           name: coverage-result-${{ matrix.os }}-${{ matrix.jdk }}
           path: "**/target/site/**/jacoco.xml"
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v4
 
 #  error-code-inspecting:
 #    needs: [check-license, build-tools]
