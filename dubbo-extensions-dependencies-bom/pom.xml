@@ -139,7 +139,7 @@
         <swagger_version>1.6.14</swagger_version>
         <polaris_adapter_version>0.2.1</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
-        <byte-buddy.version>1.14.5</byte-buddy.version>
+        <byte-buddy.version>1.15.0</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
         <snakeyaml_version>2.2</snakeyaml_version>
         <protobuf-java_version>3.25.3</protobuf-java_version>
