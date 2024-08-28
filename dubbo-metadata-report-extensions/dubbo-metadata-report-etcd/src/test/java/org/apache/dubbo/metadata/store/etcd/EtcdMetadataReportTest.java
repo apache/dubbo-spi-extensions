@@ -19,7 +19,10 @@ package org.apache.dubbo.metadata.store.etcd;
 
 import io.etcd.jetcd.test.EtcdClusterExtension;
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.config.configcenter.ConfigItem;
 import org.apache.dubbo.common.utils.NetUtils;
+import org.apache.dubbo.metadata.MappingChangedEvent;
+import org.apache.dubbo.metadata.MappingListener;
 import org.apache.dubbo.metadata.definition.ServiceDefinitionBuilder;
 import org.apache.dubbo.metadata.definition.model.FullServiceDefinition;
 import org.apache.dubbo.metadata.report.identifier.MetadataIdentifier;
@@ -43,11 +46,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 
 import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER_SIDE;
 import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
+import static org.apache.dubbo.metadata.ServiceNameMapping.DEFAULT_MAPPING_GROUP;
 
 /**
  * Unit test for etcd metadata report
@@ -139,6 +145,39 @@ public class EtcdMetadataReportTest {
 
         Assertions.assertEquals(fileContent, URL.encode(url.toFullString()));
     }
+
+
+    @Test
+    void testMapping() throws InterruptedException {
+        String serviceKey = EtcdMetadataReportTest.class.getName();
+        URL url = URL.valueOf("test://127.0.0.1:8888/" + serviceKey);
+        String appNames = "demo1,demo2";
+
+        CountDownLatch latch = new CountDownLatch(1);
+        Set<String> serviceAppMapping = etcdMetadataReport.getServiceAppMapping(
+            serviceKey,
+            new MappingListener() {
+                @Override
+                public void onEvent(MappingChangedEvent event) {
+                    Set<String> apps = event.getApps();
+                    Assertions.assertEquals(apps.size(), 2);
+                    Assertions.assertTrue(apps.contains("demo1"));
+                    Assertions.assertTrue(apps.contains("demo2"));
+                    latch.countDown();
+                }
+
+                @Override
+                public void stop() {}
+            },
+            url);
+        Assertions.assertTrue(serviceAppMapping.isEmpty());
+
+        ConfigItem configItem = etcdMetadataReport.getConfigItem(serviceKey, DEFAULT_MAPPING_GROUP);
+        etcdMetadataReport.registerServiceAppMapping(
+            serviceKey, DEFAULT_MAPPING_GROUP, appNames, configItem.getTicket());
+        latch.await();
+    }
+
 
     @Test
     public void testDoRemoveMetadata() throws ExecutionException, InterruptedException {

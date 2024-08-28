@@ -20,6 +20,7 @@ package org.apache.dubbo.remoting.etcd.jetcd;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.dubbo.common.utils.NamedThreadFactory;
 import org.apache.dubbo.common.utils.ReflectUtils;
@@ -35,7 +36,11 @@ import io.etcd.jetcd.common.exception.ErrorCode;
 import io.etcd.jetcd.common.exception.EtcdException;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.kv.PutResponse;
+import io.etcd.jetcd.kv.TxnResponse;
 import io.etcd.jetcd.lease.LeaseKeepAliveResponse;
+import io.etcd.jetcd.op.Cmp;
+import io.etcd.jetcd.op.CmpTarget;
+import io.etcd.jetcd.op.Op;
 import io.etcd.jetcd.options.GetOption;
 import io.etcd.jetcd.options.PutOption;
 import io.etcd.jetcd.support.CloseableClient;
@@ -53,6 +58,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -169,6 +175,28 @@ public class JEtcdClientWrapper {
             channel.set(newChannel(client));
         }
         return channel.get();
+    }
+
+    public boolean putCas(String key, String expectValue, String updateValue) {
+        if (key == null || updateValue == null) {
+            return false;
+        }
+        try {
+            ByteSequence bsKey = ByteSequence.from(key, UTF_8);
+            CmpTarget bsExpectValue = Objects.isNull(expectValue) ? CmpTarget.version(0) : CmpTarget.value(ByteSequence.from(expectValue, UTF_8));
+            ByteSequence bsUpdateValue = ByteSequence.from(updateValue, UTF_8);
+            Cmp cmp = new Cmp(bsKey, Cmp.Op.EQUAL, bsExpectValue);
+            TxnResponse txnResponse = getClient().getKVClient()
+                .txn()
+                .If(cmp)
+                .Then(Op.put(bsKey, bsUpdateValue, PutOption.DEFAULT))
+                .commit()
+                .get();
+            return txnResponse.isSucceeded() && CollectionUtils.isNotEmpty(txnResponse.getPutResponses());
+        } catch (Exception e) {
+            // ignore
+        }
+        return false;
     }
 
     /**
