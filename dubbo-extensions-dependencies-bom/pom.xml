@@ -137,7 +137,7 @@
         <resteasy_version>3.15.6.Final</resteasy_version>
         <codehaus-jackson_version>1.9.13</codehaus-jackson_version>
         <swagger_version>1.6.14</swagger_version>
-        <polaris_adapter_version>0.2.1</polaris_adapter_version>
+        <polaris_adapter_version>0.3.4-3.2.7</polaris_adapter_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
         <byte-buddy.version>1.15.0</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
