@@ -23,8 +23,8 @@ import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.rpc.model.ModuleModel;
 
-import io.seata.core.context.RootContext;
-import io.seata.core.model.BranchType;
+import org.apache.seata.core.context.RootContext;
+import org.apache.seata.core.model.BranchType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

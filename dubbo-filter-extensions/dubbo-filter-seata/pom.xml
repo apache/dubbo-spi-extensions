@@ -32,7 +32,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.seata</groupId>
+            <groupId>org.apache.seata</groupId>
             <artifactId>seata-core</artifactId>
             <optional>true</optional>
         </dependency>
