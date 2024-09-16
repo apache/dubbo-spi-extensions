@@ -141,7 +141,7 @@
         <maven_flatten_version>1.2.5</maven_flatten_version>
         <byte-buddy.version>1.15.0</byte-buddy.version>
         <commons_net_version>3.9.0</commons_net_version>
-        <snakeyaml_version>2.2</snakeyaml_version>
+        <snakeyaml_version>2.3</snakeyaml_version>
         <protobuf-java_version>3.25.4</protobuf-java_version>
         <bouncycastle-bcprov_version>1.70</bouncycastle-bcprov_version>
         <envoy_api_version>0.1.35</envoy_api_version>
