@@ -39,7 +39,7 @@
         <skip_maven_deploy>false</skip_maven_deploy>
 
         <maven-flatten-version>1.1.0</maven-flatten-version>
-        <maven-checkstyle-plugin-version>3.4.0</maven-checkstyle-plugin-version>
+        <maven-checkstyle-plugin-version>3.5.0</maven-checkstyle-plugin-version>
 
         <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
