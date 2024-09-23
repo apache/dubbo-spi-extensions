@@ -111,7 +111,7 @@
         <avro_version>1.11.3</avro_version>
         <fastjson_version>1.2.83</fastjson_version>
         <fst_version>2.57</fst_version>
-        <apache.fury_version>0.7.0</apache.fury_version>
+        <apache.fury_version>0.7.1</apache.fury_version>
         <jackson_version>2.17.2</jackson_version>
         <gson_version>2.11.0</gson_version>
         <kryo_version>5.6.0</kryo_version>
