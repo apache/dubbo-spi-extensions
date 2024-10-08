@@ -108,7 +108,7 @@
         <jaxb_version>2.2.7</jaxb_version>
         <activation_version>1.2.0</activation_version>
         <cxf_version>3.1.15</cxf_version>
-        <avro_version>1.11.3</avro_version>
+        <avro_version>1.11.4</avro_version>
         <fastjson_version>1.2.83</fastjson_version>
         <fst_version>2.57</fst_version>
         <apache.fury_version>0.7.1</apache.fury_version>
