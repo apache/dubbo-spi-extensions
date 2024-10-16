@@ -26,9 +26,6 @@ import org.apache.fury.memory.MemoryBuffer;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.fury.Fury;
-import org.apache.fury.memory.MemoryBuffer;
-
 /**
  * Fury implementation for {@link ObjectOutput}.
  *

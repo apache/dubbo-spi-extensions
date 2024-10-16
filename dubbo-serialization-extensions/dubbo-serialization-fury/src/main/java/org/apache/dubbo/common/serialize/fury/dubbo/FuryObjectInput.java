@@ -27,10 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
-import org.apache.fury.Fury;
-import org.apache.fury.io.FuryInputStream;
-import org.apache.fury.memory.MemoryBuffer;
-
 @SuppressWarnings("unchecked")
 public class FuryObjectInput implements ObjectInput {
     private final Fury fury;
