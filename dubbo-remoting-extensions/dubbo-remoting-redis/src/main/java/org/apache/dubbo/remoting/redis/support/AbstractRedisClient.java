@@ -16,53 +16,74 @@
  */
 package org.apache.dubbo.remoting.redis.support;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.remoting.redis.RedisClient;
 
+import redis.clients.jedis.Connection;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public abstract class AbstractRedisClient implements RedisClient {
-    private URL url;
 
-    private JedisPoolConfig config;
+    private final URL url;
+
+    private final JedisPoolConfig config;
+
+    private GenericObjectPoolConfig<Connection> poolConfig;
 
     public AbstractRedisClient(URL url) {
         this.url = url;
         config = new JedisPoolConfig();
+        poolConfig = new GenericObjectPoolConfig<>();
         config.setTestOnBorrow(url.getParameter("test.on.borrow", true));
+        poolConfig.setTestOnBorrow(url.getParameter("test.on.borrow", true));
         config.setTestOnReturn(url.getParameter("test.on.return", false));
+        poolConfig.setTestOnReturn(url.getParameter("test.on.return", false));
         config.setTestWhileIdle(url.getParameter("test.while.idle", false));
+        poolConfig.setTestOnBorrow(url.getParameter("test.on.borrow", false));
         if (url.getParameter("max.idle", 0) > 0) {
             config.setMaxIdle(url.getParameter("max.idle", 0));
+            poolConfig.setMaxIdle(url.getParameter("max.idle", 0));
         }
         if (url.getParameter("min.idle", 0) > 0) {
             config.setMinIdle(url.getParameter("min.idle", 0));
+            poolConfig.setMinIdle(url.getParameter("min.idle", 0));
         }
         if (url.getParameter("max.active", 0) > 0) {
             config.setMaxTotal(url.getParameter("max.active", 0));
+            poolConfig.setMaxTotal(url.getParameter("max.active", 0));
         }
         if (url.getParameter("max.total", 0) > 0) {
             config.setMaxTotal(url.getParameter("max.total", 0));
+            poolConfig.setMaxTotal(url.getParameter("max.total", 0));
         }
         if (url.getParameter("max.wait", url.getParameter("timeout", 0)) > 0) {
-            config.setMaxWaitMillis(url.getParameter("max.wait", url.getParameter("timeout", 0)));
+            Duration maxWaitMillis = Duration.ofMillis(url.getParameter("timeout", 0));
+            config.setMaxWait(maxWaitMillis);
+            poolConfig.setMaxWait(maxWaitMillis);
         }
         if (url.getParameter("num.tests.per.eviction.run", 0) > 0) {
             config.setNumTestsPerEvictionRun(url.getParameter("num.tests.per.eviction.run", 0));
+            poolConfig.setNumTestsPerEvictionRun(url.getParameter("num.tests.per.eviction.run", 0));
         }
         if (url.getParameter("time.between.eviction.runs.millis", 0) > 0) {
-            config.setTimeBetweenEvictionRunsMillis(url.getParameter("time.between.eviction.runs.millis", 0));
+            Duration timeBetweenEvictionRunsMillis = Duration.ofMillis(url.getParameter("time.between.eviction.runs.millis", 0));
+            config.setTimeBetweenEvictionRuns(timeBetweenEvictionRunsMillis);
+            poolConfig.setTimeBetweenEvictionRuns(timeBetweenEvictionRunsMillis);
         }
         if (url.getParameter("min.evictable.idle.time.millis", 0) > 0) {
-            config.setMinEvictableIdleTimeMillis(url.getParameter("min.evictable.idle.time.millis", 0));
+            Duration minEvictableIdleTimeMillis = Duration.ofMillis(url.getParameter("min.evictable.idle.time.millis", 0));
+            config.setMinEvictableIdleTime(minEvictableIdleTimeMillis);
+            poolConfig.setMinEvictableIdleTime(minEvictableIdleTimeMillis);
         }
     }
 
@@ -91,5 +112,9 @@ public abstract class AbstractRedisClient implements RedisClient {
 
     public JedisPoolConfig getConfig() {
         return config;
+    }
+
+    public GenericObjectPoolConfig<Connection> getPoolConfig() {
+        return poolConfig;
     }
 }

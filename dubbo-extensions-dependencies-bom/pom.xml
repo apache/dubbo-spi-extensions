@@ -102,7 +102,7 @@
         <portlet_version>2.0</portlet_version>
         <xmemcached_version>1.4.3</xmemcached_version>
         <thrift_version>0.12.0</thrift_version>
-        <jedis_version>3.10.0</jedis_version>
+        <jedis_version>5.1.0</jedis_version>
         <embedded_redis_version>0.13.0</embedded_redis_version>
         <commons_lang3_version>3.17.0</commons_lang3_version>
         <jaxb_version>2.2.7</jaxb_version>
@@ -185,7 +185,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-zookeeper</artifactId>
+                <artifactId>dubbo-dependencies-zookeeper-curator5</artifactId>
                 <version>${dubbo.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -319,6 +319,11 @@
                 <groupId>de.ruedigermoeller</groupId>
                 <artifactId>fst</artifactId>
                 <version>${fst_version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.fury</groupId>
+                <artifactId>fury-core</artifactId>
+                <version>${apache.fury_version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.fury</groupId>
@@ -663,7 +668,13 @@
                 <version>${maven_flatten_version}</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <flattenMode>bom</flattenMode>
+                    <pomElements>
+                        <dependencyManagement>expand</dependencyManagement>
+                        <properties>remove</properties>
+                        <repositories>remove</repositories>
+                        <profiles>remove</profiles>
+                    </pomElements>
                 </configuration>
                 <executions>
                     <execution>

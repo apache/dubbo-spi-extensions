@@ -28,7 +28,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import redis.clients.jedis.exceptions.JedisConnectionException;
-import redis.clients.jedis.exceptions.JedisExhaustedPoolException;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -242,7 +241,7 @@ public class RedisRegistryTest {
         Registry registry = new RedisRegistryFactory().createRegistry(url);
 
         Registry finalRegistry = registry;
-        assertThrows(JedisExhaustedPoolException.class, () -> finalRegistry.isAvailable());
+        assertThrows(JedisConnectionException.class, () -> finalRegistry.isAvailable());
 
         url = URL.valueOf(this.registryUrl.toFullString()).addParameter(BACKUP_KEY, "redisTwo:8881");
         registry = new RedisRegistryFactory().createRegistry(url);

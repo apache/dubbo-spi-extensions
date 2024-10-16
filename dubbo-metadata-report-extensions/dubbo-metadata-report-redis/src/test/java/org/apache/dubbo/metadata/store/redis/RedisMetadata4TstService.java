@@ -14,13 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.rpc.cluster.support;
+package org.apache.dubbo.metadata.store.redis;
 
-import org.junit.jupiter.api.Test;
+public interface RedisMetadata4TstService {
 
-class BroadcastCluster1Test {
+    int getCounter();
 
-    @Test
-    void doJoin() {
-    }
+    void printResult(String var);
 }

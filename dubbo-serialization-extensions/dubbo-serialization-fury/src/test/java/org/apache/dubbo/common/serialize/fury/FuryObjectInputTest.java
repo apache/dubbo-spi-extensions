@@ -105,5 +105,4 @@ public class FuryObjectInputTest {
         byte[] result = objectInput.readBytes();
         assertArrayEquals(new byte[]{10, 20, 30, 40}, result);
     }
-
 }

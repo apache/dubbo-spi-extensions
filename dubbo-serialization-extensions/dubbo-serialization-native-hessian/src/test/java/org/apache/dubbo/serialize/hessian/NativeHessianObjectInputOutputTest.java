@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.avro;
+package org.apache.dubbo.serialize.hessian;
 
 
-import org.apache.dubbo.common.serialize.model.Person;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,9 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 
 
-public class AvroObjectInputOutputTest {
-    private AvroObjectInput avroObjectInput;
-    private AvroObjectOutput avroObjectOutput;
+public class NativeHessianObjectInputOutputTest {
+    private Hessian2ObjectInput hessian2ObjectInput;
+    private Hessian2ObjectOutput hessian2ObjectOutput;
 
     private PipedOutputStream pos;
     private PipedInputStream pis;
@@ -45,8 +44,8 @@ public class AvroObjectInputOutputTest {
         pos = new PipedOutputStream();
         pis.connect(pos);
 
-        avroObjectOutput = new AvroObjectOutput(pos);
-        avroObjectInput = new AvroObjectInput(pis);
+        hessian2ObjectOutput = new Hessian2ObjectOutput(pos);
+        hessian2ObjectInput = new Hessian2ObjectInput(pis);
     }
 
     @AfterEach
@@ -63,98 +62,98 @@ public class AvroObjectInputOutputTest {
 
     @Test
     public void testWriteReadBool() throws IOException, InterruptedException {
-        avroObjectOutput.writeBool(true);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeBool(true);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        boolean result = avroObjectInput.readBool();
+        boolean result = hessian2ObjectInput.readBool();
         assertThat(result, is(true));
     }
 
     @Test
     public void testWriteReadByte() throws IOException {
-        avroObjectOutput.writeByte((byte) 'a');
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeByte((byte) 'a');
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        Byte result = avroObjectInput.readByte();
+        Byte result = hessian2ObjectInput.readByte();
 
         assertThat(result, is((byte) 'a'));
     }
 
     @Test
     public void testWriteReadBytes() throws IOException {
-        avroObjectOutput.writeBytes("123456".getBytes());
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeBytes("123456".getBytes());
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        byte[] result = avroObjectInput.readBytes();
+        byte[] result = hessian2ObjectInput.readBytes();
 
         assertThat(result, is("123456".getBytes()));
     }
 
     @Test
     public void testWriteReadShort() throws IOException {
-        avroObjectOutput.writeShort((short) 1);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeShort((short) 1);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        short result = avroObjectInput.readShort();
+        short result = hessian2ObjectInput.readShort();
 
         assertThat(result, is((short) 1));
     }
 
     @Test
     public void testWriteReadInt() throws IOException {
-        avroObjectOutput.writeInt(1);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeInt(1);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        Integer result = avroObjectInput.readInt();
+        Integer result = hessian2ObjectInput.readInt();
 
         assertThat(result, is(1));
     }
 
     @Test
     public void testReadDouble() throws IOException {
-        avroObjectOutput.writeDouble(3.14d);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeDouble(3.14d);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        Double result = avroObjectInput.readDouble();
+        Double result = hessian2ObjectInput.readDouble();
 
         assertThat(result, is(3.14d));
     }
 
     @Test
     public void testReadLong() throws IOException {
-        avroObjectOutput.writeLong(10L);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeLong(10L);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        Long result = avroObjectInput.readLong();
+        Long result = hessian2ObjectInput.readLong();
 
         assertThat(result, is(10L));
     }
 
     @Test
     public void testWriteReadFloat() throws IOException {
-        avroObjectOutput.writeFloat(1.66f);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeFloat(1.66f);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        Float result = avroObjectInput.readFloat();
+        Float result = hessian2ObjectInput.readFloat();
 
         assertThat(result, is(1.66F));
     }
 
     @Test
     public void testWriteReadUTF() throws IOException {
-        avroObjectOutput.writeUTF("wording");
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeUTF("wording");
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        String result = avroObjectInput.readUTF();
+        String result = hessian2ObjectInput.readUTF();
 
         assertThat(result, is("wording"));
     }
@@ -165,11 +164,11 @@ public class AvroObjectInputOutputTest {
         p.setAge(30);
         p.setName("abc");
 
-        avroObjectOutput.writeObject(p);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeObject(p);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
-        Person result = avroObjectInput.readObject(Person.class);
+        Person result = hessian2ObjectInput.readObject(Person.class);
 
         assertThat(result, not(nullValue()));
         assertThat(result.getName(), is("abc"));
@@ -182,12 +181,12 @@ public class AvroObjectInputOutputTest {
         p.setAge(30);
         p.setName("abc");
 
-        avroObjectOutput.writeObject(p);
-        avroObjectOutput.flushBuffer();
+        hessian2ObjectOutput.writeObject(p);
+        hessian2ObjectOutput.flushBuffer();
         pos.close();
 
         //All the information is lost here
-        Object result = avroObjectInput.readObject();
+        Object result = hessian2ObjectInput.readObject();
 
         assertThat(result, not(nullValue()));
 //		assertThat(result.getName(), is("abc"));
