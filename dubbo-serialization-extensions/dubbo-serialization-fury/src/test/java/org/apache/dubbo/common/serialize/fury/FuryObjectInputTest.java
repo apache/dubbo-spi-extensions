@@ -18,28 +18,91 @@
 package org.apache.dubbo.common.serialize.fury;
 
 import org.apache.dubbo.common.serialize.fury.dubbo.FuryObjectInput;
-import org.apache.dubbo.common.serialize.model.person.FullAddress;
+
 import org.apache.fury.Fury;
 import org.apache.fury.config.Language;
 import org.apache.fury.memory.MemoryBuffer;
-import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FuryObjectInputTest {
-    private FuryObjectInput furyObjectInput;
-    private static final Fury fury = Fury.builder().withLanguage(Language.JAVA).build();
-    private static final MemoryBuffer buffer = fury.getBuffer();
-    @Test
-    public void testWrongClassInput(){
-        this.furyObjectInput = new FuryObjectInput(fury,buffer,new ByteArrayInputStream("{animal: 'cat'}".getBytes()));
-        assert (furyObjectInput.readObject(FullAddress.class) == null);
+
+    private Fury fury;
+    private MemoryBuffer buffer;
+    private InputStream inputStream;
+
+    @BeforeEach
+    public void setUp() {
+        fury = Fury.builder().withLanguage(Language.JAVA).build();
+        buffer = MemoryBuffer.newHeapBuffer(1024); // Initialize with an arbitrary size
     }
+
     @Test
-    public void testEmptyByteArrayForEmptyInput() throws IOException {
-        this.furyObjectInput = new FuryObjectInput(fury,buffer,new ByteArrayInputStream(new byte[]{'a'}));
-        assert (furyObjectInput.readByte() == 97);
+    public void testReadBool() throws Exception {
+        byte[] inputBytes = new byte[]{1};
+        inputStream = new ByteArrayInputStream(inputBytes);
+        FuryObjectInput objectInput = new FuryObjectInput(fury, buffer, inputStream);
+
+        boolean result = objectInput.readBool();
+        assertTrue(result);
+    }
+
+    @Test
+    public void testReadByte() throws Exception {
+        byte[] inputBytes = new byte[]{0x1F};
+        inputStream = new ByteArrayInputStream(inputBytes);
+        FuryObjectInput objectInput = new FuryObjectInput(fury, buffer, inputStream);
+
+        byte result = objectInput.readByte();
+        assertEquals(0x1F, result);
+    }
+
+    @Test
+    public void testReadInt() throws Exception {
+        byte[] inputBytes = new byte[]{42, 0, 0, 0};
+        inputStream = new ByteArrayInputStream(inputBytes);
+        FuryObjectInput objectInput = new FuryObjectInput(fury, buffer, inputStream);
+
+        int result = objectInput.readInt();
+        assertEquals(42, result);
+    }
+
+    @Test
+    public void testReadShort() throws Exception {
+        byte[] inputBytes = new byte[]{42, 0};
+        inputStream = new ByteArrayInputStream(inputBytes);
+        FuryObjectInput objectInput = new FuryObjectInput(fury, buffer, inputStream);
+
+        short result = objectInput.readShort();
+        assertEquals(42, result);
+    }
+
+
+    @Test
+    public void testReadLong() throws Exception {
+        byte[] inputBytes = new byte[]{42, 0, 0, 0, 0, 0, 0, 0};
+        inputStream = new ByteArrayInputStream(inputBytes);
+        FuryObjectInput objectInput = new FuryObjectInput(fury, buffer, inputStream);
+
+        long result = objectInput.readLong();
+        assertEquals(42L, result);
+    }
+
+    @Test
+    public void testReadBytes() throws Exception {
+        byte[] inputBytes = new byte[]{4, 0, 0, 0, 10, 20, 30, 40};
+        inputStream = new ByteArrayInputStream(inputBytes);
+        FuryObjectInput objectInput = new FuryObjectInput(fury, buffer, inputStream);
+
+        byte[] result = objectInput.readBytes();
+        assertArrayEquals(new byte[]{10, 20, 30, 40}, result);
     }
 }

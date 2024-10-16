@@ -25,11 +25,10 @@ import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.Constants;
-
-import io.seata.common.util.StringUtils;
-import io.seata.core.constants.DubboConstants;
-import io.seata.core.context.RootContext;
-import io.seata.core.model.BranchType;
+import org.apache.seata.common.util.StringUtils;
+import org.apache.seata.core.constants.DubboConstants;
+import org.apache.seata.core.context.RootContext;
+import org.apache.seata.core.model.BranchType;
 
 /**
  * The type Transaction propagation provider filter.

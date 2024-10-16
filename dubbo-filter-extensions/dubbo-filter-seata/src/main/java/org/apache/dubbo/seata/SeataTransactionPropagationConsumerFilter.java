@@ -24,10 +24,9 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcException;
-
-import io.seata.core.constants.DubboConstants;
-import io.seata.core.context.RootContext;
-import io.seata.core.model.BranchType;
+import org.apache.seata.core.constants.DubboConstants;
+import org.apache.seata.core.context.RootContext;
+import org.apache.seata.core.model.BranchType;
 
 /**
  * The type Transaction propagation consumer filter.
@@ -38,16 +37,18 @@ public class SeataTransactionPropagationConsumerFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        String xid = RootContext.getXID();
-        BranchType branchType = RootContext.getBranchType();
+        if (RootContext.inGlobalTransaction()) {
+            String xid = RootContext.getXID();
+            BranchType branchType = RootContext.getBranchType();
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Client side xid in RootContext[%s]", xid));
-        }
-        if (xid != null) {
-            invocation.setAttachment(RootContext.KEY_XID, xid);
-            if (branchType != null) {
-                invocation.setAttachment(RootContext.KEY_BRANCH_TYPE, branchType.name());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Client side xid in RootContext[%s]", xid));
+            }
+            if (xid != null) {
+                invocation.setAttachment(RootContext.KEY_XID, xid);
+                if (branchType != null) {
+                    invocation.setAttachment(RootContext.KEY_BRANCH_TYPE, branchType.name());
+                }
             }
         }
         return invoker.invoke(invocation);
