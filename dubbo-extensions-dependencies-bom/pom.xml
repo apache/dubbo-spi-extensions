@@ -90,7 +90,7 @@
 
     <properties>
         <revision>3.3.0</revision>
-        <dubbo.version>3.3.0-beta.2</dubbo.version>
+        <dubbo.version>3.3.1</dubbo.version>
         <spring.version>5.3.39</spring.version>
         <spring-boot.version>2.7.18</spring-boot.version>
 
