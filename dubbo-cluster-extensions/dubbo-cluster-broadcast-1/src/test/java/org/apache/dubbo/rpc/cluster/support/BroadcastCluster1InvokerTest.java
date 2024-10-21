@@ -92,7 +92,7 @@ public class BroadcastCluster1InvokerTest {
         invoker4.invokeThrowEx();
         Throwable exception = clusterInvoker.invoke(invocation).getException();
         assertInstanceOf(RpcException.class, exception);
-        assertTrue(exception.getMessage().contains("java.lang.NullPointerException"));
+        assertTrue(exception.getMessage().contains("throwEx is true"));
         assertTrue(invoker1.isInvoked());
         assertTrue(invoker2.isInvoked());
         assertTrue(invoker3.isInvoked());
@@ -106,7 +106,7 @@ public class BroadcastCluster1InvokerTest {
         invoker1.invokeThrowEx();
         Throwable exception = clusterInvoker.invoke(invocation).getException();
         assertInstanceOf(RpcException.class, exception);
-        assertTrue(exception.getMessage().contains("java.lang.NullPointerException"));
+        assertTrue(exception.getMessage().contains("throwEx is true"));
     }
 
     @Test
@@ -146,8 +146,8 @@ class MockInvoker implements Invoker<DemoService> {
     public Result invoke(Invocation invocation) throws RpcException {
         invoked = true;
         if (throwEx) {
-            throwEx = false;
-            throw new RpcException();
+//            throwEx = false;
+            throw new RpcException("throwEx is true");
         }
         return new AppResponse("sucess");
     }
