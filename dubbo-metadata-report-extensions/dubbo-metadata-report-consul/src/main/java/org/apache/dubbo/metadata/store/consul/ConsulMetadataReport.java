@@ -54,6 +54,17 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
     }
 
     @Override
+    public boolean registerServiceAppMapping(String serviceKey, String application, URL url) {
+        return true;
+    }
+
+    @Override
+    public boolean registerServiceAppMapping(String serviceInterface, String defaultMappingGroup,
+                                             String newConfigContent, Object ticket) {
+        return true;
+    }
+
+    @Override
     protected void doStoreProviderMetadata(MetadataIdentifier providerMetadataIdentifier, String serviceDefinitions) {
         this.storeMetadata(providerMetadataIdentifier, serviceDefinitions);
     }
