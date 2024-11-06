@@ -97,6 +97,7 @@
         <!-- Fabric8 for Kubernetes -->
         <fabric8_kubernetes_version>6.13.4</fabric8_kubernetes_version>
         <hessian_version>4.0.66</hessian_version>
+        <hession-lite.version>3.2.13</hession-lite.version>
         <httpclient_version>4.5.14</httpclient_version>
         <jsonrpc_version>1.2.0</jsonrpc_version>
         <portlet_version>2.0</portlet_version>
@@ -190,7 +191,18 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-serialization-jdk</artifactId>
+                <version>${revision}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-remoting-http</artifactId>
+                <version>${revision}</version>
+                <optional>true</optional>
+            </dependency>
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>kubernetes-client</artifactId>
@@ -223,7 +235,11 @@
                 <version>${spring.version}</version>
                 <scope>test</scope>
             </dependency>
-
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>hessian-lite</artifactId>
+                <version>${hession-lite.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.caucho</groupId>
                 <artifactId>hessian</artifactId>
@@ -254,6 +270,7 @@
                 <artifactId>libthrift</artifactId>
                 <version>${thrift_version}</version>
             </dependency>
+
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
@@ -319,11 +336,6 @@
                 <groupId>de.ruedigermoeller</groupId>
                 <artifactId>fst</artifactId>
                 <version>${fst_version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.fury</groupId>
-                <artifactId>fury-core</artifactId>
-                <version>${apache.fury_version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.fury</groupId>

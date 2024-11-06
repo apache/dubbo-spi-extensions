@@ -153,5 +153,9 @@
             <artifactId>dubbo-metrics-metadata</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
     </dependencies>
 </project>
