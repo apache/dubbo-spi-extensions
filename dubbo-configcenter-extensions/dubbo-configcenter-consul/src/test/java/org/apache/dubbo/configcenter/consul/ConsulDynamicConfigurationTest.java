@@ -19,16 +19,17 @@ import org.apache.dubbo.common.URL;
 import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
-import com.orbitz.consul.cache.KVCache;
-import com.orbitz.consul.model.kv.Value;
 import com.pszymczyk.consul.ConsulProcess;
 import com.pszymczyk.consul.ConsulStarterBuilder;
+import org.apache.dubbo.common.config.configcenter.ConfigChangeType;
+import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
-import java.util.Optional;
+
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,31 +80,27 @@ public class ConsulDynamicConfigurationTest {
     }
 
     @Test
-    public void testAddListener() {
-        KVCache cache = KVCache.newCache(kvClient, "/dubbo/config/dubbo/foo");
-        cache.addListener(newValues -> {
-            // Cache notifies all paths with "foo" the root path
-            // If you want to watch only "foo" value, you must filter other paths
-            Optional<Value> newValue = newValues.values().stream()
-                    .filter(value -> value.getKey().equals("foo"))
-                    .findAny();
+    public void testRemoveConfig() {
+        kvClient.putValue("/dubbo/config/dubbo/foo", "bar");
+        configuration.removeConfig("foo","dubbo");
+        //test equals
+        Assertions.assertFalse(kvClient.getValue("/dubbo/config/dubbo/foo").isPresent());
+    }
 
-            newValue.ifPresent(value -> {
-                // Values are encoded in key/value store, decode it if needed
-                Optional<String> decodedValue = newValue.get().getValueAsString();
-                decodedValue.ifPresent(v -> System.out.println(String.format("Value is: %s", v))); //prints "bar"
-            });
-        });
-        cache.start();
 
-        kvClient.putValue("/dubbo/config/dubbo/foo", "new-value");
-        kvClient.putValue("/dubbo/config/dubbo/foo/sub", "sub-value");
-        kvClient.putValue("/dubbo/config/dubbo/foo/sub2", "sub-value2");
-        kvClient.putValue("/dubbo/config/foo", "parent-value");
-
-        System.out.println(kvClient.getKeys("/dubbo/config/dubbo/foo"));
-        System.out.println(kvClient.getKeys("/dubbo/config"));
-        System.out.println(kvClient.getValues("/dubbo/config/dubbo/foo"));
+    @Test
+    public void testAddListener() throws InterruptedException {
+        ConfigurationListener c= event -> {
+            //test equals
+            assertEquals("value" , event.getContent());
+            assertEquals("/dubbo/config/dubbo/foo" , event.getKey());
+            assertEquals("dubbo" , event.getGroup());
+            assertEquals(ConfigChangeType.MODIFIED , event.getChangeType());
+            System.out.println("Test Passed: Configuration change is correct.");
+        };
+        configuration.addListener("foo","dubbo",c);
+        kvClient.putValue("/dubbo/config/dubbo/foo", "value");
+        System.out.println(kvClient.getValuesAsString("/dubbo/config/dubbo/foo"));
     }
 
     @Test

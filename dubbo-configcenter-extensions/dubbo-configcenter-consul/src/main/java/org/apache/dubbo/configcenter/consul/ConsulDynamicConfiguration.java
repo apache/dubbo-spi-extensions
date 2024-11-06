@@ -153,8 +153,17 @@ public class ConsulDynamicConfiguration extends TreePathDynamicConfiguration {
             // Cache notifies all paths with "foo" the root path
             // If you want to watch only "foo" value, you must filter other paths
             Optional<Value> newValue = newValues.values().stream()
-                    .filter(value -> value.getKey().equals(normalizedKey))
-                    .findAny();
+                .filter(value -> {
+                    // Normalize the key: Ensure it's prefixed with "/" if it's not already
+                    String key = value.getKey();
+                    if (!key.startsWith("/")) {
+                        key = "/" + key;  // Add "/" prefix if missing
+                    }
+                    // Check if the normalized key matches the normalizedKey
+                    return key.equals(normalizedKey);
+                })
+                .findAny();
+
 
             newValue.ifPresent(value -> {
                 // Values are encoded in key/value store, decode it if needed
