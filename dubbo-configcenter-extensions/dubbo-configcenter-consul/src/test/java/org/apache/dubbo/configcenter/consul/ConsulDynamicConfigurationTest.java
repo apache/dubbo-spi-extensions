@@ -93,14 +93,14 @@ public class ConsulDynamicConfigurationTest {
         ConfigurationListener c= event -> {
             //test equals
             assertEquals("value" , event.getContent());
-            assertEquals("/dubbo/config/dubbo/foo" , event.getKey());
+            assertEquals("/dubbo/config/dubbo/abc" , event.getKey());
             assertEquals("dubbo" , event.getGroup());
             assertEquals(ConfigChangeType.MODIFIED , event.getChangeType());
             System.out.println("Test Passed: Configuration change is correct.");
         };
-        configuration.addListener("foo","dubbo",c);
-        kvClient.putValue("/dubbo/config/dubbo/foo", "value");
-        System.out.println(kvClient.getValuesAsString("/dubbo/config/dubbo/foo"));
+        configuration.addListener("abc","dubbo",c);
+        kvClient.putValue("/dubbo/config/dubbo/abc", "value");
+        System.out.println(kvClient.getValuesAsString("/dubbo/config/dubbo/abc"));
     }
 
     @Test
