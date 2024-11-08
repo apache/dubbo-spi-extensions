@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,6 +44,9 @@ public class ConsulDynamicConfigurationTest {
     private static Consul client;
     private static KeyValueClient kvClient;
 
+    private static ConfigurationListener configurationListener;
+    private static  CountDownLatch latch;
+
     @BeforeAll
     public static void setUp() throws Exception {
         consul = ConsulStarterBuilder.consulStarter()
@@ -53,6 +57,17 @@ public class ConsulDynamicConfigurationTest {
         configuration = new ConsulDynamicConfiguration(configCenterUrl);
         client = Consul.builder().withHostAndPort(HostAndPort.fromParts("127.0.0.1", consul.getHttpPort())).withReadTimeoutMillis(TimeUnit.SECONDS.toMillis(11)).build();
         kvClient = client.keyValueClient();
+
+        latch = new CountDownLatch(1);
+        configurationListener = event -> {
+            //test equals
+            assertEquals("value", event.getContent());
+            assertEquals("/dubbo/config/dubbo/abc", event.getKey());
+            assertEquals("dubbo", event.getGroup());
+            assertEquals(ConfigChangeType.MODIFIED, event.getChangeType());
+            System.out.println("Test Passed: Configuration change is correct.");
+            latch.countDown();  // Signal that the event was received
+        };
     }
 
     @AfterAll
@@ -90,17 +105,15 @@ public class ConsulDynamicConfigurationTest {
 
     @Test
     public void testAddListener() throws InterruptedException {
-        ConfigurationListener c= event -> {
-            //test equals
-            assertEquals("value" , event.getContent());
-            assertEquals("/dubbo/config/dubbo/abc" , event.getKey());
-            assertEquals("dubbo" , event.getGroup());
-            assertEquals(ConfigChangeType.MODIFIED , event.getChangeType());
-            System.out.println("Test Passed: Configuration change is correct.");
-        };
-        configuration.addListener("abc","dubbo",c);
+        configuration.addListener("abc","dubbo",configurationListener);
         kvClient.putValue("/dubbo/config/dubbo/abc", "value");
-        System.out.println(kvClient.getValuesAsString("/dubbo/config/dubbo/abc"));
+        boolean completed = latch.await(1, TimeUnit.SECONDS);
+        Assertions.assertTrue(completed, "Listener event was not triggered in time.");
+    }
+
+    @Test
+    public void testRemoveListener() {
+        configuration.removeListener("abc","test",configurationListener);
     }
 
     @Test
