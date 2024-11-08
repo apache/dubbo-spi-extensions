@@ -50,7 +50,6 @@ import com.orbitz.consul.cache.ConsulCache;
 import com.orbitz.consul.cache.KVCache;
 import com.orbitz.consul.model.kv.Value;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -96,7 +95,7 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
         client = new ConsulClient(host, port);
 
         Consul.Builder builder = Consul.builder().withHostAndPort(HostAndPort.fromParts(host, port));
-        if(StringUtils.isNotEmpty(token)){
+        if (StringUtils.isNotEmpty(token)) {
             builder.withAclToken(token);
         }
 
@@ -106,7 +105,7 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
 
     @Override
     public void publishAppMetadata(SubscriberMetadataIdentifier identifier, MetadataInfo metadataInfo) {
-        if(metadataInfo.getContent() != null){
+        if (metadataInfo.getContent() != null) {
             this.storeMetadata(identifier, metadataInfo.getContent());
         }
     }
@@ -132,22 +131,22 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
     @Override
     public boolean registerServiceAppMapping(String serviceInterface, String defaultMappingGroup,
                                              String newConfigContent, Object ticket) {
-        try{
-            if(null != ticket && !(ticket instanceof String)){
+        try {
+            if (null != ticket && !(ticket instanceof String)) {
                 throw new IllegalArgumentException("redis publishConfigCas requires stat type ticket");
             }
 
             String key = buildMappingKey(defaultMappingGroup, serviceInterface);
             Response<Boolean> response;
 
-            if(token == null){
+            if (token == null) {
                 response = client.setKVValue(key, newConfigContent);
-            }else{
+            } else {
                 response = client.setKVValue(key, newConfigContent, token, null);
             }
 
             return response != null && response.getValue();
-        }catch(Exception e){
+        } catch (Exception e) {
             logger.warn(LoggerCodeConstants.TRANSPORT_FAILED_RESPONSE, "", "", "consul publishConfigCas failed.", e);
             return false;
         }
@@ -157,7 +156,7 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
     public Set<String> getServiceAppMapping(String serviceKey, MappingListener listener, URL url) {
         String group = ServiceNameMapping.DEFAULT_MAPPING_GROUP;
 
-        if(casListenerMap.get(buildListenerKey(serviceKey, group)) == null){
+        if (casListenerMap.get(buildListenerKey(serviceKey, group)) == null) {
             addCasServiceMappingListener(serviceKey, group, listener);
         }
 
@@ -179,7 +178,7 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
         String group = ServiceNameMapping.DEFAULT_MAPPING_GROUP;
 
         MappingDataListener mappingDataListener = casListenerMap.get(buildListenerKey(serviceKey, group));
-        if(mappingDataListener != null){
+        if (mappingDataListener != null) {
             removeCasServiceMappingListener(serviceKey, group, listener);
         }
     }
@@ -232,13 +231,13 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
     private String getConfig(String key) {
         Response<GetValue> response;
 
-        if(token == null){
+        if (token == null) {
             response = client.getKVValue(key);
-        }else{
+        } else {
             response = client.getKVValue(key, token);
         }
 
-        if(response == null || response.getValue() == null){
+        if (response == null || response.getValue() == null) {
             return null;
         }
 
@@ -247,48 +246,48 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
     }
 
     private void storeMetadata(BaseMetadataIdentifier identifier, String v) {
-        try{
-            if(token == null){
+        try {
+            if (token == null) {
                 client.setKVValue(identifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), v);
-            }else{
+            } else {
                 client.setKVValue(identifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), v, token, null);
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             logger.error("Failed to put " + identifier + " to consul " + v + ", cause: " + t.getMessage(), t);
             throw new RpcException("Failed to put " + identifier + " to consul " + v + ", cause: " + t.getMessage(), t);
         }
     }
 
     private void deleteMetadata(BaseMetadataIdentifier identifier) {
-        try{
-            if(token == null){
+        try {
+            if (token == null) {
                 client.deleteKVValue(identifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY));
-            }else{
+            } else {
                 client.deleteKVValue(identifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), token);
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             logger.error("Failed to delete " + identifier + " from consul , cause: " + t.getMessage(), t);
             throw new RpcException("Failed to delete " + identifier + " from consul , cause: " + t.getMessage(), t);
         }
     }
 
     private String getMetadata(BaseMetadataIdentifier identifier) {
-        try{
+        try {
             Response<GetValue> response;
 
-            if(token == null){
+            if (token == null) {
                 response = client.getKVValue(identifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY));
-            }else{
+            } else {
                 response = client.getKVValue(identifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), token);
             }
 
             //FIXME CHECK
-            if(response != null && response.getValue() != null){
+            if (response != null && response.getValue() != null) {
                 //todo check decode value and value diff
                 return response.getValue().getValue();
             }
             return null;
-        }catch(Throwable t){
+        } catch (Throwable t) {
             logger.error("Failed to get " + identifier + " from consul , cause: " + t.getMessage(), t);
             throw new RpcException("Failed to get " + identifier + " from consul , cause: " + t.getMessage(), t);
         }
@@ -297,12 +296,12 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
     private void addCasServiceMappingListener(String serviceKey, String group, MappingListener listener) {
         String listenerKey = buildListenerKey(ServiceNameMapping.DEFAULT_MAPPING_GROUP, serviceKey);
         MappingDataListener mappingDataListener = casListenerMap.computeIfAbsent(listenerKey,
-            (k)->new MappingDataListener(serviceKey));
+            (k) -> new MappingDataListener(serviceKey));
 
         mappingDataListener.addListener(listener);
 
         ConsulListener consulListener = watchListenerMap.computeIfAbsent(listenerKey,
-            (k)->new ConsulListener(serviceKey, group));
+            (k) -> new ConsulListener(serviceKey, group));
         consulListener.addListener(mappingDataListener);
     }
 
@@ -310,12 +309,12 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
         String listenerKey = buildListenerKey(ServiceNameMapping.DEFAULT_MAPPING_GROUP, serviceKey);
         MappingDataListener mappingDataListener = casListenerMap.get(listenerKey);
 
-        if(mappingDataListener != null){
+        if (mappingDataListener != null) {
             mappingDataListener.removeListener(listener);
-            if(mappingDataListener.isEmpty()){
+            if (mappingDataListener.isEmpty()) {
                 ConsulListener consulListener = watchListenerMap.get(listenerKey);
 
-                if(consulListener != null){
+                if (consulListener != null) {
                     consulListener.removeListener(mappingDataListener);
                     watchListenerMap.remove(listenerKey);
                 }
@@ -365,12 +364,12 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
         }
 
         public void notify(Map<String, Value> newValues) {
-            Optional<Value> newValue = newValues.values().stream().filter((value)->value.getKey().equals(normalizedKey))
+            Optional<Value> newValue = newValues.values().stream().filter((value) -> value.getKey().equals(normalizedKey))
                 .findAny();
-            newValue.ifPresent((value)->{
+            newValue.ifPresent((value) -> {
                 Optional<String> decodedValue = newValue.get().getValueAsString();
-                decodedValue.ifPresent((v)->{
-                    this.listeners.forEach((l)->{
+                decodedValue.ifPresent((v) -> {
+                    this.listeners.forEach((l) -> {
                         ConfigChangedEvent event = new ConfigChangedEvent(normalizedKey, group, v,
                             ConfigChangeType.MODIFIED);
                         l.process(event);
@@ -414,11 +413,11 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
 
         @Override
         public void process(ConfigChangedEvent event) {
-            if(ConfigChangeType.DELETED == event.getChangeType()){
+            if (ConfigChangeType.DELETED == event.getChangeType()) {
                 return;
             }
 
-            if(!serviceKey.equals(event.getKey()) || !serviceKey.equals(event.getGroup())){
+            if (!serviceKey.equals(event.getKey()) || !serviceKey.equals(event.getGroup())) {
                 return;
             }
 
@@ -426,7 +425,7 @@ public class ConsulMetadataReport extends AbstractMetadataReport {
 
             MappingChangedEvent mappingChangedEvent = new MappingChangedEvent(serviceKey, apps);
 
-            listeners.forEach((listener)->listener.onEvent(mappingChangedEvent));
+            listeners.forEach((listener) -> listener.onEvent(mappingChangedEvent));
         }
 
     }
