@@ -1,8 +1,8 @@
 # dubbo-spi-extensions
-[![Build and Test For PR](https://github.com/apache/dubbo-spi-extensions/actions/workflows/build-and-test-pr.yml/badge.svg)](https://github.com/apache/dubbo-spi-extensions/actions/workflows/build-and-test-pr.yml)
+[![Build Status](https://travis-ci.org/apache/dubbo-spi-extensions.svg?branch=master)](https://travis-ci.org/apache/dubbo-spi-extensions)
 [![codecov](https://codecov.io/gh/apache/dubbo-spi-extensions/branch/master/graph/badge.svg)](https://codecov.io/gh/apache/dubbo-spi-extensions)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo.extensions/extensions-parent.svg)](https://search.maven.org/search?q=g:org.apache.dubbo.extensions)
-[![License](https://img.shields.io/github/license/apache/dubbo.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.dubbo/dubbo-spi-extensions.svg)](https://search.maven.org/search?q=g:org.apache.dubbo%20AND%20a:dubbo-spi-extensions)
+[![GitHub release](https://img.shields.io/github/release/apache/dubbo-spi-extensions.svg)]
 
 [English](./README.md)
 
@@ -20,6 +20,7 @@ dubbo-spi-extensions的目的是提供开放的、社区驱动的、可重用的
   - [dubbo-api-docs-annotations](dubbo-api-docs/dubbo-api-docs-annotations)
   - [dubbo-api-docs-core](dubbo-api-docs/dubbo-api-docs-core)
   - [dubbo-api-docs-examples](dubbo-api-docs/dubbo-api-docs-examples)
+- [dubbo-build-tools](dubbo-build-tools)
 - [dubbo-cluster-extensions](dubbo-cluster-extensions)
   - [dubbo-cluster-broadcast-1](dubbo-cluster-extensions/dubbo-cluster-broadcast-1)
   - [dubbo-cluster-loadbalance-peakewma](dubbo-cluster-extensions/dubbo-cluster-loadbalance-peakewma)
@@ -50,6 +51,7 @@ dubbo-spi-extensions的目的是提供开放的、社区驱动的、可重用的
 - [dubbo-metadata-report-extensions](dubbo-metadata-report-extensions)
   - [dubbo-metadata-report-consul](dubbo-metadata-report-extensions/dubbo-metadata-report-consul)
   - [dubbo-metadata-report-etcd](dubbo-metadata-report-extensions/dubbo-metadata-report-etcd)
+  - [dubbo-metadata-report-redis](dubbo-metadata-report-extensions/dubbo-metadata-report-redis)
   - [dubbo-metadata-rest](dubbo-metadata-report-extensions/dubbo-metadata-rest)
 - [dubbo-mock-extensions](dubbo-mock-extensions)
   - [dubbo-mock-admin](dubbo-mock-extensions/dubbo-mock-admin)
@@ -90,6 +92,7 @@ dubbo-spi-extensions的目的是提供开放的、社区驱动的、可重用的
   - [dubbo-serialization-fury](dubbo-serialization-extensions/dubbo-serialization-fury)
   - [dubbo-serialization-gson](dubbo-serialization-extensions/dubbo-serialization-gson)
   - [dubbo-serialization-jackson](dubbo-serialization-extensions/dubbo-serialization-jackson)
+  - [dubbo-serialization-jdk](dubbo-serialization-extensions/dubbo-serialization-jdk)
   - [dubbo-serialization-kryo](dubbo-serialization-extensions/dubbo-serialization-kryo)
   - [dubbo-serialization-msgpack](dubbo-serialization-extensions/dubbo-serialization-msgpack)
   - [dubbo-serialization-native-hessian](dubbo-serialization-extensions/dubbo-serialization-native-hessian)

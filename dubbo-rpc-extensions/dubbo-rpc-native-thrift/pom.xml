@@ -43,13 +43,14 @@
             <artifactId>libthrift</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-jdk</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-remoting-zookeeper</artifactId>
+            <artifactId>dubbo-remoting-zookeeper-curator5</artifactId>
             <optional>true</optional>
         </dependency>
     </dependencies>
