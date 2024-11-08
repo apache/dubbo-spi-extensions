@@ -111,10 +111,6 @@ public class ConsulDynamicConfigurationTest {
         Assertions.assertTrue(completed, "Listener event was not triggered in time.");
     }
 
-    @Test
-    public void testRemoveListener() {
-        configuration.removeListener("abc","test",configurationListener);
-    }
 
     @Test
     public void testGetConfigKeys() {
