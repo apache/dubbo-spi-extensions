@@ -40,6 +40,7 @@ public class FurySerialization extends BaseFurySerialization {
                     classLoader ->
                         Fury.builder()
                             .withRefTracking(true)
+                            .withStringCompressed(true)
                             .requireClassRegistration(false)
                             .withClassLoader(classLoader)
                             .build());
