@@ -204,6 +204,11 @@ public class JEtcdClient extends AbstractEtcdClient<JEtcdClient.EtcdWatcher> {
     }
 
     @Override
+    public boolean putCas(String key, String expectValue, String updateValue) {
+        return clientWrapper.putCas(key, expectValue, updateValue);
+    }
+
+    @Override
     public boolean putEphemeral(String key, String value) {
         return clientWrapper.putEphemeral(key, value);
     }

@@ -126,6 +126,37 @@ public class JEtcdClientWrapperTest {
     }
 
     @Test
+    public void test_push_cas_fail() {
+        String path = "/dubbo/org.apache.dubbo.demo.DemoService/providers";
+        String expectValue = "expectValue";
+        String updateValue = "updateValue";
+        clientWrapper.put(path,expectValue);
+        boolean result = clientWrapper.putCas(path, "change"+expectValue, updateValue);
+        Assertions.assertFalse(result);
+        clientWrapper.delete(path);
+    }
+
+    @Test
+    public void test_push_cas_success() {
+        String path = "/dubbo/org.apache.dubbo.demo.DemoService/providers";
+        String expectValue = "expectValue";
+        String updateValue = "updateValue";
+        clientWrapper.put(path,expectValue);
+        String kvValue = clientWrapper.getKVValue(path);
+        boolean result = clientWrapper.putCas(path, kvValue, updateValue);
+        Assertions.assertTrue(result);
+        clientWrapper.delete(path);
+    }
+    @Test
+    public void test_value_isnull_push_cas_success() {
+        String path = "/dubbo/org.apache.dubbo.demo.DemoService/providers";
+        String updateValue = "updateValue";
+        String kvValue = clientWrapper.getKVValue(path);
+        boolean result = clientWrapper.putCas(path, kvValue, updateValue);
+        Assertions.assertTrue(result);
+        clientWrapper.delete(path);
+    }
+    @Test
     public void test_get_emerphal_children_path() {
         String path = "/dubbo/org.apache.dubbo.demo.DemoService/providers";
         String[] children = {
