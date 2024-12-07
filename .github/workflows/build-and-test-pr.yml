@@ -338,3 +338,69 @@ jobs:
 #        with:
 #          name: "error-inspection-result"
 #          path: ${{ github.workspace }}/dubbo-test-tools/dubbo-error-code-inspector/error-inspection-result.txt
+
+  intergration-test:
+    needs: [check-license, build-source, unit-test-prepare]
+    name: "Intergration Test with JDK ${{ matrix.jdk }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jdk: [8, 11]
+      fail-fast: false
+    env:
+      DISABLE_FILE_SYSTEM_TEST: true
+      CURRENT_ROLE: ${{ matrix.case-role }}
+    steps:
+      - name: Checkout Self
+        uses: actions/checkout@v4
+      - name: Checkout dubbo-spi-samples
+        uses: actions/checkout@v4
+        with:
+          repository: apache/dubbo-spi-samples
+          path: dubbo-spi-samples
+      - name: "Set up JDK ${{ matrix.jdk }}"
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: ${{ matrix.jdk }}
+      - uses: actions/cache@v4
+        name: "Cache local Maven repository"
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      - uses: actions/cache@v4
+        name: "Cache zookeeper binary archive"
+        id: "cache-zookeeper"
+        with:
+          path: ${{ github.workspace }}/.tmp/zookeeper
+          key: zookeeper-${{ runner.os }}-${{ env.ZOOKEEPER_VERSION }}
+          restore-keys: |
+            zookeeper-${{ runner.os }}-
+      - uses: actions/cache@v4
+        name: "Cache secret key"
+        id: "cache-secret-cert"
+        with:
+          path: ${{ github.workspace }}/.tmp/rsa
+          key: secret-rsa-${{ runner.os }}-${{ github.run_id }}
+      - name: Calc Dubbo Version
+        id: vars
+        run: |
+          REVISION=`awk '/<revision>[^<]+<\/revision>/{gsub(/<revision>|<\/revision>/,"",$1);print $1;exit;}' pom.xml`
+          echo "::set-output name=version::$REVISION"
+          echo "dubbo version: $REVISION"
+      - name: Init Test Environment
+        run: |
+          DUBBO_VERSION="${{ steps.vars.outputs.version }}"
+          CANDIDATE_VERSIONS="dubbo.version:$DUBBO_VERSION;compiler.version:$DUBBO_VERSION;dubbo.compiler.version:$DUBBO_VERSION;java.version:${{matrix.jdk}};$CANDIDATE_VERSIONS"
+          echo "CANDIDATE_VERSIONS=$CANDIDATE_VERSIONS" >> $GITHUB_ENV
+      - name: Build Test Image
+        run: |
+          cd dubbo-spi-samples
+          ./test/build-test-image.sh
+      - name: Run Tests
+        run: |
+          cd dubbo-spi-samples
+          ./test/run-tests.sh
