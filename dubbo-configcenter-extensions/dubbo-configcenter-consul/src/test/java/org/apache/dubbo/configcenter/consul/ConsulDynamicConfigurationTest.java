@@ -19,16 +19,18 @@ import org.apache.dubbo.common.URL;
 import com.google.common.net.HostAndPort;
 import com.orbitz.consul.Consul;
 import com.orbitz.consul.KeyValueClient;
-import com.orbitz.consul.cache.KVCache;
-import com.orbitz.consul.model.kv.Value;
 import com.pszymczyk.consul.ConsulProcess;
 import com.pszymczyk.consul.ConsulStarterBuilder;
+import org.apache.dubbo.common.config.configcenter.ConfigChangeType;
+import org.apache.dubbo.common.config.configcenter.ConfigurationListener;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
-import java.util.Optional;
+
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +44,9 @@ public class ConsulDynamicConfigurationTest {
     private static Consul client;
     private static KeyValueClient kvClient;
 
+    private static ConfigurationListener configurationListener;
+    private static  CountDownLatch latch;
+
     @BeforeAll
     public static void setUp() throws Exception {
         consul = ConsulStarterBuilder.consulStarter()
@@ -52,6 +57,17 @@ public class ConsulDynamicConfigurationTest {
         configuration = new ConsulDynamicConfiguration(configCenterUrl);
         client = Consul.builder().withHostAndPort(HostAndPort.fromParts("127.0.0.1", consul.getHttpPort())).withReadTimeoutMillis(TimeUnit.SECONDS.toMillis(11)).build();
         kvClient = client.keyValueClient();
+
+        latch = new CountDownLatch(1);
+        configurationListener = event -> {
+            //test equals
+            assertEquals("value", event.getContent());
+            assertEquals("/dubbo/config/dubbo/abc", event.getKey());
+            assertEquals("dubbo", event.getGroup());
+            assertEquals(ConfigChangeType.MODIFIED, event.getChangeType());
+            System.out.println("Test Passed: Configuration change is correct.");
+            latch.countDown();  // Signal that the event was received
+        };
     }
 
     @AfterAll
@@ -79,32 +95,22 @@ public class ConsulDynamicConfigurationTest {
     }
 
     @Test
-    public void testAddListener() {
-        KVCache cache = KVCache.newCache(kvClient, "/dubbo/config/dubbo/foo");
-        cache.addListener(newValues -> {
-            // Cache notifies all paths with "foo" the root path
-            // If you want to watch only "foo" value, you must filter other paths
-            Optional<Value> newValue = newValues.values().stream()
-                    .filter(value -> value.getKey().equals("foo"))
-                    .findAny();
-
-            newValue.ifPresent(value -> {
-                // Values are encoded in key/value store, decode it if needed
-                Optional<String> decodedValue = newValue.get().getValueAsString();
-                decodedValue.ifPresent(v -> System.out.println(String.format("Value is: %s", v))); //prints "bar"
-            });
-        });
-        cache.start();
-
-        kvClient.putValue("/dubbo/config/dubbo/foo", "new-value");
-        kvClient.putValue("/dubbo/config/dubbo/foo/sub", "sub-value");
-        kvClient.putValue("/dubbo/config/dubbo/foo/sub2", "sub-value2");
-        kvClient.putValue("/dubbo/config/foo", "parent-value");
-
-        System.out.println(kvClient.getKeys("/dubbo/config/dubbo/foo"));
-        System.out.println(kvClient.getKeys("/dubbo/config"));
-        System.out.println(kvClient.getValues("/dubbo/config/dubbo/foo"));
+    public void testRemoveConfig() {
+        kvClient.putValue("/dubbo/config/dubbo/foo", "bar");
+        configuration.removeConfig("foo","dubbo");
+        //test equals
+        Assertions.assertFalse(kvClient.getValue("/dubbo/config/dubbo/foo").isPresent());
     }
+
+
+    @Test
+    public void testAddListener() throws InterruptedException {
+        configuration.addListener("abc","dubbo",configurationListener);
+        kvClient.putValue("/dubbo/config/dubbo/abc", "value");
+        boolean completed = latch.await(1, TimeUnit.SECONDS);
+        Assertions.assertTrue(completed, "Listener event was not triggered in time.");
+    }
+
 
     @Test
     public void testGetConfigKeys() {
