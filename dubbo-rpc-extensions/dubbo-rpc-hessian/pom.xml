@@ -44,7 +44,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-remoting-http</artifactId>
             <optional>true</optional>
         </dependency>
@@ -57,7 +57,7 @@
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-jdk</artifactId>
             <scope>test</scope>
         </dependency>
