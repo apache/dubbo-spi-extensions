@@ -132,7 +132,7 @@
         <seata_version>2.2.0</seata_version>
         <eureka.version>1.10.18</eureka.version>
         <sofa_registry_version>5.4.3</sofa_registry_version>
-        <logback_version>1.5.12</logback_version>
+        <logback_version>1.5.15</logback_version>
         <rs_api_version>2.1.1</rs_api_version>
         <resteasy_version>3.15.6.Final</resteasy_version>
         <codehaus-jackson_version>1.9.13</codehaus-jackson_version>
