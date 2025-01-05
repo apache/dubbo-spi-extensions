@@ -96,6 +96,9 @@ jobs:
     outputs:
       version: ${{ steps.dubbo-spi-extensions-version.outputs.version }}
     steps:
+      - name: Support long paths on Windows
+        if: ${{ startsWith( matrix.os, 'windows') }}
+        run: git config --system core.longpaths true
       - uses: actions/checkout@v4
         with:
           path: dubbo-spi-extensions

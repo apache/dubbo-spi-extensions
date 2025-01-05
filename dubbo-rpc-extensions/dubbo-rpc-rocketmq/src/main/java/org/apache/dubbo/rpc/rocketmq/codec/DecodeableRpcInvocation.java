@@ -40,7 +40,7 @@ import org.apache.dubbo.rpc.model.MethodDescriptor;
 import org.apache.dubbo.rpc.model.ModuleModel;
 import org.apache.dubbo.rpc.model.ProviderModel;
 import org.apache.dubbo.rpc.model.ServiceDescriptor;
-import org.apache.dubbo.rpc.protocol.tri.TripleConstant;
+import org.apache.dubbo.rpc.protocol.tri.TripleConstants;
 import org.apache.dubbo.rpc.support.RpcUtils;
 
 import java.io.IOException;
@@ -222,8 +222,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
         return this;
     }
     private static String convertHessianFromWrapper(String serializeType) {
-        if (TripleConstant.HESSIAN4.equals(serializeType)) {
-            return TripleConstant.HESSIAN2;
+        if (TripleConstants.HESSIAN4.equals(serializeType)) {
+            return TripleConstants.HESSIAN2;
         }
         return serializeType;
     }
