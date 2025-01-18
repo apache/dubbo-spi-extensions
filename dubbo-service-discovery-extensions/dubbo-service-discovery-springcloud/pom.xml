@@ -18,13 +18,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>dubbo-service-discovery-extensions</artifactId>
         <groupId>org.apache.dubbo.extensions</groupId>
-        <artifactId>extensions-parent</artifactId>
-        <version>3.3.0</version>
-        <relativePath>../../pom.xml</relativePath>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>dubbo-service-discovery-springcloud</artifactId>
+    <version>${revision}</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

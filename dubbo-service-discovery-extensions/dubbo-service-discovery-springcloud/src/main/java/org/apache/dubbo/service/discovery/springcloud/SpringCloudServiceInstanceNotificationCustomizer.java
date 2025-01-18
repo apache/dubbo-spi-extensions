@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.service.discovery.springcloud.test;
+package org.apache.dubbo.service.discovery.springcloud;
 
 import org.apache.dubbo.common.ProtocolServiceKey;
 import org.apache.dubbo.metadata.MetadataInfo;
