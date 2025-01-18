@@ -20,6 +20,7 @@ package org.apache.dubbo.service.discovery.springcloud.test;
 import org.apache.dubbo.metadata.MetadataInfo;
 import org.apache.dubbo.registry.client.DefaultServiceInstance;
 import org.apache.dubbo.registry.client.ServiceInstance;
+import org.apache.dubbo.service.discovery.springcloud.SpringCloudServiceInstanceNotificationCustomizer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
