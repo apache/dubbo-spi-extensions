@@ -38,7 +38,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-remoting-http</artifactId>
             <optional>true</optional>
         </dependency>

@@ -34,10 +34,10 @@ import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUti
 import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.getAnnotation;
 import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.getValue;
 import static org.apache.dubbo.metadata.annotation.processing.util.AnnotationUtils.isAnnotationPresent;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.CONSUMES_ANNOTATION_CLASS_NAME;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.HTTP_METHOD_ANNOTATION_CLASS_NAME;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.PATH_ANNOTATION_CLASS_NAME;
-import static org.apache.dubbo.metadata.rest.RestMetadataConstants.JAX_RS.PRODUCES_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.JAX_RS.CONSUMES_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.JAX_RS.HTTP_METHOD_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.JAX_RS.PATH_ANNOTATION_CLASS_NAME;
+import static org.apache.dubbo.metadata.extension.rest.api.RestMetadataConstants.JAX_RS.PRODUCES_ANNOTATION_CLASS_NAME;
 
 
 
