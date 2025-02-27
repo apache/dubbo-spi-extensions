@@ -120,8 +120,8 @@
         <cglib_version>2.2.2</cglib_version>
         <mockito_version>4.11.0</mockito_version>
         <!-- for maven compiler plugin -->
-        <java_source_version>1.8</java_source_version>
-        <java_target_version>1.8</java_target_version>
+        <java_source_version>17</java_source_version>
+        <java_target_version>17</java_target_version>
         <file_encoding>UTF-8</file_encoding>
         <!-- Build args -->
         <argline>-server -Xms256m -Xmx512m -Dfile.encoding=UTF-8
@@ -577,11 +577,6 @@
                                 <groupId>com.puppycrawl.tools</groupId>
                                 <artifactId>checkstyle</artifactId>
                                 <version>8.41</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.dubbo</groupId>
-                                <artifactId>dubbo-build-tools</artifactId>
-                                <version>1.0.0</version>
                             </dependency>
                         </dependencies>
                         <executions>
