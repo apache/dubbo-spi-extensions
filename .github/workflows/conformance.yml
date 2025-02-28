@@ -62,10 +62,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-         use the unsafe only run on the jdk8
-        java: [ 8 ]
-        testjob id list MUST match 'JOB_COUNT' of 'prepare_test'
-        job_id: [ 1,2,3 ]
+        java: [ 8 ]  # Run tests only on JDK 8
+        job_id: [ 1, 2, 3 ]  # Job IDs must match 'JOB_COUNT' of 'prepare_test'
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{matrix.java}}
