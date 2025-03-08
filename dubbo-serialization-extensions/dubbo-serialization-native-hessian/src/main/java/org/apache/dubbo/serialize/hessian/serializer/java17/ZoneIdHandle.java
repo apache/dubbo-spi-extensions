@@ -15,28 +15,27 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.Duration;
+import java.time.ZoneId;
 
-public class DurationHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = -4367309317780077156L;
+public class ZoneIdHandle implements HessianHandle, Serializable {
 
-    private long seconds;
-    private int nanos;
+    private static final long serialVersionUID = 8789182864066905552L;
 
-    public DurationHandle() {
+    private String zoneId;
+
+    public ZoneIdHandle() {
     }
 
-    public DurationHandle(Object o) {
+    public ZoneIdHandle(Object o) {
         try {
-            Duration duration = (Duration) o;
-            this.seconds = duration.getSeconds();
-            this.nanos = duration.getNano();
+            ZoneId zoneId = (ZoneId) o;
+            this.zoneId = zoneId.getId();
         } catch (Throwable t) {
             // ignore
         }
@@ -44,7 +43,7 @@ public class DurationHandle implements HessianHandle, Serializable {
 
     private Object readResolve() {
         try {
-            return Duration.ofSeconds(seconds, nanos);
+            return ZoneId.of(this.zoneId);
         } catch (Throwable t) {
             // ignore
         }

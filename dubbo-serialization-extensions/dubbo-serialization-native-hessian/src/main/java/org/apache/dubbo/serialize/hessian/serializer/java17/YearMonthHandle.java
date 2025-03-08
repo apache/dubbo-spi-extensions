@@ -15,37 +15,36 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.YearMonth;
 
-public class InstantHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = -4367309317780077156L;
+public class YearMonthHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -4150786187896925314L;
 
-    private long seconds;
-    private int nanos;
+    private int year;
+    private int month;
 
-    public InstantHandle() {
+    public YearMonthHandle() {
     }
 
-    public InstantHandle(Object o) {
+    public YearMonthHandle(Object o) {
         try {
-            Instant instant = (Instant) o;
-            this.seconds = instant.getEpochSecond();
-            this.nanos = instant.getNano();
+            YearMonth yearMonth = (YearMonth) o;
+            this.year = yearMonth.getYear();
+            this.month = yearMonth.getMonthValue();
         } catch (Throwable t) {
             // ignore
         }
     }
 
-
     private Object readResolve() {
         try {
-            return Instant.ofEpochSecond(seconds, nanos);
+            return YearMonth.of(year, month);
         } catch (Throwable t) {
             // ignore
         }

@@ -119,9 +119,14 @@
         <jaxb_api_version>2.2.7</jaxb_api_version>
         <cglib_version>2.2.2</cglib_version>
         <mockito_version>4.11.0</mockito_version>
-        <!-- for maven compiler plugin -->
-        <java_source_version>1.8</java_source_version>
-        <java_target_version>1.8</java_target_version>
+        <!-- Standard Maven properties -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Custom properties (only if used in the POM) -->
+        <java_source_version>17</java_source_version>
+        <java_target_version>17</java_target_version>
         <file_encoding>UTF-8</file_encoding>
         <!-- Build args -->
         <argline>-server -Xms256m -Xmx512m -Dfile.encoding=UTF-8
@@ -533,7 +538,7 @@
         <profile>
             <id>javadoc-lint</id>
             <activation>
-                <jdk>[1.8,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <properties>
                 <doclint>none</doclint>
@@ -564,24 +569,19 @@
         <profile>
             <id>checkstyle_def</id>
             <activation>
-                <jdk>[1.8,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>${maven_checkstyle_version}</version>
+                        <version>3.2.0</version>
                         <dependencies>
                             <dependency>
                                 <groupId>com.puppycrawl.tools</groupId>
                                 <artifactId>checkstyle</artifactId>
-                                <version>8.41</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.dubbo</groupId>
-                                <artifactId>dubbo-build-tools</artifactId>
-                                <version>1.0.0</version>
+                                <version>10.12.3</version>
                             </dependency>
                         </dependencies>
                         <executions>
@@ -591,7 +591,6 @@
                                 <configuration>
                                     <configLocation>./codestyle/checkstyle.xml</configLocation>
                                     <suppressionsLocation>./codestyle/checkstyle-suppressions.xml</suppressionsLocation>
-                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle.skip}</skip>
@@ -614,7 +613,6 @@
                                 <phase>validate</phase>
                                 <configuration>
                                     <configLocation>./codestyle/checkstyle_unix.xml</configLocation>
-                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle_unix.skip}</skip>

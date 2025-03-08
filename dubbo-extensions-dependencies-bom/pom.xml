@@ -173,8 +173,8 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-core-spi</artifactId>
-                <version>${dubbo.version}</version>
+                <artifactId>dubbo-serialization-hessian2</artifactId>
+                <version>3.2.0</version> <!--latest stable version -->
             </dependency>
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
@@ -319,11 +319,6 @@
                 <groupId>de.ruedigermoeller</groupId>
                 <artifactId>fst</artifactId>
                 <version>${fst_version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.fury</groupId>
-                <artifactId>fury-core</artifactId>
-                <version>${apache.fury_version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.fury</groupId>

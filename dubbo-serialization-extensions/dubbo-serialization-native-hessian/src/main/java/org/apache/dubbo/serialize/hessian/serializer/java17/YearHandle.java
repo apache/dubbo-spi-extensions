@@ -15,38 +15,35 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
+import java.time.Year;
 
-public class OffsetTimeHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = -3269846941421652860L;
+public class YearHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -6299552890287487926L;
 
-    private LocalTime localTime;
-    private ZoneOffset zoneOffset;
+    private int year;
 
-    public OffsetTimeHandle() {
+    public YearHandle() {
     }
 
-    public OffsetTimeHandle(Object o) {
+    public YearHandle(Object o) {
         try {
-            OffsetTime offsetTime = (OffsetTime) o;
-            this.zoneOffset = offsetTime.getOffset();
-            this.localTime = offsetTime.toLocalTime();
+            Year y = (Year) o;
+            this.year = y.getValue();
         } catch (Throwable t) {
             // ignore
         }
+
     }
 
     private Object readResolve() {
         try {
-            return OffsetTime.of(localTime, zoneOffset);
+            return Year.of(year);
         } catch (Throwable t) {
             // ignore
         }

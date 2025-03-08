@@ -27,6 +27,8 @@ import static org.apache.dubbo.common.utils.StringUtils.isBlank;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.StringUtils;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.CRC32;
@@ -133,19 +135,15 @@ public class ServiceName {
     }
 
     private String toValue() {
-        String value = null;
-        if (Objects.equals(this.groupModel, "topic")) {
-            value = category +
-                NAME_SEPARATOR + serviceInterface +
-                NAME_SEPARATOR + version +
-                NAME_SEPARATOR + group;
-        } else {
-            value = category + NAME_SEPARATOR + serviceInterface;
-        }
+        String value = Objects.equals(this.groupModel, "topic")
+            ? category + NAME_SEPARATOR + serviceInterface + NAME_SEPARATOR + version + NAME_SEPARATOR + group
+            : category + NAME_SEPARATOR + serviceInterface;
+
         CRC32 crc32 = new CRC32();
-        crc32.update(value.getBytes());
-        value = value.replace(".", "-") + NAME_SEPARATOR + Long.toString(crc32.getValue());
-        return value;
+        ByteBuffer buffer = StandardCharsets.UTF_8.encode(value);
+        crc32.update(buffer);
+
+        return value.replace(".", "-") + NAME_SEPARATOR + Long.toUnsignedString(crc32.getValue());
     }
 
 
