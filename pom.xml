@@ -119,12 +119,9 @@
         <jaxb_api_version>2.2.7</jaxb_api_version>
         <cglib_version>2.2.2</cglib_version>
         <mockito_version>4.11.0</mockito_version>
-        <!-- Standard Maven properties -->
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- Custom properties (only if used in the POM) -->
         <java_source_version>17</java_source_version>
         <java_target_version>17</java_target_version>
         <file_encoding>UTF-8</file_encoding>
@@ -768,14 +765,14 @@
         <profile>
             <id>jdk9-compile</id>
             <activation>
-                <jdk>[1.9,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <release>8</release>
+                            <release>17</release>
                         </configuration>
                     </plugin>
                 </plugins>
