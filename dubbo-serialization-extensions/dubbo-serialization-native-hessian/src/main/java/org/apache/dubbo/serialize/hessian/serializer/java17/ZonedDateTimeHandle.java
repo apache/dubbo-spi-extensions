@@ -15,32 +15,37 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
-public class LocalTimeHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = -5892919085390462315L;
+public class ZonedDateTimeHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -6933460123278647569L;
 
-    private int hour;
-    private int minute;
-    private int second;
-    private int nano;
+    private LocalDateTime dateTime;
+    private ZoneOffset offset;
+    private String zoneId;
 
-    public LocalTimeHandle() {
+
+    public ZonedDateTimeHandle() {
     }
 
-    public LocalTimeHandle(Object o) {
+    public ZonedDateTimeHandle(Object o) {
         try {
-            LocalTime localTime = (LocalTime) o;
-            this.hour = localTime.getHour();
-            this.minute = localTime.getMinute();
-            this.second = localTime.getSecond();
-            this.nano = localTime.getNano();
+            ZonedDateTime zonedDateTime = (ZonedDateTime) o;
+            this.dateTime = zonedDateTime.toLocalDateTime();
+            this.offset = zonedDateTime.getOffset();
+            ZoneId zone = zonedDateTime.getZone();
+            if (zone != null) {
+                this.zoneId = zone.getId();
+            }
         } catch (Throwable t) {
             // ignore
         }
@@ -48,7 +53,7 @@ public class LocalTimeHandle implements HessianHandle, Serializable {
 
     private Object readResolve() {
         try {
-            return LocalTime.of(hour, minute, second, nano);
+            return ZonedDateTime.ofLocal(dateTime, ZoneId.of(zoneId), offset);
         } catch (Throwable t) {
             // ignore
         }

@@ -89,4 +89,9 @@ public class RdsProtocol extends AbstractProtocol<RouteResult, DeltaRoute> {
             return null;
         }
     }
+
+    @Override
+    public void updateObserve(long requestId, Set<String> resourceNames) {
+
+    }
 }

@@ -15,28 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.YearMonth;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public class YearMonthHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = -4150786187896925314L;
+public class LocalDateTimeHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = 7563825215275989361L;
 
-    private int year;
-    private int month;
+    private LocalDate date;
+    private LocalTime time;
 
-    public YearMonthHandle() {
+    public LocalDateTimeHandle() {
     }
 
-    public YearMonthHandle(Object o) {
+    public LocalDateTimeHandle(Object o) {
         try {
-            YearMonth yearMonth = (YearMonth) o;
-            this.year = yearMonth.getYear();
-            this.month = yearMonth.getMonthValue();
+            LocalDateTime localDateTime = (LocalDateTime) o;
+            date = localDateTime.toLocalDate();
+            time = localDateTime.toLocalTime();
         } catch (Throwable t) {
             // ignore
         }
@@ -44,7 +46,7 @@ public class YearMonthHandle implements HessianHandle, Serializable {
 
     private Object readResolve() {
         try {
-            return YearMonth.of(year, month);
+            return LocalDateTime.of(date, time);
         } catch (Throwable t) {
             // ignore
         }

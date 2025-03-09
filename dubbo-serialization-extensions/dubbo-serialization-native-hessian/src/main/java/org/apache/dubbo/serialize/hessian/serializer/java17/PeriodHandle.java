@@ -15,27 +15,31 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.ZoneId;
+import java.time.Period;
 
-public class ZoneIdHandle implements HessianHandle, Serializable {
 
-    private static final long serialVersionUID = 8789182864066905552L;
+public class PeriodHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = 4399720381283781186L;
 
-    private String zoneId;
+    private int years;
+    private int months;
+    private int days;
 
-    public ZoneIdHandle() {
+    public PeriodHandle() {
     }
 
-    public ZoneIdHandle(Object o) {
+    public PeriodHandle(Object o) {
         try {
-            ZoneId zoneId = (ZoneId) o;
-            this.zoneId = zoneId.getId();
+            Period period = (Period) o;
+            this.years = period.getYears();
+            this.months = period.getMonths();
+            this.days = period.getDays();
         } catch (Throwable t) {
             // ignore
         }
@@ -43,7 +47,7 @@ public class ZoneIdHandle implements HessianHandle, Serializable {
 
     private Object readResolve() {
         try {
-            return ZoneId.of(this.zoneId);
+            return Period.of(years, months, days);
         } catch (Throwable t) {
             // ignore
         }

@@ -34,11 +34,11 @@ jobs:
         uses: apache/skywalking-eyes@v0.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Set up JDK 21"
+      - name: "Set up JDK 17"
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 21
+          java-version: 17
       - name: Restore Maven local repository cache
         uses: actions/cache@v4
         with:
@@ -75,11 +75,11 @@ jobs:
           repository: 'apache/dubbo'
           ref: '3.1'
           path: dubbo
-      - name: "Set up JDK 21"
+      - name: "Set up JDK 17"
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 21
+          java-version: 17
       - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:
@@ -108,7 +108,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 8
+          java-version: 17
       - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:
@@ -223,7 +223,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
-        jdk: [ 8, 11 ]
+        jdk: [17]
       fail-fast: false
     env:
       DISABLE_FILE_SYSTEM_TEST: true
@@ -241,7 +241,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 8
+          java-version: 17
       - uses: actions/cache@v4
         name: "Cache local Maven repository"
         with:

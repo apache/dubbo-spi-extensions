@@ -94,4 +94,9 @@ public class EdsProtocol extends AbstractProtocol<EndpointResult, DeltaEndpoint>
             return null;
         }
     }
+
+    @Override
+    public void updateObserve(long requestId, Set<String> resourceNames) {
+
+    }
 }

@@ -34,21 +34,16 @@ public class MediaTypeUtilTest {
 
     @Test
     void testConvertMediaType() {
-        MediaType mediaType =
-                MediaTypeUtil.convertMediaType(null, new String[] {MediaType.APPLICATION_JSON_VALUE.value});
-
+        MediaType mediaType = MediaTypeUtil.convertMediaType(null, MediaType.APPLICATION_JSON_VALUE.value);
         Assertions.assertEquals(MediaType.APPLICATION_JSON_VALUE, mediaType);
 
-        mediaType = MediaTypeUtil.convertMediaType(int.class, null);
-
+        mediaType = MediaTypeUtil.convertMediaType(int.class, (String[]) null);
         Assertions.assertEquals(MediaType.TEXT_PLAIN, mediaType);
 
-        mediaType = MediaTypeUtil.convertMediaType(null, new String[] {MediaType.ALL_VALUE.value});
-
+        mediaType = MediaTypeUtil.convertMediaType(null, MediaType.ALL_VALUE.value);
         Assertions.assertEquals(MediaType.APPLICATION_JSON_VALUE, mediaType);
 
-        mediaType = MediaTypeUtil.convertMediaType(String.class, new String[] {MediaType.TEXT_XML.value});
-
+        mediaType = MediaTypeUtil.convertMediaType(String.class, MediaType.TEXT_XML.value);
         Assertions.assertEquals(MediaType.TEXT_XML, mediaType);
     }
 }
