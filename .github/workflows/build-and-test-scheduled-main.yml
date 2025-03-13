@@ -120,7 +120,7 @@ jobs:
       - name: "Compile Dubbo-SPI-Extensions (Linux)"
         run: |
           cd ./dubbo-spi-extensions
-          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast -T 2C clean compile -DskipTests=true -DskipIntegrationTests=true -Dcheckstyle.skip=true -Dcheckstyle_unix.skip=true -Drat.skip=true -Dmaven.javadoc.skip=true
+          ./mvnw --batch-mode --no-snapshot-updates -e --no-transfer-progress --fail-fast -T 2C clean compile -DskipIntegrationTests=true -Dcheckstyle.skip=true -Dcheckstyle_unix.skip=true -Drat.skip=true -Dmaven.javadoc.skip=true
       - name: "Build Dubbo-SPI-Extensions with Maven"
         run: |
           cd ./dubbo-spi-extensions
