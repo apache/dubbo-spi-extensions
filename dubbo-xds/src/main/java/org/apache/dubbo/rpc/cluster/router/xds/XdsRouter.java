@@ -77,9 +77,8 @@ public class XdsRouter<T> extends AbstractStateRouter<T> implements XdsRouteRule
         currentInvokeList = new BitList<>(new ArrayList<>());
     }
 
-    /**
-     * @deprecated only for uts
-     */
+
+      @Deprecated
     protected XdsRouter(
             URL url, RdsRouteRuleManager rdsRouteRuleManager, EdsEndpointManager edsEndpointManager, boolean isEnable) {
         super(url);

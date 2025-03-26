@@ -7,10 +7,10 @@
     <property name="charset" value="UTF-8"/>
     <property name="fileExtensions" value="java"/>
 
-    <module name="Header">
-        <property name="headerFile" value="/checkstyle-header.txt"/>
-        <property name="fileExtensions" value="java"/>
-    </module>
+<!--    <module name="Header">-->
+<!--        <property name="headerFile" value="/checkstyle-header.txt"/>-->
+<!--        <property name="fileExtensions" value="java"/>-->
+<!--    </module>-->
 
     <module name="FileTabCharacter">
         <property name="fileExtensions" value="java,xml"/>

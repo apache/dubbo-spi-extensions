@@ -103,4 +103,9 @@ public class LdsProtocol extends AbstractProtocol<ListenerResult, DeltaListener>
             return null;
         }
     }
+
+    @Override
+    public void updateObserve(long requestId, Set<String> resourceNames) {
+
+    }
 }

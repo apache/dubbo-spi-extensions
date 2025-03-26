@@ -27,18 +27,17 @@ import org.apache.dubbo.rpc.Exporter;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.protocol.AbstractExporter;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
-import java.util.Objects;
-import java.util.zip.CRC32;
 
 public class RocketMQExporter<T> extends AbstractExporter<T> {
 
     private static final String DEFAULT_PARAM_VALUE = "";
-
     private static final String NAME_SEPARATOR = "_";
 
     private final String key;
-
     private final Map<String, Exporter<?>> exporterMap;
 
     public RocketMQExporter(Invoker<T> invoker, URL url, Map<String, Exporter<?>> exporterMap) {
@@ -61,16 +60,27 @@ public class RocketMQExporter<T> extends AbstractExporter<T> {
         String version = url.getParameter(VERSION_KEY, DEFAULT_PARAM_VALUE);
         String group = url.getParameter(GROUP_KEY, DEFAULT_PARAM_VALUE);
 
-        String value = null;
-        if (Objects.equals(url.getParameter("groupModel"), "topic")) {
+        String value;
+        if ("topic".equals(url.getParameter("groupModel"))) {
             value = DEFAULT_CATEGORY + NAME_SEPARATOR + serviceInterface + NAME_SEPARATOR + version + NAME_SEPARATOR + group;
         } else {
             value = DEFAULT_CATEGORY + NAME_SEPARATOR + serviceInterface;
         }
-        CRC32 crc32 = new CRC32();
-        crc32.update(value.getBytes());
-        value = value.replace(".", "-") + NAME_SEPARATOR + Long.toString(crc32.getValue());
-        return value;
+
+        return value.replace(".", "-") + NAME_SEPARATOR + computeSHA256(value);
     }
 
+    private String computeSHA256(String value) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                hexString.append(String.format("%02x", b));
+            }
+            return hexString.toString().substring(0, 16);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not available", e);
+        }
+    }
 }

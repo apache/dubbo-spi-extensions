@@ -92,7 +92,7 @@ public class OmnSerFilterTest {
     @Test
     public void testOnResponseWithPrimitives() {
         // Set up
-        Object primitives = new Integer(10);
+        Object primitives = Integer.valueOf(10);
         when(result.getValue()).thenReturn(primitives);
 
         // Invoke

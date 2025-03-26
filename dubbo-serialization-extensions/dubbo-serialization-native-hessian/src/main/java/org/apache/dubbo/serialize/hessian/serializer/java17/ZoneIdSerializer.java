@@ -15,43 +15,29 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.AbstractHessianOutput;
 import com.caucho.hessian.io.AbstractSerializer;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 
-public class Java8TimeSerializer<T> extends AbstractSerializer {
+public class ZoneIdSerializer extends AbstractSerializer {
 
-    // Type of handle
-    private Class<T> handleType;
+    private static final ZoneIdSerializer SERIALIZER = new ZoneIdSerializer();
 
-    private Java8TimeSerializer(Class<T> handleType) {
-        this.handleType = handleType;
-    }
-
-    public static <T> Java8TimeSerializer<T> create(Class<T> handleType) {
-        return new Java8TimeSerializer<T>(handleType);
+    public static ZoneIdSerializer getInstance() {
+        return SERIALIZER;
     }
 
     @Override
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (obj == null) {
             out.writeNull();
-            return;
+        } else {
+            out.writeObject(new ZoneIdHandle(obj));
         }
-
-        T handle = null;
-        try {
-            Constructor<T> constructor = handleType.getConstructor(Object.class);
-            handle = constructor.newInstance(obj);
-        } catch (Exception e) {
-            throw new RuntimeException("the class :" + handleType.getName() + " construct failed:" + e.getMessage(), e);
-        }
-
-        out.writeObject(handle);
     }
+
 }

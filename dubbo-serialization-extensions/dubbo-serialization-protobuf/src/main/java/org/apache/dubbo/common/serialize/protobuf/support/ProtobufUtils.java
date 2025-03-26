@@ -100,7 +100,7 @@ public class ProtobufUtils {
 
     private static Builder getMessageBuilder(Class<?> requestType) throws Exception {
         Method method = requestType.getMethod("newBuilder");
-        return (Builder) method.invoke(null, null);
+        return (Builder) method.invoke(null, (Object[]) null);
     }
 
 

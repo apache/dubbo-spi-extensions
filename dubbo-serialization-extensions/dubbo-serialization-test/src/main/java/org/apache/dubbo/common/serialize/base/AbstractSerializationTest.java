@@ -889,22 +889,22 @@ public abstract class AbstractSerializationTest {
 
     @Test
     public void test_ByteWrap() throws Exception {
-        assertObject(new Byte((byte) 12));
+        assertObject(Byte.valueOf((byte) 12));
     }
 
     @Test
     public void test_ByteWrap_withType() throws Exception {
-        assertObjectWithType(new Byte((byte) 12), Byte.class);
+        assertObjectWithType(Byte.valueOf((byte) 12), Byte.class);
     }
 
     @Test
     public void test_LongWrap() throws Exception {
-        assertObject(new Long(12));
+        assertObject(Long.valueOf(12));
     }
 
     @Test
     public void test_LongWrap_withType() throws Exception {
-        assertObjectWithType(new Long(12), Long.class);
+        assertObjectWithType(Long.valueOf(12), Long.class);
     }
 
     @Test
