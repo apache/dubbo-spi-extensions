@@ -16,20 +16,20 @@
  */
 package org.apache.dubbo.serialize.hessian;
 
-import org.apache.dubbo.serialize.hessian.serializer.java8.DurationHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.InstantHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.LocalDateHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.LocalDateTimeHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.LocalTimeHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.MonthDayHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.OffsetDateTimeHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.OffsetTimeHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.PeriodHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.YearHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.YearMonthHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.ZoneIdSerializer;
-import org.apache.dubbo.serialize.hessian.serializer.java8.ZoneOffsetHandle;
-import org.apache.dubbo.serialize.hessian.serializer.java8.ZonedDateTimeHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.DurationHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.InstantHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.LocalDateHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.LocalDateTimeHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.LocalTimeHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.MonthDayHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.OffsetDateTimeHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.OffsetTimeHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.PeriodHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.YearHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.YearMonthHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.ZoneIdSerializer;
+import org.apache.dubbo.serialize.hessian.serializer.java17.ZoneOffsetHandle;
+import org.apache.dubbo.serialize.hessian.serializer.java17.ZonedDateTimeHandle;
 
 import com.caucho.hessian.io.Deserializer;
 import com.caucho.hessian.io.HessianProtocolException;
@@ -38,7 +38,7 @@ import com.caucho.hessian.io.SerializerFactory;
 
 import java.util.HashMap;
 
-import static org.apache.dubbo.serialize.hessian.serializer.java8.Java8TimeSerializer.create;
+import static org.apache.dubbo.serialize.hessian.serializer.java17.Java17TimeSerializer.create;
 
 public class Hessian2SerializerFactory extends SerializerFactory {
     private HashMap _serializerMap = new HashMap();
@@ -46,7 +46,7 @@ public class Hessian2SerializerFactory extends SerializerFactory {
 
     public Hessian2SerializerFactory() {
         super();
-        if (isJava8()) {
+        if (isJava17()) {
             try {
                 this.addSerializer(Class.forName("java.time.LocalTime"), create(LocalTimeHandle.class));
                 this.addSerializer(Class.forName("java.time.LocalDate"), create(LocalDateHandle.class));
@@ -75,25 +75,25 @@ public class Hessian2SerializerFactory extends SerializerFactory {
         if (isZoneId(cl)) {
             return ZoneIdSerializer.getInstance();
         }
-        Object java8Serializer = this._serializerMap.get(cl);
-        if (java8Serializer != null) {
-            return (Serializer) java8Serializer;
+        Object java17Serializer = this._serializerMap.get(cl);
+        if (java17Serializer != null) {
+            return (Serializer) java17Serializer;
         }
         return super.getSerializer(cl);
     }
 
     private static boolean isZoneId(Class cl) {
         try {
-            return isJava8() && Class.forName("java.time.ZoneId").isAssignableFrom(cl);
+            return isJava17() && Class.forName("java.time.ZoneId").isAssignableFrom(cl);
         } catch (ClassNotFoundException e) {
             // ignore
         }
         return false;
     }
 
-    private static boolean isJava8() {
+    private static boolean isJava17() {
         String javaVersion = System.getProperty("java.specification.version");
-        return Double.valueOf(javaVersion) >= 1.8;
+        return Double.valueOf(javaVersion) >= 17;
     }
 
     public void addSerializer(Class cl, Serializer serializer) {

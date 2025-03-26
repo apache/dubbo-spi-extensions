@@ -38,4 +38,5 @@ public interface XdsProtocol<T> {
      * @return requestId, used when resourceNames update with {@link XdsProtocol#updateObserve(long, Set)}
      */
     void observeResource(Set<String> resourceNames, Consumer<Map<String, T>> consumer, boolean isReConnect);
+    void updateObserve(long requestId, Set<String> resourceNames);
 }

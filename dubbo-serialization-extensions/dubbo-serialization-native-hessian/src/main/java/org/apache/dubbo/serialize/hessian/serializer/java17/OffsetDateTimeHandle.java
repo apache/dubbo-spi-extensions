@@ -15,30 +15,30 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
-public class LocalDateTimeHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = 7563825215275989361L;
+public class OffsetDateTimeHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -7823900532640515312L;
 
-    private LocalDate date;
-    private LocalTime time;
+    private LocalDateTime dateTime;
+    private ZoneOffset offset;
 
-    public LocalDateTimeHandle() {
+    public OffsetDateTimeHandle() {
     }
 
-    public LocalDateTimeHandle(Object o) {
+    public OffsetDateTimeHandle(Object o) {
         try {
-            LocalDateTime localDateTime = (LocalDateTime) o;
-            date = localDateTime.toLocalDate();
-            time = localDateTime.toLocalTime();
+            OffsetDateTime offsetDateTime = (OffsetDateTime) o;
+            this.dateTime = offsetDateTime.toLocalDateTime();
+            this.offset = offsetDateTime.getOffset();
         } catch (Throwable t) {
             // ignore
         }
@@ -46,7 +46,7 @@ public class LocalDateTimeHandle implements HessianHandle, Serializable {
 
     private Object readResolve() {
         try {
-            return LocalDateTime.of(date, time);
+            return OffsetDateTime.of(dateTime, offset);
         } catch (Throwable t) {
             // ignore
         }

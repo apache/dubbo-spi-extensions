@@ -46,11 +46,11 @@
 #      - name: "Build tools"
 #        run: |
 #          cd ./dubbo
-#          ./mvnw --batch-mode -U -e --no-transfer-progress install -pl dubbo-build-tools -am -DskipTests=true
+#          ./mvnw --batch-mode -U -e --no-transfer-progress install -pl dubbo-build-tools -am
 #      - name: "Build with Maven"
-#        run: |
-#          cd ./dubbo-spi-extensions
-#          ./mvnw --batch-mode -U -e --no-transfer-progress install -am -DskipTests=true
+#  run: |
+#    cd ./dubbo-spi-extensions
+#    ./mvnw --batch-mode -U -e --no-transfer-progress install -am
 #
 #
 #  testjob:
@@ -63,7 +63,7 @@
 #      fail-fast: false
 #      matrix:
 #        # use the unsafe only run on the jdk8
-#        java: [ 8 ]
+#        java: [ 17 ]
 #        #testjob id list MUST match 'JOB_COUNT' of 'prepare_test'
 #        job_id: [ 1,2,3 ]
 #    steps:
