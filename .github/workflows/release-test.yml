@@ -94,11 +94,6 @@ jobs:
             maven-${{ runner.os }}-maven-
             maven-${{ runner.os }}-
 
-      - name: "Build tools"
-        run: |
-          cd ./dubbo
-          ./mvnw --batch-mode -U -e --no-transfer-progress install -pl dubbo-build-tools -am
-
   # Build from source code
   build-source:
     name: "Build Dubbo-SPI-Extensions"
