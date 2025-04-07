@@ -15,45 +15,37 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
-public class ZonedDateTimeHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = -6933460123278647569L;
+public class InstantHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -4367309317780077156L;
 
-    private LocalDateTime dateTime;
-    private ZoneOffset offset;
-    private String zoneId;
+    private long seconds;
+    private int nanos;
 
-
-    public ZonedDateTimeHandle() {
+    public InstantHandle() {
     }
 
-    public ZonedDateTimeHandle(Object o) {
+    public InstantHandle(Object o) {
         try {
-            ZonedDateTime zonedDateTime = (ZonedDateTime) o;
-            this.dateTime = zonedDateTime.toLocalDateTime();
-            this.offset = zonedDateTime.getOffset();
-            ZoneId zone = zonedDateTime.getZone();
-            if (zone != null) {
-                this.zoneId = zone.getId();
-            }
+            Instant instant = (Instant) o;
+            this.seconds = instant.getEpochSecond();
+            this.nanos = instant.getNano();
         } catch (Throwable t) {
             // ignore
         }
     }
 
+
     private Object readResolve() {
         try {
-            return ZonedDateTime.ofLocal(dateTime, ZoneId.of(zoneId), offset);
+            return Instant.ofEpochSecond(seconds, nanos);
         } catch (Throwable t) {
             // ignore
         }

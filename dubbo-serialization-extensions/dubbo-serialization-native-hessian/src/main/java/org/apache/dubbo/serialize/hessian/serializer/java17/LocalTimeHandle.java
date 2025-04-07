@@ -15,26 +15,32 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
 import com.caucho.hessian.io.HessianHandle;
 
 import java.io.Serializable;
-import java.time.ZoneOffset;
+import java.time.LocalTime;
 
-public class ZoneOffsetHandle implements HessianHandle, Serializable {
-    private static final long serialVersionUID = 8841589723587858789L;
+public class LocalTimeHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -5892919085390462315L;
 
-    private int seconds;
+    private int hour;
+    private int minute;
+    private int second;
+    private int nano;
 
-    public ZoneOffsetHandle() {
+    public LocalTimeHandle() {
     }
 
-    public ZoneOffsetHandle(Object o) {
+    public LocalTimeHandle(Object o) {
         try {
-            ZoneOffset zoneOffset = (ZoneOffset) o;
-            this.seconds = zoneOffset.getTotalSeconds();
+            LocalTime localTime = (LocalTime) o;
+            this.hour = localTime.getHour();
+            this.minute = localTime.getMinute();
+            this.second = localTime.getSecond();
+            this.nano = localTime.getNano();
         } catch (Throwable t) {
             // ignore
         }
@@ -42,7 +48,7 @@ public class ZoneOffsetHandle implements HessianHandle, Serializable {
 
     private Object readResolve() {
         try {
-            return ZoneOffset.ofTotalSeconds(seconds);
+            return LocalTime.of(hour, minute, second, nano);
         } catch (Throwable t) {
             // ignore
         }

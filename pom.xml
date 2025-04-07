@@ -102,14 +102,15 @@
         <module>dubbo-kubernetes</module>
         <module>dubbo-wasm</module>
         <module>dubbo-proxy-extensions</module>
+        <module>dubbo-service-discovery-extensions</module>
     </modules>
 
     <properties>
         <revision>3.3.0</revision>
         <dubbo.version>3.3.0-beta.2</dubbo.version>
         <!-- Test libs -->
-        <junit_jupiter_version>5.11.2</junit_jupiter_version>
-        <junit_platform_commons>1.11.2</junit_platform_commons>
+        <junit_jupiter_version>5.11.4</junit_jupiter_version>
+        <junit_platform_commons>1.12.1</junit_platform_commons>
         <awaitility_version>4.2.2</awaitility_version>
         <hazelcast_version>3.11.1</hazelcast_version>
         <hamcrest_version>2.2</hamcrest_version>
@@ -118,9 +119,11 @@
         <jaxb_api_version>2.2.7</jaxb_api_version>
         <cglib_version>2.2.2</cglib_version>
         <mockito_version>4.11.0</mockito_version>
-        <!-- for maven compiler plugin -->
-        <java_source_version>1.8</java_source_version>
-        <java_target_version>1.8</java_target_version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java_source_version>17</java_source_version>
+        <java_target_version>17</java_target_version>
         <file_encoding>UTF-8</file_encoding>
         <!-- Build args -->
         <argline>-server -Xms256m -Xmx512m -Dfile.encoding=UTF-8
@@ -130,10 +133,10 @@
         <maven_jar_version>3.4.2</maven_jar_version>
         <maven_surefire_version>2.22.2</maven_surefire_version>
         <maven_deploy_version>2.8.2</maven_deploy_version>
-        <maven_compiler_version>3.13.0</maven_compiler_version>
+        <maven_compiler_version>3.14.0</maven_compiler_version>
         <maven_source_version>3.3.1</maven_source_version>
-        <maven_javadoc_version>3.10.1</maven_javadoc_version>
-        <maven_checkstyle_version>3.5.0</maven_checkstyle_version>
+        <maven_javadoc_version>3.11.2</maven_javadoc_version>
+        <maven_checkstyle_version>3.6.0</maven_checkstyle_version>
         <maven_jacoco_version>0.8.12</maven_jacoco_version>
         <maven_flatten_version>1.2.5</maven_flatten_version>
         <maven_enforce_version>3.5.0</maven_enforce_version>
@@ -282,7 +285,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${maven_jacoco_version}</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <id>jacoco-initialize</id>
@@ -294,17 +297,40 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>report-aggregate</id>
+                        <id>jacoco-report</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
                         <configuration>
                             <includes>
-                                <include>target/classes/**/*</include>
-                                <include>target/classes/**</include>
-                                <include>**/*</include>
+                                <include>**/target/classes/**/*</include>
+                                <include>**/target/generated-sources/**/*</include>
                             </includes>
+                            <excludes>
+                                <exclude>**/test/**</exclude>
+                                <exclude>**/generated/**</exclude>
+                                <exclude>**/examples/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jacoco-aggregate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+                            <includes>
+                                <include>**/target/classes/**/*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/test/**</exclude>
+                                <exclude>**/generated/**</exclude>
+                                <exclude>**/examples/**</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
@@ -451,7 +477,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.ops4j.pax.exam</groupId>
@@ -460,7 +486,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.8.1</version>
                 </plugin>
                 <plugin>
                     <!-- Do NOT upgrade -->
@@ -532,7 +558,7 @@
         <profile>
             <id>javadoc-lint</id>
             <activation>
-                <jdk>[1.8,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <properties>
                 <doclint>none</doclint>
@@ -563,24 +589,19 @@
         <profile>
             <id>checkstyle_def</id>
             <activation>
-                <jdk>[1.8,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>${maven_checkstyle_version}</version>
+                        <version>3.6.0</version>
                         <dependencies>
                             <dependency>
                                 <groupId>com.puppycrawl.tools</groupId>
                                 <artifactId>checkstyle</artifactId>
-                                <version>8.41</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.dubbo</groupId>
-                                <artifactId>dubbo-build-tools</artifactId>
-                                <version>1.0.0</version>
+                                <version>10.12.3</version>
                             </dependency>
                         </dependencies>
                         <executions>
@@ -590,7 +611,6 @@
                                 <configuration>
                                     <configLocation>./codestyle/checkstyle.xml</configLocation>
                                     <suppressionsLocation>./codestyle/checkstyle-suppressions.xml</suppressionsLocation>
-                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle.skip}</skip>
@@ -613,7 +633,6 @@
                                 <phase>validate</phase>
                                 <configuration>
                                     <configLocation>./codestyle/checkstyle_unix.xml</configLocation>
-                                    <encoding>UTF-8</encoding>
                                     <consoleOutput>true</consoleOutput>
                                     <failOnViolation>true</failOnViolation>
                                     <skip>${checkstyle_unix.skip}</skip>
@@ -736,7 +755,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <version>2.4.0</version>
+                        <version>2.5.0</version>
                         <executions>
                             <execution>
                                 <id>license-check</id>
@@ -769,14 +788,14 @@
         <profile>
             <id>jdk9-compile</id>
             <activation>
-                <jdk>[1.9,)</jdk>
+                <jdk>[17,)</jdk>
             </activation>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <release>8</release>
+                            <release>17</release>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -15,29 +15,39 @@
  * limitations under the License.
  */
 
-package org.apache.dubbo.serialize.hessian.serializer.java8;
+package org.apache.dubbo.serialize.hessian.serializer.java17;
 
 
-import com.caucho.hessian.io.AbstractHessianOutput;
-import com.caucho.hessian.io.AbstractSerializer;
+import com.caucho.hessian.io.HessianHandle;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.time.Duration;
 
-public class ZoneIdSerializer extends AbstractSerializer {
+public class DurationHandle implements HessianHandle, Serializable {
+    private static final long serialVersionUID = -4367309317780077156L;
 
-    private static final ZoneIdSerializer SERIALIZER = new ZoneIdSerializer();
+    private long seconds;
+    private int nanos;
 
-    public static ZoneIdSerializer getInstance() {
-        return SERIALIZER;
+    public DurationHandle() {
     }
 
-    @Override
-    public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
-        if (obj == null) {
-            out.writeNull();
-        } else {
-            out.writeObject(new ZoneIdHandle(obj));
+    public DurationHandle(Object o) {
+        try {
+            Duration duration = (Duration) o;
+            this.seconds = duration.getSeconds();
+            this.nanos = duration.getNano();
+        } catch (Throwable t) {
+            // ignore
         }
     }
 
+    private Object readResolve() {
+        try {
+            return Duration.ofSeconds(seconds, nanos);
+        } catch (Throwable t) {
+            // ignore
+        }
+        return null;
+    }
 }
