@@ -47,7 +47,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-jdk</artifactId>
             <scope>test</scope>
         </dependency>

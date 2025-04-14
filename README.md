@@ -20,6 +20,7 @@ The available extensions are as follows:
   - [dubbo-api-docs-annotations](dubbo-api-docs/dubbo-api-docs-annotations)
   - [dubbo-api-docs-core](dubbo-api-docs/dubbo-api-docs-core)
   - [dubbo-api-docs-examples](dubbo-api-docs/dubbo-api-docs-examples)
+- [dubbo-build-tools](dubbo-build-tools)
 - [dubbo-cluster-extensions](dubbo-cluster-extensions)
   - [dubbo-cluster-broadcast-1](dubbo-cluster-extensions/dubbo-cluster-broadcast-1)
   - [dubbo-cluster-loadbalance-peakewma](dubbo-cluster-extensions/dubbo-cluster-loadbalance-peakewma)
