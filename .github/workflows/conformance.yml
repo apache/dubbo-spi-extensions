@@ -39,9 +39,10 @@ jobs:
       - name: Checkout Apache Dubbo
         uses: actions/checkout@v4
         with:
-          repository: 'apache/dubbo'
+          repository: apache/dubbo
           ref: ${{ matrix.dubbo-version }}
           path: dubbo
+          fetch-depth: 1
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
