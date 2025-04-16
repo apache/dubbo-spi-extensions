@@ -110,7 +110,7 @@
         <dubbo.version>3.3.0-beta.2</dubbo.version>
         <!-- Test libs -->
         <junit_jupiter_version>5.11.4</junit_jupiter_version>
-        <junit_platform_commons>1.11.4</junit_platform_commons>
+        <junit_platform_commons>1.12.1</junit_platform_commons>
         <awaitility_version>4.2.2</awaitility_version>
         <hazelcast_version>3.11.1</hazelcast_version>
         <hamcrest_version>2.2</hamcrest_version>
@@ -133,7 +133,7 @@
         <maven_jar_version>3.4.2</maven_jar_version>
         <maven_surefire_version>2.22.2</maven_surefire_version>
         <maven_deploy_version>2.8.2</maven_deploy_version>
-        <maven_compiler_version>3.13.0</maven_compiler_version>
+        <maven_compiler_version>3.14.0</maven_compiler_version>
         <maven_source_version>3.3.1</maven_source_version>
         <maven_javadoc_version>3.11.2</maven_javadoc_version>
         <maven_checkstyle_version>3.6.0</maven_checkstyle_version>
@@ -477,7 +477,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>3.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.ops4j.pax.exam</groupId>
