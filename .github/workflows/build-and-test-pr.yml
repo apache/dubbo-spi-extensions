@@ -89,7 +89,7 @@ jobs:
         id: maven-cache
         with:
           path: ~/.m2/repository
-          key: maven-${{ runner.os }}-${{ matrix.dubbo-version }}-${{ hashFiles('**/pom.xml') }}
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-${{ runner.os }}-${{ matrix.dubbo-version }}-
             maven-${{ runner.os }}-maven-
