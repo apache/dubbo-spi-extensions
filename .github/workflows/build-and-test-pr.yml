@@ -55,10 +55,15 @@ jobs:
     needs: check-license
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest ]
-        dubbo-version: [ 3.0, 3.1, 3.2, 3.3, master ]
-      fail-fast: false
+        dubbo-version:
+          - "3.0"
+          - "3.1"
+          - "3.2"
+          - "3.3"
+          - "master"
     outputs:
       cache-key: ${{ steps.maven-cache.outputs.cache-hit }}
     steps:
