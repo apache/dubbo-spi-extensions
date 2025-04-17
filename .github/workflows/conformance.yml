@@ -100,11 +100,11 @@ jobs:
             maven-${{ runner.os }}-
       
 
-      - name: Download test list
-        uses: actions/download-artifact@v4
-        with:
-          name: test-list
-          path: test/jobs/
+  #    - name: Download test list
+  #      uses: actions/download-artifact@v4
+  #      with:
+  #        name: test-list
+  #        path: test/jobs/
       - name: Build test image
         run: |
           cd test && bash ./build-test-image.sh
