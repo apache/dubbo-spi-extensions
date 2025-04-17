@@ -119,31 +119,31 @@ jobs:
         with:
           name: test-log-${{matrix.java}}-${{matrix.job_id}}
           path: "**/test/scenarios/**/logs/*"
-      - name: Upload test result
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-result-${{matrix.job_id}}
-          path: test/jobs/*-result*
+  #    - name: Upload test result
+  #      if: always()
+  #      uses: actions/upload-artifact@v4
+  #      with:
+  #        name: test-result-${{matrix.job_id}}
+  #        path: test/jobs/*-result*
 
-  merge_test:
-    needs: [ testjob ]
-    name: 'Merge Test Result (Java${{matrix.java}})'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        java: [ 17 ]
-    env:
-      JAVA_VER: ${{matrix.java}}
-    steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: Merge-test-result-Java${{matrix.java}}
-          separate-directories: true
-          pattern: test-result-*
-          delete-merged: true
+#  merge_test:
+#    needs: [ testjob ]
+#    name: 'Merge Test Result (Java${{matrix.java}})'
+#    runs-on: ubuntu-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        java: [ 17 ]
+#    env:
+#      JAVA_VER: ${{matrix.java}}
+#    steps:
+#      - name: Merge Artifacts
+#        uses: actions/upload-artifact/merge@v4
+#        with:
+#          name: Merge-test-result-Java${{matrix.java}}
+#          separate-directories: true
+#          pattern: test-result-*
+#          delete-merged: true
 
   test_result:
     needs: [ testjob ]
