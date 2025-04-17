@@ -105,9 +105,9 @@ jobs:
   #      with:
   #        name: test-list
   #        path: test/jobs/
-      - name: Build test image
-        run: |
-          cd test && bash ./build-test-image.sh
+      - name: Build Test Image (if test folder exists)
+        if: ${{ hashFiles('test/build-test-image.sh') != '' }}
+        run: cd test && bash ./build-test-image.sh
       - name: Run tests
         run: |
           for i in {1..2}; do
