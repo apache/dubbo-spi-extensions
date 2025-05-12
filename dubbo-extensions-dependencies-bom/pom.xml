@@ -98,7 +98,7 @@
         <fabric8_kubernetes_version>6.13.5</fabric8_kubernetes_version>
         <hessian_version>4.0.66</hessian_version>
         <httpclient_version>4.5.14</httpclient_version>
-        <jsonrpc_version>1.2.0</jsonrpc_version>
+        <jsonrpc_version>1.7</jsonrpc_version>
         <portlet_version>2.0</portlet_version>
         <xmemcached_version>1.4.3</xmemcached_version>
         <thrift_version>0.12.0</thrift_version>
