@@ -16,53 +16,27 @@
  */
 package org.apache.dubbo.metadata.store.redis;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.config.configcenter.ConfigItem;
 import org.apache.dubbo.common.logger.ErrorTypeAwareLogger;
 import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.common.utils.ConcurrentHashMapUtils;
-import org.apache.dubbo.common.utils.ConcurrentHashSet;
-import org.apache.dubbo.common.utils.JsonUtils;
-import org.apache.dubbo.common.utils.StringUtils;
-import org.apache.dubbo.common.utils.CollectionUtils;
+import org.apache.dubbo.common.utils.*;
 import org.apache.dubbo.metadata.MappingChangedEvent;
 import org.apache.dubbo.metadata.MappingListener;
 import org.apache.dubbo.metadata.MetadataInfo;
 import org.apache.dubbo.metadata.ServiceNameMapping;
-import org.apache.dubbo.metadata.report.identifier.BaseMetadataIdentifier;
-import org.apache.dubbo.metadata.report.identifier.KeyTypeEnum;
-import org.apache.dubbo.metadata.report.identifier.MetadataIdentifier;
-import org.apache.dubbo.metadata.report.identifier.ServiceMetadataIdentifier;
-import org.apache.dubbo.metadata.report.identifier.SubscriberMetadataIdentifier;
+import org.apache.dubbo.metadata.report.identifier.*;
 import org.apache.dubbo.metadata.report.support.AbstractMetadataReport;
 import org.apache.dubbo.rpc.RpcException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
-import redis.clients.jedis.Transaction;
+import redis.clients.jedis.*;
 import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.util.JedisClusterCRC16;
 
-import static org.apache.dubbo.common.constants.CommonConstants.CLUSTER_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.CYCLE_REPORT_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.DEFAULT_TIMEOUT;
-import static org.apache.dubbo.common.constants.CommonConstants.GROUP_CHAR_SEPARATOR;
-import static org.apache.dubbo.common.constants.CommonConstants.QUEUES_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.TIMEOUT_KEY;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.common.constants.LoggerCodeConstants.TRANSPORT_FAILED_RESPONSE;
 import static org.apache.dubbo.metadata.MetadataConstants.META_DATA_STORE_TAG;
 import static org.apache.dubbo.metadata.ServiceNameMapping.DEFAULT_MAPPING_GROUP;
@@ -73,8 +47,6 @@ import static org.apache.dubbo.metadata.report.support.Constants.DEFAULT_METADAT
  * RedisMetadataReport
  */
 public class RedisMetadataReport extends AbstractMetadataReport {
-
-    private static final int ONE_DAY_IN_MILLISECONDS = 86400000;
 
     private static final String REDIS_DATABASE_KEY = "database";
     private static final ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(RedisMetadataReport.class);
@@ -111,17 +83,17 @@ public class RedisMetadataReport extends AbstractMetadataReport {
 
     @Override
     protected void doStoreProviderMetadata(MetadataIdentifier providerMetadataIdentifier, String serviceDefinitions) {
-        this.storeMetadata(providerMetadataIdentifier, serviceDefinitions);
+        this.storeMetadata(providerMetadataIdentifier, serviceDefinitions, true);
     }
 
     @Override
     protected void doStoreConsumerMetadata(MetadataIdentifier consumerMetadataIdentifier, String value) {
-        this.storeMetadata(consumerMetadataIdentifier, value);
+        this.storeMetadata(consumerMetadataIdentifier, value, true);
     }
 
     @Override
     protected void doSaveMetadata(ServiceMetadataIdentifier serviceMetadataIdentifier, URL url) {
-        this.storeMetadata(serviceMetadataIdentifier, URL.encode(url.toFullString()));
+        this.storeMetadata(serviceMetadataIdentifier, URL.encode(url.toFullString()), false);
     }
 
     @Override
@@ -140,7 +112,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
 
     @Override
     protected void doSaveSubscriberData(SubscriberMetadataIdentifier subscriberMetadataIdentifier, String urlListStr) {
-        this.storeMetadata(subscriberMetadataIdentifier, urlListStr);
+        this.storeMetadata(subscriberMetadataIdentifier, urlListStr, false);
     }
 
     @Override
@@ -153,29 +125,37 @@ public class RedisMetadataReport extends AbstractMetadataReport {
         return this.getMetadata(metadataIdentifier);
     }
 
-    private void storeMetadata(BaseMetadataIdentifier metadataIdentifier, String v) {
+    private void storeMetadata(BaseMetadataIdentifier metadataIdentifier, String v, boolean ephemeral) {
         if (pool != null) {
-            storeMetadataStandalone(metadataIdentifier, v);
+            storeMetadataStandalone(metadataIdentifier, v, ephemeral);
         } else {
-            storeMetadataInCluster(metadataIdentifier, v);
+            storeMetadataInCluster(metadataIdentifier, v, ephemeral);
         }
     }
 
-    private void storeMetadataInCluster(BaseMetadataIdentifier metadataIdentifier, String v) {
+    private void storeMetadataInCluster(BaseMetadataIdentifier metadataIdentifier, String v, boolean ephemeral) {
         try (JedisCluster jedisCluster =
-                new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
-            jedisCluster.set(metadataIdentifier.getIdentifierKey() + META_DATA_STORE_TAG, v, jedisParams);
+                 new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
+            if (ephemeral) {
+                jedisCluster.set(metadataIdentifier.getIdentifierKey() + META_DATA_STORE_TAG, v, jedisParams);
+            } else {
+                jedisCluster.set(metadataIdentifier.getIdentifierKey() + META_DATA_STORE_TAG, v);
+            }
         } catch (Throwable e) {
             String msg =
-                    "Failed to put " + metadataIdentifier + " to redis cluster " + v + ", cause: " + e.getMessage();
+                "Failed to put " + metadataIdentifier + " to redis cluster " + v + ", cause: " + e.getMessage();
             logger.error(TRANSPORT_FAILED_RESPONSE, "", "", msg, e);
             throw new RpcException(msg, e);
         }
     }
 
-    private void storeMetadataStandalone(BaseMetadataIdentifier metadataIdentifier, String v) {
+    private void storeMetadataStandalone(BaseMetadataIdentifier metadataIdentifier, String v, boolean ephemeral) {
         try (Jedis jedis = pool.getResource()) {
-            jedis.set(metadataIdentifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), v, jedisParams);
+            if (ephemeral) {
+                jedis.set(metadataIdentifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), v, jedisParams);
+            } else {
+                jedis.set(metadataIdentifier.getUniqueKey(KeyTypeEnum.UNIQUE_KEY), v);
+            }
         } catch (Throwable e) {
             String msg = "Failed to put " + metadataIdentifier + " to redis " + v + ", cause: " + e.getMessage();
             logger.error(TRANSPORT_FAILED_RESPONSE, "", "", msg, e);
@@ -193,7 +173,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
 
     private void deleteMetadataInCluster(BaseMetadataIdentifier metadataIdentifier) {
         try (JedisCluster jedisCluster =
-                new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
+                 new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
             jedisCluster.del(metadataIdentifier.getIdentifierKey() + META_DATA_STORE_TAG);
         } catch (Throwable e) {
             String msg = "Failed to delete " + metadataIdentifier + " from redis cluster , cause: " + e.getMessage();
@@ -222,7 +202,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
 
     private String getMetadataInCluster(BaseMetadataIdentifier metadataIdentifier) {
         try (JedisCluster jedisCluster =
-                new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
+                 new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
             return jedisCluster.get(metadataIdentifier.getIdentifierKey() + META_DATA_STORE_TAG);
         } catch (Throwable e) {
             String msg = "Failed to get " + metadataIdentifier + " from redis cluster , cause: " + e.getMessage();
@@ -254,7 +234,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
      */
     @Override
     public boolean registerServiceAppMapping(
-            String serviceInterface, String defaultMappingGroup, String newConfigContent, Object ticket) {
+        String serviceInterface, String defaultMappingGroup, String newConfigContent, Object ticket) {
         try {
             if (null != ticket && !(ticket instanceof String)) {
                 throw new IllegalArgumentException("redis publishConfigCas requires stat type ticket");
@@ -282,7 +262,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
      */
     private boolean storeMappingInCluster(String key, String field, String value, String ticket) {
         try (JedisCluster jedisCluster =
-                new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
+                 new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
             Jedis jedis = new Jedis(jedisCluster.getConnectionFromSlot(JedisClusterCRC16.getSlot(key)));
             jedis.watch(key);
             String oldValue = jedis.hget(key, field);
@@ -374,7 +354,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
 
     private String getMappingDataInCluster(String key, String field) {
         try (JedisCluster jedisCluster =
-                new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
+                 new JedisCluster(jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
             return jedisCluster.hget(key, field);
         } catch (Throwable e) {
             String msg = "Failed to get " + key + ":" + field + " from redis cluster , cause: " + e.getMessage();
@@ -415,11 +395,11 @@ public class RedisMetadataReport extends AbstractMetadataReport {
     @Override
     public Set<String> getServiceAppMapping(String serviceKey, MappingListener listener, URL url) {
         MappingDataListener mappingDataListener =
-                ConcurrentHashMapUtils.computeIfAbsent(mappingDataListenerMap, buildPubSubKey(), k -> {
-                    MappingDataListener dataListener = new MappingDataListener(buildPubSubKey());
-                    dataListener.start();
-                    return dataListener;
-                });
+            ConcurrentHashMapUtils.computeIfAbsent(mappingDataListenerMap, buildPubSubKey(), k -> {
+                MappingDataListener dataListener = new MappingDataListener(buildPubSubKey());
+                dataListener.start();
+                return dataListener;
+            });
         mappingDataListener.getNotifySub().addListener(serviceKey, listener);
         return this.getServiceAppMapping(serviceKey, url);
     }
@@ -438,7 +418,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
 
     @Override
     public void publishAppMetadata(SubscriberMetadataIdentifier identifier, MetadataInfo metadataInfo) {
-        this.storeMetadata(identifier, metadataInfo.getContent());
+        this.storeMetadata(identifier, metadataInfo.getContent(), false);
     }
 
     @Override
@@ -532,7 +512,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
                     }
                 } else {
                     try (JedisCluster jedisCluster = new JedisCluster(
-                            jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
+                        jedisClusterNodes, timeout, timeout, 2, password, new GenericObjectPoolConfig<>())) {
                         jedisCluster.subscribe(notifySub, path);
                     } catch (Throwable e) {
                         String msg = "Failed to subscribe " + path + ", cause: " + e.getMessage();
