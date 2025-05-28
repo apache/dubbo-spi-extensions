@@ -106,8 +106,8 @@
     </modules>
 
     <properties>
-        <revision>3.3.0</revision>
-        <dubbo.version>3.3.0-beta.2</dubbo.version>
+        <revision>3.3.4</revision>
+        <dubbo.version>3.3.4</dubbo.version>
         <!-- Test libs -->
         <junit_jupiter_version>5.11.4</junit_jupiter_version>
         <junit_platform_commons>1.12.1</junit_platform_commons>

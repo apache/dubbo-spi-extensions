@@ -9,7 +9,7 @@ Adding some annotations can generate a swagger like document without turning a n
 ## Involving repositorys
 
 * [dubbo-spi-extensions](https://github.com/apache/dubbo-spi-extensions)
-  [\branch: 3.3.0\dubbo-api-docs](https://github.com/apache/dubbo-spi-extensions/tree/3.3.0/dubbo-api-docs):
+  [\branch: 3.3.4\dubbo-api-docs](https://github.com/apache/dubbo-spi-extensions/tree/3.3.4/dubbo-api-docs):
   Dubbo-Api-Docs related annotation ,annotation parsing
 * [dubbo-admin](https://github.com/KeRan213539/dubbo-admin): Dubbo-Api-Docs document display, test function
 
@@ -25,7 +25,7 @@ Adding some annotations can generate a swagger like document without turning a n
         * Of course, Dubbo API Docs consumed a little CPU resources when the project starting and used a little memory
           for caching. In the future, it will consider putting the contents of the cache into the metadata center
 
-### Current Version: 3.3.0
+### Current Version: 3.3.4
 
 ```
 <dependency>
