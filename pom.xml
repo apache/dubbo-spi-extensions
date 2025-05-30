@@ -109,7 +109,7 @@
         <revision>3.3.4</revision>
         <dubbo.version>3.3.4</dubbo.version>
         <!-- Test libs -->
-        <junit_jupiter_version>5.11.4</junit_jupiter_version>
+        <junit_jupiter_version>5.12.1</junit_jupiter_version>
         <junit_platform_commons>1.12.1</junit_platform_commons>
         <awaitility_version>4.2.2</awaitility_version>
         <hazelcast_version>3.11.1</hazelcast_version>
