@@ -89,8 +89,8 @@
     </issueManagement>
 
     <properties>
-        <revision>3.3.0</revision>
-        <dubbo.version>3.3.0-beta.2</dubbo.version>
+        <revision>3.3.4</revision>
+        <dubbo.version>3.3.4</dubbo.version>
         <spring.version>5.3.39</spring.version>
         <spring-boot.version>2.7.18</spring-boot.version>
 
@@ -179,13 +179,6 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-dependencies-zookeeper-curator5</artifactId>
                 <version>${dubbo.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -650,6 +643,16 @@
             <dependency>
                 <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-api-docs-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-serialization-jdk</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo.extensions</groupId>
+                <artifactId>dubbo-remoting-http</artifactId>
                 <version>${revision}</version>
             </dependency>
         </dependencies>
