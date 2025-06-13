@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.tag.subnets.utils;
 
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 
 import org.apache.commons.net.util.SubnetUtils;
@@ -26,14 +27,13 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 public class SubnetUtil {
     public static final String TAG_SUBNETS_KEY = "tag.subnets";
 
-    private static final Map<String, List<SubnetUtils.SubnetInfo>> cellSubnets = new ConcurrentHashMap<>();
+    private static final Map<String, List<SubnetUtils.SubnetInfo>> cellSubnets = CollectionUtils.newConcurrentHashMap();
     private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private static final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
     private static final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
