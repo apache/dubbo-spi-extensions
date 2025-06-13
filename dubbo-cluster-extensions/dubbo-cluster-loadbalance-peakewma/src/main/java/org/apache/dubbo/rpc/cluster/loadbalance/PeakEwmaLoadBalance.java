@@ -17,6 +17,7 @@
 package org.apache.dubbo.rpc.cluster.loadbalance;
 
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.RpcStatus;
@@ -25,8 +26,7 @@ import org.apache.dubbo.rpc.model.ScopeModelAware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -62,7 +62,7 @@ public class PeakEwmaLoadBalance extends AbstractLoadBalance implements ScopeMod
         decayTime = applicationModel.getModelEnvironment().getConfiguration().getInt(PEAK_EWMA_DECAY_TIME, 10_000);
     }
 
-    private ConcurrentMap<RpcStatus, Metric> methodMap = new ConcurrentHashMap<>();
+    private Map<RpcStatus, Metric> methodMap = CollectionUtils.newConcurrentHashMap();
 
     protected static class Metric {
         // last timestamp in Millis we observed an runningTime

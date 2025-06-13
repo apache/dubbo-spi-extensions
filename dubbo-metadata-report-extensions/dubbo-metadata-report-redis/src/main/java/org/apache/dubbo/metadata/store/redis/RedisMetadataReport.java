@@ -456,7 +456,7 @@ public class RedisMetadataReport extends AbstractMetadataReport {
      */
     class NotifySub extends JedisPubSub {
 
-        private final Map<String, Set<MappingListener>> listeners = new ConcurrentHashMap<>();
+        private final Map<String, Set<MappingListener>> listeners = CollectionUtils.newConcurrentHashMap();
 
         public void addListener(String key, MappingListener listener) {
             Set<MappingListener> listenerSet = listeners.computeIfAbsent(key, k -> new ConcurrentHashSet<>());

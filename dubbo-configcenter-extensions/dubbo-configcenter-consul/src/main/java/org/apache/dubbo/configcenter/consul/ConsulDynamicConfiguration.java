@@ -41,8 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.apache.dubbo.common.constants.CommonConstants.PATH_SEPARATOR;
 
@@ -58,7 +56,7 @@ public class ConsulDynamicConfiguration extends TreePathDynamicConfiguration {
 
     private final int watchTimeout;
 
-    private final ConcurrentMap<String, ConsulListener> watchers = new ConcurrentHashMap<>();
+    private final Map<String, ConsulListener> watchers = CollectionUtils.newConcurrentHashMap();
 
     public ConsulDynamicConfiguration(URL url) {
         super(url);

@@ -36,6 +36,7 @@ package org.apache.dubbo.remoting.etcd.support;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.ConcurrentHashSet;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.etcd.ChildListener;
@@ -44,9 +45,8 @@ import org.apache.dubbo.remoting.etcd.StateListener;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.apache.dubbo.common.constants.CommonConstants.PATH_SEPARATOR;
 import static org.apache.dubbo.remoting.etcd.Constants.CONFIGURATORS_CATEGORY;
@@ -62,7 +62,7 @@ public abstract class AbstractEtcdClient<WatcherListener> implements EtcdClient 
 
     private final Set<StateListener> stateListeners = new ConcurrentHashSet<>();
 
-    private final ConcurrentMap<String, ConcurrentMap<ChildListener, WatcherListener>> childListeners = new ConcurrentHashMap<>();
+    private final Map<String, Map<ChildListener, WatcherListener>> childListeners = CollectionUtils.newConcurrentHashMap();
     private final List<String> categories = Arrays.asList(PROVIDERS_CATEGORY, CONSUMERS_CATEGORY, ROUTERS_CATEGORY,
             CONFIGURATORS_CATEGORY);
     private volatile boolean closed = false;
@@ -106,14 +106,14 @@ public abstract class AbstractEtcdClient<WatcherListener> implements EtcdClient 
 
     @Override
     public List<String> addChildListener(String path, final ChildListener listener) {
-        ConcurrentMap<ChildListener, WatcherListener> listeners = childListeners.computeIfAbsent(path, k -> new ConcurrentHashMap<>());
+        Map<ChildListener, WatcherListener> listeners = childListeners.computeIfAbsent(path, k -> CollectionUtils.newConcurrentHashMap());
         WatcherListener targetListener = listeners.computeIfAbsent(listener, k -> createChildWatcherListener(path, k));
         return addChildWatcherListener(path, targetListener);
     }
 
     @Override
     public WatcherListener getChildListener(String path, ChildListener listener) {
-        ConcurrentMap<ChildListener, WatcherListener> listeners = childListeners.get(path);
+        Map<ChildListener, WatcherListener> listeners = childListeners.get(path);
         if (listeners == null) {
             return null;
         }
@@ -122,7 +122,7 @@ public abstract class AbstractEtcdClient<WatcherListener> implements EtcdClient 
 
     @Override
     public void removeChildListener(String path, ChildListener listener) {
-        ConcurrentMap<ChildListener, WatcherListener> listeners = childListeners.get(path);
+        Map<ChildListener, WatcherListener> listeners = childListeners.get(path);
         if (listeners != null) {
             WatcherListener targetListener = listeners.remove(listener);
             if (targetListener != null) {

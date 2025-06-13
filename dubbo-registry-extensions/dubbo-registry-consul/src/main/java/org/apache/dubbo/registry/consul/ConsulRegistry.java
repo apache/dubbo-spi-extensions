@@ -42,8 +42,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -76,7 +74,7 @@ public class ConsulRegistry extends FailbackRegistry {
     private long checkPassInterval;
     private ExecutorService notifierExecutor = newCachedThreadPool(
             new NamedThreadFactory("dubbo-consul-notifier", true));
-    private ConcurrentMap<URL, ConsulNotifier> notifiers = new ConcurrentHashMap<>();
+    private Map<URL, ConsulNotifier> notifiers = CollectionUtils.newConcurrentHashMap();
     private ScheduledExecutorService ttlConsulCheckExecutor;
     /**
      * The ACL token
