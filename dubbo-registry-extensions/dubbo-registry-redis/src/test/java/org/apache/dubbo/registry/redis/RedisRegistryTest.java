@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.exceptions.JedisException;
 import redis.embedded.RedisServer;
 
 import java.io.IOException;
@@ -231,7 +232,7 @@ public class RedisRegistryTest {
         assertThat(redisRegistry.isAvailable(), is(true));
 
         redisRegistry.destroy();
-        assertThrows(JedisConnectionException.class, () -> redisRegistry.isAvailable());
+        assertThrows(JedisException.class, () -> redisRegistry.isAvailable());
     }
 
     @Test

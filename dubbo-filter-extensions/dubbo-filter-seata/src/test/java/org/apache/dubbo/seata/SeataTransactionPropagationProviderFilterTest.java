@@ -51,7 +51,7 @@ class SeataTransactionPropagationProviderFilterTest {
 
         @Override
         public URL getUrl() {
-            return null;
+            return URL.valueOf("dubbo://localhost");
         }
 
         @Override

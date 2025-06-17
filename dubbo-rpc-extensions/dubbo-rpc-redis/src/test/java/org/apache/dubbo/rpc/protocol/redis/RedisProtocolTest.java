@@ -242,8 +242,8 @@ public class RedisProtocolTest {
             String value = demoService.get("key");
             assertThat(value, is(nullValue()));
         } catch (RpcException e) {
-            if (e.getCause() instanceof JedisConnectionException && e.getCause().getCause() instanceof JedisDataException) {
-                Assertions.assertEquals("ERR invalid password", e.getCause().getCause().getMessage());
+            if (e.getCause() instanceof JedisDataException) {
+                Assertions.assertEquals("ERR invalid password", e.getCause().getMessage());
             } else {
                 Assertions.fail("no invalid password exception!");
             }

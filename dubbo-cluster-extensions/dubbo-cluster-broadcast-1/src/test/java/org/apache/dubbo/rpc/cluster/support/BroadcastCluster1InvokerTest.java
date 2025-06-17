@@ -147,7 +147,7 @@ class MockInvoker implements Invoker<DemoService> {
         invoked = true;
         if (throwEx) {
             throwEx = false;
-            throw new RpcException();
+            throw new RpcException("mocked java.lang.NullPointerException");
         }
         return new AppResponse("sucess");
     }
