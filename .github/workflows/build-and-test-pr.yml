@@ -12,8 +12,8 @@ env:
   VERSIONS_LIMIT: 5
   JACOCO_ENABLE: true
   CANDIDATE_VERSIONS: '
-    spring.version:5.3.24;
-    spring-boot.version:2.7.6;
+    spring.version:5.3.24,6.1.5;
+    spring-boot.version:2.7.6,3.2.3;
     dubbo.version:latest;
   '
 
@@ -59,11 +59,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
         dubbo-version:
-          - "3.0"
-          - "3.1"
-          - "3.2"
           - "3.3"
-          - "3.4"
     outputs:
       cache-key: ${{ steps.maven-cache.outputs.cache-hit }}
     steps:
