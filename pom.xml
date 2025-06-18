@@ -811,6 +811,7 @@
                     --add-opens java.base/java.math=ALL-UNNAMED
                     --add-opens java.base/java.util=ALL-UNNAMED
                     --add-opens java.base/java.net=ALL-UNNAMED
+                    --add-opens java.base/java.text=ALL-UNNAMED
                 </argLine>
             </properties>
         </profile>
