@@ -31,6 +31,8 @@ limitations under the License.
     <properties>
         <skip_maven_deploy>false</skip_maven_deploy>
         <dubbo.compiler.version>0.0.1-SNAPSHOT</dubbo.compiler.version>
+        <!-- protobuf-protoc_version should be aligned to protobuf-java_version -->
+        <protobuf-protoc_version>3.25.8</protobuf-protoc_version>
     </properties>
     <dependencies>
         <dependency>
@@ -73,7 +75,8 @@ limitations under the License.
                 <version>0.6.1</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:3.7.1:exe:${os.detected.classifier}</protocArtifact>
+                    <!-- generate java without makeExtensionsImmutable by 3.25.6+, see https://protobuf.dev/news/2025-01-23/ -->
+                    <protocArtifact>com.google.protobuf:protoc:${protobuf-protoc_version}:exe:${os.detected.classifier}</protocArtifact>
                     <outputDirectory>build/generated/source/proto/main/java</outputDirectory>
                     <clearOutputDirectory>false</clearOutputDirectory>
                 </configuration>

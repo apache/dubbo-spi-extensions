@@ -16,7 +16,8 @@
  */
 syntax = "proto2";
 
-package org.apache.dubbo.common.serialize.protobuf.model;
+// replace all model.template strings by model before generating test file.
+package org.apache.dubbo.common.serialize.protobuf.protobuf.support.model.template;
 
 message PBRequestType {
   optional double money = 1;
@@ -26,18 +27,18 @@ message PBRequestType {
   optional bool sex = 5;
   optional string name = 6;
   optional bytes msg = 7;
-  repeated org.apache.dubbo.common.serialize.protobuf.model.PhoneNumber phone = 8;
+  repeated org.apache.dubbo.common.serialize.protobuf.protobuf.support.model.template.PhoneNumber phone = 8;
   map<string, PhoneNumber> doubleMap = 9;
 }
 
 message PBResponseType {
   optional string msg = 1;
-  optional org.apache.dubbo.common.serialize.protobuf.model.PBRequestType CDubboPBRequestType = 3;
+  optional org.apache.dubbo.common.serialize.protobuf.protobuf.support.model.template.PBRequestType CDubboPBRequestType = 3;
 }
 
 message PhoneNumber {
   required string number = 1;
-  optional org.apache.dubbo.common.serialize.protobuf.model.PhoneType type = 2 [default = HOME];
+  optional org.apache.dubbo.common.serialize.protobuf.protobuf.support.model.template.PhoneType type = 2 [default = HOME];
 }
 
 enum PhoneType {
@@ -47,5 +48,5 @@ enum PhoneType {
 }
 
 service CDubboPBService {
-  rpc sayHello (org.apache.dubbo.common.serialize.protobuf.model.PBRequestType) returns (org.apache.dubbo.common.serialize.protobuf.model.PBResponseType);
+  rpc sayHello (org.apache.dubbo.common.serialize.protobuf.protobuf.support.model.template.PBRequestType) returns (org.apache.dubbo.common.serialize.protobuf.protobuf.support.model.template.PBResponseType);
 }

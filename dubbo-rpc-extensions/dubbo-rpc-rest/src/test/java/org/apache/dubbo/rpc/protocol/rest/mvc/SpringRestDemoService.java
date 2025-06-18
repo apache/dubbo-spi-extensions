@@ -43,7 +43,7 @@ public interface SpringRestDemoService {
     @RequestMapping(
             value = "/testFormBody",
             method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     String testFormBody(@RequestBody User user);
 
     @RequestMapping(
@@ -67,6 +67,9 @@ public interface SpringRestDemoService {
     @RequestMapping(method = RequestMethod.GET, value = "/primitiveByte")
     long primitiveByte(@RequestParam("a") byte a, @RequestParam("b") Long b);
 
-    @RequestMapping(method = RequestMethod.POST, value = "/primitiveShort")
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/primitiveShort",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     long primitiveShort(@RequestParam("a") short a, @RequestParam("b") Long b, @RequestBody int c);
 }
