@@ -1,2 +1,0 @@
-fury=org.apache.dubbo.common.serialize.fury.dubbo.FuryScopeModelInitializer
-fury-compatible=org.apache.dubbo.common.serialize.fury.dubbo.FuryScopeModelInitializer

@@ -111,7 +111,7 @@
         <avro_version>1.11.4</avro_version>
         <fastjson_version>1.2.83_noneautotype</fastjson_version>
         <fst_version>2.57</fst_version>
-        <apache.fury_version>0.10.2</apache.fury_version>
+        <apache.fory_version>0.11.0</apache.fory_version>
         <jackson_version>2.18.3</jackson_version>
         <gson_version>2.13.0</gson_version>
         <kryo_version>5.6.2</kryo_version>
@@ -314,9 +314,9 @@
                 <version>${fst_version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.fury</groupId>
-                <artifactId>fury-core</artifactId>
-                <version>${apache.fury_version}</version>
+                <groupId>org.apache.fory</groupId>
+                <artifactId>fory-core</artifactId>
+                <version>${apache.fory_version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

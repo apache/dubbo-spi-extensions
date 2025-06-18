@@ -1,0 +1,2 @@
+fory=org.apache.dubbo.common.serialize.fory.dubbo.ForySerialization
+fory-compatible=org.apache.dubbo.common.serialize.fory.dubbo.ForyCompatibleSerialization
