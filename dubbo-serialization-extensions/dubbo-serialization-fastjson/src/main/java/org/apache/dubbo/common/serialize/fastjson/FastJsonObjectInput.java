@@ -46,6 +46,14 @@ public class FastJsonObjectInput implements DefaultJsonDataInput {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T readObject(Class<T> cls, Type type) throws IOException {
+        return readObject(cls, type, null);
+    }
+
+    public Object readObject(ParserConfig.AutoTypeCheckHandler handler) throws IOException {
+        return readObject(Object.class, null, handler);
+    }
+
+    private <T> T readObject(Class<T> cls, Type type, ParserConfig.AutoTypeCheckHandler handler) throws IOException {
         int length = readLength();
         byte[] bytes = new byte[length];
         int read = is.read(bytes, 0, length);
@@ -55,6 +63,9 @@ public class FastJsonObjectInput implements DefaultJsonDataInput {
         }
         ParserConfig parserConfig = new ParserConfig();
         parserConfig.setAutoTypeSupport(true);
+        if (handler != null) {
+            parserConfig.addAutoTypeCheckHandler(handler);
+        }
 
         Object result = JSON.parseObject(new String(bytes), cls,
                 parserConfig,

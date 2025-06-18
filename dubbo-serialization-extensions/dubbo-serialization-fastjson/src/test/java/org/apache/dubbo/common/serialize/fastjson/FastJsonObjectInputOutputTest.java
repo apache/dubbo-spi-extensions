@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.common.serialize.fastjson;
 
+import com.alibaba.fastjson.parser.ParserConfig;
 import com.example.test.TestPojo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -194,10 +195,18 @@ public class FastJsonObjectInputOutputTest {
         fastJsonObjectOutput.flushBuffer();
         pos.close();
 
-        Object result = fastJsonObjectInput.readObject();
+        Object result = fastJsonObjectInput.readObject(new TestPojoHandler());
         Assertions.assertNotNull(result);
 
         Assertions.assertEquals("Bob", ((TestPojo) result).getData());
+    }
+
+    private static class TestPojoHandler implements ParserConfig.AutoTypeCheckHandler {
+
+        @Override
+        public Class<?> handler(String typeName, Class<?> expectClass, int features) {
+            return TestPojo.class;
+        }
     }
 }
 
