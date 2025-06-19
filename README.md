@@ -89,6 +89,7 @@ The available extensions are as follows:
   - [dubbo-serialization-fastjson](dubbo-serialization-extensions/dubbo-serialization-fastjson)
   - [dubbo-serialization-fst](dubbo-serialization-extensions/dubbo-serialization-fst)
   - [dubbo-serialization-fury](dubbo-serialization-extensions/dubbo-serialization-fury)
+  - [dubbo-serialization-fory](dubbo-serialization-extensions/dubbo-serialization-fory)
   - [dubbo-serialization-gson](dubbo-serialization-extensions/dubbo-serialization-gson)
   - [dubbo-serialization-jackson](dubbo-serialization-extensions/dubbo-serialization-jackson)
   - [dubbo-serialization-jdk](dubbo-serialization-extensions/dubbo-serialization-jdk)

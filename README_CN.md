@@ -88,6 +88,7 @@ dubbo-spi-extensions的目的是提供开放的、社区驱动的、可重用的
   - [dubbo-serialization-fastjson](dubbo-serialization-extensions/dubbo-serialization-fastjson)
   - [dubbo-serialization-fst](dubbo-serialization-extensions/dubbo-serialization-fst)
   - [dubbo-serialization-fury](dubbo-serialization-extensions/dubbo-serialization-fury)
+  - [dubbo-serialization-fory](dubbo-serialization-extensions/dubbo-serialization-fory)
   - [dubbo-serialization-gson](dubbo-serialization-extensions/dubbo-serialization-gson)
   - [dubbo-serialization-jackson](dubbo-serialization-extensions/dubbo-serialization-jackson)
   - [dubbo-serialization-kryo](dubbo-serialization-extensions/dubbo-serialization-kryo)
