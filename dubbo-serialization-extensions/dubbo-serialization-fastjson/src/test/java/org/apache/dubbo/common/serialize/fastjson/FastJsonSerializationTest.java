@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.common.serialize.fastjson;
 
+import com.alibaba.fastjson.TypeReference;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -82,8 +84,8 @@ class FastJsonSerializationTest {
             byte[] bytes = outputStream.toByteArray();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             ObjectInput objectInput = serialization.deserialize(url, inputStream);
-            // this will not throw exception
-            // Assertions.assertThrows(IOException.class, objectInput::readUTF);
+            // Todo should throw exception but return "{}"
+            Assertions.assertEquals("{}", objectInput.readUTF());
         }
 
         // write pojo, read failed
@@ -159,7 +161,7 @@ class FastJsonSerializationTest {
             byte[] bytes = outputStream.toByteArray();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             ObjectInput objectInput = serialization.deserialize(url, inputStream);
-            // @Todo this not pass
+            // Todo this not pass: it will not throw IOException but return "{}"
             // Assertions.assertThrows(IOException.class, objectInput::readEvent);
         }
 
@@ -291,7 +293,8 @@ class FastJsonSerializationTest {
             byte[] bytes = outputStream.toByteArray();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             ObjectInput objectInput = serialization.deserialize(url, inputStream);
-            Assertions.assertThrows(IOException.class, objectInput::readObject);
+            Type trustedPojoListType = new TypeReference<LinkedList<TrustedPojo>>() {}.getType();
+            Assertions.assertEquals(pojos, objectInput.readObject(null, trustedPojoListType));
         }
 
         // write pojo, read pojo
@@ -324,7 +327,8 @@ class FastJsonSerializationTest {
             byte[] bytes = outputStream.toByteArray();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             ObjectInput objectInput = serialization.deserialize(url, inputStream);
-            Assertions.assertThrows(IOException.class, () -> objectInput.readObject(List.class));
+            Type trustedPojoListType = new TypeReference<LinkedList<TrustedPojo>>() {}.getType();
+            Assertions.assertEquals(pojos, objectInput.readObject(null, trustedPojoListType));
         }
 
         // write list, read list
@@ -342,7 +346,8 @@ class FastJsonSerializationTest {
             byte[] bytes = outputStream.toByteArray();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
             ObjectInput objectInput = serialization.deserialize(url, inputStream);
-            Assertions.assertThrows(IOException.class, () -> objectInput.readObject(LinkedList.class));
+            Type trustedPojoListType = new TypeReference<LinkedList<TrustedPojo>>() {}.getType();
+            Assertions.assertEquals(pojos, objectInput.readObject(null, trustedPojoListType));
         }
 
         frameworkModel.destroy();

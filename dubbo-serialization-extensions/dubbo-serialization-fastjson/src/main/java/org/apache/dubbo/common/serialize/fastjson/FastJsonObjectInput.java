@@ -49,11 +49,7 @@ public class FastJsonObjectInput implements DefaultJsonDataInput {
         return readObject(cls, type, null);
     }
 
-    public Object readObject(ParserConfig.AutoTypeCheckHandler handler) throws IOException {
-        return readObject(Object.class, null, handler);
-    }
-
-    private <T> T readObject(Class<T> cls, Type type, ParserConfig.AutoTypeCheckHandler handler) throws IOException {
+    public <T> T readObject(Class<T> cls, Type type, ParserConfig.AutoTypeCheckHandler handler) throws IOException {
         int length = readLength();
         byte[] bytes = new byte[length];
         int read = is.read(bytes, 0, length);
@@ -67,14 +63,23 @@ public class FastJsonObjectInput implements DefaultJsonDataInput {
             parserConfig.addAutoTypeCheckHandler(handler);
         }
 
-        Object result = JSON.parseObject(new String(bytes), cls,
+        Object result;
+        if (cls != null) {
+            result = JSON.parseObject(new String(bytes), cls,
                 parserConfig,
                 Feature.SupportNonPublicField,
                 Feature.SupportAutoType
-        );
-        if (result != null && cls != null && !ClassUtils.isMatch(result.getClass(), cls)) {
-            throw new IllegalArgumentException(
+            );
+            if (result != null && !ClassUtils.isMatch(result.getClass(), cls)) {
+                throw new IllegalArgumentException(
                     "deserialize failed. expected class: " + cls + " but actual class: " + result.getClass());
+            }
+        } else {
+            result = JSON.parseObject(new String(bytes), type,
+                parserConfig,
+                Feature.SupportNonPublicField,
+                Feature.SupportAutoType
+            );
         }
         return (T) result;
 
