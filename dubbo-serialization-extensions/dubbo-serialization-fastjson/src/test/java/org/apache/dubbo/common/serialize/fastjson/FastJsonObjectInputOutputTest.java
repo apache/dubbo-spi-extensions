@@ -195,7 +195,7 @@ public class FastJsonObjectInputOutputTest {
         fastJsonObjectOutput.flushBuffer();
         pos.close();
 
-        Object result = fastJsonObjectInput.readObject(new TestPojoHandler());
+        Object result = fastJsonObjectInput.readObject(null, null, new TestPojoHandler());
         Assertions.assertNotNull(result);
 
         Assertions.assertEquals("Bob", ((TestPojo) result).getData());
