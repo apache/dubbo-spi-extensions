@@ -113,7 +113,7 @@
         <fst_version>2.57</fst_version>
         <apache.fury_version>0.10.2</apache.fury_version>
         <apache.fory_version>0.11.0</apache.fory_version>
-        <jackson_version>2.18.3</jackson_version>
+        <jackson_version>2.19.1</jackson_version>
         <gson_version>2.13.0</gson_version>
         <kryo_version>5.6.2</kryo_version>
         <kryo_serializers_version>0.45</kryo_serializers_version>
