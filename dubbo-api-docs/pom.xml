@@ -48,7 +48,7 @@
         <springfox.version>3.0.0</springfox.version>
         <nacos.version>1.4.0</nacos.version>
         <spring-cloud.version>Hoxton.SR10</spring-cloud.version>
-        <spring-cloud-alibaba-dependencies.version>2.2.3.RELEASE</spring-cloud-alibaba-dependencies.version>
+        <spring-cloud-alibaba-dependencies.version>2.2.9.RELEASE</spring-cloud-alibaba-dependencies.version>
     </properties>
 
 
