@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.dubbo.common.serialize.fury.dubbo;
-
 
 import org.apache.fury.Fury;
 import org.apache.fury.collection.Tuple2;
@@ -27,8 +25,6 @@ import org.apache.fury.util.LoaderBinding;
 /**
  * Fury serialization for dubbo. This integration doesn't allow type inconsistency between
  * serialization and deserialization peer.
- *
- * @author chaokunyang
  */
 public class FurySerialization extends BaseFurySerialization {
   public static final byte FURY_SERIALIZATION_ID = 28;

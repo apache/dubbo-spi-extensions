@@ -20,9 +20,6 @@ import org.aopalliance.intercept.MethodInvocation;
 
 /**
  * This class is deprecated, please use {@link org.apache.dubbo.rpc.protocol.rmi.RmiRemoteInvocation}.
- *
- * @author chickenlj
- * @deprecated
  */
 @Deprecated
 public class RmiRemoteInvocation extends org.apache.dubbo.rpc.protocol.rmi.RmiRemoteInvocation {
