@@ -63,7 +63,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author cvictory ON 2019-08-16
+ * LeaseTest
  */
 @Disabled
 public class LeaseTest {
