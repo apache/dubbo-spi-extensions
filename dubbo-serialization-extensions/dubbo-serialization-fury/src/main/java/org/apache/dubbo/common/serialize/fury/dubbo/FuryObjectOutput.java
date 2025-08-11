@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.dubbo.common.serialize.fury.dubbo;
 
 import org.apache.dubbo.common.serialize.ObjectOutput;
@@ -28,8 +27,6 @@ import java.io.OutputStream;
 
 /**
  * Fury implementation for {@link ObjectOutput}.
- *
- * @author chaokunyang
  */
 public class FuryObjectOutput implements ObjectOutput {
   private final Fury fury;

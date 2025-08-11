@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.dubbo.common.serialize.fory.dubbo;
 
 import org.apache.dubbo.common.URL;
@@ -32,10 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Optional;
+
 /**
  * Fory serialization framework integration with dubbo.
- *
- * @author chaokunyang
  */
 public abstract class BaseForySerialization implements Serialization {
   protected abstract Tuple2<LoaderBinding, MemoryBuffer> getFory();

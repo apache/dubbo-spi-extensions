@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.dubbo.common.serialize.fory.dubbo;
-
 
 import org.apache.fory.Fory;
 import org.apache.fory.collection.Tuple2;
@@ -27,8 +25,6 @@ import org.apache.fory.util.LoaderBinding;
 
 /**
  * Fory serialization for dubbo. This integration support type forward/backward compatibility.
- *
- * @author chaokunyang
  */
 public class ForyCompatibleSerialization extends BaseForySerialization {
   public static final byte FORY_SERIALIZATION_ID = 29;

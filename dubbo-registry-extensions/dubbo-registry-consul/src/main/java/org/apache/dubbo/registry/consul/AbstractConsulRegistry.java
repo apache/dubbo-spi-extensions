@@ -17,7 +17,7 @@
 package org.apache.dubbo.registry.consul;
 
 /**
- * @author cvictory ON 2019-08-02
+ * AbstractConsulRegistry
  */
 public class AbstractConsulRegistry {
 
