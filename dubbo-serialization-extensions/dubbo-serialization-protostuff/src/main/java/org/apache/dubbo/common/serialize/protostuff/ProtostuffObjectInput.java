@@ -46,7 +46,7 @@ public class ProtostuffObjectInput implements ObjectInput {
         int classNameLength = dis.readInt();
         int bytesLength = dis.readInt();
 
-        if (classNameLength < 0 || bytesLength < 0) {
+        if (classNameLength < 0 || bytesLength < 0 || classNameLength > dis.available() || bytesLength > dis.available()) {
             throw new IOException();
         }
 
