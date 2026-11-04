@@ -22,7 +22,7 @@ cn|shanghai|a|cell-2:
 cn|shanghai|a|cell-3:
 - 172.31.37.0/24 #zone=cn-shanghai-a
 ```
-- example3: there 3 seperate zones(a/b/c) and a common zone(d), consumer prefer rpc in near zones(a/b/c), and then rpc common zone(d).
+- example3: there 3 separate zones(a/b/c) and a common zone(d), consumer prefer rpc in near zones(a/b/c), and then rpc common zone(d).
 ```
 cn|shanghai|a:
 - 172.37.66.0/24 #zone=cn-shanghai-a
