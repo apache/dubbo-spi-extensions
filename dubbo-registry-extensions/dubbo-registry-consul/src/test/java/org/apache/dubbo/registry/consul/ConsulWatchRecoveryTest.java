@@ -37,6 +37,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Verifies that Consul watches resume after transient HTTP failures.
+ *
+ * @date 2026/11/5
+ */
 class ConsulWatchRecoveryTest {
 
     @Test
