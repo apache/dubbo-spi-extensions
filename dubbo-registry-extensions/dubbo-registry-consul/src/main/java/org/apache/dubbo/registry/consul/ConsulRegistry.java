@@ -329,7 +329,7 @@ public class ConsulRegistry extends FailbackRegistry {
     private class ConsulNotifier implements Runnable {
         private URL url;
         private long consulIndex;
-        private boolean running;
+        private volatile boolean running;
 
         ConsulNotifier(URL url, long consulIndex) {
             this.url = url;
@@ -339,13 +339,8 @@ public class ConsulRegistry extends FailbackRegistry {
 
         @Override
         public void run() {
-            while (this.running) {
-                if (ANY_VALUE.equals(url.getServiceInterface())) {
-                    processServices();
-                } else {
-                    processService();
-                }
-            }
+            Runnable poll = ANY_VALUE.equals(url.getServiceInterface()) ? this::processServices : this::processService;
+            ConsulWatch.run(() -> running, poll, url.getServiceKey());
         }
 
         private void processService() {
@@ -366,9 +361,9 @@ public class ConsulRegistry extends FailbackRegistry {
             Response<Map<String, List<String>>> response = getAllServices(consulIndex, buildWatchTimeout(url));
             Long currentIndex = response.getConsulIndex();
             if (currentIndex != null && currentIndex > consulIndex) {
-                consulIndex = currentIndex;
                 List<HealthService> services = getHealthServices(response.getValue());
                 List<URL> urls = convert(services, url);
+                consulIndex = currentIndex;
                 for (NotifyListener listener : getSubscribed().get(url)) {
                     doNotify(url, listener, urls);
                 }
