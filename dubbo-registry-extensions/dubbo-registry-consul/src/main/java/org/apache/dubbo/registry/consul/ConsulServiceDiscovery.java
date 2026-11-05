@@ -352,7 +352,7 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
     private class ConsulNotifier implements Runnable {
         private final String serviceName;
         private long consulIndex;
-        private boolean running;
+        private volatile boolean running;
 
         private final List<ServiceInstancesChangedListener> listener;
 
@@ -365,9 +365,7 @@ public class ConsulServiceDiscovery extends AbstractServiceDiscovery {
 
         @Override
         public void run() {
-            while (this.running) {
-                processService();
-            }
+            ConsulWatch.run(() -> running, this::processService, serviceName);
         }
 
         private void processService() {
