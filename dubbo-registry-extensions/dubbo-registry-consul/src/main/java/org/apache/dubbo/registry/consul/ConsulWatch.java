@@ -28,6 +28,8 @@ import java.util.function.BooleanSupplier;
 
 /**
  * Runs a Consul blocking watch across transient query failures.
+ *
+ * @date 2026/11/5
  */
 final class ConsulWatch {
     private static final Logger logger = LoggerFactory.getLogger(ConsulWatch.class);
