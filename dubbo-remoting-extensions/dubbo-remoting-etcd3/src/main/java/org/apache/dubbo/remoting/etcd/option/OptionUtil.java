@@ -16,6 +16,8 @@
  */
 package org.apache.dubbo.remoting.etcd.option;
 
+import java.util.Arrays;
+
 import io.etcd.jetcd.ByteSequence;
 import io.grpc.Status;
 import io.netty.handler.codec.http2.Http2Exception;
@@ -26,9 +28,17 @@ public class OptionUtil {
 
     public static final ByteSequence prefixEndOf(ByteSequence prefix) {
         byte[] endKey = prefix.getBytes().clone();
-        if (prefix.size() > 0) {
-            endKey[endKey.length - 1] = (byte) (endKey[endKey.length - 1] + 1);
-            return ByteSequence.from(endKey);
+        // Scan from the last byte and increment the first one that is not 0xFF, dropping the
+        // trailing 0xFF bytes. Comparing against the unsigned 0xFF is required because a byte is
+        // signed, so the previous `endKey[i] < 0xff` check was always true and a trailing 0xFF was
+        // wrongly wrapped to 0x00 instead of carrying to the preceding byte. When every byte is
+        // 0xFF there is no greater prefix, so return the "no prefix end" marker to range over the
+        // rest of the keyspace.
+        for (int i = endKey.length - 1; i >= 0; i--) {
+            if ((endKey[i] & 0xff) < 0xff) {
+                endKey[i] = (byte) (endKey[i] + 1);
+                return ByteSequence.from(Arrays.copyOf(endKey, i + 1));
+            }
         }
         return ByteSequence.from(NO_PREFIX_END);
     }
